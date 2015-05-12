@@ -53,8 +53,9 @@ namespace Slutty_Ryze
 
             Menu spellMenu = Menu.AddSubMenu(new Menu("Spells", "Spells"));
             Menu clearMenu = Menu.AddSubMenu(new Menu("LaneClear", "Lane Clear"));
-            Menu drawMenu = Menu.AddSubMenu(new Menu("disableDraw", "Drawings"));
-            Menu itemMenu = Menu.AddSubMenu(new Menu("items", "Items"));
+            Menu drawMenu = Menu.AddSubMenu(new Menu("Drawings", "disableDraw"));
+            Menu itemMenu = Menu.AddSubMenu(new Menu("Items", "items"));
+            Menu coptionMenu = Menu.AddSubMenu(new Menu("Combo options", "cOptions"));
 
             spellMenu.AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
             spellMenu.AddItem(new MenuItem("useW", "Use W").SetValue(true));
@@ -68,6 +69,9 @@ namespace Slutty_Ryze
             drawMenu.AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
             drawMenu.AddItem(new MenuItem("wDraw", "W Drawing").SetValue(true));
             itemMenu.AddItem(new MenuItem("sTear", "Stack Tear").SetValue(true));
+            coptionMenu.AddItem(new MenuItem("aaBlock", "Block auto attack in combo").SetValue(true));
+            coptionMenu.AddItem(new MenuItem("aaBlock1s", "Use AA only after 1 spell").SetValue(true));
+
 
             Menu.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
@@ -86,21 +90,26 @@ namespace Slutty_Ryze
                 Runeprison();
                 Spellflux();
                 DesperatePower();
+                AABlock();
+                AABlock1Spell();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
                 Runeprison();
                 Spellflux();
+                Orbwalker.SetAttack(true);
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 LaneClear();
+                Orbwalker.SetAttack(true);
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
                 tearStack();
+                Orbwalker.SetAttack(true);
             }
         }
 
@@ -162,7 +171,6 @@ namespace Slutty_Ryze
                 return;
 
             Obj_AI_Hero target = TargetSelector.GetTarget(600, TargetSelector.DamageType.Magical);
-
 
             // check if E ready
             if (E.IsReady())
@@ -235,6 +243,24 @@ namespace Slutty_Ryze
             if (Menu.Item("sTear").GetValue<bool>() && Q.IsReady() && ObjectManager.Player.Mana > ObjectManager.Player.MaxMana * 0.95)
             {
                 Q.Cast(Player.Position);
+            }
+        }
+
+        private static void AABlock()
+        {
+            if (!Menu.Item("aaBlock").GetValue<bool>())
+                return;
+            {
+                Orbwalker.SetAttack(false);
+            }
+            
+        }
+
+        private static void AABlock1Spell()
+        {
+            if (Menu.Item("aaBlock1s").GetValue<bool>() && Q.IsReady() && W.IsReady() && E.IsReady())
+            {
+                Orbwalker.SetAttack(false);
             }
         }
     }
