@@ -71,6 +71,11 @@ namespace Slutty_Ryze
             itemMenu.AddItem(new MenuItem("sTear", "Stack Tear").SetValue(true));
             coptionMenu.AddItem(new MenuItem("aaBlock", "Block auto attack in combo").SetValue(true));
             coptionMenu.AddItem(new MenuItem("aaBlock1s", "Use AA only after 1 spell").SetValue(true));
+            clearMenu.AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
+            clearMenu.AddItem(new MenuItem("useW2L", "Use W to lane clear").SetValue(true));
+            clearMenu.AddItem(new MenuItem("useR2L", "Use R to lane clear").SetValue(true));
+
+
 
 
             Menu.AddToMainMenu();
@@ -226,10 +231,23 @@ namespace Slutty_Ryze
                         {
                             E.Cast(minion);
                         }
-                        if (Menu.Item("useRlc").GetValue<bool>())
+                        if (Menu.Item("useRlc").GetValue<bool>() && minionCount.Count > 4)
                         {
                             R.Cast();
                         }
+                        if (Menu.Item("useQ2L").GetValue<bool>())
+                        {
+                            Q.Cast(minion);
+                        }
+                        if (Menu.Item("useW2L").GetValue<bool>())
+                        {
+                            W.Cast(minion);
+                        }
+                        if (Menu.Item("useE2L").GetValue<bool>())
+                        {
+                            W.Cast(minion);
+                        }
+                        
                     }
                 }
 
@@ -239,7 +257,6 @@ namespace Slutty_Ryze
 
         private static void tearStack()
         {
-            Obj_AI_Hero player = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
             if (Menu.Item("sTear").GetValue<bool>() && Q.IsReady() && ObjectManager.Player.Mana > ObjectManager.Player.MaxMana * 0.95)
             {
                 Q.Cast(Player.Position);
