@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using LeagueSharp;
+using LeagueSharp.Common.Data;
 using SharpDX.Win32;
 using Color = System.Drawing.Color;
 using LeagueSharp.Common;
@@ -52,6 +54,7 @@ namespace Slutty_Ryze
             Menu spellMenu = Menu.AddSubMenu(new Menu("Spells", "Spells"));
             Menu clearMenu = Menu.AddSubMenu(new Menu("LaneClear", "Lane Clear"));
             Menu drawMenu = Menu.AddSubMenu(new Menu("disableDraw", "Drawings"));
+            Menu itemMenu = Menu.AddSubMenu(new Menu("items", "Items"));
 
             spellMenu.AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
             spellMenu.AddItem(new MenuItem("useW", "Use W").SetValue(true));
@@ -64,6 +67,7 @@ namespace Slutty_Ryze
             drawMenu.AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
             drawMenu.AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
             drawMenu.AddItem(new MenuItem("wDraw", "W Drawing").SetValue(true));
+            itemMenu.AddItem(new MenuItem("sTear", "Stack Tear").SetValue(true));
 
             Menu.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
@@ -93,6 +97,10 @@ namespace Slutty_Ryze
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 LaneClear();
+            }
+            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
+            {
+                tearStack();
             }
         }
 
@@ -217,6 +225,16 @@ namespace Slutty_Ryze
                     }
                 }
 
+            }
+           
+        }
+
+        private static void tearStack()
+        {
+            Obj_AI_Hero player = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+            if (Menu.Item("sTear").GetValue<bool>() && Q.IsReady() && ObjectManager.Player.Mana > ObjectManager.Player.MaxMana * 0.95)
+            {
+                Q.Cast(Player.Position);
             }
         }
     }
