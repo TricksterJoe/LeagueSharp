@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -60,6 +61,7 @@ namespace Slutty_Ryze
             spellMenu.AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
             spellMenu.AddItem(new MenuItem("useW", "Use W").SetValue(true));
             spellMenu.AddItem(new MenuItem("useE", "Use E").SetValue(true));
+            spellMenu.AddItem(new MenuItem("useR", "Use R").SetValue(true));
             clearMenu.AddItem(new MenuItem("useQlc", "Use Q to last hit in laneclear").SetValue(true));
             clearMenu.AddItem(new MenuItem("useWlc", "Use W to last hit in lane clear").SetValue(true));
             clearMenu.AddItem(new MenuItem("useElc", "Use E to last hit in lane clear").SetValue(true));
@@ -72,7 +74,6 @@ namespace Slutty_Ryze
             coptionMenu.AddItem(new MenuItem("aaBlock1s", "Use AA only after 1 spell").SetValue(true));
             clearMenu.AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
             clearMenu.AddItem(new MenuItem("useW2L", "Use W to lane clear").SetValue(true));
-            clearMenu.AddItem(new MenuItem("useR2L", "Use R to lane clear").SetValue(true));
 
 
 
@@ -82,7 +83,6 @@ namespace Slutty_Ryze
             Game.OnUpdate += Game_OnUpdate;
             Notifications.AddNotification("Hoe's Ryze assembly :)", 5000);
         }
-        public static int Tear = 3070;
         private static void Game_OnUpdate(EventArgs args)
         {
             if (Player.IsDead)
@@ -148,9 +148,9 @@ namespace Slutty_Ryze
 
             // check if Q ready
             if (Q.IsReady() && target.IsValidTarget(Q.Range))
-                Q.Cast(target);
-            if (Q.IsReady())
-                Q.Cast(target);
+            {
+                Q.Cast(target); 
+            }
         }
 
         private static void Runeprison()
@@ -160,9 +160,8 @@ namespace Slutty_Ryze
                 return;
 
             Obj_AI_Hero target = TargetSelector.GetTarget(600, TargetSelector.DamageType.Magical);
-            if (W.IsReady())
+            if (W.IsReady() && target.IsValidTarget(W.Range))
             {
-                if (target.IsValidTarget(W.Range))
                 {
                     W.CastOnUnit(target);
                 }
@@ -177,16 +176,10 @@ namespace Slutty_Ryze
             Obj_AI_Hero target = TargetSelector.GetTarget(600, TargetSelector.DamageType.Magical);
 
             // check if E ready
-            if (E.IsReady())
+            if (E.IsReady() && target.IsValidTarget(E.Range))
             {
-                // check if we found a valid target in range
-                if (target.IsValidTarget(E.Range))
                 {
                     E.CastOnUnit(target);
-                }
-                if (E.IsReady())
-                {
-                    E.CastOnUnit(Player);
                 }
             }
 
@@ -212,20 +205,20 @@ namespace Slutty_Ryze
                     {
                         if (
                             HealthPrediction.GetHealthPrediction(
-                                minion, (int)(Q.Delay + (minion.Distance(Player.Position) / Q.Speed))) <
+                                minion, (int)(Q.Delay + (minion.Distance(Player.Position) / Q.Speed)*1000)) <
                             Player.GetSpellDamage(minion, SpellSlot.Q) && Menu.Item("useQlc").GetValue<bool>())
                         {
                             Q.Cast(minion);
                         }
                         if (HealthPrediction.GetHealthPrediction(minion,
-                            (int)(W.Delay + (minion.Distance(Player.Position) / W.Speed)))
+                            (int)(W.Delay + (minion.Distance(Player.Position) / W.Speed)*1000))
                             < Player.GetSpellDamage(minion, SpellSlot.W) && Menu.Item("useWlc").GetValue<bool>())
                         {
                             W.Cast(minion);
                         }
                         if (
                             HealthPrediction.GetHealthPrediction(minion,
-                                (int)(E.Delay + (minion.Distance(Player.Position) / E.Speed))) <
+                                (int)(E.Delay + (minion.Distance(Player.Position) / E.Speed)*1000)) <
                             Player.GetSpellDamage(minion, SpellSlot.E) && Menu.Item("useElc").GetValue<bool>())
                         {
                             E.Cast(minion);
@@ -259,16 +252,11 @@ namespace Slutty_Ryze
             if (ItemData.Tear_of_the_Goddess.Stacks.Equals(750) || Items.HasItem(ItemData.Seraphs_Embrace.Id) || ItemData.Archangels_Staff.Stacks.Equals(750))   
                 return;
            
-            if (Menu.Item("sTear").GetValue<bool>() && Q.IsReady() && ObjectManager.Player.Mana > ObjectManager.Player.MaxMana * 0.95 && (Items.HasItem(ItemData.Tear_of_the_Goddess.Id)))
+            if (Menu.Item("sTear").GetValue<bool>() && Q.IsReady() && ObjectManager.Player.Mana > ObjectManager.Player.MaxMana * 0.95 && ((Items.HasItem(ItemData.Tear_of_the_Goddess.Id) || Items.HasItem(ItemData.Archangels_Staff.Id))))
             {
                 Q.Cast(Player.Position);
             }
-            if (Menu.Item("sTear").GetValue<bool>() && Q.IsReady() &&
-                ObjectManager.Player.Mana > ObjectManager.Player.MaxMana*0.95 &&
-                (Items.HasItem(ItemData.Archangels_Staff.Id)))
-            {
-                Q.Cast(Player.Position);
-            }
+
         }
 
         private static void AABlock()
