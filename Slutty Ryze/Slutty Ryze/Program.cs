@@ -182,7 +182,7 @@ namespace Slutty_Ryze
         private static void DesperatePower()
         {
             var target = TargetSelector.GetTarget(600, TargetSelector.DamageType.Magical);
-            if (target.IsValidTarget(600))
+            if (target.IsValidTarget(600) && Menu.Item("useR").GetValue<bool>())
             {
                 R.Cast();
 
