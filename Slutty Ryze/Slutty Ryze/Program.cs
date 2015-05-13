@@ -74,6 +74,7 @@ namespace Slutty_Ryze
             coptionMenu.AddItem(new MenuItem("aaBlock1s", "Use AA only after 1 spell").SetValue(true));
             clearMenu.AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
             clearMenu.AddItem(new MenuItem("useW2L", "Use W to lane clear").SetValue(true));
+            clearMenu.AddItem(new MenuItem("useE2L", "Use E to lane clear").SetValue(true));
 
 
 
