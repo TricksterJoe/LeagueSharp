@@ -231,7 +231,7 @@ namespace Slutty_Ryze
                         }
                         if (Menu.Item("useE2L").GetValue<bool>())
                         {
-                            W.Cast(minion);
+                            E.Cast(minion);
                         }
                         
                     }
