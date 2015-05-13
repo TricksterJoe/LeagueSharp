@@ -60,7 +60,6 @@ namespace Slutty_Ryze
             spellMenu.AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
             spellMenu.AddItem(new MenuItem("useW", "Use W").SetValue(true));
             spellMenu.AddItem(new MenuItem("useE", "Use E").SetValue(true));
-            spellMenu.AddItem(new MenuItem("useR", "Use R").SetValue(true)); ;
             clearMenu.AddItem(new MenuItem("useQlc", "Use Q to last hit in laneclear").SetValue(true));
             clearMenu.AddItem(new MenuItem("useWlc", "Use W to last hit in lane clear").SetValue(true));
             clearMenu.AddItem(new MenuItem("useElc", "Use E to last hit in lane clear").SetValue(true));
@@ -83,7 +82,7 @@ namespace Slutty_Ryze
             Game.OnUpdate += Game_OnUpdate;
             Notifications.AddNotification("Hoe's Ryze assembly :)", 5000);
         }
-
+        public static int Tear = 3070;
         private static void Game_OnUpdate(EventArgs args)
         {
             if (Player.IsDead)
@@ -257,7 +256,16 @@ namespace Slutty_Ryze
 
         private static void tearStack()
         {
-            if (Menu.Item("sTear").GetValue<bool>() && Q.IsReady() && ObjectManager.Player.Mana > ObjectManager.Player.MaxMana * 0.95)
+            if (ItemData.Tear_of_the_Goddess.Stacks.Equals(750) || Items.HasItem(ItemData.Seraphs_Embrace.Id) || ItemData.Archangels_Staff.Stacks.Equals(750))   
+                return;
+           
+            if (Menu.Item("sTear").GetValue<bool>() && Q.IsReady() && ObjectManager.Player.Mana > ObjectManager.Player.MaxMana * 0.95 && (Items.HasItem(ItemData.Tear_of_the_Goddess.Id)))
+            {
+                Q.Cast(Player.Position);
+            }
+            if (Menu.Item("sTear").GetValue<bool>() && Q.IsReady() &&
+                ObjectManager.Player.Mana > ObjectManager.Player.MaxMana*0.95 &&
+                (Items.HasItem(ItemData.Archangels_Staff.Id)))
             {
                 Q.Cast(Player.Position);
             }
