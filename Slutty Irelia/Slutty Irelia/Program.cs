@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Dynamic;
@@ -176,7 +176,7 @@ namespace Slutty_Irelia
                     {
                         Q.CastOnUnit(minion);
                     }
-                    if ( minionCount.Count > 4 )
+                    if ( minionCount.Count > 4 && Menu.Item("useRlc").GetValue<bool>() )
                     {
                         R.Cast(minion);
                     }
