@@ -120,7 +120,6 @@ namespace Slutty_Ryze
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            // dont draw stuff while dead
             if (Player.IsDead)
                 return;
             if (Menu.Item("qDraw").GetValue<bool>() && Q.Level > 0)
@@ -138,15 +137,12 @@ namespace Slutty_Ryze
         }
         private static void Overload()
         {
-            // check if the player wants to use E
             if (!Menu.Item("useQ").GetValue<bool>())
                 return;
 
 
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
 
-
-            // check if Q ready
             if (Q.IsReady() && target.IsValidTarget(Q.Range))
             {
                 Q.Cast(target); 
@@ -155,7 +151,6 @@ namespace Slutty_Ryze
 
         private static void Runeprison()
         {
-            // check if the player wants to use E
             if (!Menu.Item("useW").GetValue<bool>())
                 return;
 
@@ -175,7 +170,6 @@ namespace Slutty_Ryze
 
             Obj_AI_Hero target = TargetSelector.GetTarget(600, TargetSelector.DamageType.Magical);
 
-            // check if E ready
             if (E.IsReady() && target.IsValidTarget(E.Range))
             {
                 {
