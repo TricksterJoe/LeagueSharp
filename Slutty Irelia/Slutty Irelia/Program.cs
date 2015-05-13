@@ -69,13 +69,13 @@ namespace Slutty_Irelia
             spellMenu.AddItem(new MenuItem("useR", "Use R").SetValue(true));
             clearMenu.AddItem(new MenuItem("useQlc", "Use Q to last hit in laneclear").SetValue(true));
             clearMenu.AddItem(new MenuItem("useRlc", "Use R in lane clear").SetValue(true));
-            clearMenu.AddItem(new MenuItem("minMana", "Minimum Mana for lane clear").SetValue(new Slider(50, 1)));
             drawMenu.AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
             drawMenu.AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
             clearMenu.AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
             clearMenu.AddItem(new MenuItem("useW2L", "Use W to lane clear").SetValue(true));
             ksMenu.AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
             ksMenu.AddItem(new MenuItem("useR2KS", "Use R for ks").SetValue(true));
+            clearMenu.AddItem(new MenuItem("minMana", "Minimum Mana for lane clear").SetValue(new Slider(50, 1)));
 
 
             Menu.AddToMainMenu();
