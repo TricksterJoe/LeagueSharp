@@ -71,6 +71,7 @@ namespace Slutty_Irelia
             clearMenu.AddItem(new MenuItem("useRlc", "Use R in lane clear").SetValue(true));
             drawMenu.AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
             drawMenu.AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
+            drawMenu.AddItem(new MenuItem("stunDraw", "Stunnable Target").SetValue(true));
             clearMenu.AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
             clearMenu.AddItem(new MenuItem("useW2L", "Use W to lane clear").SetValue(true));
             ksMenu.AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
@@ -111,6 +112,7 @@ namespace Slutty_Irelia
 
         private static void Drawing_OnDraw(EventArgs args)
         {
+            var targetStun = ObjectManager.Get<Obj_AI_Hero>().FirstOrDefault(enemy => enemy.IsValidTarget(2000));
             // dont draw stuff while dead
             if (Player.IsDead)
                 return;
@@ -122,14 +124,26 @@ namespace Slutty_Irelia
             {
                 Render.Circle.DrawCircle(Player.Position, E.Range, Color.Gold);
             }
+            if (Menu.Item("stunDraw").GetValue<bool>() && E.Level > 0 )
+            {
+                foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => Player.Distance(enemy) <= 1000 && (Player.HealthPercent < enemy.HealthPercent) && enemy.IsValidTarget(1000)))
+                {
+                    var heroPosition = Drawing.WorldToScreen(target.Position);
+                    var textDimension = Drawing.GetTextExtent("Stunnable!");
+                    Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height, Color.DarkOrange, "Stunnable");
+                }
+                {
+                }
+            }
         }
 
-        private static void Combo()
+        private static
+            void Combo()
         {
             if (!Menu.Item("useQ").GetValue<bool>())
                 return;
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-            Obj_AI_Hero targetE = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical);
+            Obj_AI_Hero targetE = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
             Obj_AI_Hero targetR = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
             if (!Menu.Item("useR").GetValue<bool>())
                 return;
