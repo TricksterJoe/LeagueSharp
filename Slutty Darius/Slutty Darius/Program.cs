@@ -135,7 +135,7 @@ namespace Slutty_Darius
             {
                 Q.Cast(target);
             }
-            if (Items.HasItem(ItemData.Ravenous_Hydra_Melee_Only.Id) || Items.HasItem(ItemData.Tiamat_Melee_Only.Id))
+            if (Items.HasItem(ItemData.Ravenous_Hydra_Melee_Only.Id) || Items.HasItem(ItemData.Tiamat_Melee_Only.Id) && target.IsValidTarget(Q.Range))
             {
                 Items.UseItem(ItemData.Ravenous_Hydra_Melee_Only.Id);
                 Items.UseItem(ItemData.Tiamat_Melee_Only.Id);
@@ -178,7 +178,7 @@ namespace Slutty_Darius
                     }
                     if (
                         HealthPrediction.GetHealthPrediction(
-                            minion, (int) (Q.Delay + (minion.Distance(Player.Position)/Q.Speed))) <
+                            minion, (int) (Q.Delay)) <
                         Player.GetSpellDamage(minion, SpellSlot.W) && Menu.Item("useW2L").GetValue<bool>())
                     {
                         W.CastOnUnit(minion);
