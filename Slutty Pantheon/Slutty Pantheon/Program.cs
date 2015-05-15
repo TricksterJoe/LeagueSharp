@@ -72,17 +72,18 @@ namespace Slutty_Pantheon
             ksMenu.AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
             clearMenu.AddItem(new MenuItem("useH2L", "Use Hydra/Tiamat").SetValue(true));
             clearMenu.AddItem(new MenuItem("minMana", "Minimum Mana for lane clear").SetValue(new Slider(50, 1)));
+                        if (Player.IsChannelingImportantSpell())
+                return;
 
 
             Menu.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
+
         }
 
         private static void Game_OnUpdate(EventArgs args)
         {
-            if (Player.IsDead)
-                return;
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
@@ -110,7 +111,7 @@ namespace Slutty_Pantheon
 
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (Player.IsDead)
+            if (Player.IsChannelingImportantSpell())
                 return;
             if (Menu.Item("qDraw").GetValue<bool>() && Q.Level > 0)
             {
@@ -125,23 +126,24 @@ namespace Slutty_Pantheon
         private static void Combo()
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+            if (Player.IsChannelingImportantSpell())
+                return;
             if (Menu.Item("useQ").GetValue<bool>() && Q.IsReady())
             {
                 Q.CastOnUnit(target);
             }
-            if (Items.HasItem(ItemData.Ravenous_Hydra_Melee_Only.Id) || Items.HasItem(ItemData.Tiamat_Melee_Only.Id))
-            {
-                Items.UseItem(ItemData.Ravenous_Hydra_Melee_Only.Id);
-                Items.UseItem(ItemData.Tiamat_Melee_Only.Id);
-            }
-            if (Menu.Item("useW").GetValue<bool>() && Q.IsReady())
+            // if (Items.HasItem(ItemData.Ravenous_Hydra_Melee_Only.Id) || Items.HasItem(ItemData.Tiamat_Melee_Only.Id))
+            // {
+               // Items.UseItem(ItemData.Ravenous_Hydra_Melee_Only.Id);
+               // Items.UseItem(ItemData.Tiamat_Melee_Only.Id);
+            // }
+            if (Menu.Item("useW").GetValue<bool>() && W.IsReady())
             {
                 W.CastOnUnit(target);
             }
             if (Menu.Item("useE").GetValue<bool>() && E.IsReady())
             {
                 E.Cast(target);
-                Orbwalker.SetMovement(false);
             }
 
         }
