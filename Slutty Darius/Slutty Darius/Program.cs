@@ -153,7 +153,7 @@ namespace Slutty_Darius
             {
                 R.CastOnUnit(targetR);
             }
-            if (Menu.Item("useR").GetValue<bool>() && targetR.IsValidTarget(R.Range))
+            if (Menu.Item("useR").GetValue<bool>() && targetR.IsValidTarget(R.Range) && !Menu.Item("useR2LC").GetValue<bool>())
             {
                 R.CastOnUnit(targetR);
             }
