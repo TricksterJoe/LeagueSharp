@@ -153,23 +153,23 @@ namespace Slutty_Pantheon
 
         private static void LaneClear()
         {
-            var qSpell = Menu.Item("useQlc").GetValue<bool>();
-            var eSpell = Menu.Item("useE2L").GetValue<bool>();
-            var qlSpell = Menu.Item("useQ2L").GetValue<bool>();
-            var elcslider = Menu.Item("useESlider").GetValue<Slider>().Value;
-            var elcpslider = Menu.Item("useEPL").GetValue<Slider>().Value;
            var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+           var q1Spell = Menu.Item("useQlc").GetValue<bool>();
+           var e1Spell = Menu.Item("useE2L").GetValue<bool>();
+           var ql2Spell = Menu.Item("useQ2L").GetValue<bool>();
+           var el2cslider = Menu.Item("useESlider").GetValue<Slider>().Value;
+           var el2cpslider = Menu.Item("useEPL").GetValue<Slider>().Value;
             foreach (var minion in minionCount)
             {
-                if (eSpell && E.IsReady() && minionCount.Count >= elcslider && Player.HealthPercent > elcpslider)
+                if (e1Spell && E.IsReady() && minionCount.Count >= el2cslider && Player.HealthPercent > el2cpslider)
                 {
-                    E.Cast();
+                    E.Cast(minion);
                 }
-                if (qSpell && Q.GetDamage(minion) > minion.Health && Q.IsReady())
+                if (q1Spell && Q.GetDamage(minion) > minion.Health && Q.IsReady())
                 {
                     Q.CastOnUnit(minion);
                 }
-                if (qlSpell && Q.IsReady())
+                if (ql2Spell && Q.IsReady())
                 {
                     Q.CastOnUnit(minion);
                 }
