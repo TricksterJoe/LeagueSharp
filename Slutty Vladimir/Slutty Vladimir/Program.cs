@@ -135,6 +135,7 @@ namespace Slutty_Pantheon
             var eSpell = Menu.Item("useE").GetValue<bool>();
             var rSpell = Menu.Item("useR").GetValue<bool>();
             var EPSpell = Menu.Item("useEP").GetValue<Slider>().Value;
+            var rcSpell = Menu.Item("useRC").GetValue<Slider>().Value;
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (qSpell && target.IsValidTarget(Q.Range))
             {
@@ -144,7 +145,7 @@ namespace Slutty_Pantheon
             {
                 E.Cast();
             }
-            if (rSpell && (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E)) < target.Health)
+            if (rSpell && (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E)) < target.Health && ObjectManager.Get<Obj_AI_Hero>().Count(enemy => enemy.IsValidTarget(R.Range)) >= rcSpell )
             {
                 R.CastOnUnit(target);
             }
