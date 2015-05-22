@@ -65,7 +65,9 @@ namespace Slutty_Vladimir
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E to lane clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useESlider", "Min minions for E").SetValue(new Slider(3, 1, 20)));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Use E If HP% is above").SetValue(new Slider(50, 1)));
+
             Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useE2KS", "Use E for ks").SetValue(true));
 
@@ -75,13 +77,8 @@ namespace Slutty_Vladimir
             Config.SubMenu("Pool").AddItem(new MenuItem("useWGapCloser", "Auto W when Gap Closer")).SetValue(true);
 
             Config.AddSubMenu(new Menu("AutoE", "AutoE"));
-            Config.SubMenu("AutoE")
-    .AddItem(
-        new MenuItem("AutoE", "Automatic stack E", true).SetValue(new KeyBind("T".ToCharArray()[0],
-            KeyBindType.Toggle)));
-            Config.SubMenu("AutoE")
-                .AddItem(new MenuItem("MinHPEStack", "Minimum automatic stack HP"))
-                .SetValue(new Slider(20));
+            Config.SubMenu("AutoE").AddItem(new MenuItem("AutoE", "Automatic stack E", true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Toggle)));
+            Config.SubMenu("AutoE").AddItem(new MenuItem("MinHPEStack", "Minimum automatic stack HP")).SetValue(new Slider(20));
 
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
@@ -95,21 +92,35 @@ namespace Slutty_Vladimir
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 Combo();
+                KillSteal();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
                 Mixed();
+                KillSteal();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 LaneClear();
-
+                KillSteal();
             }
-            AutoPool();
-            KillSteal();
-            AutoEs();
+            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
+            {
+            }
+            var autoPool = Config.Item("useW").GetValue<bool>();
+            if (autoPool)
+            {
+               AutoPool();
+            }
+            var autoStack = Config.Item("AutoE", true).GetValue<KeyBind>().Active;
+            if (autoStack)
+            {
+                AutoEs();
+            }
+
+
 
         }
         private static void Drawing_OnDraw(EventArgs args)
@@ -127,25 +138,29 @@ namespace Slutty_Vladimir
         }
         private static void Combo()
         {
+            var qSpell = Config.Item("UseQ").GetValue<bool>();
+            var eSpell = Config.Item("UseE").GetValue<bool>();
+            var rSpell = Config.Item("useR").GetValue<bool>();
+            var rCount = Config.Item("useRc").GetValue<Slider>().Value;
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            if (Config.Item("UseQ").GetValue<bool>()
-                && Q.IsReady()
-                && target.IsValidTarget(Q.Range))
-            {
-                Q.CastOnUnit(target);
-            }
-            if (Config.Item("UseE").GetValue<bool>()
+            if (eSpell
                 && E.IsReady()
                 && target.IsValidTarget(E.Range)
                 && Player.HealthPercent > Config.Item("useEP").GetValue<Slider>().Value)
             {
                 E.Cast();
             }
-            if (Config.Item("useR").GetValue<bool>()          
+            if (qSpell
+                && Q.IsReady()
+                && target.IsValidTarget(Q.Range))
+            {
+                Q.CastOnUnit(target);
+            }
+            if (rSpell          
                 && R.IsReady()
                 && target.IsValidTarget(R.Range)
-                && (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E)) <
-                target.Health)
+                && (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E)) <target.Health
+                && ObjectManager.Get<Obj_AI_Hero>().Count(enemy => enemy.IsValidTarget(R.Range)) >= rCount)
             {
                 R.Cast(target);
             }
@@ -154,24 +169,31 @@ namespace Slutty_Vladimir
 
         private static void LaneClear()
         {
+            var elSpell = Config.Item("useE2L").GetValue<bool>();
+            var qlSpell = Config.Item("useQlc").GetValue<bool>();
+            var q2LSpell = Config.Item("useQ2L").GetValue<bool>();
+            var esLider = Config.Item("useESlider").GetValue<Slider>().Value;
+            var epL = Config.Item("useEPL").GetValue<Slider>().Value;
+           
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             {
+                
                 foreach (var minion in minionCount)
                 {
-                    if (Config.Item("useE2L").GetValue<bool>() 
+                    if (elSpell 
                         && E.IsReady()
-                        && minionCount.Count >= Config.Item("useESlider").GetValue<Slider>().Value
-                        && Player.HealthPercent > Config.Item("useEPL").GetValue<Slider>().Value)
+                        && minionCount.Count >= esLider
+                        && Player.HealthPercent > epL)
                     {
                         E.Cast();
                     }
-                    if (Config.Item("useQlc").GetValue<bool>() 
-                        && (Q.GetDamage(minion) > minion.Health) 
+                    if (qlSpell
+                        && (Q.GetDamage(minion) >= minion.Health) 
                         && Q.IsReady())
                     {
                         Q.CastOnUnit(minion);
                     }
-                    if (Config.Item("useQ2L").GetValue<bool>()
+                    if (q2LSpell
                         && Q.IsReady())
                     {
                         Q.CastOnUnit(minion);
@@ -208,8 +230,8 @@ namespace Slutty_Vladimir
         private static void AutoPool()
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            if (Config.Item("useW").GetValue<bool>()
-                && Player.HealthPercent < (Config.Item("useWHP").GetValue<Slider>().Value)
+            var useWhp = Config.Item("useWHP").GetValue<Slider>().Value;
+            if (Player.HealthPercent < useWhp
                 && target.IsValidTarget(Q.Range))
             {
                 W.Cast();
@@ -218,10 +240,13 @@ namespace Slutty_Vladimir
 
         private static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
         {
-            if (Config.Item("useWGapCloser").GetValue<bool>()
+            var useWgap = Config.Item("useWGapCloser").GetValue<bool>();
+            var enemyInRange = Player.CountEnemiesInRange(E.Range);
+            var distance = gapcloser.Sender.Distance(Player);
+            if (useWgap
                 && W.IsReady() 
-                && gapcloser.Sender.Distance(Player) < W.Range 
-                && Player.CountEnemiesInRange(E.Range) >= 1)
+                && distance < W.Range 
+                && enemyInRange >= 1)
             {
                 W.Cast(Player);
             }
@@ -231,14 +256,14 @@ namespace Slutty_Vladimir
         {
             if (Player.IsRecalling() || Player.InFountain())
                 return;
+
             var stackHp = Config.Item("MinHPEStack").GetValue<Slider>().Value;
 
-            if ( E.IsReady()
-                && (Player.Health/Player.MaxHealth)*100 >= stackHp)
+            if (Environment.TickCount - E.LastCastAttemptT >= 9900 && E.IsReady() &&
+                (Player.Health/Player.MaxHealth) * 100 >= stackHp)
             {
                 E.Cast();
             }
-                
         }
 
     }
