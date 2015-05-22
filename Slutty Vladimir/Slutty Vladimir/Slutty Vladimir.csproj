@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{C603128E-E009-42A9-908C-7A7BA587017F}</ProjectGuid>
+    <ProjectGuid>{FDE89029-FEE2-4497-A3D4-0A5AD1581588}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Slutty_Vladimir</RootNamespace>

@@ -14,7 +14,7 @@ using Color = System.Drawing.Color;
 using LeagueSharp.Common;
 using System.Drawing;
 
-namespace Slutty_Pantheon
+namespace Slutty_Vladimir
 {
     internal class Program
     {
@@ -55,14 +55,15 @@ namespace Slutty_Pantheon
 
             Menu ts = Menu.AddSubMenu(new Menu("Target Selector", "Target Selector"));
 
-            TargetSelector.AddToMenu(ts);
-
+            TargetSelector.AddToMenu(ts);   
             Menu spellMenu = Menu.AddSubMenu(new Menu("Spells", "Spells"));
             Menu clearMenu = Menu.AddSubMenu(new Menu("LaneClear", "Lane Clear"));
             Menu drawMenu = Menu.AddSubMenu(new Menu("Drawings", "disableDraw"));
             Menu ksMenu = Menu.AddSubMenu(new Menu("KillSteal", "KillSteal"));
             Menu poolMenu = Menu.AddSubMenu(new Menu("Auto Pool", "aPool"));
-            spellMenu.AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
+            Menu autoMenu = Menu.AddSubMenu(new Menu("autoEStack", "Auto E Stack"));
+
+            spellMenu.AddItem(new MenuItem("useQ", "Use Q1").SetValue(true));
             spellMenu.AddItem(new MenuItem("useE", "Use E").SetValue(true));
             spellMenu.AddItem(new MenuItem("useEP", "Use E If HP% is above").SetValue(new Slider(50, 1)));
             spellMenu.AddItem(new MenuItem("useR", "Use R").SetValue(true));
@@ -78,43 +79,55 @@ namespace Slutty_Pantheon
             clearMenu.AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
             ksMenu.AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
             ksMenu.AddItem(new MenuItem("useE2KS", "Use E for ks").SetValue(true));
-            poolMenu.AddItem(new MenuItem("useWHP", "Hp for W").SetValue(new Slider(50, 1)));
             poolMenu.AddItem(new MenuItem("useW", "Use W").SetValue(true));
-
+            poolMenu.AddItem(new MenuItem("useWHP", "Hp for W").SetValue(new Slider(50, 1)));
+            poolMenu.AddItem(new MenuItem("useWGapCloser", "Auto W when Gap Closer")).GetValue<bool>();
+            autoMenu.AddItem(new MenuItem("AutoEStack", "Automatic stack E", true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Toggle)));
+            autoMenu.AddItem(new MenuItem("MinHPEStack", "Minimum automatic stack HP")).SetValue(new Slider(20));
 
 
             Menu.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
-            Notifications.AddNotification("Hoe's Ryze assembly :)", 5000);
+            AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
         }
-
         private static void Game_OnUpdate(EventArgs args)
         {
             if (Player.IsDead)
                 return;
-            AutoPool();
-            KillSteal();
+
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 Combo();
-
+                AutoPool();
+                KillSteal();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
                 Mixed();
+                AutoPool();
+                KillSteal();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 LaneClear();
+                AutoPool();
+                KillSteal();
             }
+
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
+                AutoPool();
+                KillSteal();
+            }
+            var autoStack = Menu.Item("AutoEStack", true).GetValue<KeyBind>().Active;
+            if (autoStack)
+            {
+                AutoE();
             }
         }
-
         private static void Drawing_OnDraw(EventArgs args)
         {
             if (Player.IsDead)
@@ -127,54 +140,67 @@ namespace Slutty_Pantheon
             {
                 Render.Circle.DrawCircle(Player.Position, E.Range, Color.Gold);
             }
-            }
-
+        }
         private static void Combo()
         {
-            var qSpell = Menu.Item("useQ").GetValue<bool>();
-            var eSpell = Menu.Item("useE").GetValue<bool>();
-            var rSpell = Menu.Item("useR").GetValue<bool>();
-            var EPSpell = Menu.Item("useEP").GetValue<Slider>().Value;
-            var rcSpell = Menu.Item("useRC").GetValue<Slider>().Value;
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            if (qSpell && target.IsValidTarget(Q.Range))
+            if (Menu.Item("useQ").GetValue<bool>()
+                && Q.IsReady()
+                && target.IsValidTarget(Q.Range))
             {
                 Q.CastOnUnit(target);
             }
-            if (eSpell && target.IsValidTarget(E.Range) && (Player.HealthPercent > EPSpell))
+            if (Menu.Item("useE").GetValue<bool>()
+                && E.IsReady()
+                && target.IsValidTarget(E.Range)
+                && Player.HealthPercent > Menu.Item("useEP").GetValue<Slider>().Value)
             {
                 E.Cast();
             }
-            if (rSpell && (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E)) < target.Health && ObjectManager.Get<Obj_AI_Hero>().Count(enemy => enemy.IsValidTarget(R.Range)) >= rcSpell )
+            if (Menu.Item("useR").GetValue<bool>()          
+                && R.IsReady()
+                && target.IsValidTarget(R.Range)
+                && (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E)) <
+                target.Health)
             {
-                R.CastOnUnit(target);
+                R.Cast(target);
             }
+
         }
 
         private static void LaneClear()
         {
-           var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-           var q1Spell = Menu.Item("useQlc").GetValue<bool>();
-           var e1Spell = Menu.Item("useE2L").GetValue<bool>();
-           var ql2Spell = Menu.Item("useQ2L").GetValue<bool>();
-           var el2cslider = Menu.Item("useESlider").GetValue<Slider>().Value;
-           var el2cpslider = Menu.Item("useEPL").GetValue<Slider>().Value;
-            foreach (var minion in minionCount)
+            var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             {
-                if (e1Spell && E.IsReady() && minionCount.Count >= el2cslider && Player.HealthPercent > el2cpslider)
+                foreach (var minion in minionCount)
                 {
-                    E.Cast(minion);
-                }
-                if (q1Spell && Q.GetDamage(minion) > minion.Health && Q.IsReady())
-                {
-                    Q.CastOnUnit(minion);
-                }
-                if (ql2Spell && Q.IsReady())
-                {
-                    Q.CastOnUnit(minion);
-                }
+                    if (Menu.Item("useE2L").GetValue<bool>() 
+                        && E.IsReady()
+                        && minionCount.Count >= Menu.Item("useESlider").GetValue<Slider>().Value
+                        && Player.HealthPercent > Menu.Item("useEPL").GetValue<Slider>().Value)
+                    {
+                        E.Cast();
+                    }
+                    if (Menu.Item("useQlc").GetValue<bool>() 
+                        && (Q.GetDamage(minion) > minion.Health) 
+                        && Q.IsReady())
+                    {
+                        Q.CastOnUnit(minion);
+                    }
+                    if (Menu.Item("useQ2c").GetValue<bool>()
+                        && Q.IsReady()
+                        && Menu.Item("useQlc").GetValue<bool>())
+                    {
+                        Q.CastOnUnit(minion);
+                    }
 
+                }
             }
+        }
+
+        private static void Mixed()
+        {
+            
         }
 
         private static void KillSteal()
@@ -182,30 +208,56 @@ namespace Slutty_Pantheon
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             var qSpell = Menu.Item("useQ2KS").GetValue<bool>();
             var eSpell = Menu.Item("useE2KS").GetValue<bool>();
-            if (qSpell && Q.GetDamage(target) > target.Health && target.IsValidTarget(Q.Range))
+            if (qSpell
+                && Q.GetDamage(target) > target.Health 
+                && target.IsValidTarget(Q.Range))
             {
                 Q.CastOnUnit(target);
             }
-            if (eSpell && E.GetDamage(target) > target.Health && target.IsValidTarget(E.Range))
+            if (eSpell 
+                && E.GetDamage(target) > target.Health 
+                && target.IsValidTarget(E.Range))
             {
                 E.Cast();
-            }
-            
-        }
-
-        private static void Mixed()
-        {
-
+            }  
         }
 
         private static void AutoPool()
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            if (Menu.Item("useW").GetValue<bool>() &&
-       Player.HealthPercent < (Menu.Item("useWHP").GetValue<Slider>().Value) && target.IsValidTarget(Q.Range))
+            if (Menu.Item("useW").GetValue<bool>()
+                && Player.HealthPercent < (Menu.Item("useWHP").GetValue<Slider>().Value)
+                && target.IsValidTarget(Q.Range))
             {
                 W.Cast();
-            }   
+            }      
         }
+
+        private static void AntiGapcloser_OnEnemyGapcloser(ActiveGapcloser gapcloser)
+        {
+            if (Menu.Item("useWGapCloser").GetValue<bool>()
+                && W.IsReady() 
+                && gapcloser.Sender.Distance(Player) < W.Range 
+                && Player.CountEnemiesInRange(E.Range) >= 1)
+            {
+                W.Cast(Player);
+            }
         }
+
+        private static void AutoE()
+        {
+            if (Player.IsRecalling() || Player.InFountain())
+                return;
+            var stackHp = Menu.Item("MinHPEStack").GetValue<Slider>().Value;
+
+            if (Environment.TickCount - E.LastCastAttemptT >= 9900
+                && E.IsReady()
+                && (Player.Health/Player.MaxHealth)*100 >= stackHp)
+            {
+                E.Cast();
+            }
+                
+        }
+
     }
+}
