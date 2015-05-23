@@ -55,25 +55,30 @@ namespace Slutty_Vladimir
             Config.AddSubMenu(new Menu("Combo", "Combo"));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseQ", "Use Q").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseE", "Use E").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("useEP", "Use E If HP% is above").SetValue(new Slider(50, 1)));
+            Config.SubMenu("Combo").AddItem(new MenuItem("useEP", "Use E If HP% is above").SetValue(new Slider(50)));
             Config.SubMenu("Combo").AddItem(new MenuItem("useR", "Use R").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("useRc", "Only R when targets").SetValue(new Slider(3, 1, 5)));
+
+            Config.AddSubMenu(new Menu("Harras", "Harras"));
+            Config.SubMenu("Harras").AddItem(new MenuItem("UseQH", "Use Q").SetValue(true));
+            Config.SubMenu("Harras").AddItem(new MenuItem("UseEH", "Use E").SetValue(true));
+            Config.SubMenu("Harras").AddItem(new MenuItem("useEPH", "Use E If HP% is above").SetValue(new Slider(50)));
 
             Config.AddSubMenu(new Menu("LaneClear", "LaneClear"));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q to last hit in laneclear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E to lane clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useESlider", "Min minions for E").SetValue(new Slider(3, 1, 20)));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Use E If HP% is above").SetValue(new Slider(50, 1)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Use E If HP% is above").SetValue(new Slider(50)));
 
             Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useE2KS", "Use E for ks").SetValue(true));
 
-            Config.AddSubMenu(new Menu("Pool1", "Pool"));
+            Config.AddSubMenu(new Menu("Pool", "Pool"));
             Config.SubMenu("Pool").AddItem(new MenuItem("useW", "Use W").SetValue(true));
-            Config.SubMenu("Pool").AddItem(new MenuItem("useWHP", "Hp for W").SetValue(new Slider(50, 1)));
+            Config.SubMenu("Pool").AddItem(new MenuItem("useWHP", "%Hp for W").SetValue(new Slider(50)));
             Config.SubMenu("Pool").AddItem(new MenuItem("useWGapCloser", "Auto W when Gap Closer")).SetValue(true);
 
             Config.AddSubMenu(new Menu("AutoE", "AutoE"));
@@ -141,12 +146,13 @@ namespace Slutty_Vladimir
             var qSpell = Config.Item("UseQ").GetValue<bool>();
             var eSpell = Config.Item("UseE").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
+            var epSpell = Config.Item("useEP").GetValue<Slider>().Value;
             var rCount = Config.Item("useRc").GetValue<Slider>().Value;
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (eSpell
                 && E.IsReady()
                 && target.IsValidTarget(E.Range)
-                && Player.HealthPercent > Config.Item("useEP").GetValue<Slider>().Value)
+                && Player.HealthPercent > epSpell)
             {
                 E.Cast();
             }
@@ -183,7 +189,8 @@ namespace Slutty_Vladimir
                     if (elSpell 
                         && E.IsReady()
                         && minionCount.Count >= esLider
-                        && Player.HealthPercent > epL)
+                        && Player.HealthPercent > epL
+                        && (minion.Health >= (Player.GetAutoAttackDamage(minion) * 1.2)))
                     {
                         E.Cast();
                     }
@@ -205,6 +212,23 @@ namespace Slutty_Vladimir
 
         private static void Mixed()
         {
+            var qSpell = Config.Item("UseQH").GetValue<bool>();
+            var eSpell = Config.Item("UseEH").GetValue<bool>();
+            var epSpell = Config.Item("useEPH").GetValue<Slider>().Value;
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            if (eSpell
+                && E.IsReady()
+                && target.IsValidTarget(E.Range)
+                && Player.HealthPercent > epSpell)
+            {
+                E.Cast();
+            }
+            if (qSpell
+                && Q.IsReady()
+                && target.IsValidTarget(Q.Range))
+            {
+                Q.CastOnUnit(target);
+            }
             
         }
 
