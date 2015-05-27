@@ -15,7 +15,7 @@ namespace Slutty_Kennen
     internal class Program
     {
         public const string ChampName = "Kennen";
-        public const string Menuname = "Slutty Vladimir";
+        public const string Menuname = "Slutty Kennen";
         public static Menu Config;
         public static Orbwalking.Orbwalker Orbwalker;
         public static Spell Q, W, E, R;
