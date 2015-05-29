@@ -146,9 +146,9 @@ namespace Slutty_ryze
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
+                TearStack();
                 Orbwalker.SetAttack(true);
             }
-            TearStack();
             Potion();
             KillSteal();
         }
