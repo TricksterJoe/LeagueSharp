@@ -250,7 +250,7 @@ namespace Slutty_ryze
                         && Q.IsReady()
                         && minion.IsValidTarget(Q.Range))
                     {
-                        Q.Cast();
+                        Q.Cast(minion);
                     }
 
                     if (e2LSpell
