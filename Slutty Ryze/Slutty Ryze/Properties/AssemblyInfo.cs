@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Slutty Ryze")]
+[assembly: AssemblyTitle("Slutty ryze")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Slutty Ryze")]
+[assembly: AssemblyProduct("Slutty ryze")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("bc49a552-cf9e-4eca-b86c-e7cdb5338944")]
+[assembly: Guid("b8c51c00-7286-441c-bf45-cc5fdfa03b28")]
 
 // Version information for an assembly consists of the following four values:
 //

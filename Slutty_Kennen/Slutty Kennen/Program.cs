@@ -22,6 +22,13 @@ namespace Slutty_Kennen
 
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
 
+        public static Items.Item HealthPotion = new Items.Item(2003);
+        public static Items.Item CrystallineFlask = new Items.Item(2041);
+        public static Items.Item ManaPotion = new Items.Item(2004);
+        public static Items.Item BiscuitofRejuvenation = new Items.Item(2010);
+
+        
+
         private static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += OnLoad;
@@ -62,6 +69,10 @@ namespace Slutty_Kennen
             Config.SubMenu("Combo").AddItem(new MenuItem("useR", "Use R").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("useRc", "Only R when will hit").SetValue(new Slider(3, 1, 5)));
 
+            Config.AddSubMenu(new Menu("Mixed", "Mixed"));
+            Config.SubMenu("Mixed").AddItem(new MenuItem("UseQM", "Use Q").SetValue(true));
+            Config.SubMenu("Mixed").AddItem(new MenuItem("UseWM", "Use W").SetValue(true));
+
             Config.AddSubMenu(new Menu("Harras", "Harras"));
             Config.SubMenu("Harras").AddItem(new MenuItem("UseQH", "Use Q").SetValue(true));
             Config.SubMenu("Harras").AddItem(new MenuItem("UseEH", "Use W").SetValue(true));
@@ -82,6 +93,12 @@ namespace Slutty_Kennen
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useW2KS", "Use W for ks").SetValue(true));
 
+            Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
+            Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
+            Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
+            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
+            Config.SubMenu("autoP").AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit")).SetValue(new Slider(50));
 
             Config.AddItem(new MenuItem("fleekey", "Use Flee Mode")).SetValue(new KeyBind(65, KeyBindType.Press));
 
@@ -115,6 +132,7 @@ namespace Slutty_Kennen
 
             if (Player.IsDead)
                 return;
+            Potion();
 
             if (Player.IsValid &&
                 Config.Item("fleekey").GetValue<KeyBind>().Active)
@@ -273,8 +291,8 @@ namespace Slutty_Kennen
 
         private static void Mixed()
         {
-            var qSpell = Config.Item("UseQ").GetValue<bool>();
-            var wSpell = Config.Item("UseW").GetValue<bool>();
+            var qSpell = Config.Item("UseQM").GetValue<bool>();
+            var wSpell = Config.Item("UseWM").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (qSpell
                 && target.IsValidTarget(Q.Range)
@@ -282,6 +300,7 @@ namespace Slutty_Kennen
             {
                 Q.Cast(target);
             }
+
             if (wSpell
                 && target.IsValidTarget(W.Range)
                 && W.IsReady()
@@ -310,6 +329,39 @@ namespace Slutty_Kennen
             {
                 W.Cast();
             }
+        }
+
+        private static void Potion()
+        {
+            var autoPotion = Config.Item("autoPO").GetValue<bool>();
+            var hPotion = Config.Item("HP").GetValue<bool>();
+            var bPotion = Config.Item("Biscuit").GetValue<bool>();
+            var pSlider = Config.Item("HPSlider").GetValue<Slider>().Value;
+            var bSlider = Config.Item("bSlider").GetValue<Slider>().Value;
+            if (Player.IsRecalling() || Player.InFountain())
+            {
+                return;
+            }
+            if (autoPotion
+                && hPotion
+                && Player.HealthPercent <= pSlider
+                && Player.CountEnemiesInRange(1000) >= 0
+                && HealthPotion.IsReady()
+                && !Player.HasBuff("RegenerationPotion")
+                && !Player.HasBuff("ItemCrystalFlask"))
+            {
+                HealthPotion.Cast();
+            }
+            if (autoPotion
+                && bPotion
+                && Player.HealthPercent <= bSlider
+                && Player.CountEnemiesInRange(1000) >= 0
+                && HealthPotion.IsReady()
+                && !Player.HasBuff("ItemMiniRegenPotion")
+                && !Player.HasBuff("RegenerationPotion"))
+            {
+                BiscuitofRejuvenation.Cast();
+            }          
         }
     }
 }

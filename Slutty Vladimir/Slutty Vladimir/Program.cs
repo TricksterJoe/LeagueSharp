@@ -21,6 +21,8 @@ namespace Slutty_Vladimir
 
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
 
+        public static Items.Item HealthPotion = new Items.Item(2003);
+
         private static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += OnLoad;
@@ -85,6 +87,11 @@ namespace Slutty_Vladimir
             Config.SubMenu("AutoE").AddItem(new MenuItem("AutoE", "Automatic stack E", true).SetValue(new KeyBind("T".ToCharArray()[0], KeyBindType.Toggle)));
             Config.SubMenu("AutoE").AddItem(new MenuItem("MinHPEStack", "Minimum automatic stack HP")).SetValue(new Slider(20));
 
+            Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
+            Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
+            Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
+            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(50));
+
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
@@ -94,6 +101,7 @@ namespace Slutty_Vladimir
         {
             if (Player.IsDead)
                 return;
+            Potion();
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 Combo();
@@ -288,6 +296,28 @@ namespace Slutty_Vladimir
             {
                 E.Cast();
             }
+        }
+
+        private static void Potion()
+        {
+            var autoPotion = Config.Item("autoPO").GetValue<bool>();
+            var hPotion = Config.Item("HP").GetValue<bool>();
+            var pSlider = Config.Item("HPSlider").GetValue<Slider>().Value;
+            if (Player.IsRecalling() || Player.InFountain())
+            {
+                return;
+            }
+            if (autoPotion
+                && hPotion
+                && Player.HealthPercent <= pSlider
+                && Player.CountEnemiesInRange(1000) >= 0
+                && HealthPotion.IsReady()
+                && !Player.HasBuff("RegenerationPotion")
+                && !Player.HasBuff("ItemCrystalFlask"))
+            {
+                HealthPotion.Cast();
+            }
+
         }
 
     }
