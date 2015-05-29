@@ -124,13 +124,11 @@ namespace Slutty_ryze
 
             if (Player.IsDead)
                 return;
-;
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 AABlock();
                 Combo();
-                Orbwalker.SetAttack(true);
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
@@ -149,8 +147,10 @@ namespace Slutty_ryze
                 TearStack();
                 Orbwalker.SetAttack(true);
             }
+            
             Potion();
             KillSteal();
+            Orbwalker.SetAttack(true);
         }
         private static void Drawing_OnDraw(EventArgs args)
         {
@@ -416,8 +416,7 @@ namespace Slutty_ryze
         private static void AABlock()
         {
             var aaBlock = Config.Item("AAblock").GetValue<bool>();
-            if (!aaBlock)
-                return;
+            if (aaBlock)
             {
                 Orbwalker.SetAttack(false);
             }
