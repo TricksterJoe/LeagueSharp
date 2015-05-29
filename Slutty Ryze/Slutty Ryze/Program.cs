@@ -90,6 +90,8 @@ namespace Slutty_ryze
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E to lane clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useESlider", "Min minions for E").SetValue(new Slider(3, 1, 20)));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum mana for lane clear").SetValue(new Slider(50, 1, 200)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useR", "Use R in lane clear").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum minions for R").SetValue(new Slider(3, 1, 20)));
 
             Config.AddSubMenu(new Menu("Items", "Items"));
             Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack tear").SetValue(true));
@@ -214,7 +216,8 @@ namespace Slutty_ryze
             var q2LSpell = Config.Item("useQ2L").GetValue<bool>();
             var e2LSpell = Config.Item("useE2L").GetValue<bool>();
             var w2LSpell = Config.Item("useW2L").GetValue<bool>();
-            var rSpell = Config.Item("useRlc").GetValue<bool>();
+            var rSpell = Config.Item("useR").GetValue<bool>();
+            var rSlider = Config.Item("rMin").GetValue<Slider>().Value;
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             {
                 foreach (var minion in minionCount)
@@ -261,6 +264,13 @@ namespace Slutty_ryze
                         && minion.IsValidTarget(W.Range))
                     {
                         W.CastOnUnit(minion);
+                    }
+                    if (rSpell
+                        && R.IsReady()
+                        && minion.IsValidTarget(Q.Range)
+                        && minionCount.Count >= rSlider)
+                    {
+                        R.Cast();
                     }
                 }
             }
