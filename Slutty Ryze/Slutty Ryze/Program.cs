@@ -201,7 +201,7 @@ namespace Slutty_ryze
 
             if (rSpell
                 && R.IsReady()
-                && target.Health < (Q.GetDamage(target) + E.GetDamage(target))
+                && target.Health > (Q.GetDamage(target) + E.GetDamage(target))
                 && target.IsValidTarget(Q.Range))
             {
                 R.Cast();
