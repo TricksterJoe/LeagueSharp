@@ -14,8 +14,8 @@ namespace Slutty_Irelia
 {
     internal class Program
     {
-        public const string ChampName = "Kennen";
-        public const string Menuname = "Slutty Kennen";
+        public const string ChampName = "Irelia";
+        public const string Menuname = "Slutty Irelia";
         public static Menu Config;
         public static Orbwalking.Orbwalker Orbwalker;
         public static Spell Q, W, E, R;
@@ -44,13 +44,14 @@ namespace Slutty_Irelia
         {
             if (Player.ChampionName != ChampName)
                 return;
+            Q = new Spell(SpellSlot.Q, 650);
+            W = new Spell(SpellSlot.W, Orbwalking.GetRealAutoAttackRange(Player));
+            E = new Spell(SpellSlot.E, 350);
+            R = new Spell(SpellSlot.R, 1000);
 
-            Q = new Spell(SpellSlot.Q, 1050);
-            W = new Spell(SpellSlot.W, 800);
-            E = new Spell(SpellSlot.E);
-            R = new Spell(SpellSlot.R, 500);
+            Q.SetTargetted(0f, 2200);
+            R.SetSkillshot(0.5f, 120, 1600, false, SkillshotType.SkillshotLine);
 
-            Q.SetSkillshot(0.26f, 50f, 1700f, true, SkillshotType.SkillshotLine);
 
 
 

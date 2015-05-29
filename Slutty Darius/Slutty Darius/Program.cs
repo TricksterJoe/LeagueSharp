@@ -1,105 +1,148 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Dynamic;
+using System.Diagnostics.Eventing.Reader;
+using System.Drawing.Printing;
 using System.Linq;
-using System.Runtime;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Runtime.Remoting.Messaging;
 using LeagueSharp;
-using LeagueSharp.Common.Data;
-using SharpDX.Win32;
-using Color = System.Drawing.Color;
 using LeagueSharp.Common;
-using System.Drawing;
+using LeagueSharp.Common.Data;
+using Color = System.Drawing.Color;
+using SharpDX;
 
 namespace Slutty_Darius
 {
     internal class Program
     {
-        private static Obj_AI_Hero Player
-        {
-            get { return ObjectManager.Player; }
-        }
+        public const string ChampName = "Darius";
+        public const string Menuname = "Slutty Darius";
+        public static Menu Config;
+        public static Orbwalking.Orbwalker Orbwalker;
+        public static Spell Q, W, E, R;
 
-        private static Orbwalking.Orbwalker Orbwalker;
-        private static Spell Q, W, E, R;
-        private static Orbwalking.Orbwalker _orbwalker;
-        private static Menu Menu;
+        private static readonly Obj_AI_Hero Player = ObjectManager.Player;
 
+        public static Items.Item HealthPotion = new Items.Item(2003);
+        public static Items.Item CrystallineFlask = new Items.Item(2041);
+        public static Items.Item ManaPotion = new Items.Item(2004);
+        public static Items.Item BiscuitofRejuvenation = new Items.Item(2010);
 
 
 
         private static void Main(string[] args)
         {
-            CustomEvents.Game.OnGameLoad += Game_OnGameLoad;
+            CustomEvents.Game.OnGameLoad += OnLoad;
         }
 
-        private static void Game_OnGameLoad(EventArgs args)
+        private static void OnLoad(EventArgs args)
         {
-            if (Player.ChampionName != "Darius")
+            if (Player.ChampionName != ChampName)
                 return;
+
             Q = new Spell(SpellSlot.Q, 425);
             W = new Spell(SpellSlot.W, 145);
             E = new Spell(SpellSlot.E, 550);
             R = new Spell(SpellSlot.R, 460);
 
-            Q.SetSkillshot(0.30f, 80, int.MaxValue, false, SkillshotType.SkillshotCone);
+            E.SetSkillshot(0.1f, 50f * (float)Math.PI / 180, float.MaxValue, false, SkillshotType.SkillshotCone);
 
-            Menu = new Menu(Player.ChampionName, Player.ChampionName, true);
+            Config = new Menu(Menuname, Menuname, true);
+            Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
 
-            Menu orbwalkerMenu = Menu.AddSubMenu(new Menu("Orbwalker", "Orbwalker"));
+            var targetSelectorMenu = new Menu("Target Selector", "Target Selector");
+            TargetSelector.AddToMenu(targetSelectorMenu);
+            Config.AddSubMenu(targetSelectorMenu);
 
-            Orbwalker = new Orbwalking.Orbwalker(orbwalkerMenu);
+            Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
+            Config.AddSubMenu(new Menu("Drawings", "Drawings"));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "w Drawing").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("rDraw", "R Drawing").SetValue(true));
 
-            Menu ts = Menu.AddSubMenu(new Menu("Target Selector", "Target Selector"));
+            Config.AddSubMenu(new Menu("Combo", "Combo"));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseQ", "Use Q").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseE", "Use E").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseW", "Use W").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseR", "Use R").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseCItems", "Use Hydra/Tiamat").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseRc", "Only R when killable").SetValue(true));
 
-            TargetSelector.AddToMenu(ts);
+            Config.AddSubMenu(new Menu("Harras", "Harras"));
+            Config.SubMenu("Harras").AddItem(new MenuItem("UseQM", "Use Q").SetValue(true));
 
-            Menu spellMenu = Menu.AddSubMenu(new Menu("Spells", "Spells"));
-            Menu clearMenu = Menu.AddSubMenu(new Menu("LaneClear", "Lane Clear"));
-            Menu drawMenu = Menu.AddSubMenu(new Menu("Drawings", "disableDraw"));
-            Menu ksMenu = Menu.AddSubMenu(new Menu("KillSteal", "KillSteal"));
-            spellMenu.AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
-            spellMenu.AddItem(new MenuItem("useW", "Use W").SetValue(true));
-            spellMenu.AddItem(new MenuItem("useE", "Use E").SetValue(true));
-            spellMenu.AddItem(new MenuItem("useR", "Use R").SetValue(true));
-            spellMenu.AddItem(new MenuItem("useR2LC", "Only R When Killable").SetValue(true));
-            drawMenu.AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
-            drawMenu.AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
-            drawMenu.AddItem(new MenuItem("rDraw", "R Drawing").SetValue(true));
-            clearMenu.AddItem(new MenuItem("useQ2L", "Use Q").SetValue(true));
-            clearMenu.AddItem(new MenuItem("useW2L", "Use W").SetValue(true));
-            clearMenu.AddItem(new MenuItem("useH2L", "Use Hydra/Tiamat").SetValue(true));
-            clearMenu.AddItem(new MenuItem("minMana", "Minimum Mana for lane clear").SetValue(new Slider(50, 1)));
-            ksMenu.AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
-            ksMenu.AddItem(new MenuItem("useR2KS", "Use R for ks").SetValue(true));
+            Config.AddSubMenu(new Menu("LaneClear", "LaneClear"));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum Mana for Lane clear").SetValue(new Slider(50)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQSlider", "Min minions for Q").SetValue(new Slider(3, 1, 20)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useW2l", "use W").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useItems", "use Hydra/Tiamat").SetValue(true));
 
-            Menu.AddToMainMenu();
+            Config.AddSubMenu(new Menu("misc", "Misc"));
+            Config.SubMenu("misc").AddItem(new MenuItem("useE2I", "Use E To intterupt").SetValue(true));
+
+            Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("useR2KS", "Use R for ks").SetValue(true));
+
+            Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
+            Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
+            Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
+            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
+            Config.SubMenu("autoP").AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit")).SetValue(new Slider(50));
+
+
+            Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
-        }
+            Interrupter.OnPossibleToInterrupt += OnInterruptableSpell;
+            Orbwalking.BeforeAttack += BeforeAttack;
 
+
+        }
+        private static void OnInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
+        {
+            var eSpell = Config.Item("useE2I").GetValue<bool>();
+            if (eSpell
+                && E.IsReady()
+                && unit.IsValidTarget(E.Range))
+            {
+                E.Cast(unit);
+            }
+        }
+        static void BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        {
+            if (args.Target.IsValid<Obj_AI_Hero>()
+                && W.IsReady())
+            {
+                W.Cast();
+            }
+        }
         private static void Game_OnUpdate(EventArgs args)
         {
+
             if (Player.IsDead)
                 return;
+            Potion();
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 Combo();
+                KillSteal();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
                 Mixed();
+                KillSteal();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 LaneClear();
+                KillSteal();
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
@@ -111,101 +154,201 @@ namespace Slutty_Darius
         {
             if (Player.IsDead)
                 return;
-            if (Menu.Item("qDraw").GetValue<bool>() && Q.Level > 0)
+            if (Config.Item("qDraw").GetValue<bool>() && Q.Level > 0)
             {
                 Render.Circle.DrawCircle(Player.Position, Q.Range, Color.Green);
             }
-            if (Menu.Item("eDraw").GetValue<bool>() && E.Level > 0)
+            if (Config.Item("eDraw").GetValue<bool>() && W.Level > 0)
             {
                 Render.Circle.DrawCircle(Player.Position, E.Range, Color.Gold);
             }
-            if (Menu.Item("rDraw").GetValue<bool>() && R.Level > 0)
+            if (Config.Item("rDraw").GetValue<bool>() && W.Level > 0)
             {
-                Render.Circle.DrawCircle(Player.Position, R.Range, Color.Black);
+                Render.Circle.DrawCircle(Player.Position, R.Range, Color.Gold);
             }
         }
 
         private static void Combo()
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-            Obj_AI_Hero targetW = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Physical);
-            Obj_AI_Hero targetE = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Physical);
-            Obj_AI_Hero targetR = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
-            if (Menu.Item("useQ").GetValue<bool>() && target.IsValidTarget(Q.Range))
+            var qSpell = Config.Item("UseQ").GetValue<bool>();
+            var eSpell = Config.Item("UseE").GetValue<bool>();
+            var wSpell = Config.Item("UseW").GetValue<bool>();
+            var rSpell = Config.Item("UseR").GetValue<bool>();
+            var rcSpell = Config.Item("UseRc").GetValue<bool>();
+            var items = Config.Item("UseCItems").GetValue<bool>();
+
+            if (qSpell
+                && Q.IsReady()
+                && target.IsValidTarget(Q.Range))
             {
-                Q.Cast(target);
+                Q.Cast();
             }
-            if (Items.HasItem(ItemData.Ravenous_Hydra_Melee_Only.Id) || Items.HasItem(ItemData.Tiamat_Melee_Only.Id) && target.IsValidTarget(Q.Range))
+            if (items
+                && (Items.HasItem(ItemData.Ravenous_Hydra_Melee_Only.Id)
+                || Items.HasItem(ItemData.Tiamat_Melee_Only.Id))
+                && target.IsValidTarget(Q.Range))
             {
                 Items.UseItem(ItemData.Ravenous_Hydra_Melee_Only.Id);
                 Items.UseItem(ItemData.Tiamat_Melee_Only.Id);
             }
-            if (Menu.Item("useW").GetValue<bool>() && targetW.IsValidTarget(W.Range))
-            {
-                W.Cast();
-            }
-            if (Menu.Item("useE").GetValue<bool>() && targetE.IsValidTarget(E.Range))
+            if (eSpell
+                && E.IsReady()
+                && target.IsValidTarget(E.Range))
             {
                 E.Cast(target);
             }
-            if (Menu.Item("useR2LC").GetValue<bool>() && Menu.Item("useR").GetValue<bool>() &&
-                targetR.IsValidTarget(R.Range) && targetR.Health < R.GetDamage(targetR))
+            if (wSpell
+                && W.IsReady()
+                && target.IsValidTarget(W.Range))
             {
-                R.CastOnUnit(targetR);
+                W.Cast();
             }
-            if (Menu.Item("useR").GetValue<bool>() && targetR.IsValidTarget(R.Range) && !Menu.Item("useR2LC").GetValue<bool>())
+            if (rSpell)
             {
-                R.CastOnUnit(targetR);
+                if (target.HasBuffOfType(BuffType.PhysicalImmunity)
+                    || target.HasBuffOfType(BuffType.SpellImmunity)
+                    || target.HasBuffOfType(BuffType.Invulnerability))
+                    return;
+
+                if (rcSpell
+                    && R.GetDamage(target) > target.Health)
+                {
+                    R.CastOnUnit(target);
+                }
+                else
+                {
+                    R.CastOnUnit(target);
+                }
             }
+
         }
 
         private static void LaneClear()
         {
+            var qSpell = Config.Item("useQ2l").GetValue<bool>();
+            var wSpell = Config.Item("useW2l").GetValue<bool>();
+            var items = Config.Item("useItems").GetValue<bool>();
+            var minMana = Config.Item("useEPL").GetValue<Slider>().Value;
+            var minQ = Config.Item("useQSlider").GetValue<Slider>().Value;
+
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             {
-                foreach (var minion in minionCount)
+                if ((minionCount.Count >= 2)
+                    && (Items.HasItem(ItemData.Ravenous_Hydra_Melee_Only.Id) || Items.HasItem(ItemData.Tiamat_Melee_Only.Id))
+                    && items)
                 {
-                    if ((minionCount.Count > 3) && (Items.HasItem(ItemData.Ravenous_Hydra_Melee_Only.Id) || Items.HasItem(ItemData.Tiamat_Melee_Only.Id)) && (Menu.Item("useH2L").GetValue<bool>()))
-                    {
-                        Items.UseItem(ItemData.Ravenous_Hydra_Melee_Only.Id);
-                        Items.UseItem(ItemData.Tiamat_Melee_Only.Id);
-                    }
-                    if (Player.ManaPercent < (Menu.Item("minMana").GetValue<Slider>().Value))
-                        return;
-                    if (minionCount.Count > 2 && (Menu.Item("useQ2L").GetValue<bool>()))
-                    {
-                        Q.Cast();
-                    }
-                    if (
-                        HealthPrediction.GetHealthPrediction(
-                            minion, (int) (Q.Delay)) <
-                        Player.GetSpellDamage(minion, SpellSlot.W) && Menu.Item("useW2L").GetValue<bool>())
-                    {
-                        W.CastOnUnit(minion);
-                    }
+                    Items.UseItem(ItemData.Ravenous_Hydra_Melee_Only.Id);
+                    Items.UseItem(ItemData.Tiamat_Melee_Only.Id);
+                }
+                if (Player.ManaPercent < minMana)
+                    return;
+                if (qSpell
+                    && minionCount.Count >= minQ
+                    && Q.IsReady())
+                {
+                    Q.Cast();
+                }
+                if (wSpell
+                    && W.IsReady())
+                {
+                    W.Cast();
                 }
             }
         }
 
         private static void Mixed()
         {
-            
+            var qSpell = Config.Item("UseQM").GetValue<bool>();
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+            if (qSpell
+                && Q.IsReady()
+                && target.IsValidTarget(Q.Range))
+            {
+                Q.Cast();
+            }
         }
 
         private static void KillSteal()
         {
-            Obj_AI_Hero targetR = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
+            var qSpell = Config.Item("UseQ2KS").GetValue<bool>();
+            var rSpell = Config.Item("UseR2KS").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-
-            if (Menu.Item("useQ2KS").GetValue<bool>() && target.Health < Player.GetSpellDamage(target, SpellSlot.Q))
+            if (qSpell
+                && Q.IsReady()
+                && target.IsValidTarget(Q.Range)
+                && Q.GetDamage(target) > target.Health)
             {
-                Q.CastOnUnit(target);
+                Q.Cast();
             }
-            if (Menu.Item("useR2KS").GetValue<bool>() && target.Health < Player.GetSpellDamage(targetR, SpellSlot.R))
+            if (rSpell
+                && R.IsReady()
+                && target.IsValidTarget(Q.Range)
+                && R.GetDamage(target) > target.Health)
             {
-                R.Cast(targetR);
+                R.CastOnUnit(target);
+            }
+        }
+
+        private static void Potion()
+        {
+            var autoPotion = Config.Item("autoPO").GetValue<bool>();
+            var hPotion = Config.Item("HP").GetValue<bool>();
+            var mPotion = Config.Item("MANA").GetValue<bool>();
+            var bPotion = Config.Item("Biscuit").GetValue<bool>();
+            var fPotion = Config.Item("flask").GetValue<bool>();
+            var pSlider = Config.Item("HPSlider").GetValue<Slider>().Value;
+            var mSlider = Config.Item("MANASlider").GetValue<Slider>().Value;
+            var bSlider = Config.Item("bSlider").GetValue<Slider>().Value;
+            var fSlider = Config.Item("fSlider").GetValue<Slider>().Value;
+            if (Player.IsRecalling() || Player.InFountain())
+            {
+                return;
+            }
+            if (autoPotion
+                && hPotion
+                && Player.HealthPercent <= pSlider
+                && Player.CountEnemiesInRange(1000) >= 0
+                && HealthPotion.IsReady()
+                && !Player.HasBuff("RegenerationPotion")
+                && !Player.HasBuff("ItemCrystalFlask"))
+            {
+                HealthPotion.Cast();
+            }
+
+            if (autoPotion
+                && mPotion
+                && Player.ManaPercent <= mSlider
+                && Player.CountEnemiesInRange(1000) >= 0
+                && HealthPotion.IsReady()
+                && !Player.HasBuff("RegenerationPotion")
+                && !Player.HasBuff("ItemCrystalFlask"))
+            {
+                ManaPotion.Cast();
+            }
+
+            if (autoPotion
+                && bPotion
+                && Player.HealthPercent <= bSlider
+                && Player.CountEnemiesInRange(1000) >= 0
+                && HealthPotion.IsReady()
+                && !Player.HasBuff("ItemMiniRegenPotion"))
+            {
+                BiscuitofRejuvenation.Cast();
+            }
+
+            if (autoPotion
+                && fPotion
+                && Player.HealthPercent <= fSlider
+                && Player.CountEnemiesInRange(1000) >= 0
+                && HealthPotion.IsReady()
+                && !Player.HasBuff("ItemMiniRegenPotion")
+                && !Player.HasBuff("ItemCrystalFlask")
+                && !Player.HasBuff("RegenerationPotion")
+                && !Player.HasBuff("FlaskOfCrystalWater"))
+            {
+                CrystallineFlask.Cast();
             }
         }
     }
 }
-
