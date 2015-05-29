@@ -122,10 +122,7 @@ namespace Slutty_ryze
 
             if (Player.IsDead)
                 return;
-
-            TearStack();
-            Potion();
-            KillSteal();
+;
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
@@ -149,6 +146,9 @@ namespace Slutty_ryze
             {
                 Orbwalker.SetAttack(true);
             }
+            TearStack();
+            Potion();
+            KillSteal();
         }
         private static void Drawing_OnDraw(EventArgs args)
         {
@@ -180,7 +180,7 @@ namespace Slutty_ryze
                 && Q.IsReady()
                 && target.IsValidTarget(Q.Range))
             {
-                Q.Cast();
+                Q.Cast(target);
             }
 
             if (wSpell
@@ -224,7 +224,7 @@ namespace Slutty_ryze
                         && minion.IsValidTarget(Q.Range)
                         && minion.Health > Q.GetDamage(minion))
                     {
-                        Q.Cast();
+                        Q.Cast(minion);
                     }
 
                     if (wlchSpell
@@ -278,7 +278,7 @@ namespace Slutty_ryze
                 && Q.IsReady()
                 && target.IsValidTarget(Q.Range))
             {
-                Q.Cast();
+                Q.Cast(target);
             }
 
             if (wSpell
@@ -306,7 +306,7 @@ namespace Slutty_ryze
                 && Q.GetDamage(target) > target.Health
                 && target.IsValidTarget(Q.Range))
             {
-                Q.Cast();
+                Q.Cast(target);
             }
             if (wSpell
                 && W.GetDamage(target) > target.Health
