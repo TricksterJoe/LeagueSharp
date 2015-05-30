@@ -20,12 +20,6 @@ namespace Slutty_Irelia
         public static Orbwalking.Orbwalker Orbwalker;
         public static Spell Q, W, E, R;
 
-        private static bool IreliaUlt
-        {
-            get { return Player.HasBuff("ireliatranscendentbladesspell"); }
-        }
-
-
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
 
         public static Items.Item HealthPotion = new Items.Item(2003);
@@ -92,11 +86,14 @@ namespace Slutty_Irelia
             Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
             Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
             Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
-            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(50));
+            Config.SubMenu("autoP")
+                .AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion"))
+                .SetValue(new Slider(50));
             Config.SubMenu("autoP").AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
-            Config.SubMenu("autoP").AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit")).SetValue(new Slider(50));
+            Config.SubMenu("autoP")
+                .AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit"))
+                .SetValue(new Slider(50));
 
-            Config.AddItem(new MenuItem("fleekey", "Use Flee Mode")).SetValue(new KeyBind(65, KeyBindType.Press));
 
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
@@ -108,28 +105,27 @@ namespace Slutty_Irelia
 
             if (Player.IsDead)
                 return;
-            Potion();
+            
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 Combo();
-                KillSteal();
+
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
-                KillSteal();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 LaneClear();
-                KillSteal();
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
-                KillSteal();
             }
+            Potion();
+            KillSteal();
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -148,7 +144,7 @@ namespace Slutty_Irelia
             {
                 Render.Circle.DrawCircle(Player.Position, R.Range, Color.Red);
             }
-            if (Config.Item("stunDraw").GetValue<bool>() && E.Level > 0)
+            if (Config.Item("sDraw").GetValue<bool>() && E.Level > 0)
             {
                 foreach (var target in ObjectManager.Get<Obj_AI_Hero>().Where(enemy => Player.Distance(enemy) <= 1000
                                                                                        &&
@@ -161,10 +157,10 @@ namespace Slutty_Irelia
                     Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
                         Color.DarkOrange, "Stunnable");
                 }
-                {
-                }
+
             }
         }
+
 
         private static void Combo()
         {
@@ -179,20 +175,21 @@ namespace Slutty_Irelia
                 && Q.IsReady()
                 && target.IsValidTarget(Q.Range))
             {
-                Q.Cast(target);
+                Q.CastOnUnit(target);
             }
             if (useW
                 && W.IsReady())
             {
                 W.Cast();
             }
+
             if (useEs)
             {
                 if (Player.HealthPercent < target.HealthPercent
                     && useE
                     && E.IsReady())
                 {
-                    E.Cast(target);
+                    E.CastOnUnit(target);
                 }
             }
             else
@@ -204,8 +201,7 @@ namespace Slutty_Irelia
                 }
             }
             if (useR
-                && R.IsReady()
-                && !IreliaUlt)
+                && R.IsReady())
             {
                 R.Cast(target);
             }
@@ -214,22 +210,21 @@ namespace Slutty_Irelia
 
         private static void LaneClear()
         {
-            var minM = Config.Item("useLM").GetValue<Slider>().Value;
             var useQ = Config.Item("useQlc").GetValue<bool>();
             var useW = Config.Item("useW2l").GetValue<bool>();
-            var useR = Config.Item("UseR2l").GetValue<bool>();
+            var useR = Config.Item("useR2L").GetValue<bool>();
             var useRs = Config.Item("useRSlider").GetValue<Slider>().Value;
+            var minM = Config.Item("useLM").GetValue<Slider>().Value;
+            var position = R.GetLineFarmLocation(MinionManager.GetMinions(R.Range));
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-
             if (Player.ManaPercent < minM)
                 return;
+
             foreach (var minion in minionCount)
             {
                 if (useQ
-                    && HealthPrediction.GetHealthPrediction(
-                        minion, (int)(Q.Delay + (minion.Distance(Player.Position) / Q.Speed))) <
-                    Player.GetSpellDamage(minion, SpellSlot.Q)
-                    && Q.IsReady())
+                    && Q.IsReady()
+                    && Q.GetDamage(minion) > minion.Health)
                 {
                     Q.CastOnUnit(minion);
                 }
@@ -238,7 +233,6 @@ namespace Slutty_Irelia
                 {
                     W.Cast();
                 }
-                var position = R.GetLineFarmLocation(MinionManager.GetMinions(R.Range));
                 if (useR
                     && R.IsReady()
                     && minionCount.Count >= useRs)
