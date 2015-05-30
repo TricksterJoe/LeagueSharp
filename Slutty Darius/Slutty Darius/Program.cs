@@ -90,8 +90,12 @@ namespace Slutty_Darius
             Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
             Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
             Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("MANA", "Auto Mana Potion").SetValue(true));
+            Config.SubMenu("autoP").AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion")).SetValue(new Slider(50));
             Config.SubMenu("autoP").AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
             Config.SubMenu("autoP").AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("flask", "Auto Flask").SetValue(true));
+            Config.SubMenu("autoP").AddItem(new MenuItem("fSlider", "Minimum %Health for flask")).SetValue(new Slider(50));
 
 
             Config.AddToMainMenu();
@@ -125,29 +129,28 @@ namespace Slutty_Darius
 
             if (Player.IsDead)
                 return;
+
             Potion();
+            KillSteal();
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 Combo();
-                KillSteal();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
                 Mixed();
-                KillSteal();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 LaneClear();
-                KillSteal();
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
-                KillSteal();
             }
+            
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -216,17 +219,18 @@ namespace Slutty_Darius
                 {
                     R.CastOnUnit(target);
                 }
-                else
+                if (!rcSpell)
                 {
                     R.CastOnUnit(target);
                 }
+                    
             }
 
         }
 
         private static void LaneClear()
         {
-            var qSpell = Config.Item("useQ2l").GetValue<bool>();
+            var qSpell = Config.Item("useQ2L").GetValue<bool>();
             var wSpell = Config.Item("useW2l").GetValue<bool>();
             var items = Config.Item("useItems").GetValue<bool>();
             var minMana = Config.Item("useEPL").GetValue<Slider>().Value;
@@ -271,8 +275,11 @@ namespace Slutty_Darius
 
         private static void KillSteal()
         {
-            var qSpell = Config.Item("UseQ2KS").GetValue<bool>();
-            var rSpell = Config.Item("UseR2KS").GetValue<bool>();
+            var ks = Config.Item("KS").GetValue<bool>();
+            var qSpell = Config.Item("useQ2KS").GetValue<bool>();
+            var rSpell = Config.Item("useR2KS").GetValue<bool>();
+            if (!ks)
+                return;
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
             if (qSpell
                 && Q.IsReady()
