@@ -106,29 +106,29 @@ namespace Slutty_Pantheon
 
             if (Player.IsDead)
                 return;
-            Potion();
 
+
+            Potion();
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                Combo();
-                KillSteal();
+                Combo();              
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
                 Mixed();
-                KillSteal();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 LaneClear();
-                KillSteal();
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
-                KillSteal();
+                
             }
+            KillSteal();
+            Potion();
         }
         private static void Drawing_OnDraw(EventArgs args)
         {
@@ -159,6 +159,10 @@ namespace Slutty_Pantheon
 
         private static void Combo()
         {
+
+            if (Player.HasBuff("sound"))
+                return;
+
             var useQ = Config.Item("UseQ").GetValue<bool>();
             var useW = Config.Item("UseW").GetValue<bool>();
             var useE = Config.Item("UseE").GetValue<bool>();
@@ -182,7 +186,7 @@ namespace Slutty_Pantheon
                 && W.IsReady()
                 && target.IsValidTarget(W.Range))
             {
-                E.CastOnUnit(target);
+                W.CastOnUnit(target);
             }
             if (useE
                 && E.IsReady()
@@ -194,24 +198,21 @@ namespace Slutty_Pantheon
 
         private static void LaneClear()
         {
-            if (Player.IsChannelingImportantSpell())
+            if (Player.HasBuff("sound"))
                 return;
-
             var useI = Config.Item("useItems").GetValue<bool>();
-            var useQl = Config.Item("UseQlc").GetValue<bool>();
-            var useQ = Config.Item("UseQ2L").GetValue<bool>();
-            var useE = Config.Item("UseE2L").GetValue<bool>();
+            var useQl = Config.Item("useQlc").GetValue<bool>();
+            var useQ = Config.Item("useQ2L").GetValue<bool>();
+            var useE = Config.Item("useE2L").GetValue<bool>();
             var minMana = Config.Item("useEPL").GetValue<Slider>().Value;
-            var minMinionsE = Config.Item("useESlider").GetValue<Slider>().Value;
+            var minMinionsE = Config.Item("useESlider").GetValue<Slider>().Value;      
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             {
                 foreach (var minion in minionCount)
                 {
                     if (minionCount.Count > 2
                         && useI
-                        &&
-                        (Items.HasItem(ItemData.Ravenous_Hydra_Melee_Only.Id) ||
-                         Items.HasItem(ItemData.Tiamat_Melee_Only.Id)))
+                        &&(Items.HasItem(ItemData.Ravenous_Hydra_Melee_Only.Id) || Items.HasItem(ItemData.Tiamat_Melee_Only.Id)))
                     {
                         Items.UseItem(ItemData.Ravenous_Hydra_Melee_Only.Id);
                         Items.UseItem(ItemData.Tiamat_Melee_Only.Id);
@@ -219,9 +220,11 @@ namespace Slutty_Pantheon
 
                     if (Player.ManaPercent < minMana)
                         return;
+
                     if (useQl
                         && Q.IsReady()
-                        && Q.GetDamage(minion) > minion.Health)
+                        && Q.GetDamage(minion) > minion.Health
+                        && minion.HealthPercent > 13)
                     {
                         Q.CastOnUnit(minion);
                     }
@@ -234,7 +237,7 @@ namespace Slutty_Pantheon
                         && E.IsReady()
                         && minionCount.Count >= minMinionsE)
                     {
-                        E.CastIfWillHit(minion, +2);
+                        E.Cast(minion);
                     }
                 }
             }
