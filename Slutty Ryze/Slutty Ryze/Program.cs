@@ -218,8 +218,11 @@ namespace Slutty_ryze
             var w2LSpell = Config.Item("useW2L").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
             var rSlider = Config.Item("rMin").GetValue<Slider>().Value;
+            var minMana = Config.Item("useEPL").GetValue<Slider>().Value;
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             {
+                if (Player.ManaPercent <= minMana)
+                    return;
                 foreach (var minion in minionCount)
                 {
                     if (qlchSpell
