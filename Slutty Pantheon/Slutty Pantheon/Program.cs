@@ -200,6 +200,7 @@ namespace Slutty_Pantheon
         {
             if (Player.HasBuff("sound"))
                 return;
+
             var useI = Config.Item("useItems").GetValue<bool>();
             var useQl = Config.Item("useQlc").GetValue<bool>();
             var useQ = Config.Item("useQ2L").GetValue<bool>();
@@ -233,9 +234,12 @@ namespace Slutty_Pantheon
                     {
                         Q.CastOnUnit(minion);
                     }
+                        var allMinionsE = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
+                        var EFarm = Q.GetCircularFarmLocation(allMinionsE, 200 );
                     if (useE
                         && E.IsReady()
-                        && minionCount.Count >= minMinionsE)
+                        && minionCount.Count >= minMinionsE
+                        && EFarm.MinionsHit >= minMinionsE)
                     {
                         E.Cast(minion);
                     }
