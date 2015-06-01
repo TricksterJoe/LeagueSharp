@@ -111,8 +111,8 @@ namespace Slutty_Gnar
 
             Config.AddSubMenu(new Menu("Mini Gnar", "mGnar"));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseQMini", "Use Q").SetValue(true));
-            Config.SubMenu("mGnar").AddItem(new MenuItem("UseQs", "Use Q only when target has 2 W Stacks").SetValue(true));
-            Config.SubMenu("mGnar").AddItem(new MenuItem("UseEMini", "Use E").SetValue(true));
+            Config.SubMenu("mGnar")
+                .AddItem(new MenuItem("UseQs", "Use Q only when target has 2 W Stacks").SetValue(true));
             Config.SubMenu("mGnar").AddItem(new MenuItem("focust", "Focus Target with 2 W Stacks").SetValue(true));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseIgnite", "Use Ignite").SetValue(true));
 
@@ -120,6 +120,7 @@ namespace Slutty_Gnar
 
             Config.AddSubMenu(new Menu("Mega Gnar", "megaGnar"));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseQMega", "Use Q").SetValue(true));
+            Config.SubMenu("mGnar").AddItem(new MenuItem("UseEMini", "Use E Only when about to transform").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseWMega", "Use W").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("useRMega", "Use R").SetValue(true));
 
@@ -249,9 +250,6 @@ namespace Slutty_Gnar
 
         private static void Combo()
         {
-
-
-
             if (Player.IsMiniGnar())
             {
                 Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
@@ -272,11 +270,9 @@ namespace Slutty_Gnar
                 {
                     Q.Cast(prediction.CastPosition);
                 }
-                if (player.Distance(target.Position) <= 600 && IgniteDamage(target) >= target.Health &&
-                    Config.Item("UseIgnite").GetValue<bool>())
-                    player.Spellbook.CastSpell(Ignite, target);
             }
-            if (Config.Item("UseEMini").GetValue<bool>()) //&& Player.IsAboutToTransform()
+            if (Config.Item("UseEMini").GetValue<bool>()
+                && Player.IsAboutToTransform()) 
             {
                 Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
                 var targete = E.GetTarget(E.Width/2);
@@ -298,70 +294,72 @@ namespace Slutty_Gnar
             {
                 {
                     Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-                    var prediction = Q.GetPrediction(target);
                     var qSpell = Config.Item("UseQMega").GetValue<bool>();
                     var wSpell = Config.Item("UseWMega").GetValue<bool>();
-                    var predictionW = W.GetPrediction(target);
-                    if (qSpell
-                        && target.IsValidTarget(Q.Range))
-                    {
-                        Q.Cast(prediction.CastPosition);
-                    }
-                    if (wSpell
+                    if (R.IsReady()
                         && !Gnar_Spells.HasCastedStun
-                        && target != null)
+                        && Config.Item("useRMega").GetValue<bool>())
                     {
-                        W.Cast(predictionW.CastPosition);
-                    }
-                    if (player.Distance(target.Position) <= 600 && IgniteDamage(target) >= target.Health &&
-                        Config.Item("UseIgnite").GetValue<bool>())
-                        player.Spellbook.CastSpell(Ignite, target);
-                }
-                if (R.IsReady()
-                    && !Gnar_Spells.HasCastedStun
-                    && Config.Item("useRMega").GetValue<bool>())
-                {
-                    var target = R.GetTarget();
-                    if (target != null)
-                    {
-                        var prediction = Prediction.GetPrediction(target, R.Delay);
-                        if (R.IsInRange(prediction.UnitPosition))
+                        if (target != null)
                         {
-                            var direction = (Player.ServerPosition - prediction.UnitPosition).Normalized();
-                            var maxAngle = 180f;
-                            var step = maxAngle/6f;
-                            var currentAngle = 0f;
-                            var currentStep = 0f;
-                            while (true)
+                            var prediction = Prediction.GetPrediction(target, R.Delay);
+                            if (R.IsInRange(prediction.UnitPosition))
                             {
-
-                                if (currentStep > maxAngle && currentAngle < 0)
-                                    break;
-
-                                if ((currentAngle == 0 || currentAngle < 0) && currentStep != 0)
+                                var direction = (Player.ServerPosition - prediction.UnitPosition).Normalized();
+                                var maxAngle = 180f;
+                                var step = maxAngle/6f;
+                                var currentAngle = 0f;
+                                var currentStep = 0f;
+                                while (true)
                                 {
-                                    currentAngle = (currentStep)*(float) Math.PI/180;
-                                    currentStep += step;
-                                }
-                                else if (currentAngle > 0)
-                                    currentAngle = -currentAngle;
 
-                                Vector3 checkPoint;
-                                if (currentStep == 0)
-                                {
-                                    currentStep = step;
-                                    checkPoint = prediction.UnitPosition + 500*direction;
-                                }
-                                else
-                                    checkPoint = prediction.UnitPosition + 500*direction.Rotated(currentAngle);
+                                    if (currentStep > maxAngle && currentAngle < 0)
+                                        break;
 
-                                if (prediction.UnitPosition.GetFirstWallPoint(checkPoint).HasValue
-                                    && !target.IsStunned
-                                    && target.Health >= (Q.GetDamage(target) + Player.GetAutoAttackDamage(target)))
-                                {
-                                    R.Cast(Player.Position + 500*(checkPoint - prediction.UnitPosition).Normalized());
-                                    break;
+                                    if ((currentAngle == 0 || currentAngle < 0) && currentStep != 0)
+                                    {
+                                        currentAngle = (currentStep)*(float) Math.PI/180;
+                                        currentStep += step;
+                                    }
+                                    else if (currentAngle > 0)
+                                        currentAngle = -currentAngle;
+
+                                    Vector3 checkPoint;
+                                    if (currentStep == 0)
+                                    {
+                                        currentStep = step;
+                                        checkPoint = prediction.UnitPosition + 500*direction;
+                                    }
+                                    else
+                                        checkPoint = prediction.UnitPosition + 500*direction.Rotated(currentAngle);
+
+                                    if (prediction.UnitPosition.GetFirstWallPoint(checkPoint).HasValue
+                                        && !target.IsStunned
+                                        && target.Health >= (Q.GetDamage(target) + Player.GetAutoAttackDamage(target)))
+                                    {
+                                        R.Cast(Player.Position + 500*(checkPoint - prediction.UnitPosition).Normalized());
+                                        break;
+                                    }
                                 }
+                            }
+                            if (wSpell)
+                            {
+                                var targetw = W.GetTarget();
+                                if (
+                                    !Gnar_Spells.HasCastedStun
+                                    && targetw != null)
+                                {
+                                    {
+                                        W.Cast(targetw);
+                                    }
+                                }
+                            }
+
+
+                            if (qSpell
+                                && target.IsValidTarget(Q.Range))
+                            {
+                                Q.Cast(target);
                             }
                         }
                     }
@@ -436,7 +434,7 @@ namespace Slutty_Gnar
 
                     }
                     if (Player.IsMegaGnar()
-                        || !Player.IsAboutToTransform())
+                        && !Player.IsAboutToTransform())
                     {
                         var prediction = Q.GetPrediction(minion);
                         if (q2LSpell
