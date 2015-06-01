@@ -85,6 +85,28 @@ namespace Slutty_Gnar
             Config.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "w Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("rDraw", "R Drawing").SetValue(true));
+            var drawDamageMenu = new MenuItem("RushDrawEDamage", "W Damage").SetValue(true);
+            var drawFill = new MenuItem("RushDrawWDamageFill", "W Damage Fill").SetValue(new Circle(true, Color.SeaGreen));
+            Config.SubMenu("Drawings").AddItem(drawDamageMenu);
+            Config.SubMenu("Drawings").AddItem(drawFill);
+
+            DamageIndicator.DamageToUnit = GetComboDamage;
+            DamageIndicator.Enabled = drawDamageMenu.GetValue<bool>();
+            DamageIndicator.Fill = drawFill.GetValue<Circle>().Active;
+            DamageIndicator.FillColor = drawFill.GetValue<Circle>().Color;
+
+            drawDamageMenu.ValueChanged +=
+            delegate(object sender, OnValueChangeEventArgs eventArgs)
+            {
+                DamageIndicator.Enabled = eventArgs.GetNewValue<bool>();
+            };
+
+            drawFill.ValueChanged +=
+            delegate(object sender, OnValueChangeEventArgs eventArgs)
+            {
+                DamageIndicator.Fill = eventArgs.GetNewValue<Circle>().Active;
+                DamageIndicator.FillColor = eventArgs.GetNewValue<Circle>().Color;
+            };
 
 
             Config.AddSubMenu(new Menu("Mini Gnar", "mGnar"));
@@ -199,6 +221,18 @@ namespace Slutty_Gnar
             _lastCheckTick = Environment.TickCount;
 
 
+        }
+        static float GetComboDamage(Obj_AI_Base enemy)
+        {
+            foreach (var Buff in enemy.Buffs)
+            {
+                if (Buff.Name == "gnarwproc" && Buff.Count == 2)
+                {
+                    return W.GetDamage(enemy) + (float)Player.GetAutoAttackDamage(enemy, true);
+                }
+            }
+
+            return 0;
         }
 
         private static void Combo()
@@ -659,6 +693,7 @@ namespace Slutty_Gnar
            // }
            // var tg = (Obj_AI_Base)target;
        // }
+
 
     }
 }

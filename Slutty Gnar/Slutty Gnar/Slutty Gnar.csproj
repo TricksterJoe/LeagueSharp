@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DamageIndicator.cs" />
     <Compile Include="Name.cs" />
     <Compile Include="Gnar Spells.cs" />
     <Compile Include="Program.cs" />
