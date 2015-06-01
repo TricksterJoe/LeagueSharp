@@ -112,6 +112,7 @@ namespace Slutty_Gnar
             Config.AddSubMenu(new Menu("Mini Gnar", "mGnar"));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseQMini", "Use Q").SetValue(true));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseQs", "Use Q only when target has 2 W Stacks").SetValue(false));
+            Config.SubMenu("mGnar").AddItem(new MenuItem("eGap", "Use E Gap closer when enemy is killable").SetValue(false));
             Config.SubMenu("mGnar").AddItem(new MenuItem("focust", "Focus Target with 2 W Stacks").SetValue(false));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseIgnite", "Use Ignite").SetValue(true));
 
@@ -119,7 +120,7 @@ namespace Slutty_Gnar
 
             Config.AddSubMenu(new Menu("Mega Gnar", "megaGnar"));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseQMega", "Use Q").SetValue(true));
-            Config.SubMenu("mGnar").AddItem(new MenuItem("UseEMini", "Use E Only when about to transform").SetValue(true));
+            Config.SubMenu("megaGnar").AddItem(new MenuItem("UseEMini", "Use E Only when about to transform").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseWMega", "Use W").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("useRMega", "Use R").SetValue(true));
 
@@ -254,6 +255,7 @@ namespace Slutty_Gnar
                 Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
                 var qSpell = Config.Item("UseQMini").GetValue<bool>();
                 var qsSpell = Config.Item("UseQs").GetValue<bool>();
+                var eSpell = Config.Item("eGap").GetValue<bool>();
 
                 var prediction = Q.GetPrediction(target);
                 if (qSpell
@@ -268,6 +270,31 @@ namespace Slutty_Gnar
                     && target.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2))
                 {
                     Q.Cast(prediction.CastPosition);
+                }
+                if (eSpell
+                    && Player.CountEnemiesInRange(800) == 1
+                    && target.IsValidTarget(Q.Range)
+                    && !target.UnderTurret())
+                {
+                    var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.All);
+                    foreach (var minion in minionCount)
+                    {
+                        var minionPrediction = E.GetPrediction(minion);
+                        var k =
+                            ObjectManager.Get<Obj_AI_Minion>().Where(x => Player.IsFacing(x)
+                                                                          && x.IsMinion
+                                                                          && x.Distance(Player) <= E.Range).OrderBy(x => x.Distance(target)).FirstOrDefault();
+                        var edm = Player.ServerPosition.Extend(minionPrediction.CastPosition,
+                            Player.ServerPosition.Distance(minionPrediction.CastPosition) + E.Range);
+                        if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.IsMinion != Player.IsMinion
+                                                                            && !type.IsDead
+                                                                            && type.Distance(edm, true) < 775 * 775
+                                                                            && k.IsValid)
+                            && Player.Distance(target) > 300)
+                        {
+                            E.Cast(k);
+                        }
+                    }
                 }
             }
             if (Config.Item("UseEMini").GetValue<bool>()
