@@ -111,10 +111,11 @@ namespace Slutty_Gnar
 
             Config.AddSubMenu(new Menu("Mini Gnar", "mGnar"));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseQMini", "Use Q").SetValue(true));
-            Config.SubMenu("mGnar")
-                .AddItem(new MenuItem("UseQs", "Use Q only when target has 2 circles").SetValue(true));
+            Config.SubMenu("mGnar").AddItem(new MenuItem("UseQs", "Use Q only when target has 2 W Stacks").SetValue(true));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseEMini", "Use E").SetValue(true));
+            Config.SubMenu("mGnar").AddItem(new MenuItem("focust", "Focus Target with 2 W Stacks").SetValue(true));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseIgnite", "Use Ignite").SetValue(true));
+
 
 
             Config.AddSubMenu(new Menu("Mega Gnar", "megaGnar"));
@@ -215,6 +216,17 @@ namespace Slutty_Gnar
             if (autoLevel)
             {
                 SpellsLevel();
+            }
+            var qSpell = Config.Item("focust").GetValue<bool>();
+            if (qSpell)
+            {
+                var target = HeroManager.Enemies.Find(en => en.IsValidTarget(ObjectManager.Player.AttackRange) 
+                    && en.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2));
+                if (target != null)
+                {
+                    Orbwalker.ForceTarget(target);
+                    Hud.SelectedUnit = target;
+                }
             }
 
             Potion();
