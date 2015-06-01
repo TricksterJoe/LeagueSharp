@@ -111,9 +111,8 @@ namespace Slutty_Gnar
 
             Config.AddSubMenu(new Menu("Mini Gnar", "mGnar"));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseQMini", "Use Q").SetValue(true));
-            Config.SubMenu("mGnar")
-                .AddItem(new MenuItem("UseQs", "Use Q only when target has 2 W Stacks").SetValue(true));
-            Config.SubMenu("mGnar").AddItem(new MenuItem("focust", "Focus Target with 2 W Stacks").SetValue(true));
+            Config.SubMenu("mGnar").AddItem(new MenuItem("UseQs", "Use Q only when target has 2 W Stacks").SetValue(false));
+            Config.SubMenu("mGnar").AddItem(new MenuItem("focust", "Focus Target with 2 W Stacks").SetValue(false));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseIgnite", "Use Ignite").SetValue(true));
 
 
@@ -132,7 +131,7 @@ namespace Slutty_Gnar
             Config.AddSubMenu(new Menu("Lane Clear", "Lane Clear"));
             Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
             Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2c", "Use Q to last hit").SetValue(true));
-            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2s", "Use Q Only when minion has 2 W stacks").SetValue(true));
+            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2s", "Use Q Only when minion has 2 W stacks").SetValue(false));
             Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQPL", "Minimum Minions for Q Mega Gnar").SetValue(new Slider(3, 1, 20)));
             Config.SubMenu("Lane Clear").AddItem(new MenuItem("useW2L", "Use W to lane clear").SetValue(true));
             Config.SubMenu("Lane Clear").AddItem(new MenuItem("useWSlider", "Min minions for W").SetValue(new Slider(3, 1, 20)));
