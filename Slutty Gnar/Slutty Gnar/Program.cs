@@ -125,6 +125,7 @@ namespace Slutty_Gnar
 
             Config.AddSubMenu(new Menu("Both Forms", "bForm"));
             Config.SubMenu("bForm").AddItem(new MenuItem("UseIgnite", "Use Ignite").SetValue(true));
+            Config.SubMenu("bForm").AddItem(new MenuItem("Yes", "Use Items").SetValue(true));
             Config.SubMenu("bForm").AddItem(new MenuItem("UseBotrk", "Use Botrk").SetValue(true));
             Config.SubMenu("bForm").AddItem(new MenuItem("UseYumm", "Use Youmuu's ghostblade").SetValue(true));
 
@@ -136,6 +137,7 @@ namespace Slutty_Gnar
 
             Config.AddSubMenu(new Menu("Mega Gnar", "megaGnar"));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseQMega", "Use Q").SetValue(true));
+            Config.SubMenu("megaGnar").AddItem(new MenuItem("UseEMega", "Use E").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseEMini", "Use E Only when about to transform").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseWMega", "Use W").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("useRMega", "Use R").SetValue(true));
@@ -317,10 +319,27 @@ namespace Slutty_Gnar
 
         private static void Combo()
         {
+            if (Config.Item("Yes").GetValue<bool>())
+            {
+                Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+                if (Player.HealthPercent < target.HealthPercent
+                    && (CanUseItem(3153) || CanUseItem(3144))
+                    && Config.Item("UseBotrk").GetValue<bool>())
+                {
+                    UseItem(3144, target);
 
+                    UseItem(3153, target);
+                }
+                if (CanUseItem(3142)
+                    && Player.Distance(target.Position) < Player.AttackRange
+                    && Config.Item("UseYumm").GetValue<bool>())
+                {
+                    UseItem(3142);
+                }
+            }
             if (Player.IsMiniGnar())
             {
-                Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+                Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
                 var qSpell = Config.Item("UseQMini").GetValue<bool>();
                 var qsSpell = Config.Item("UseQs").GetValue<bool>();
                 var eSpell = Config.Item("eGap").GetValue<bool>();
@@ -340,20 +359,6 @@ namespace Slutty_Gnar
                 {
                     Q.Cast(prediction.CastPosition);
                 }
-                if (Player.HealthPercent < target.HealthPercent
-                    && (CanUseItem(3153) || CanUseItem(3144))
-                    && Config.Item("UseBotrk").GetValue<bool>())
-                {
-                    UseItem(3144, target);
-
-                    UseItem(3153, target);
-                }
-                if (CanUseItem(3142)
-                    && Player.Distance(target.Position) < Player.AttackRange
-                    && Config.Item("UseYumm").GetValue<bool>())
-                {
-                    UseItem(3142);
-                }
                 if (eSpell
                     && Player.CountEnemiesInRange(800) == 1
                     && target.IsValidTarget(Q.Range)
@@ -366,12 +371,14 @@ namespace Slutty_Gnar
                         var k =
                             ObjectManager.Get<Obj_AI_Minion>().Where(x => Player.IsFacing(x)
                                                                           && x.IsMinion
-                                                                          && x.Distance(Player) <= E.Range).OrderBy(x => x.Distance(target)).FirstOrDefault();
+                                                                          && x.Distance(Player) <= E.Range)
+                                .OrderBy(x => x.Distance(target))
+                                .FirstOrDefault();
                         var edm = Player.ServerPosition.Extend(minionPrediction.CastPosition,
                             Player.ServerPosition.Distance(minionPrediction.CastPosition) + E.Range);
                         if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.IsMinion != Player.IsMinion
                                                                             && !type.IsDead
-                                                                            && type.Distance(edm, true) < 775 * 775
+                                                                            && type.Distance(edm, true) < 775*775
                                                                             && k.IsValid)
                             && Player.Distance(target) > 300)
                         {
@@ -381,9 +388,9 @@ namespace Slutty_Gnar
                 }
             }
             if (Config.Item("UseEMini").GetValue<bool>()
-                && Player.IsAboutToTransform()) 
+                && Player.IsAboutToTransform())
             {
-                Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+                Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
                 var targete = E.GetTarget(E.Width/2);
                 if (targete != null)
                 {
@@ -403,8 +410,7 @@ namespace Slutty_Gnar
             {
                 {
                     Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-                    var qSpell = Config.Item("UseQMega").GetValue<bool>();
-                    var wSpell = Config.Item("UseWMega").GetValue<bool>();
+                    var qmSpell = Config.Item("UseQMega").GetValue<bool>();
                     if (R.IsReady()
                         && !Gnar_Spells.HasCastedStun
                         && Config.Item("useRMega").GetValue<bool>())
@@ -451,53 +457,43 @@ namespace Slutty_Gnar
                                     }
                                 }
                             }
-                            if (Player.HealthPercent < target.HealthPercent
-                                && (CanUseItem(3153) || CanUseItem(3144))
-                                && Config.Item("UseBotrk").GetValue<bool>())
+                        }
+                    }
+                        
+                    if (Player.IsMegaGnar())
+                    {
+                        var emSpell = Config.Item("UseEMega").GetValue<bool>();
+                        if (E.IsReady()
+                            && emSpell
+                            && !Config.Item("UseEMini").GetValue<bool>())
+                        {
+                            if (target != null
+                                && target.HealthPercent <= Player.HealthPercent)
                             {
-                                UseItem(3144, target);
-
-                                UseItem(3153, target);
+                                E.Cast(target);
                             }
-                            if (CanUseItem(3142)
-                                && Player.Distance(target.Position) < Player.AttackRange
-                                && Config.Item("UseYumm").GetValue<bool>())
+                        }
+                        var wSpell = Config.Item("UseWMega").GetValue<bool>();
+                        if (wSpell)
+                        {
+                            var targetw = W.GetTarget();
+                            if (targetw != null)
                             {
-                                UseItem(3142);
-                            }
-
-                            if (wSpell)
-                            {
-                                var targetw = W.GetTarget();
-                                if (
-                                    !Gnar_Spells.HasCastedStun
-                                    && targetw != null)
                                 {
-                                    {
-                                        W.Cast(targetw);
-                                    }
+                                    W.Cast(targetw);
                                 }
                             }
+                        }
 
-
-                            if (qSpell
-                                && target.IsValidTarget(Q.Range))
-                            {
-                                Q.Cast(target);
-                            }
+                        if (qmSpell
+                            && target.IsValidTarget(Q.Range))
+                        {
+                            Q.Cast(target);
                         }
                     }
                 }
             }
         }
-
-        private static float IgniteDamage(Obj_AI_Hero target)
-        {
-            if (Ignite == SpellSlot.Unknown || player.Spellbook.CanUseSpell(Ignite) != SpellState.Ready)
-                return 0f;
-            return (float) player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
-        }
-
 
         private static void LaneClear()
         {
@@ -557,26 +553,32 @@ namespace Slutty_Gnar
                         }
 
                     }
-                    if (Player.IsMegaGnar()
-                        && !Player.IsAboutToTransform())
-                    {
-                        var prediction = Q.GetPrediction(minion);
-                        if (q2LSpell
-                            && minionCount.Count >= eqSlider)
+
+                        var minions =
+                            MinionManager.GetMinions(Q.Range, MinionTypes.All, MinionTeam.Enemy,
+                                MinionOrderTypes.MaxHealth).Where(m =>
+                       m.Health > player.GetAutoAttackDamage(m)/2 && m.Health < Q.GetDamage(m));
+                        var position = Q.GetFarmLocation(MinionTeam.Enemy, minions.ToList());
+                        if (q2LSpell)
                         {
-                            Q.Cast(prediction.CastPosition);
+                            Q.Cast(position.Value.Position);
                         }
+                        if (wlSpell)
+                        {
                         var allMinionsW = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
                         var WFarm = Q.GetCircularFarmLocation(allMinionsW, 200);
-                        var predictionW = W.GetPrediction(minion);
-                        if (wlSpell
-                            && minionCount.Count >= elSlider
-                            && WFarm.MinionsHit >= 2
+                        var positions = W.GetFarmLocation();
+                            if(
+                            minionCount.Count >= elSlider
+                            && WFarm.MinionsHit >= elSlider
                             && minion.Health > (Player.GetAutoAttackDamage(minion) + W.GetDamage(minion)))
-                        {
-                            W.Cast(predictionW.CastPosition);
+                            {
+
+                                {
+                                    W.Cast(positions.Value.Position);
+                                }
+                            }
                         }
-                    }
                 }
             }
         }

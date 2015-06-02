@@ -122,5 +122,16 @@ namespace Slutty_Gnar
                     || target.HasBuff("gnartransform")))
                     || target.IsMegaGnar() && target.ManaPercent <= 0.1;
         }
+        public static MinionManager.FarmLocation? GetFarmLocation(this Spell spell, MinionTeam team = MinionTeam.Enemy, List<Obj_AI_Base> targets = null)
+        {
+                targets = MinionManager.GetMinions(spell.Range, MinionTypes.All, team, MinionOrderTypes.MaxHealth);
+            if (!spell.IsSkillshot || targets.Count == 0)
+                return null;
+            var positions = MinionManager.GetMinionsPredictedPositions(targets, spell.Delay, spell.Width, spell.Speed, spell.From, spell.Range, spell.Collision, spell.Type);
+            var farmLocation = MinionManager.GetBestLineFarmLocation(positions, spell.Width, spell.Range);
+            if (farmLocation.MinionsHit == 0)
+                return null;
+            return farmLocation;
+        }
     }
 }
