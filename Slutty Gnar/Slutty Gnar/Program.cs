@@ -563,22 +563,22 @@ namespace Slutty_Gnar
                         {
                             Q.Cast(position.Value.Position);
                         }
-                        if (wlSpell)
-                        {
+                    if (wlSpell)
+                    {
                         var allMinionsW = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
                         var WFarm = Q.GetCircularFarmLocation(allMinionsW, 200);
                         var positions = W.GetFarmLocation();
-                            if(
+                        if (
                             minionCount.Count >= elSlider
                             && WFarm.MinionsHit >= elSlider
                             && minion.Health > (Player.GetAutoAttackDamage(minion) + W.GetDamage(minion)))
-                            {
+                        {
 
-                                {
-                                    W.Cast(positions.Value.Position);
-                                }
+                            {
+                                W.Cast(positions.Value.Position);
                             }
                         }
+                    }
                 }
             }
         }
