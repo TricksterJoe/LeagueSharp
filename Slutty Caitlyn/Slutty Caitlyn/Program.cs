@@ -103,7 +103,7 @@ namespace Slutty_Caitlyn
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useMSlider", "Lane Clear if %Mana >").SetValue(new Slider(50)));
 
 
-            Config.AddSubMenu(new Menu("KillSteal", "Kill Steal"));
+            Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q ks").SetValue(true));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("UseR2KS", "Use R").SetValue(true));
@@ -119,9 +119,12 @@ namespace Slutty_Caitlyn
             Config.SubMenu("autoP").AddItem(new MenuItem("MANA", "Auto Mana Potion").SetValue(true));
             Config.SubMenu("autoP").AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion")).SetValue(new Slider(50));
 
+            Config.AddItem(new MenuItem("dashte", "Dash EQ to on target")).SetValue(new KeyBind(67, KeyBindType.Press));
+
             Config.AddItem(new MenuItem("fleekey", "Use Flee Mode")).SetValue(new KeyBind(65, KeyBindType.Press));
 
             Config.AddItem(new MenuItem("dasht", "Dash E to mouse")).SetValue(new KeyBind(66, KeyBindType.Press));
+
 
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
@@ -167,6 +170,15 @@ namespace Slutty_Caitlyn
                 if (E.IsReady())
                 {
                     E.Cast(Game.CursorPos.Extend(Player.Position, 5000));
+                }
+            }
+            if (Config.Item("dashte").GetValue<KeyBind>().Active)
+            {
+                Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+                if (E.IsReady() && Q.IsReady())
+                {
+                    E.Cast(target.Position);
+                    Q.Cast(target.Position);
                 }
             }
 
