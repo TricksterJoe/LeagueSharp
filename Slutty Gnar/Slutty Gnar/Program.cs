@@ -48,6 +48,19 @@ namespace Slutty_Gnar
         public static Items.Item ManaPotion = new Items.Item(2004);
         public static Items.Item BiscuitofRejuvenation = new Items.Item(2010);
 
+        public static void UseItem(int id, Obj_AI_Hero target = null)
+        {
+            if (Items.HasItem(id) && Items.CanUseItem(id))
+            {
+                Items.UseItem(id, target);
+            }
+        }
+
+        public static bool CanUseItem(int id)
+        {
+            return Items.HasItem(id) && Items.CanUseItem(id);
+        }
+
         public static int[] AbilitySequence;
         public static int QOff = 0, WOff = 0, EOff = 0, ROff = 0;
 
@@ -66,6 +79,7 @@ namespace Slutty_Gnar
 
         private static void OnLoad(EventArgs args)
         {
+
 
             if (Player.ChampionName != ChampName)
                 return;
@@ -109,14 +123,16 @@ namespace Slutty_Gnar
             };
 
 
+            Config.AddSubMenu(new Menu("Both Forms", "bForm"));
+            Config.SubMenu("bForm").AddItem(new MenuItem("UseIgnite", "Use Ignite").SetValue(true));
+            Config.SubMenu("bForm").AddItem(new MenuItem("UseBotrk", "Use Botrk").SetValue(true));
+            Config.SubMenu("bForm").AddItem(new MenuItem("UseYumm", "Use Youmuu's ghostblade").SetValue(true));
+
             Config.AddSubMenu(new Menu("Mini Gnar", "mGnar"));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseQMini", "Use Q").SetValue(true));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseQs", "Use Q only when target has 2 W Stacks").SetValue(false));
             Config.SubMenu("mGnar").AddItem(new MenuItem("eGap", "Use E Gap closer when enemy is killable").SetValue(false));
             Config.SubMenu("mGnar").AddItem(new MenuItem("focust", "Focus Target with 2 W Stacks").SetValue(false));
-            Config.SubMenu("mGnar").AddItem(new MenuItem("UseIgnite", "Use Ignite").SetValue(true));
-
-
 
             Config.AddSubMenu(new Menu("Mega Gnar", "megaGnar"));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseQMega", "Use Q").SetValue(true));
@@ -133,7 +149,7 @@ namespace Slutty_Gnar
             Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
             Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2c", "Use Q to last hit").SetValue(true));
             Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2s", "Use Q Only when minion has 2 W stacks").SetValue(false));
-            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQPL", "Minimum Minions for Q Mega Gnar").SetValue(new Slider(3, 1, 20)));
+            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQPL", "Min Minions for Q Mega Gnar").SetValue(new Slider(3, 1, 20)));
             Config.SubMenu("Lane Clear").AddItem(new MenuItem("useW2L", "Use W to lane clear").SetValue(true));
             Config.SubMenu("Lane Clear").AddItem(new MenuItem("useWSlider", "Min minions for W").SetValue(new Slider(3, 1, 20)));
             Config.SubMenu("Lane Clear").AddItem(new MenuItem("abtT", "Don't Use Spells When about to transform").SetValue(true));
@@ -171,6 +187,7 @@ namespace Slutty_Gnar
 
             Config.AddToMainMenu();
             Game.OnUpdate += Game_OnUpdate;
+            CustomEvents.Unit.OnDash += Unit_OnDash;
         }
 
         private static void Game_OnUpdate(EventArgs args)
@@ -208,10 +225,6 @@ namespace Slutty_Gnar
             {
                 KillSteal();
             }
-            if (Environment.TickCount - _lastCheckTick < 150)
-            {
-                return;
-            }
             var autoLevel = Config.Item("Level").GetValue<bool>();
 
             if (autoLevel)
@@ -229,11 +242,65 @@ namespace Slutty_Gnar
                     Hud.SelectedUnit = target;
                 }
             }
+            if (Environment.TickCount - _lastCheckTick < 150)
+            {
+                return;
+            }
 
             Potion();
             _lastCheckTick = Environment.TickCount;
 
 
+        }
+        static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
+        {
+            var useQ = Config.Item("UseQMini").GetValue<bool>();
+            var useQm = Config.Item("UseQMega").GetValue<bool>();
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
+            if (!sender.IsEnemy)
+            {
+                return;
+            }
+
+            if (sender.NetworkId == target.NetworkId
+                && Player.IsMiniGnar())
+            {
+
+                if (useQ 
+                    && Q.IsReady() 
+                    && args.EndPos.Distance(Player) <= Q.Range)
+                {
+                    var delay = (int)(args.EndTick - Game.Time - Q.Delay - 0.1f);
+                    if (delay > 0)
+                    {
+                        Utility.DelayAction.Add(delay * 1000, () => Q.Cast(args.EndPos));
+                    }
+                    else
+                    {
+                        Q.Cast(args.EndPos);
+                    }
+                }
+                if (sender.NetworkId == target.NetworkId
+                    && Player.IsMegaGnar())
+                {
+
+                    if (useQm
+                        && Q.IsReady()
+                        && args.EndPos.Distance(Player) <= Q.Range)
+                    {
+                        var delay = (int) (args.EndTick - Game.Time - Q.Delay - 0.1f);
+                        if (delay > 0)
+                        {
+                            Utility.DelayAction.Add(delay*1000, () => Q.Cast(args.EndPos));
+                        }
+                        else
+                        {
+                            Q.Cast(args.EndPos);
+                        }
+                    }
+                }
+            }
         }
         static float GetComboDamage(Obj_AI_Base enemy)
         {
@@ -250,6 +317,7 @@ namespace Slutty_Gnar
 
         private static void Combo()
         {
+
             if (Player.IsMiniGnar())
             {
                 Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
@@ -264,12 +332,27 @@ namespace Slutty_Gnar
                 {
                     Q.Cast(prediction.CastPosition);
                 }
+
                 if (qSpell
                     && qsSpell
                     && target.IsValidTarget(Q.Range)
                     && target.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2))
                 {
                     Q.Cast(prediction.CastPosition);
+                }
+                if (Player.HealthPercent < target.HealthPercent
+                    && (CanUseItem(3153) || CanUseItem(3144))
+                    && Config.Item("UseBotrk").GetValue<bool>())
+                {
+                    UseItem(3144, target);
+
+                    UseItem(3153, target);
+                }
+                if (CanUseItem(3142)
+                    && Player.Distance(target.Position) < Player.AttackRange
+                    && Config.Item("UseYumm").GetValue<bool>())
+                {
+                    UseItem(3142);
                 }
                 if (eSpell
                     && Player.CountEnemiesInRange(800) == 1
@@ -368,6 +451,21 @@ namespace Slutty_Gnar
                                     }
                                 }
                             }
+                            if (Player.HealthPercent < target.HealthPercent
+                                && (CanUseItem(3153) || CanUseItem(3144))
+                                && Config.Item("UseBotrk").GetValue<bool>())
+                            {
+                                UseItem(3144, target);
+
+                                UseItem(3153, target);
+                            }
+                            if (CanUseItem(3142)
+                                && Player.Distance(target.Position) < Player.AttackRange
+                                && Config.Item("UseYumm").GetValue<bool>())
+                            {
+                                UseItem(3142);
+                            }
+
                             if (wSpell)
                             {
                                 var targetw = W.GetTarget();

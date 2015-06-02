@@ -78,6 +78,8 @@ namespace Slutty_Gnar
             SummonerDot = new Spell(ObjectManager.Player.GetSpellSlot("SummonerDot"), 550);
             SummonerDot.SetTargetted(0.1f, float.MaxValue);
 
+
+
             Spellbook.OnCastSpell += Spellbook_OnCastSpell;
         }
 
