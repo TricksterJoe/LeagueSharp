@@ -22,6 +22,7 @@ namespace Slutty_Caitlyn
         public static Menu Config;
         public static Orbwalking.Orbwalker Orbwalker;
         public static Spell Q, W, E, R;
+        public float QMana, EMana;
 
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
 
@@ -112,6 +113,7 @@ namespace Slutty_Caitlyn
 
             Config.AddSubMenu(new Menu("Misc", "Misc"));
             Config.SubMenu("Misc").AddItem(new MenuItem("UseW", "Auto W").SetValue(true));
+            Config.SubMenu("Misc").AddItem(new MenuItem("UseQa", "Auto Q On stunned").SetValue(true));
 
 
             Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
@@ -177,7 +179,8 @@ namespace Slutty_Caitlyn
             if (Config.Item("dashte").GetValue<KeyBind>().Active)
             {
                 Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-                if (E.IsReady() && Q.IsReady())
+                if (E.IsReady() && Q.IsReady()
+                    && Player.Mana > (Q.Instance.ManaCost + E.Instance.ManaCost))
                 {
                     E.Cast(target.Position);
                     Q.Cast(target.Position);
@@ -378,6 +381,7 @@ namespace Slutty_Caitlyn
                 W.Cast(Object.Position, true);
             }
             var wSpell = Config.Item("UseW").GetValue<bool>();
+            var qSpell = Config.Item("UseQa").GetValue<bool>();
             if (wSpell)
             {
                 foreach (Obj_AI_Hero target in HeroManager.Enemies.Where(x => x.IsValidTarget(W.Range)))
@@ -388,6 +392,14 @@ namespace Slutty_Caitlyn
                             && W.IsReady()
                             && target.IsValidTarget(W.Range)) 
                         W.Cast(target);
+                    }
+                    if (target != null
+                        && qSpell)
+                    {
+                        if (UnitIsImmobileUntil(target) >= Q.Delay
+                            && Q.IsReady()
+                            && target.IsValidTarget(Q.Range))
+                            Q.Cast(target);
                     }
                 }
 
