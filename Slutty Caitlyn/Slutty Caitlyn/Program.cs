@@ -5,6 +5,7 @@ using System.Drawing.Printing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
+using System.Threading;
 using LeagueSharp;
 using LeagueSharp.Common;
 using LeagueSharp.Common.Data;
@@ -90,6 +91,7 @@ namespace Slutty_Caitlyn
             Config.AddSubMenu(new Menu("Combo", "Combo"));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseQ", "Use Q").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseQr", "Reduce Use Q Usage").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseRM", "Semi Manual R").SetValue(new KeyBind(68, KeyBindType.Press)));
             
 
             Config.AddSubMenu(new Menu("Harras", "Harras"));
@@ -185,7 +187,7 @@ namespace Slutty_Caitlyn
             Potion();
             AutoW();
             KillSteal();
-
+            ManualR();
 
         }
         private static void Drawing_OnDraw(EventArgs args)
@@ -288,6 +290,7 @@ namespace Slutty_Caitlyn
         {
             var ks = Config.Item("KS").GetValue<bool>();
             if (!ks)
+
                 return;
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
             if (Player.Distance(target) < 1000)
@@ -298,6 +301,7 @@ namespace Slutty_Caitlyn
             new List<Vector2> { prediction.CastPosition.To2D() });
             var playerncol = qcollision.Where(x => !(x is Obj_AI_Hero)).Count(x => x.IsTargetable);
             var rSpell = Config.Item("UseR2KS").GetValue<bool>();
+            var qSpell = Config.Item("UseQ2KS").GetValue<bool>();
 
             if (rSpell
                 && R.IsReady()
@@ -307,6 +311,13 @@ namespace Slutty_Caitlyn
                 && playerncol == 0)
             {
                 R.CastOnUnit(target);
+            }
+            if (qSpell
+                && Q.IsReady()
+                && target.Health < Q.GetDamage(target)
+                && target.IsValidTarget(Q.Range))
+            {
+                Q.Cast(target);
             }
         }
 
@@ -343,6 +354,17 @@ namespace Slutty_Caitlyn
                 ManaPotion.Cast();
             }
         }
+        static double UnitIsImmobileUntil(Obj_AI_Base unit)
+        {
+            var time =
+                unit.Buffs.Where(buff =>buff.IsActive && Game.Time <= buff.EndTime &&
+                        (buff.Type == BuffType.Charm
+                        || buff.Type == BuffType.Knockup
+                        || buff.Type == BuffType.Suppression 
+                        || buff.Type == BuffType.Stun
+                        || buff.Type == BuffType.Snare)).Aggregate(0d, (current, buff) => Math.Max(current, buff.EndTime));
+            return (time - Game.Time);
+        }
 
         private static void AutoW()
         {
@@ -356,15 +378,21 @@ namespace Slutty_Caitlyn
                 W.Cast(Object.Position, true);
             }
             var wSpell = Config.Item("UseW").GetValue<bool>();
-            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-            if (wSpell &&
-                (target.IsStunned
-                || target.IsRooted
-                || target.IsImmovable
-                || target.IsCharmed))
+            if (wSpell)
             {
-                W.Cast(target);
+                foreach (Obj_AI_Hero target in HeroManager.Enemies.Where(x => x.IsValidTarget(W.Range)))
+                {
+                    if (target != null)
+                    {
+                        if (UnitIsImmobileUntil(target) >= W.Delay - 0.5
+                            && W.IsReady()
+                            && target.IsValidTarget(W.Range)) 
+                        W.Cast(target);
+                    }
+                }
+
             }
+
         }
         static float GetComboDamage(Obj_AI_Base enemy)
         {
@@ -383,6 +411,16 @@ namespace Slutty_Caitlyn
             return 0;
         }
 
+        private static void ManualR()
+        {
+            var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
+            var rSpell = Config.Item("UseRM").GetValue<bool>();
+            if (rSpell
+                && target.IsValidTarget(R.Range))
+            {
+                R.CastOnUnit(target);
+            }
+        }
+
     }
 }
-
