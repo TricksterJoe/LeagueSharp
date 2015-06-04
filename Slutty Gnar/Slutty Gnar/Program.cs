@@ -397,7 +397,7 @@ namespace Slutty_Gnar
                         && Config.Item("useRMega").GetValue<bool>())
                     {
                         if (target != null
-                            && Player.CountEnemiesInRange(900) >= rSlider)
+                            && Player.CountEnemiesInRange(420) >= rSlider)
                         {
                             var prediction = Prediction.GetPrediction(target, R.Delay);
                             if (R.IsInRange(prediction.UnitPosition))
