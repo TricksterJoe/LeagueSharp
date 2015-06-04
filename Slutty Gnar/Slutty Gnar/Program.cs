@@ -141,6 +141,7 @@ namespace Slutty_Gnar
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseEMini", "Use E Only when about to transform").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseWMega", "Use W").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("useRMega", "Use R").SetValue(true));
+            Config.SubMenu("megaGnar").AddItem(new MenuItem("useRSlider", "Min targets R").SetValue(new Slider(3, 1, 5)));
 
 
             Config.AddSubMenu(new Menu("Harras", "Harras"));
@@ -385,35 +386,18 @@ namespace Slutty_Gnar
                     }
                 }
             }
-            if (Config.Item("UseEMini").GetValue<bool>()
-                && Player.IsAboutToTransform())
-            {
-                Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-                var targete = E.GetTarget(E.Width/2);
-                if (targete != null)
-                {
-                    var prediction = E.GetPrediction(target);
-                    var ed = Player.ServerPosition.Extend(prediction.CastPosition,
-                        Player.ServerPosition.Distance(prediction.CastPosition) + E.Range);
-
-                    if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.Team != Player.Team
-                                                                        && !type.IsDead
-                                                                        && type.Distance(ed, true) < 775*775))
-                    {
-                        E.Cast(prediction.CastPosition);
-                    }
-                }
-            }
             if (Player.IsMegaGnar())
             {
                 {
+                    var rSlider = Config.Item("useRSlider").GetValue<Slider>().Value;
                     Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
                     var qmSpell = Config.Item("UseQMega").GetValue<bool>();
                     if (R.IsReady()
                         && !Gnar_Spells.HasCastedStun
                         && Config.Item("useRMega").GetValue<bool>())
                     {
-                        if (target != null)
+                        if (target != null
+                            && Player.CountEnemiesInRange(900) >= rSlider)
                         {
                             var prediction = Prediction.GetPrediction(target, R.Delay);
                             if (R.IsInRange(prediction.UnitPosition))
@@ -458,7 +442,8 @@ namespace Slutty_Gnar
                         }
                     }
                         
-                    if (Player.IsMegaGnar())
+                    if (Player.IsMegaGnar()
+                        && !R.IsReady())
                     {
                         var emSpell = Config.Item("UseEMega").GetValue<bool>();
                         if (E.IsReady()
@@ -487,6 +472,24 @@ namespace Slutty_Gnar
                             && target.IsValidTarget(Q.Range))
                         {
                             Q.Cast(target);
+                        }
+                    }
+                }
+                if (Config.Item("UseEMini").GetValue<bool>() && (Player.IsMegaGnar() || Player.IsAboutToTransform()))
+                {
+                    Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+                    var targete = E.GetTarget(E.Width / 2);
+                    if (targete != null)
+                    {
+                        var prediction = E.GetPrediction(target);
+                        var ed = Player.ServerPosition.Extend(prediction.CastPosition,
+                            Player.ServerPosition.Distance(prediction.CastPosition) + E.Range);
+
+                        if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.Team != Player.Team
+                                                                            && !type.IsDead
+                                                                            && type.Distance(ed, true) < 775 * 775))
+                        {
+                            E.Cast(prediction.CastPosition);
                         }
                     }
                 }
