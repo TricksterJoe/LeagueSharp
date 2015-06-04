@@ -344,12 +344,11 @@ namespace Slutty_Gnar
                 var qsSpell = Config.Item("UseQs").GetValue<bool>();
                 var eSpell = Config.Item("eGap").GetValue<bool>();
 
-                var prediction = Q.GetPrediction(target);
                 if (qSpell
                     && !qsSpell
                     && target.IsValidTarget(Q.Range))
                 {
-                    Q.Cast(prediction.CastPosition);
+                    Q.Cast(target);
                 }
 
                 if (qSpell
@@ -357,12 +356,11 @@ namespace Slutty_Gnar
                     && target.IsValidTarget(Q.Range)
                     && target.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2))
                 {
-                    Q.Cast(prediction.CastPosition);
+                    Q.Cast(target);
                 }
                 if (eSpell
-                    && Player.CountEnemiesInRange(800) == 1
-                    && target.IsValidTarget(Q.Range)
-                    && !target.UnderTurret())
+                    && Player.CountEnemiesInRange(1600) == 1
+                    && target.IsValidTarget(Q.Range))
                 {
                     var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.All);
                     foreach (var minion in minionCount)
@@ -553,29 +551,28 @@ namespace Slutty_Gnar
                         }
 
                     }
-
+                    if (Player.IsMegaGnar())
+                    {
                         var minions =
                             MinionManager.GetMinions(Q.Range, MinionTypes.All, MinionTeam.Enemy,
                                 MinionOrderTypes.MaxHealth).Where(m =>
-                       m.Health > player.GetAutoAttackDamage(m)/2 && m.Health < Q.GetDamage(m));
-                        var position = Q.GetFarmLocation(MinionTeam.Enemy, minions.ToList());
+                                    m.Health > player.GetAutoAttackDamage(m)/2 && m.Health < Q.GetDamage(m));
+          
                         if (q2LSpell)
                         {
+                            var position = Q.GetFarmLocation(MinionTeam.Enemy, minions.ToList());
                             Q.Cast(position.Value.Position);
                         }
-                    if (wlSpell)
-                    {
-                        var allMinionsW = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
-                        var WFarm = Q.GetCircularFarmLocation(allMinionsW, 200);
-                        var positions = W.GetFarmLocation();
-                        if (
-                            minionCount.Count >= elSlider
-                            && WFarm.MinionsHit >= elSlider
-                            && minion.Health > (Player.GetAutoAttackDamage(minion) + W.GetDamage(minion)))
+                        if (wlSpell)
                         {
-
+                            var positions = W.GetFarmLocation();
+                            if (minionCount.Count >= elSlider
+                                && minion.Health > (Player.GetAutoAttackDamage(minion) + W.GetDamage(minion)))
                             {
-                                W.Cast(positions.Value.Position);
+
+                                {
+                                    W.Cast(positions.Value.Position);
+                                }
                             }
                         }
                     }
@@ -590,40 +587,26 @@ namespace Slutty_Gnar
                 Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
                 var prediction = Q.GetPrediction(target);
                 var qcollision = Q.GetCollision(Player.ServerPosition.To2D(),
-                    new List<Vector2> {prediction.CastPosition.To2D()});
+                new List<Vector2> {prediction.CastPosition.To2D()});
                 var minioncol = qcollision.Where(x => !(x is Obj_AI_Hero)).Count(x => x.IsMinion);
                 var qSpell = Config.Item("UseQMi").GetValue<bool>();
-                var qmsSpell = Config.Item("useQMis").GetValue<bool>();
                 if (qSpell
-                    && !qmsSpell
                     && target.IsValidTarget(Q.Range)
-                    && minioncol <= 1)
-                {
-                    Q.Cast(prediction.CastPosition);
-                }
-                if (qSpell
-                    && qmsSpell
-                    && target.IsValidTarget(Q.Range)
-                    && target.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2)
                     && minioncol <= 1)
                 {
                     Q.Cast(prediction.CastPosition);
                 }
             }
+
             if (Player.IsMegaGnar())
             {
 
                 Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-                var prediction = Q.GetPrediction(target);
-                var qcollision = Q.GetCollision(Player.ServerPosition.To2D(),
-                    new List<Vector2> {prediction.CastPosition.To2D()});
-                var minioncol = qcollision.Where(x => !(x is Obj_AI_Hero)).Count(x => x.IsMinion);
                 var qmSpell = Config.Item("UseQMe").GetValue<bool>();
                 if (qmSpell
-                    && target.IsValidTarget(Q.Range)
-                    && minioncol <= 1)
+                    && target.IsValidTarget(Q.Range))
                 {
-                    Q.Cast(prediction.CastPosition);
+                    Q.Cast(target);
                 }
             }
         }
@@ -633,7 +616,7 @@ namespace Slutty_Gnar
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
             var prediction = Q.GetPrediction(target);
             var qcollision = Q.GetCollision(Player.ServerPosition.To2D(),
-                new List<Vector2> {prediction.CastPosition.To2D()});
+            new List<Vector2> {prediction.CastPosition.To2D()});
             var minioncol = qcollision.Where(x => !(x is Obj_AI_Hero)).Count(x => x.IsMinion);
             var ks = Config.Item("KS").GetValue<bool>();
             var qSpell = Config.Item("useQ2KS").GetValue<bool>();
@@ -782,9 +765,7 @@ namespace Slutty_Gnar
 
             ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            var targete = E.GetTarget(E.Width/2);
-            if (targete != null)
-            {
+
                 var prediction = E.GetPrediction(target);
                 var ed = Player.ServerPosition.Extend(prediction.CastPosition,
                     Player.ServerPosition.Distance(prediction.CastPosition) + E.Range);
@@ -795,7 +776,6 @@ namespace Slutty_Gnar
                 {
                     E.Cast(prediction.CastPosition);
                 }
-            }
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.All);
             foreach (var minion in minionCount)
             {
