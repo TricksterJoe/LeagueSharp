@@ -61,6 +61,16 @@ namespace Slutty_ryze
             Config.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "w Drawing").SetValue(true));
+            var drawDamageMenu = new MenuItem("RushDrawEDamage", "Combo damage").SetValue(true);
+            var drawFill = new MenuItem("RushDrawWDamageFill", "Combo Damage Fill").SetValue(new Circle(true, Color.SeaGreen));
+            Config.SubMenu("Drawings").AddItem(drawDamageMenu);
+            Config.SubMenu("Drawings").AddItem(drawFill);
+
+            DamageIndicator.DamageToUnit = GetComboDamage;
+            DamageIndicator.Enabled = drawDamageMenu.GetValue<bool>();
+            DamageIndicator.Fill = drawFill.GetValue<Circle>().Active;
+            DamageIndicator.FillColor = drawFill.GetValue<Circle>().Color;
+
 
             Config.AddSubMenu(new Menu("Combo", "Combo"));
             Config.SubMenu("Combo").AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
@@ -76,10 +86,6 @@ namespace Slutty_ryze
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseEM", "Use E").SetValue(true));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseWM", "Use W").SetValue(true));
 
-            Config.AddSubMenu(new Menu("Harras", "Harras"));
-            Config.SubMenu("Harras").AddItem(new MenuItem("UseQH", "Use Q").SetValue(true));
-            Config.SubMenu("Harras").AddItem(new MenuItem("UseEH", "Use E").SetValue(true));
-            Config.SubMenu("Harras").AddItem(new MenuItem("useH", "Harras if Mana above").SetValue(new Slider(50)));
 
             Config.AddSubMenu(new Menu("LaneClear", "LaneClear"));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q to last hit in laneclear").SetValue(true));
@@ -96,6 +102,9 @@ namespace Slutty_ryze
             Config.AddSubMenu(new Menu("Items", "Items"));
             Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack tear").SetValue(true));
             Config.SubMenu("Items").AddItem(new MenuItem("tearSM", "Min Mana").SetValue(new Slider(95)));
+
+            Config.AddSubMenu(new Menu("Misc", "Misc"));
+            Config.SubMenu("Misc").AddItem(new MenuItem("useW2I", "Interrupt with W").SetValue(true));
 
             Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
@@ -117,6 +126,7 @@ namespace Slutty_ryze
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
+            Interrupter.OnPossibleToInterrupt += BlitzInterruptableSpell;
 
         }
         private static void Game_OnUpdate(EventArgs args)
@@ -152,6 +162,17 @@ namespace Slutty_ryze
             KillSteal();
             Orbwalker.SetAttack(true);
         }
+
+        private static void BlitzInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
+        {
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            var wSpell = Config.Item("useW2I").GetValue<bool>();
+            if (wSpell)
+            {
+                W.CastOnUnit(target);
+            }
+        }
+
         private static void Drawing_OnDraw(EventArgs args)
         {
             if (Player.IsDead)
@@ -282,9 +303,9 @@ namespace Slutty_ryze
 
         private static void Mixed()
         {
-            var qSpell = Config.Item("useQM").GetValue<bool>();
-            var eSpell = Config.Item("useEM").GetValue<bool>();
-            var wSpell = Config.Item("useWM").GetValue<bool>();
+            var qSpell = Config.Item("UseQM").GetValue<bool>();
+            var eSpell = Config.Item("UseEM").GetValue<bool>();
+            var wSpell = Config.Item("UseWM").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
 
             if (qSpell
@@ -423,6 +444,23 @@ namespace Slutty_ryze
             {
                 Orbwalker.SetAttack(false);
             }
+        }
+        static float GetComboDamage(Obj_AI_Base enemy)
+        {
+                if (Q.IsReady())
+                {
+                    return Q.GetDamage(enemy);
+                }
+            if (E.IsReady())
+            {
+                return E.GetDamage(enemy);
+            }
+            if (W.IsReady())
+            {
+                return W.GetDamage(enemy);
+            }
+
+            return 0;
         }
     }
 
