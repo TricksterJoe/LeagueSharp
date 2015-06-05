@@ -75,13 +75,16 @@ namespace Slutty_sor
             Config.SubMenu("Combo").AddItem(new MenuItem("UseQ", "Use Q").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseE", "Use E").SetValue(true));
 
+            Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("useE2KS", "Use E for ks").SetValue(true));
 
             Config.AddSubMenu(new Menu("AutoHeal", "AutoHeal"));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseRh", "Use W").SetValue(true));
-            Config.SubMenu("Harras").AddItem(new MenuItem("useWh", "W If Ally %HP >").SetValue(new Slider(50)));
-            Config.SubMenu("Harras").AddItem(new MenuItem("duseWh", "dont W If your %HP >").SetValue(new Slider(50)));
-            Config.SubMenu("Combo").AddItem(new MenuItem("UseRh", "Use R").SetValue(true));
-            Config.SubMenu("Harras").AddItem(new MenuItem("duseRh", "R If Ally %HP >").SetValue(new Slider(50)));
+            Config.SubMenu("AutoHeal").AddItem(new MenuItem("UseWh", "Use W").SetValue(true));
+            Config.SubMenu("AutoHeal").AddItem(new MenuItem("useWh", "W If Ally %HP >").SetValue(new Slider(50)));
+            Config.SubMenu("AutoHeal").AddItem(new MenuItem("duseWh", "dont W If your %HP >").SetValue(new Slider(50)));
+            Config.SubMenu("AutoHeal").AddItem(new MenuItem("UseRh", "Use R").SetValue(true));
+            Config.SubMenu("AutoHeal").AddItem(new MenuItem("duseRh", "R If Ally %HP >").SetValue(new Slider(50)));
 
             Config.AddSubMenu(new Menu("Harras", "Harras"));
             Config.SubMenu("Harras").AddItem(new MenuItem("UseQH", "Use Q").SetValue(true));
@@ -96,15 +99,22 @@ namespace Slutty_sor
             Config.AddSubMenu(new Menu("Misc", "Misc"));
             Config.SubMenu("Misc").AddItem(new MenuItem("UseE2I", "E On interruptable").SetValue(true));
 
-            Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("useE2KS", "Use E for ks").SetValue(true));
+
+            Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
+            Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
+            Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
+            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("MANA", "Auto Mana Potion").SetValue(true));
+            Config.SubMenu("autoP").AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
+            Config.SubMenu("autoP").AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("flask", "Auto Flask").SetValue(true));
+            Config.SubMenu("autoP").AddItem(new MenuItem("fSlider", "Minimum %Health for flask")).SetValue(new Slider(50));
 
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
             Interrupter.OnPossibleToInterrupt += SorakaInterruptableSpell;
-            Orbwalking.BeforeAttack += BeforeAttack;
 
         }
 
@@ -114,9 +124,7 @@ namespace Slutty_sor
             if (Player.IsDead)
                 return;
 
-            Potion();
-            KillSteal();
-            AutoHeal();
+
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
@@ -132,7 +140,11 @@ namespace Slutty_sor
             {
                 LaneClear();
             }
+            KillSteal();
+            AutoHeal();
+            Potion();
         }
+
         static float GetComboDamage(Obj_AI_Base enemy)
         {
                 if (Q.IsReady())
@@ -146,20 +158,6 @@ namespace Slutty_sor
 
             return 0;
         }
-        static void BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
-        {
-            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            if (args.Target.IsValid<Obj_AI_Hero>()
-                && Q.IsReady())
-            {
-                Q.Cast(target);
-            }
-            if (args.Target.IsValid<Obj_AI_Hero>()
-                && E.IsReady())
-            {
-                E.Cast(target);
-            }
-        }
         private static void SorakaInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
@@ -172,14 +170,78 @@ namespace Slutty_sor
 
         private static void Potion()
         {
-            
-        }
+            var autoPotion = Config.Item("autoPO").GetValue<bool>();
+            var hPotion = Config.Item("HP").GetValue<bool>();
+            var mPotion = Config.Item("MANA").GetValue<bool>();
+            var bPotion = Config.Item("Biscuit").GetValue<bool>();
+            var fPotion = Config.Item("flask").GetValue<bool>();
+            var pSlider = Config.Item("HPSlider").GetValue<Slider>().Value;
+            var mSlider = Config.Item("MANASlider").GetValue<Slider>().Value;
+            var bSlider = Config.Item("bSlider").GetValue<Slider>().Value;
+            var fSlider = Config.Item("fSlider").GetValue<Slider>().Value;
+            if (Player.IsRecalling() || Player.InFountain())
+            {
+                return;
+            }
+            if (autoPotion
+                && hPotion
+                && Player.HealthPercent <= pSlider
+                && Player.CountEnemiesInRange(1000) >= 0
+                && HealthPotion.IsReady()
+                && !Player.HasBuff("RegenerationPotion")
+                && !Player.HasBuff("ItemCrystalFlask"))
+            {
+                HealthPotion.Cast();
+            }
 
+            if (autoPotion
+                && mPotion
+                && Player.ManaPercent <= mSlider
+                && Player.CountEnemiesInRange(1000) >= 0
+                && HealthPotion.IsReady()
+                && !Player.HasBuff("RegenerationPotion")
+                && !Player.HasBuff("ItemCrystalFlask"))
+            {
+                ManaPotion.Cast();
+            }
+
+            if (autoPotion
+                && bPotion
+                && Player.HealthPercent <= bSlider
+                && Player.CountEnemiesInRange(1000) >= 0
+                && HealthPotion.IsReady()
+                && !Player.HasBuff("ItemMiniRegenPotion"))
+            {
+                BiscuitofRejuvenation.Cast();
+            }
+
+            if (autoPotion
+                && fPotion
+                && Player.HealthPercent <= fSlider
+                && Player.CountEnemiesInRange(1000) >= 0
+                && HealthPotion.IsReady()
+                && !Player.HasBuff("ItemMiniRegenPotion")
+                && !Player.HasBuff("ItemCrystalFlask")
+                && !Player.HasBuff("RegenerationPotion")
+                && !Player.HasBuff("FlaskOfCrystalWater"))
+            {
+                CrystallineFlask.Cast();
+            }
+        }
         private static void Combo()
         {
             var qSpell = Config.Item("UseQ").GetValue<bool>();
             var eSpell = Config.Item("UseE").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
+            if (qSpell
+                && eSpell
+                && target.IsValidTarget(E.Range))
+            {
+                E.Cast(target);
+                Q.Cast(target);
+            }
+
             if (qSpell
                 && target.IsValidTarget(Q.Range))
             {
