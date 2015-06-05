@@ -72,8 +72,10 @@ namespace Slutty_sor
             DamageIndicator.FillColor = drawFill.GetValue<Circle>().Color;
 
             Config.AddSubMenu(new Menu("Combo", "Combo"));
+            Config.SubMenu("Combo").AddItem(new MenuItem("sheen", "Check sheen proc").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseQ", "Use Q").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseE", "Use E").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseEQ", "Use E+Q Combo").SetValue(true));
 
             Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
@@ -230,13 +232,19 @@ namespace Slutty_sor
         }
         private static void Combo()
         {
+            if (HasSheenBuff
+                && Config.Item("sheen").GetValue<bool>())
+                return;
+
             var qSpell = Config.Item("UseQ").GetValue<bool>();
             var eSpell = Config.Item("UseE").GetValue<bool>();
+            var qeSpell = Config.Item("UseQE").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
             if (qSpell
                 && eSpell
-                && target.IsValidTarget(E.Range))
+                && target.IsValidTarget(E.Range)
+                && qeSpell)
             {
                 E.Cast(target);
                 Q.Cast(target);
@@ -275,6 +283,11 @@ namespace Slutty_sor
             {
                 E.Cast(target);
             }
+        }
+
+        private static bool HasSheenBuff
+        {
+            get { return Player.HasBuff("sheen", true); }
         }
 
         private static void LaneClear()
