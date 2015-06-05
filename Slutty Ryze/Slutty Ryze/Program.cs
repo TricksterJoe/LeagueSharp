@@ -20,16 +20,19 @@ namespace Slutty_ryze
         public const string Menuname = "Slutty Ryze";
         public static Menu Config;
         public static Orbwalking.Orbwalker Orbwalker;
-        public static Spell Q, W, E, R;
+        public static Spell Q, W, E, R, Qn;
 
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
 
+        public static int[] abilitySequence;
+        public static int qOff = 0, wOff = 0, eOff = 0, rOff = 0;
+
+        public static int Muramana = 3042;
         public static Items.Item HealthPotion = new Items.Item(2003);
         public static Items.Item CrystallineFlask = new Items.Item(2041);
         public static Items.Item ManaPotion = new Items.Item(2004);
         public static Items.Item BiscuitofRejuvenation = new Items.Item(2010);
-
-
+        public static Items.Item ArchangelsStaff = new Items.Item(3003);
 
         private static void Main(string[] args)
         {
@@ -42,11 +45,15 @@ namespace Slutty_ryze
                 return;
 
             Q = new Spell(SpellSlot.Q, 1050);
+            Qn = new Spell(SpellSlot.Q, 1050);
             W = new Spell(SpellSlot.W, 800);
             E = new Spell(SpellSlot.E);
             R = new Spell(SpellSlot.R, 500);
 
             Q.SetSkillshot(0.26f, 50f, 1700f, true, SkillshotType.SkillshotLine);
+            Qn.SetSkillshot(0.26f, 50f, 1700f, false, SkillshotType.SkillshotLine);
+
+            abilitySequence = new int[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 2, 2, 3, 4, 3, 3};
 
             Config = new Menu(Menuname, Menuname, true);
             Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
@@ -88,23 +95,29 @@ namespace Slutty_ryze
 
 
             Config.AddSubMenu(new Menu("LaneClear", "LaneClear"));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q to last hit in laneclear").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useWlc", "Use W to last hit in lane clear").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useElc", "Use E to last hit in lane clear").SetValue(true));   
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useW2L", "Use W to lane clear").SetValue(true)); 
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E to lane clear").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useESlider", "Min minions for E").SetValue(new Slider(3, 1, 20)));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum mana for lane clear").SetValue(new Slider(50, 1, 200)));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useR", "Use R in lane clear").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum minions for R").SetValue(new Slider(3, 1, 20)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q To Last Hit In Lane Clear").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useWlc", "Use W To Last Hit In Lane Clear").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useElc", "Use E To Last Hit In Lane Clear").SetValue(true));   
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQ2L", "Use Q To Lane Clear").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useW2L", "Use W To Lane Clear").SetValue(true)); 
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useESlider", "Min Minions For E").SetValue(new Slider(3, 1, 20)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum Mana For Lane Clear").SetValue(new Slider(50, 1, 200)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useR", "Use R In Lane Clear").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
 
             Config.AddSubMenu(new Menu("Items", "Items"));
             Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack tear").SetValue(true));
             Config.SubMenu("Items").AddItem(new MenuItem("tearSM", "Min Mana").SetValue(new Slider(95)));
+            Config.SubMenu("Items").AddItem(new MenuItem("staff", "Use Arch angel staff").SetValue(true));
+            Config.SubMenu("Items").AddItem(new MenuItem("staffhp", "Staff when %HP >").SetValue(new Slider(30)));
+            Config.SubMenu("Items").AddItem(new MenuItem("muramana", "Muramana").SetValue(true));
 
             Config.AddSubMenu(new Menu("Misc", "Misc"));
             Config.SubMenu("Misc").AddItem(new MenuItem("useW2I", "Interrupt with W").SetValue(true));
+            Config.SubMenu("Misc").AddItem(new MenuItem("level", "Auto Skill Level Up").SetValue(true));
+
 
             Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
@@ -126,7 +139,8 @@ namespace Slutty_ryze
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
-            Interrupter.OnPossibleToInterrupt += BlitzInterruptableSpell;
+            Interrupter.OnPossibleToInterrupt += RyzeInterruptableSpell;
+            Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
 
         }
         private static void Game_OnUpdate(EventArgs args)
@@ -157,13 +171,38 @@ namespace Slutty_ryze
                 TearStack();
                 Orbwalker.SetAttack(true);
             }
-            
+            Item();
             Potion();
             KillSteal();
+            if (Config.Item("level").GetValue<bool>())
+            {
+                LevelUpSpells();
+            }
             Orbwalker.SetAttack(true);
         }
 
-        private static void BlitzInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
+        private static void LevelUpSpells()
+        {
+            int qL = Player.Spellbook.GetSpell(SpellSlot.Q).Level + qOff;
+            int wL = Player.Spellbook.GetSpell(SpellSlot.W).Level + wOff;
+            int eL = Player.Spellbook.GetSpell(SpellSlot.E).Level + eOff;
+            int rL = Player.Spellbook.GetSpell(SpellSlot.R).Level + rOff;
+            if (qL + wL + eL + rL < ObjectManager.Player.Level)
+            {
+                int[] level = new int[] { 0, 0, 0, 0 };
+                for (int i = 0; i < ObjectManager.Player.Level; i++)
+                {
+                    level[abilitySequence[i] - 1] = level[abilitySequence[i] - 1] + 1;
+                }
+                if (qL < level[0]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.Q);
+                if (wL < level[1]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.W);
+                if (eL < level[2]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.E);
+                if (rL < level[3]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.R);
+
+            }
+        }
+
+        private static void RyzeInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             var wSpell = Config.Item("useW2I").GetValue<bool>();
@@ -177,6 +216,7 @@ namespace Slutty_ryze
         {
             if (Player.IsDead)
                 return;
+
             if (Config.Item("qDraw").GetValue<bool>() && Q.Level > 0)
             {
                 Render.Circle.DrawCircle(Player.Position, Q.Range, Color.Green);
@@ -198,39 +238,82 @@ namespace Slutty_ryze
             var wSpell = Config.Item("useW").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
-
-            if (qSpell
-                && Q.IsReady()
-                && target.IsValidTarget(Q.Range))
+            if (GetPassiveBuff == 2)
             {
-                Q.Cast(target);
+                if (qSpell
+                    && Q.IsReady()
+                    && target.IsValidTarget(Q.Range))
+                {
+                    Q.Cast(target);
+                }
+
+                if (wSpell
+                    && W.IsReady()
+                    && target.IsValidTarget(W.Range))
+                {
+                    W.CastOnUnit(target);
+                }
+
+                if (eSpell
+                    && E.IsReady()
+                    && target.IsValidTarget(E.Range))
+                {
+                    E.CastOnUnit(target);
+                }
+
+                if (rSpell
+                    && R.IsReady()
+                    && target.Health > (Q.GetDamage(target) + E.GetDamage(target))
+                    && target.IsValidTarget(Q.Range))
+                {
+                    R.Cast();
+                }
             }
 
-            if (wSpell
-                && W.IsReady()
-                && target.IsValidTarget(W.Range))
+            if (GetPassiveBuff <= 2)
+                return;
             {
-                W.CastOnUnit(target);
-            }
-
-            if (eSpell
-                && E.IsReady()
-                && target.IsValidTarget(E.Range))
-            {
-                E.CastOnUnit(target);
-            }
-
-            if (rSpell
-                && R.IsReady()
-                && target.Health > (Q.GetDamage(target) + E.GetDamage(target))
-                && target.IsValidTarget(Q.Range))
-            {
-                R.Cast();
+                if (GetPassiveBuff == 3
+                    && Q.IsReady())
+                {
+                    {
+                        Qn.Cast(target);
+                    }
+                    if (wSpell
+                        && W.IsReady()
+                        && target.IsValidTarget(W.Range))
+                    {
+                        W.CastOnUnit(target);
+                    }
+                    if (E.IsReady()
+                        && eSpell
+                        && target.IsValidTarget(E.Range))
+                    {
+                        E.CastOnUnit(target);
+                    }
+                    if (R.IsReady()
+                        && rSpell
+                        && target.IsValidTarget(E.Range))
+                    {
+                        R.Cast();
+                    }
+                    if (Q.IsReady()
+                        && qSpell
+                        && target.IsValidTarget(Q.Range))
+                    {
+                        Q.Cast(target);
+                    }
+                }
             }
         }
 
         private static void LaneClear()
         {
+
+            if (GetPassiveBuff == 4
+                && Config.Item("passiveproc").GetValue<bool>())
+                return;
+
             var qlchSpell = Config.Item("useQlc").GetValue<bool>();
             var elchSpell = Config.Item("useElc").GetValue<bool>();
             var wlchSpell = Config.Item("useWlc").GetValue<bool>();
@@ -356,6 +439,15 @@ namespace Slutty_ryze
             }
         }
 
+        private static int GetPassiveBuff
+        {
+            get
+            {
+                var data = ObjectManager.Player.Buffs.FirstOrDefault(b => b.DisplayName == "RyzePassiveStack");
+                return data != null ? data.Count : 0;
+            }
+        }
+
         private static void Potion()
         {
             var autoPotion = Config.Item("autoPO").GetValue<bool>();
@@ -461,6 +553,34 @@ namespace Slutty_ryze
             }
 
             return 0;
+        }
+
+        private static void Item()
+        {
+            var staff = Config.Item("staff").GetValue<bool>();
+            var staffhp = Config.Item("staffhp").GetValue<Slider>().Value;
+            if (staff
+                && Items.HasItem(ItemData.Archangels_Staff.Id)
+                && Player.HealthPercent <= staffhp)
+            {
+                Items.UseItem(ItemData.Archangels_Staff.Id);
+            }
+        }
+        static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
+        {
+            var mura = Config.Item("muramana").GetValue<bool>();
+            if (mura)
+            {
+                var muramanai = Items.HasItem(Muramana) ? 3042 : 3043;
+                if (args.Target.IsValid<Obj_AI_Hero>() 
+                    && args.Target.IsEnemy
+                    && Items.HasItem(muramanai)
+                    && Items.CanUseItem(muramanai))
+                {
+                    if (!ObjectManager.Player.HasBuff("Muramana"))
+                        Items.UseItem(muramanai);
+                }
+            }
         }
     }
 
