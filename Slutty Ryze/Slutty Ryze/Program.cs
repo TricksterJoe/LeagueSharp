@@ -48,7 +48,7 @@ namespace Slutty_ryze
             Qn = new Spell(SpellSlot.Q, 900);
             W = new Spell(SpellSlot.W, 600);
             E = new Spell(SpellSlot.E, 600);
-            R = new Spell(SpellSlot.R, 500);
+            R = new Spell(SpellSlot.R);
 
             Q.SetSkillshot(0.26f, 50f, 1700f, true, SkillshotType.SkillshotLine);
             Qn.SetSkillshot(0.26f, 50f, 1700f, false, SkillshotType.SkillshotLine);
@@ -392,10 +392,6 @@ namespace Slutty_ryze
             var eSpell = Config.Item("UseEM").GetValue<bool>();
             var wSpell = Config.Item("UseWM").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
-            foreach (var JOE_HAS_NO_PENIS in target.Buffs)
-            {
-                Console.WriteLine(JOE_HAS_NO_PENIS.Name.ToString(), 1337);
-            }
             if (qSpell
                 && Q.IsReady()
                 && target.IsValidTarget(Q.Range))
