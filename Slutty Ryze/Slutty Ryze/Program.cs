@@ -151,26 +151,28 @@ namespace Slutty_ryze
             if (Player.IsDead)
                 return;
 
-            Orbwalker.SetAttack(true);
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                Combo();
                 AABlock();
+                Combo();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
                 Mixed();
+                Orbwalker.SetAttack(true);
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
-                LaneClear();        
+                LaneClear();
+                Orbwalker.SetAttack(true);
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
                 TearStack();
+                Orbwalker.SetAttack(true);
             }
 
             Item();
