@@ -238,7 +238,8 @@ namespace Slutty_ryze
             var wSpell = Config.Item("useW").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
-            if (GetPassiveBuff == 2)
+
+            if (GetPassiveBuff <= 2)
             {
                 if (qSpell
                     && Q.IsReady()
@@ -270,15 +271,13 @@ namespace Slutty_ryze
                 }
             }
 
-            if (GetPassiveBuff <= 2)
-                return;
-            {
-                if (GetPassiveBuff == 3
-                    && Q.IsReady())
-                {
+
+                if (GetPassiveBuff == 3)
                     {
                         Qn.Cast(target);
                     }
+
+            if (GetPassiveBuff == 4 || Player.HasBuff("ryzepassivecharged"))
                     if (wSpell
                         && W.IsReady()
                         && target.IsValidTarget(W.Range))
@@ -303,8 +302,7 @@ namespace Slutty_ryze
                     {
                         Q.Cast(target);
                     }
-                }
-            }
+                
         }
 
         private static void LaneClear()
@@ -332,7 +330,7 @@ namespace Slutty_ryze
                     if (qlchSpell
                         && Q.IsReady()
                         && minion.IsValidTarget(Q.Range)
-                        && minion.Health > Q.GetDamage(minion))
+                        && minion.Health < Q.GetDamage(minion))
                     {
                         Q.Cast(minion);
                     }
@@ -340,7 +338,7 @@ namespace Slutty_ryze
                     if (wlchSpell
                         && W.IsReady()
                         && minion.IsValidTarget(W.Range)
-                        && minion.Health > W.GetDamage(minion))
+                        && minion.Health < W.GetDamage(minion))
                     {
                         W.CastOnUnit(minion);
                     }
@@ -348,7 +346,7 @@ namespace Slutty_ryze
                     if (elchSpell
                         && E.IsReady()
                         && minion.IsValidTarget(E.Range)
-                        && minion.Health > E.GetDamage(minion))
+                        && minion.Health < E.GetDamage(minion))
                     {
                         E.CastOnUnit(minion);
                     }
