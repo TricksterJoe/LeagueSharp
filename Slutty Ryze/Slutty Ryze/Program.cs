@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Dynamic;
@@ -150,37 +151,36 @@ namespace Slutty_ryze
             if (Player.IsDead)
                 return;
 
+            Orbwalker.SetAttack(true);
+
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                AABlock();
                 Combo();
+                AABlock();
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
                 Mixed();
-                Orbwalker.SetAttack(true);
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
-                LaneClear();
-                Orbwalker.SetAttack(true);
+                LaneClear();        
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
                 TearStack();
-                Orbwalker.SetAttack(true);
             }
 
             Item();
             Potion();
             KillSteal();
+
             if (Config.Item("level").GetValue<bool>())
             {
                 LevelUpSpells();
             }
-            Orbwalker.SetAttack(true);
         }
 
         private static void LevelUpSpells()
@@ -191,7 +191,7 @@ namespace Slutty_ryze
             int rL = Player.Spellbook.GetSpell(SpellSlot.R).Level + rOff;
             if (qL + wL + eL + rL < ObjectManager.Player.Level)
             {
-                int[] level = new int[] { 0, 0, 0, 0 };
+                int[] level = { 0, 0, 0, 0 };
                 for (int i = 0; i < ObjectManager.Player.Level; i++)
                 {
                     level[abilitySequence[i] - 1] = level[abilitySequence[i] - 1] + 1;
@@ -292,7 +292,7 @@ namespace Slutty_ryze
                     {
                         E.CastOnUnit(target);
                     }
-                    if (R.IsReady()
+                  if (R.IsReady()
                         && rSpell
                         && target.IsValidTarget(E.Range))
                     {
@@ -300,9 +300,9 @@ namespace Slutty_ryze
                     }
                     if (Q.IsReady()
                         && qSpell
-                        && target.IsValidTarget(Q.Range))
+                        && target.IsValidTarget(Qn.Range))
                     {
-                        Q.Cast(target);
+                        Qn.Cast(target);
                     }
                 
         }
@@ -519,11 +519,11 @@ namespace Slutty_ryze
                 || ItemData.Archangels_Staff.Stacks.Equals(750))
                 return;
 
-
             if (tears
                 && Q.IsReady() 
                 && Player.ManaPercent >= mtears
-                && ((Items.HasItem(ItemData.Tear_of_the_Goddess.Id) || Items.HasItem(ItemData.Archangels_Staff.Id))))
+                && ((Items.HasItem(ItemData.Tear_of_the_Goddess.Id) 
+                || Items.HasItem(ItemData.Archangels_Staff.Id))))
             {
                 Q.Cast(Player.Position);
             }
@@ -540,10 +540,10 @@ namespace Slutty_ryze
         }
         static float GetComboDamage(Obj_AI_Base enemy)
         {
-                if (Q.IsReady())
-                {
-                    return Q.GetDamage(enemy);
-                }
+            if (Q.IsReady())
+             {
+                return Q.GetDamage(enemy);
+             }
             if (E.IsReady())
             {
                 return E.GetDamage(enemy);
@@ -552,7 +552,6 @@ namespace Slutty_ryze
             {
                 return W.GetDamage(enemy);
             }
-
             return 0;
         }
 
