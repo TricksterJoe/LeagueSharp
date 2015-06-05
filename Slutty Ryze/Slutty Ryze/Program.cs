@@ -44,10 +44,10 @@ namespace Slutty_ryze
             if (Player.ChampionName != ChampName)
                 return;
 
-            Q = new Spell(SpellSlot.Q, 1050);
-            Qn = new Spell(SpellSlot.Q, 1050);
-            W = new Spell(SpellSlot.W, 800);
-            E = new Spell(SpellSlot.E);
+            Q = new Spell(SpellSlot.Q, 900);
+            Qn = new Spell(SpellSlot.Q, 900);
+            W = new Spell(SpellSlot.W, 600);
+            E = new Spell(SpellSlot.E, 600);
             R = new Spell(SpellSlot.R, 500);
 
             Q.SetSkillshot(0.26f, 50f, 1700f, true, SkillshotType.SkillshotLine);
@@ -84,6 +84,7 @@ namespace Slutty_ryze
             Config.SubMenu("Combo").AddItem(new MenuItem("useW", "Use W").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("useE", "Use E").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("useR", "Use R").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("useRww", "Only R if Target Is Rooted").SetValue(true));
 
             Config.AddSubMenu(new Menu("ComboOptions", "ComboOptions"));
             Config.SubMenu("ComboOptions").AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(true));
@@ -103,7 +104,7 @@ namespace Slutty_ryze
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useESlider", "Min Minions For E").SetValue(new Slider(3, 1, 20)));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum Mana For Lane Clear").SetValue(new Slider(50, 1, 200)));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useR", "Use R In Lane Clear").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useRl", "Use R In Lane Clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
 
@@ -171,6 +172,7 @@ namespace Slutty_ryze
                 TearStack();
                 Orbwalker.SetAttack(true);
             }
+
             Item();
             Potion();
             KillSteal();
@@ -318,7 +320,7 @@ namespace Slutty_ryze
             var q2LSpell = Config.Item("useQ2L").GetValue<bool>();
             var e2LSpell = Config.Item("useE2L").GetValue<bool>();
             var w2LSpell = Config.Item("useW2L").GetValue<bool>();
-            var rSpell = Config.Item("useR").GetValue<bool>();
+            var rSpell = Config.Item("useRl").GetValue<bool>();
             var rSlider = Config.Item("rMin").GetValue<Slider>().Value;
             var minMana = Config.Item("useEPL").GetValue<Slider>().Value;
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
@@ -377,6 +379,8 @@ namespace Slutty_ryze
                     {
                         R.Cast();
                     }
+
+
                 }
             }
             
@@ -388,7 +392,10 @@ namespace Slutty_ryze
             var eSpell = Config.Item("UseEM").GetValue<bool>();
             var wSpell = Config.Item("UseWM").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
-
+            foreach (var JOE_HAS_NO_PENIS in target.Buffs)
+            {
+                Console.WriteLine(JOE_HAS_NO_PENIS.Name.ToString(), 1337);
+            }
             if (qSpell
                 && Q.IsReady()
                 && target.IsValidTarget(Q.Range))
