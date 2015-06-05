@@ -66,7 +66,7 @@ namespace Slutty_Blitz
             Config.SubMenu("Combo").AddItem(new MenuItem("UseW", "Use W").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseR", "Use R").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("UseRc", "Only R when will hit").SetValue(new Slider(3, 1, 5)));
-
+            Config.SubMenu("Combo").AddItem(new MenuItem("UseQmanual", "Semi manual Q").SetValue(new KeyBind(66, KeyBindType.Press)));
 
             Config.AddSubMenu(new Menu("LaneClear", "LaneClear"));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useLM", "Lane Clear Mana >").SetValue(new Slider(50)));
@@ -111,6 +111,10 @@ namespace Slutty_Blitz
 
             if (Player.IsDead)
                 return;
+            if (Config.Item("useQmanual").GetValue<KeyBind>().Active)
+            {
+                ManualQ();
+            }
 
             if (Player.IsValid &&
     Config.Item("fleekey").GetValue<KeyBind>().Active)
@@ -349,6 +353,12 @@ namespace Slutty_Blitz
             {
                 E.Cast();
             }
+        }
+
+        private static void ManualQ()
+        {
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            Q.Cast(target);
         }
     }
 
