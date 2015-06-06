@@ -97,17 +97,17 @@ namespace Slutty_ryze
 
 
             Config.AddSubMenu(new Menu("LaneClear", "LaneClear"));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q To Last Hit In Lane Clear").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useWlc", "Use W To Last Hit In Lane Clear").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useElc", "Use E To Last Hit In Lane Clear").SetValue(true));   
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum Mana For Lane Clear").SetValue(new Slider(50)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useWlc", "Use W Last Hit").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useElc", "Use E Last Hit").SetValue(true));   
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQ2L", "Use Q To Lane Clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useW2L", "Use W To Lane Clear").SetValue(true)); 
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useESlider", "Min Minions For E").SetValue(new Slider(3, 1, 20)));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum Mana For Lane Clear").SetValue(new Slider(50, 1, 200)));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useRl", "Use R In Lane Clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
 
             Config.AddSubMenu(new Menu("Items", "Items"));
             Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack tear").SetValue(true));
@@ -125,7 +125,7 @@ namespace Slutty_ryze
             Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useW2KS", "Use W for ks").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("useE2KS", "Use W for ks").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("useE2KS", "Use E for ks").SetValue(true));
 
             Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
             Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
@@ -241,6 +241,7 @@ namespace Slutty_ryze
             var eSpell = Config.Item("useE").GetValue<bool>();
             var wSpell = Config.Item("useW").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
+            var rwwSpell = Config.Item("useR").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
 
             if (GetPassiveBuff <= 2)
@@ -268,11 +269,21 @@ namespace Slutty_ryze
 
                 if (rSpell
                     && R.IsReady()
+                    && !rwwSpell
                     && target.Health > (Q.GetDamage(target) + E.GetDamage(target))
                     && target.IsValidTarget(Q.Range))
                 {
                     R.Cast();
                 }
+                if (rSpell
+                   && R.IsReady()
+                   && rwwSpell
+                   && target.Health > (Q.GetDamage(target) + E.GetDamage(target))
+                   && target.IsValidTarget(Q.Range)
+                   && target.HasBuff("RyzeW"))
+                {
+                    R.Cast();
+                }               
             }
 
 
@@ -288,18 +299,31 @@ namespace Slutty_ryze
                     {
                         W.CastOnUnit(target);
                     }
+
                     if (E.IsReady()
                         && eSpell
                         && target.IsValidTarget(E.Range))
                     {
                         E.CastOnUnit(target);
                     }
+
                   if (R.IsReady()
+                      && rwwSpell
                         && rSpell
-                        && target.IsValidTarget(E.Range))
+                        && target.IsValidTarget(E.Range)
+                      && target.HasBuff("RyzeW"))
                     {
                         R.Cast();
                     }
+
+                  if (R.IsReady()
+                      && !rwwSpell
+                        && rSpell
+                        && target.IsValidTarget(E.Range))
+                  {
+                      R.Cast();
+                  }
+
                     if (Q.IsReady()
                         && qSpell
                         && target.IsValidTarget(Qn.Range))
@@ -377,7 +401,7 @@ namespace Slutty_ryze
                     if (rSpell
                         && R.IsReady()
                         && minion.IsValidTarget(Q.Range)
-                        && minionCount.Count >= rSlider)
+                        && minionCount.Count > rSlider)
                     {
                         R.Cast();
                     }
@@ -390,6 +414,7 @@ namespace Slutty_ryze
 
         private static void Mixed()
         {
+
             var qSpell = Config.Item("UseQM").GetValue<bool>();
             var eSpell = Config.Item("UseEM").GetValue<bool>();
             var wSpell = Config.Item("UseWM").GetValue<bool>();
@@ -469,7 +494,7 @@ namespace Slutty_ryze
             if (autoPotion
                 && hPotion
                 && Player.HealthPercent <= pSlider
-                && Player.CountEnemiesInRange(1000) >= 0
+                && Player.CountEnemiesInRange(1100) >= 0
                 && HealthPotion.IsReady()
                 && !Player.HasBuff("RegenerationPotion")
                 && !Player.HasBuff("ItemCrystalFlask"))
