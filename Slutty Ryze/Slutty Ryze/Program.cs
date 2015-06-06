@@ -186,6 +186,7 @@ namespace Slutty_ryze
                 LevelUpSpells();
             }
         }
+
         /*
         private static void Seplane()
         {
@@ -350,7 +351,7 @@ namespace Slutty_ryze
 
             if (GetPassiveBuff == 4
                 && Config.Item("passiveproc").GetValue<bool>()
-                && Player.HasBuff("ryzepassivecharged"))
+                && !Player.HasBuff("RyzeR"))
                 return;
 
             var qlchSpell = Config.Item("useQlc").GetValue<bool>();
