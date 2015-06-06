@@ -87,7 +87,7 @@ namespace Slutty_ryze
             Config.SubMenu("Combo").AddItem(new MenuItem("useR", "Use R").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("useRww", "Only R if Target Is Rooted").SetValue(true));
 
-            Config.AddSubMenu(new Menu("ComboOptions", "ComboOptions"));
+            Config.AddSubMenu(new Menu("Combo Options", "ComboOptions"));
             Config.SubMenu("ComboOptions").AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(true));
 
             Config.AddSubMenu(new Menu("Mixed", "Mixed"));
@@ -96,7 +96,7 @@ namespace Slutty_ryze
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseWM", "Use W").SetValue(true));
 
 
-            Config.AddSubMenu(new Menu("LaneClear", "LaneClear"));
+            Config.AddSubMenu(new Menu("Lane Clear", "LaneClear"));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum Mana For Lane Clear").SetValue(new Slider(50)));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
@@ -108,6 +108,7 @@ namespace Slutty_ryze
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useESlider", "Min Minions For E").SetValue(new Slider(3, 1, 20)));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useRl", "Use R In Lane Clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
+           // Config.SubMenu("LaneClear").AddItem(new MenuItem("seplane", "Seperate Lane Clear Key").SetValue(new KeyBind('V', KeyBindType.Press)));
 
             Config.AddSubMenu(new Menu("Items", "Items"));
             Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack tear").SetValue(true));
@@ -121,7 +122,7 @@ namespace Slutty_ryze
             Config.SubMenu("Misc").AddItem(new MenuItem("level", "Auto Skill Level Up").SetValue(true));
 
 
-            Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
+            Config.AddSubMenu(new Menu("Kill Steal", "KillSteal"));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useW2KS", "Use W for ks").SetValue(true));
@@ -175,6 +176,7 @@ namespace Slutty_ryze
                 Orbwalker.SetAttack(true);
             }
 
+            // Seplane();
             Item();
             Potion();
             KillSteal();
@@ -184,7 +186,17 @@ namespace Slutty_ryze
                 LevelUpSpells();
             }
         }
-
+        /*
+        private static void Seplane()
+        {
+            if (Player.IsValid &&
+                Config.Item("seplane").GetValue<KeyBind>().Active)
+            {
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                LaneClear();
+            }
+        }
+         */
         private static void LevelUpSpells()
         {
             int qL = Player.Spellbook.GetSpell(SpellSlot.Q).Level + qOff;
@@ -337,7 +349,8 @@ namespace Slutty_ryze
         {
 
             if (GetPassiveBuff == 4
-                && Config.Item("passiveproc").GetValue<bool>())
+                && Config.Item("passiveproc").GetValue<bool>()
+                && Player.HasBuff("ryzepassivecharged"))
                 return;
 
             var qlchSpell = Config.Item("useQlc").GetValue<bool>();
@@ -543,7 +556,8 @@ namespace Slutty_ryze
             var mtears = Config.Item("tearSM").GetValue<Slider>().Value;
             if (ItemData.Tear_of_the_Goddess.Stacks.Equals(750) 
                 || Items.HasItem(ItemData.Seraphs_Embrace.Id) 
-                || ItemData.Archangels_Staff.Stacks.Equals(750))
+                || ItemData.Archangels_Staff.Stacks.Equals(750)
+                || GetPassiveBuff == 4)
                 return;
 
             if (tears
