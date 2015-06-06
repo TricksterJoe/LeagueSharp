@@ -33,7 +33,7 @@ namespace Slutty_ryze
         public static Items.Item CrystallineFlask = new Items.Item(2041);
         public static Items.Item ManaPotion = new Items.Item(2004);
         public static Items.Item BiscuitofRejuvenation = new Items.Item(2010);
-        public static Items.Item ArchangelsStaff = new Items.Item(3003);
+        public static Items.Item SeraphsEmbrace = new Items.Item(3040, 0);
 
         private static void Main(string[] args)
         {
@@ -113,8 +113,8 @@ namespace Slutty_ryze
             Config.AddSubMenu(new Menu("Items", "Items"));
             Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack tear").SetValue(true));
             Config.SubMenu("Items").AddItem(new MenuItem("tearSM", "Min Mana").SetValue(new Slider(95)));
-            Config.SubMenu("Items").AddItem(new MenuItem("staff", "Use Arch angel staff").SetValue(true));
-            Config.SubMenu("Items").AddItem(new MenuItem("staffhp", "Staff when %HP >").SetValue(new Slider(30)));
+            Config.SubMenu("Items").AddItem(new MenuItem("staff", "Use Seraphs Embrace").SetValue(true));
+            Config.SubMenu("Items").AddItem(new MenuItem("staffhp", "Seraph's when %HP >").SetValue(new Slider(30)));
             Config.SubMenu("Items").AddItem(new MenuItem("muramana", "Muramana").SetValue(true));
 
             Config.AddSubMenu(new Menu("Misc", "Misc"));
@@ -602,10 +602,10 @@ namespace Slutty_ryze
             var staff = Config.Item("staff").GetValue<bool>();
             var staffhp = Config.Item("staffhp").GetValue<Slider>().Value;
             if (staff
-                && Items.HasItem(ItemData.Archangels_Staff.Id)
+                && Items.HasItem(ItemData.Seraphs_Embrace.Id)
                 && Player.HealthPercent <= staffhp)
             {
-                Items.UseItem(ItemData.Archangels_Staff.Id);
+                Items.UseItem(ItemData.Seraphs_Embrace.Id);
             }
         }
         static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
