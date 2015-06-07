@@ -98,16 +98,17 @@ namespace Slutty_ryze
 
 
             Config.AddSubMenu(new Menu("Lane Clear", "LaneClear"));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("disablelane", "Disable ALL Lane Clear options").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum Mana For Lane Clear").SetValue(new Slider(50)));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useWlc", "Use W Last Hit").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useElc", "Use E Last Hit").SetValue(true));   
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useWlc", "Use W Last Hit").SetValue(false));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useElc", "Use E Last Hit").SetValue(false));   
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQ2L", "Use Q To Lane Clear").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useW2L", "Use W To Lane Clear").SetValue(true)); 
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useW2L", "Use W To Lane Clear").SetValue(false)); 
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useESlider", "Min Minions For E").SetValue(new Slider(3, 1, 20)));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useRl", "Use R In Lane Clear").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useRl", "Use R In Lane Clear").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
            // Config.SubMenu("LaneClear").AddItem(new MenuItem("seplane", "Seperate Lane Clear Key").SetValue(new KeyBind('V', KeyBindType.Press)));
 
@@ -363,6 +364,10 @@ namespace Slutty_ryze
 
         private static void LaneClear()
         {
+            if (Config.Item("disablelane").GetValue<bool>())
+            {
+                return;
+            }
 
             if (GetPassiveBuff == 4
                 && Config.Item("passiveproc").GetValue<bool>()
