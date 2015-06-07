@@ -93,6 +93,7 @@ namespace Slutty_ryze
 
             Config.AddSubMenu(new Menu("Mixed", "Mixed"));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseQM", "Use Q").SetValue(true));
+            Config.SubMenu("Mixed").AddItem(new MenuItem("UseQMl", "Use Q last hit minion").SetValue(true));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseEM", "Use E").SetValue(true));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseWM", "Use W").SetValue(true));
 
@@ -386,6 +387,9 @@ namespace Slutty_ryze
                     {
                         Qn.Cast(target);
                     }
+                    {
+                        E.CastOnUnit(target);
+                     }
 
             if (GetPassiveBuff == 4 || Player.HasBuff("ryzepassivecharged"))
                     if (wSpell
@@ -551,8 +555,10 @@ namespace Slutty_ryze
         {
 
             var qSpell = Config.Item("UseQM").GetValue<bool>();
+            var qlSpell = Config.Item("UseQMl").GetValue<bool>();
             var eSpell = Config.Item("UseEM").GetValue<bool>();
             var wSpell = Config.Item("UseWM").GetValue<bool>();
+            var minMana = Config.Item("useEPL").GetValue<Slider>().Value;
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
             if (qSpell
                 && Q.IsReady()
@@ -573,7 +579,21 @@ namespace Slutty_ryze
                 && target.IsValidTarget(E.Range))
             {
                 E.CastOnUnit(target);
-            }           
+            }        
+            var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+            {
+                if (Player.ManaPercent <= minMana)
+                    return;
+                foreach (var minion in minionCount)
+                {
+                    if (qlSpell
+                        && Q.IsReady()
+                        && minion.Health < Q.GetDamage(minion))
+                    {
+                        Q.Cast(minion);
+                    }
+                }
+            }
         }
 
         private static void KillSteal()
