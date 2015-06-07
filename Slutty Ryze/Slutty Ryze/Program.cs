@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Drawing.Text;
 using System.Dynamic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -83,7 +84,7 @@ namespace Slutty_ryze
 
             Config.AddSubMenu(new Menu("Combo", "Combo"));
             Config.SubMenu("Combo").AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("useW", "Use W").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("useW", "Use W").SetValue(true));  
             Config.SubMenu("Combo").AddItem(new MenuItem("useE", "Use E").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("useR", "Use R").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("useRww", "Only R if Target Is Rooted").SetValue(true));
@@ -168,7 +169,6 @@ namespace Slutty_ryze
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                Orbwalker.SetAttack(true);
                 AABlock();
                 Combo();
             }
@@ -329,10 +329,11 @@ namespace Slutty_ryze
             var rwwSpell = Config.Item("useRww").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
 
-            if (target.Distance(Player) > W.Range)
+           /* if (Player.Distance(target) > W.Range)
             {
                 Orbwalker.SetAttack(false);
             }
+            */
 
             if (target.Health < IgniteDamage(target) + W.GetDamage(target))
             {
@@ -723,8 +724,8 @@ namespace Slutty_ryze
 
         private static void AABlock()
         {
-            if (!Q.IsReady() && !E.IsReady() && !W.IsReady())
-                return;
+             if (!Q.IsReady() && !E.IsReady() && !W.IsReady())
+               return;
 
             var aaBlock = Config.Item("AAblock").GetValue<bool>();
             if (aaBlock)
