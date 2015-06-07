@@ -597,6 +597,8 @@ namespace Slutty_ryze
 
         private static void AABlock()
         {
+            if (!Q.IsReady() && !E.IsReady() && !W.IsReady())
+                return;
             var aaBlock = Config.Item("AAblock").GetValue<bool>();
             if (aaBlock)
             {
