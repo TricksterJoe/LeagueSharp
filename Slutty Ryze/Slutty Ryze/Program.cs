@@ -112,8 +112,15 @@ namespace Slutty_ryze
             Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
            // Config.SubMenu("LaneClear").AddItem(new MenuItem("seplane", "Seperate Lane Clear Key").SetValue(new KeyBind('V', KeyBindType.Press)));
 
+            Config.AddSubMenu(new Menu("Jungle Clear", "JungleClear"));
+            Config.SubMenu("JungleClear").AddItem(new MenuItem("useQj", "Use Q").SetValue(true));
+            Config.SubMenu("JungleClear").AddItem(new MenuItem("useWj", "Use W").SetValue(true));
+            Config.SubMenu("JungleClear").AddItem(new MenuItem("useEj", "Use E").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useJM", "Minimum Mana For Lane Clear").SetValue(new Slider(50)));
+
             Config.AddSubMenu(new Menu("Items", "Items"));
-            Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack tear").SetValue(true));
+            Config.SubMenu("Items").AddItem(new MenuItem("tearoptions", "Don't Stack Tear in Fountain").SetValue(false));
+            Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack Tear").SetValue(true));
             Config.SubMenu("Items").AddItem(new MenuItem("tearSM", "Min Mana").SetValue(new Slider(95)));
             Config.SubMenu("Items").AddItem(new MenuItem("staff", "Use Seraphs Embrace").SetValue(true));
             Config.SubMenu("Items").AddItem(new MenuItem("staffhp", "Seraph's when %HP >").SetValue(new Slider(30)));
@@ -121,7 +128,9 @@ namespace Slutty_ryze
 
             Config.AddSubMenu(new Menu("Misc", "Misc"));
             Config.SubMenu("Misc").AddItem(new MenuItem("useW2I", "Interrupt with W").SetValue(true));
+            Config.SubMenu("Misc").AddItem(new MenuItem("useQW2D", "W/Q On Dashing").SetValue(true));
             Config.SubMenu("Misc").AddItem(new MenuItem("level", "Auto Skill Level Up").SetValue(true));
+            Config.SubMenu("Misc").AddItem(new MenuItem("autow", "Auto W enemy under turret").SetValue(true));
 
 
             Config.AddSubMenu(new Menu("Kill Steal", "KillSteal"));
@@ -146,6 +155,7 @@ namespace Slutty_ryze
             Game.OnUpdate += Game_OnUpdate;
             Interrupter.OnPossibleToInterrupt += RyzeInterruptableSpell;
             Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
+            CustomEvents.Unit.OnDash += Unit_OnDash;
 
         }
         private static void Game_OnUpdate(EventArgs args)
@@ -153,10 +163,11 @@ namespace Slutty_ryze
 
             if (Player.IsDead)
                 return;
-
+            Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
+                Orbwalker.SetAttack(true);
                 AABlock();
                 Combo();
             }
@@ -169,8 +180,9 @@ namespace Slutty_ryze
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
-                LaneClear();
                 Orbwalker.SetAttack(true);
+                JungleClear();
+                LaneClear();
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
@@ -186,6 +198,11 @@ namespace Slutty_ryze
             if (Config.Item("level").GetValue<bool>())
             {
                 LevelUpSpells();
+            }
+            if (Config.Item("autow").GetValue<bool>()
+                && target.UnderTurret(true))
+            {
+                W.CastOnUnit(target);
             }
         }
         private static float IgniteDamage(Obj_AI_Hero target)
@@ -237,6 +254,49 @@ namespace Slutty_ryze
                 W.CastOnUnit(target);
             }
         }
+        static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
+        {
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            var qSpell = Config.Item("useQW2D").GetValue<bool>();
+
+            if (!sender.IsEnemy)
+            {
+                return;
+            }
+
+            if (sender.NetworkId == target.NetworkId)
+            {
+                if (qSpell)
+                {
+
+                if (Q.IsReady()
+                    && args.EndPos.Distance(Player) < Q.Range)
+                    {
+                        var delay = (int) (args.EndTick - Game.Time - Q.Delay - 0.1f);
+                        if (delay > 0)
+                        {
+                            Utility.DelayAction.Add(delay*1000, () => Q.Cast(args.EndPos));
+                        }
+                        else
+                        {
+                            Q.Cast(args.EndPos);
+                        }
+                        if (Q.IsReady()
+                        && args.EndPos.Distance(Player) < Q.Range)
+                        {
+                            if (delay > 0)
+                            {
+                                Utility.DelayAction.Add(delay*1000, () => Q.Cast(args.EndPos));
+                            }
+                            else
+                            {
+                                W.CastOnUnit(target);
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         private static void Drawing_OnDraw(EventArgs args)
         {
@@ -259,13 +319,19 @@ namespace Slutty_ryze
 
         private static void Combo()
         {
+
             Ignite = Player.GetSpellSlot("summonerdot");
             var qSpell = Config.Item("useQ").GetValue<bool>();
             var eSpell = Config.Item("useE").GetValue<bool>();
             var wSpell = Config.Item("useW").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
-            var rwwSpell = Config.Item("useR").GetValue<bool>();
+            var rwwSpell = Config.Item("useRww").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+
+            if (target.Distance(Player) > W.Range)
+            {
+                Orbwalker.SetAttack(false);
+            }
 
             if (target.Health < IgniteDamage(target) + W.GetDamage(target))
             {
@@ -439,11 +505,46 @@ namespace Slutty_ryze
                     {
                         R.Cast();
                     }
-
-
                 }
             }
             
+        }
+
+        private static void JungleClear()
+        {
+            var qSpell = Config.Item("useQj").GetValue<bool>();
+            var eSpell = Config.Item("useEj").GetValue<bool>();
+            var wSpell = Config.Item("useWj").GetValue<bool>();
+            var mSlider = Config.Item("useJM").GetValue<Slider>().Value;
+            if (Player.ManaPercent < mSlider)
+            {
+                return;
+            }
+            var jungleMinion = MinionManager.GetMinions(Q.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth).FirstOrDefault();
+            if (!jungleMinion.IsValidTarget()
+                || jungleMinion == null)
+            {
+                LaneClear();
+                return;
+            }
+            if (qSpell
+                && Q.IsReady()
+                && jungleMinion.IsValidTarget(Q.Range))
+            {
+                Q.Cast(jungleMinion);
+            }
+            if (eSpell
+                && E.IsReady()
+                && jungleMinion.IsValidTarget(E.Range))
+            {
+                E.CastOnUnit(jungleMinion);
+            }
+            if (wSpell
+                && W.IsReady()
+                && jungleMinion.IsValidTarget(W.Range))
+            {
+                W.CastOnUnit(jungleMinion);
+            }
         }
 
         private static void Mixed()
@@ -573,6 +674,11 @@ namespace Slutty_ryze
 
         private static void TearStack()
         {
+            if (Config.Item("tearoptions").GetValue<bool>()
+                && Player.InFountain())
+            {
+                return;
+            }
             if (Player.IsRecalling())
                 return;
 
@@ -599,6 +705,7 @@ namespace Slutty_ryze
         {
             if (!Q.IsReady() && !E.IsReady() && !W.IsReady())
                 return;
+
             var aaBlock = Config.Item("AAblock").GetValue<bool>();
             if (aaBlock)
             {
@@ -624,6 +731,7 @@ namespace Slutty_ryze
 
         private static void Item()
         {
+
             var staff = Config.Item("staff").GetValue<bool>();
             var staffhp = Config.Item("staffhp").GetValue<Slider>().Value;
             if (staff
