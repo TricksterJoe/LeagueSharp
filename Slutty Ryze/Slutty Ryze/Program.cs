@@ -22,6 +22,7 @@ namespace Slutty_ryze
         public static Menu Config;
         public static Orbwalking.Orbwalker Orbwalker;
         public static Spell Q, W, E, R, Qn;
+        private static SpellSlot Ignite;
 
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
 
@@ -186,6 +187,13 @@ namespace Slutty_ryze
                 LevelUpSpells();
             }
         }
+        private static float IgniteDamage(Obj_AI_Hero target)
+        {
+            if (Ignite == SpellSlot.Unknown || Player.Spellbook.CanUseSpell(Ignite) != SpellState.Ready)
+                return 0f;
+            return (float)Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
+        }
+
 
         /*
         private static void Seplane()
@@ -250,12 +258,19 @@ namespace Slutty_ryze
 
         private static void Combo()
         {
+            Ignite = Player.GetSpellSlot("summonerdot");
             var qSpell = Config.Item("useQ").GetValue<bool>();
             var eSpell = Config.Item("useE").GetValue<bool>();
             var wSpell = Config.Item("useW").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
             var rwwSpell = Config.Item("useR").GetValue<bool>();
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+
+            if (target.Health < IgniteDamage(target) + W.GetDamage(target))
+            {
+                Player.Spellbook.CastSpell(Ignite, target);
+            }
+
 
             if (GetPassiveBuff <= 2)
             {
@@ -553,6 +568,9 @@ namespace Slutty_ryze
 
         private static void TearStack()
         {
+            if (Player.IsRecalling())
+                return;
+
             var tears = Config.Item("tearS").GetValue<bool>();
             var mtears = Config.Item("tearSM").GetValue<Slider>().Value;
             if (ItemData.Tear_of_the_Goddess.Stacks.Equals(750) 
