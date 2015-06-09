@@ -169,6 +169,18 @@ namespace Slutty_ryze
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
+                if (Player.Distance(target) > 440)
+                    Orbwalker.SetAttack(false);
+                else
+                    Orbwalker.SetAttack(true);
+            }
+            else
+            {
+                Orbwalker.SetAttack(true);
+            }
+
+            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            {
                 AABlock();
                 Combo();
             }
