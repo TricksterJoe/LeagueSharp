@@ -104,8 +104,7 @@ namespace Slutty_ryze
             Config.AddSubMenu(new Menu("Lane Clear", "LaneClear"));
             Config.SubMenu("LaneClear")
                 .AddItem(new MenuItem("disablelane", "Disable ALL Lane Clear options").SetValue(false));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
             Config.SubMenu("LaneClear")
                 .AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
@@ -122,11 +121,11 @@ namespace Slutty_ryze
             // Config.SubMenu("LaneClear").AddItem(new MenuItem("seplane", "Seperate Lane Clear Key").SetValue(new KeyBind('V', KeyBindType.Press)));
 
             Config.AddSubMenu(new Menu("Jungle Clear", "JungleClear"));
+            Config.SubMenu("JungleClear").AddItem(new MenuItem("useJM", "Minimum Mana For Jungle Clear").SetValue(new Slider(50)));
             Config.SubMenu("JungleClear").AddItem(new MenuItem("useQj", "Use Q").SetValue(true));
             Config.SubMenu("JungleClear").AddItem(new MenuItem("useWj", "Use W").SetValue(true));
             Config.SubMenu("JungleClear").AddItem(new MenuItem("useEj", "Use E").SetValue(true));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("useJM", "Minimum Mana For Lane Clear").SetValue(new Slider(50)));
+
 
             Config.AddSubMenu(new Menu("Items", "Items"));
             Config.SubMenu("Items").AddItem(new MenuItem("tearoptions", "Don't Stack Tear in Fountain").SetValue(false));
@@ -703,10 +702,6 @@ namespace Slutty_ryze
         private static void Mixed()
         {
 
-            foreach (var JOE_HAS_NO_PENIS in Player.Buffs)
-            {
-                Console.WriteLine(JOE_HAS_NO_PENIS.Name.ToString(), 1337);
-            }
             var qSpell = Config.Item("UseQM").GetValue<bool>();
             var qlSpell = Config.Item("UseQMl").GetValue<bool>();
             var eSpell = Config.Item("UseEM").GetValue<bool>();
