@@ -190,7 +190,10 @@ namespace Slutty_Caitlyn
             Potion();
             AutoW();
             KillSteal();
-            ManualR();
+            if (Config.Item("UseRM").GetValue<KeyBind>().Active)
+            {
+                ManualR();
+            }
 
         }
         private static void Drawing_OnDraw(EventArgs args)
@@ -426,9 +429,10 @@ namespace Slutty_Caitlyn
         private static void ManualR()
         {
             var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
-            var rSpell = Config.Item("UseRM").GetValue<bool>();
-            if (rSpell
-                && target.IsValidTarget(R.Range))
+            if (target == null)
+                return;
+
+            if (target.IsValidTarget(R.Range))
             {
                 R.CastOnUnit(target);
             }
