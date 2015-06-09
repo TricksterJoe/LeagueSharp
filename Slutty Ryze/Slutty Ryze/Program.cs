@@ -160,6 +160,11 @@ namespace Slutty_ryze
             Config.SubMenu("autoP").AddItem(new MenuItem("flask", "Auto Flask").SetValue(true));
             Config.SubMenu("autoP").AddItem(new MenuItem("fSlider", "Minimum %Health for flask")).SetValue(new Slider(50));
 
+            Config.AddSubMenu(new Menu("Passive Stack", "autoPassive"));
+            Config.SubMenu("autoPassive").AddItem(new MenuItem("autoPassive", "Stack Passive").SetValue(true));
+            Config.SubMenu("autoPassive").AddItem(new MenuItem("stackSlider", "Keep passive count at")).SetValue(new Slider(3, 1, 4));
+            Config.SubMenu("autoPassive").AddItem(new MenuItem("stackMana", "Minimum %Mana")).SetValue(new Slider(50));
+
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
@@ -174,7 +179,7 @@ namespace Slutty_ryze
 
             if (Player.IsDead)
                 return;
-
+            AutoPassive();
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
@@ -851,7 +856,7 @@ namespace Slutty_ryze
             }
             if (Player.IsRecalling())
                 return;
-
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             var tears = Config.Item("tearS").GetValue<bool>();
             var mtears = Config.Item("tearSM").GetValue<Slider>().Value;
             if (ItemData.Tear_of_the_Goddess.Stacks.Equals(750)
@@ -866,9 +871,28 @@ namespace Slutty_ryze
                 && ((Items.HasItem(ItemData.Tear_of_the_Goddess.Id)
                      || Items.HasItem(ItemData.Archangels_Staff.Id))))
             {
-                Q.Cast(Player.Position);
-            }
+                var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+                {
+                    foreach (var minion in minionCount)
+                    {
+                        if (target != null)
+                        {
+                            Q.Cast(target);
+                        }
 
+                        if (minion != null)
+                        {
+                            Q.Cast(minion);
+                        }
+
+                        if (target == null
+                            || minion == null)
+                        {
+                            Q.Cast(Player.Position);
+                        }
+                    }
+                }
+            }
         }
 
         private static void AABlock()
@@ -926,6 +950,34 @@ namespace Slutty_ryze
                         Items.UseItem(muramanai);
                 }
             }
+        }
+
+        private static void AutoPassive()
+        {
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
+            if (target != null)
+            {
+                return;
+            }
+
+            var stackSliders = Config.Item("stackSlider").GetValue<Slider>().Value;
+            if (Player.IsRecalling() || Player.InFountain())
+            {
+                return;
+            }
+
+            if (!Config.Item("autoPassive").GetValue<bool>() 
+                || GetPassiveBuff >= stackSliders )
+            {
+                return;
+            }
+            if (Environment.TickCount - Q.LastCastAttemptT >= 11000
+                && Q.IsReady())
+            {
+                Q.Cast(Player.Position);
+            }
+
         }
     }
 }
