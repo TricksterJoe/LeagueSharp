@@ -339,7 +339,8 @@ namespace Slutty_ryze
             var wSpell = Config.Item("useW").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
             var rwwSpell = Config.Item("useRww").GetValue<bool>();
-            Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            Obj_AI_Hero wtarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
             if (target == null)
             {
                 return;
@@ -372,14 +373,14 @@ namespace Slutty_ryze
                     && wSpell
                     && W.IsReady())
                 {
-                    W.CastOnUnit(target);
+                    W.CastOnUnit(wtarget);
                 }
 
                 if (target.IsValidTarget(E.Range)
                     && eSpell
                     && E.IsReady())
                 {
-                    E.CastOnUnit(target);
+                    E.CastOnUnit(wtarget);
                 }
 
                 if (target.IsValidTarget(Q.Range)
@@ -415,14 +416,14 @@ namespace Slutty_ryze
                     && target.IsValidTarget(E.Range))
                 {
                     {
-                        E.CastOnUnit(target);
+                        E.CastOnUnit(wtarget);
                     }
                 }
                 if (W.IsReady()
                     && target.IsValidTarget(W.Range))
                 {
                     {
-                        W.CastOnUnit(target);
+                        W.CastOnUnit(wtarget);
                     }
                 }
                 if (target.IsValidTarget(W.Range)
@@ -445,47 +446,84 @@ namespace Slutty_ryze
 
             }
 
-            if (GetPassiveBuff == 4 || Player.HasBuff("ryzepassivecharged"))
-                    if (target.IsValidTarget(W.Range)
-                        && wSpell
-                        && W.IsReady())
+            if (GetPassiveBuff == 4)
+            {
+                if (target.IsValidTarget(W.Range)
+                    && wSpell
+                    && W.IsReady())
+                {
+                    W.CastOnUnit(wtarget);
+                }
+                if (target.IsValidTarget(Qn.Range)
+                    && Q.IsReady()
+                    && qSpell)
+                {
+                    Qn.Cast(target);
+                }
+                if (target.IsValidTarget(E.Range)
+                    && E.IsReady()
+                    && eSpell)
+                {
+                    E.CastOnUnit(wtarget);
+                }
+
+                if (target.IsValidTarget(W.Range)
+                    && R.IsReady()
+                    && rwwSpell
+                    && rSpell
+                    && target.HasBuff("RyzeW")
+                    && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
+                {
+                    R.Cast();
+                }
+
+                if (target.IsValidTarget(W.Range)
+                    && R.IsReady()
+                    && !rwwSpell
+                    && rSpell
+                    && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
+                {
+                    R.Cast();
+                }
+            }
+            if (Player.HasBuff("ryzepassivecharged"))
+                {
+
+                    if (wSpell
+                        && W.IsReady()
+                        && target.IsValidTarget(W.Range))
                     {
-                        W.CastOnUnit(target);
+                        W.CastOnUnit(wtarget);
                     }
-                    if (target.IsValidTarget(Qn.Range)
-                        && Q.IsReady()
-                        && qSpell)
+
+                    if (qSpell && Q.IsReady() && target.IsValidTarget(Qn.Range) && !W.IsReady())
                     {
                         Qn.Cast(target);
                     }
-                    if (target.IsValidTarget(E.Range)
-                        && E.IsReady()
-                        && eSpell)
+
+                    if (eSpell && E.IsReady() && target.IsValidTarget(E.Range) && !W.IsReady() && !Q.IsReady())
                     {
-                        E.CastOnUnit(target);
+                        E.CastOnUnit(wtarget);
                     }
 
-                  if (target.IsValidTarget(W.Range)
-                      && R.IsReady()
-                      && rwwSpell
-                      && rSpell
-                      && target.HasBuff("RyzeW")
-                      && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
+                    if (R.IsReady()
+                       && rwwSpell
+                       && rSpell
+                       && target.IsValidTarget(E.Range)
+                       && target.HasBuff("RyzeW"))
                     {
                         R.Cast();
                     }
 
-                  if (target.IsValidTarget(W.Range)
-                        && R.IsReady()
+                    if (R.IsReady()
                         && !rwwSpell
-                        && rSpell
-                        && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
-                  {
-                      R.Cast();
-                  }
-
-                
-        }
+                          && rSpell
+                          && target.IsValidTarget(E.Range))
+                    {
+                        R.Cast();
+                    }
+                }
+            }
 
         private static void LaneClear()
         {
