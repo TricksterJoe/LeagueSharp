@@ -105,7 +105,7 @@ namespace Slutty_ryze
             Config.SubMenu("LaneClear")
                 .AddItem(new MenuItem("disablelane", "Disable ALL Lane Clear options").SetValue(false));
             Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("useEPL", "Minimum Mana For Lane Clear").SetValue(new Slider(50)));
+                .AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
             Config.SubMenu("LaneClear")
                 .AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
@@ -152,21 +152,13 @@ namespace Slutty_ryze
             Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
             Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
             Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
-            Config.SubMenu("autoP")
-                .AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion"))
-                .SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(50));
             Config.SubMenu("autoP").AddItem(new MenuItem("MANA", "Auto Mana Potion").SetValue(true));
-            Config.SubMenu("autoP")
-                .AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion"))
-                .SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion")).SetValue(new Slider(50));
             Config.SubMenu("autoP").AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
-            Config.SubMenu("autoP")
-                .AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit"))
-                .SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit")).SetValue(new Slider(50));
             Config.SubMenu("autoP").AddItem(new MenuItem("flask", "Auto Flask").SetValue(true));
-            Config.SubMenu("autoP")
-                .AddItem(new MenuItem("fSlider", "Minimum %Health for flask"))
-                .SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("fSlider", "Minimum %Health for flask")).SetValue(new Slider(50));
 
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
@@ -182,6 +174,7 @@ namespace Slutty_ryze
 
             if (Player.IsDead)
                 return;
+
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
@@ -216,14 +209,15 @@ namespace Slutty_ryze
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
+                Potion();
                 TearStack();
                 Orbwalker.SetAttack(true);
             }
 
             // Seplane();
             Item();
-            Potion();
             KillSteal();
+            Potion();
 
             if (Config.Item("level").GetValue<bool>())
             {
@@ -240,7 +234,6 @@ namespace Slutty_ryze
                 {
                     W.CastOnUnit(target);
                 }
-
             }
         }
 
@@ -705,6 +698,10 @@ namespace Slutty_ryze
         private static void Mixed()
         {
 
+            foreach (var JOE_HAS_NO_PENIS in Player.Buffs)
+            {
+                Console.WriteLine(JOE_HAS_NO_PENIS.Name.ToString(), 1337);
+            }
             var qSpell = Config.Item("UseQM").GetValue<bool>();
             var qlSpell = Config.Item("UseQMl").GetValue<bool>();
             var eSpell = Config.Item("UseEM").GetValue<bool>();
@@ -797,43 +794,45 @@ namespace Slutty_ryze
             {
                 return;
             }
-            if (autoPotion
-                && hPotion
+            if (!autoPotion)
+            {
+                return;
+            }
+
+            if (hPotion
                 && Player.HealthPercent <= pSlider
-                && Player.CountEnemiesInRange(1100) >= 0
+                && Player.CountEnemiesInRange(1000) >= 0
                 && HealthPotion.IsReady()
-                && !Player.HasBuff("RegenerationPotion")
-                && !Player.HasBuff("ItemCrystalFlask"))
+                && !Player.HasBuff("FlaskOfCrystalWater")
+                && !Player.HasBuff("ItemCrystalFlask")
+                && !Player.HasBuff("RegenerationPotion"))
             {
                 HealthPotion.Cast();
             }
 
-            if (autoPotion
-                && mPotion
+            if (mPotion
                 && Player.ManaPercent <= mSlider
                 && Player.CountEnemiesInRange(1000) >= 0
-                && HealthPotion.IsReady()
+                && ManaPotion.IsReady()
                 && !Player.HasBuff("RegenerationPotion")
-                && !Player.HasBuff("ItemCrystalFlask"))
+                && !Player.HasBuff("FlaskOfCrystalWater"))
             {
                 ManaPotion.Cast();
             }
 
-            if (autoPotion
-                && bPotion
+            if (bPotion
                 && Player.HealthPercent <= bSlider
                 && Player.CountEnemiesInRange(1000) >= 0
-                && HealthPotion.IsReady()
+                && BiscuitofRejuvenation.IsReady()
                 && !Player.HasBuff("ItemMiniRegenPotion"))
             {
                 BiscuitofRejuvenation.Cast();
             }
 
-            if (autoPotion
-                && fPotion
+            if (fPotion
                 && Player.HealthPercent <= fSlider
                 && Player.CountEnemiesInRange(1000) >= 0
-                && HealthPotion.IsReady()
+                && CrystallineFlask.IsReady()
                 && !Player.HasBuff("ItemMiniRegenPotion")
                 && !Player.HasBuff("ItemCrystalFlask")
                 && !Player.HasBuff("RegenerationPotion")
