@@ -91,14 +91,14 @@ namespace Slutty_ryze
             Config.SubMenu("Combo").AddItem(new MenuItem("useRww", "Only R if Target Is Rooted").SetValue(true));
 
             Config.AddSubMenu(new Menu("Combo Options", "ComboOptions"));
-            Config.SubMenu("ComboOptions")
-                .AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
+            Config.SubMenu("ComboOptions").AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
 
             Config.AddSubMenu(new Menu("Mixed", "Mixed"));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseQM", "Use Q").SetValue(true));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseQMl", "Use Q last hit minion").SetValue(true));
-            Config.SubMenu("Mixed").AddItem(new MenuItem("UseEM", "Use E").SetValue(true));
-            Config.SubMenu("Mixed").AddItem(new MenuItem("UseWM", "Use W").SetValue(true));
+            Config.SubMenu("Mixed").AddItem(new MenuItem("UseEM", "Use E").SetValue(false));
+            Config.SubMenu("Mixed").AddItem(new MenuItem("UseWM", "Use W").SetValue(false));
+            Config.SubMenu("Mixed").AddItem(new MenuItem("UseQauto", "Auto Q").SetValue(false));
 
 
             Config.AddSubMenu(new Menu("Lane Clear", "LaneClear"));
@@ -151,13 +151,13 @@ namespace Slutty_ryze
             Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
             Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
             Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
-            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(30));
             Config.SubMenu("autoP").AddItem(new MenuItem("MANA", "Auto Mana Potion").SetValue(true));
-            Config.SubMenu("autoP").AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion")).SetValue(new Slider(30));
             Config.SubMenu("autoP").AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
-            Config.SubMenu("autoP").AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit")).SetValue(new Slider(30));
             Config.SubMenu("autoP").AddItem(new MenuItem("flask", "Auto Flask").SetValue(true));
-            Config.SubMenu("autoP").AddItem(new MenuItem("fSlider", "Minimum %Health for flask")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("fSlider", "Minimum %Health for flask")).SetValue(new Slider(30));
 
             Config.AddSubMenu(new Menu("Passive Stack", "autoPassive"));
             Config.SubMenu("autoPassive").AddItem(new MenuItem("autoPassive", "Stack Passive").SetValue(true));
@@ -179,7 +179,7 @@ namespace Slutty_ryze
             if (Player.IsDead)
                 return;
             AutoPassive();
-            Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
@@ -216,6 +216,17 @@ namespace Slutty_ryze
                 Potion();
                 TearStack();
                 Orbwalker.SetAttack(true);
+            }
+            if (Config.Item("UseQauto").GetValue<bool>())
+            {
+                if (target == null)
+                    return;
+
+                if (Q.IsReady()
+                    && target.IsValidTarget(Q.Range))
+                {
+                    Q.Cast(target);
+                }
             }
 
             // Seplane();
