@@ -103,23 +103,17 @@ namespace Slutty_ryze
 
 
             Config.AddSubMenu(new Menu("Lane Clear", "LaneClear"));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useWlc", "Use W Last Hit").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useElc", "Use E Last Hit").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQ2L", "Use Q To Lane Clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useW2L", "Use W To Lane Clear").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(false));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("useESlider", "Min Minions For E").SetValue(new Slider(3, 1, 20)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(false));       
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useRl", "Use R In Lane Clear").SetValue(false));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
             // Config.SubMenu("LaneClear").AddItem(new MenuItem("seplane", "Seperate Lane Clear Key").SetValue(new KeyBind('V', KeyBindType.Press)));
 
             Config.AddSubMenu(new Menu("Jungle Clear", "JungleClear"));
@@ -131,7 +125,7 @@ namespace Slutty_ryze
 
 
             Config.AddSubMenu(new Menu("Items", "Items"));
-            Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack Tear").SetValue(true));
+            Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack Tear").SetValue(new KeyBind('G', KeyBindType.Toggle)));
             Config.SubMenu("Items").AddItem(new MenuItem("tearoptions", "Stack Tear Onlu in Fountain").SetValue(false));
             Config.SubMenu("Items").AddItem(new MenuItem("tearSM", "Min Mana").SetValue(new Slider(95)));
             Config.SubMenu("Items").AddItem(new MenuItem("staff", "Use Seraphs Embrace").SetValue(true));
@@ -154,9 +148,7 @@ namespace Slutty_ryze
             Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
             Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
             Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
-            Config.SubMenu("autoP")
-                .AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion"))
-                .SetValue(new Slider(30));
+            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(30));
             Config.SubMenu("autoP").AddItem(new MenuItem("MANA", "Auto Mana Potion").SetValue(true));
             Config.SubMenu("autoP")
                 .AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion"))
@@ -171,10 +163,8 @@ namespace Slutty_ryze
                 .SetValue(new Slider(30));
 
             Config.AddSubMenu(new Menu("Passive Stack", "autoPassive"));
-            Config.SubMenu("autoPassive").AddItem(new MenuItem("autoPassive", "Stack Passive").SetValue(true));
-            Config.SubMenu("autoPassive")
-                .AddItem(new MenuItem("stackSlider", "Keep passive count at"))
-                .SetValue(new Slider(3, 1, 4));
+            Config.SubMenu("autoPassive").AddItem(new MenuItem("autoPassive", "Stack Passive").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
+            Config.SubMenu("autoPassive").AddItem(new MenuItem("stackSlider", "Keep passive count at")).SetValue(new Slider(3, 1, 4));
             Config.SubMenu("autoPassive").AddItem(new MenuItem("stackMana", "Minimum %Mana")).SetValue(new Slider(50));
 
             Config.AddToMainMenu();
@@ -191,9 +181,10 @@ namespace Slutty_ryze
 
             if (Player.IsDead)
                 return;
-
-            AutoPassive();
-
+            if (Config.Item("autoPassive").GetValue<KeyBind>().Active)
+            {
+                AutoPassive();
+            }
 
 
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
@@ -224,17 +215,21 @@ namespace Slutty_ryze
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
-                Orbwalker.SetAttack(true);
-                JungleClear();
-                if (Config.Item("disablelane", true).GetValue<KeyBind>().Active)
+                if (Config.Item("disablelane").GetValue<KeyBind>().Active)
                 {
                     LaneClear();
                 }
+
+                Orbwalker.SetAttack(true);
+                JungleClear();
+
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
-
-                TearStack();
+                if (Config.Item("tearS").GetValue<KeyBind>().Active)
+                {
+                    TearStack();
+                }
                 Potion();
                 Orbwalker.SetAttack(true);
             }
@@ -590,8 +585,8 @@ namespace Slutty_ryze
         {
 
             if (GetPassiveBuff == 4
-                && Config.Item("passiveproc").GetValue<bool>()
-                && !Player.HasBuff("RyzeR"))
+                && !Player.HasBuff("RyzeR")
+                && Config.Item("passiveproc").GetValue<bool>())
                 return;
 
             var qlchSpell = Config.Item("useQlc").GetValue<bool>();
@@ -604,9 +599,9 @@ namespace Slutty_ryze
             var rSlider = Config.Item("rMin").GetValue<Slider>().Value;
             var minMana = Config.Item("useEPL").GetValue<Slider>().Value;
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-            {
                 if (Player.ManaPercent <= minMana)
                     return;
+
                 foreach (var minion in minionCount)
                 {
                     if (qlchSpell
@@ -662,7 +657,6 @@ namespace Slutty_ryze
                 }
             }
 
-        }
 
         private static void JungleClear()
         {
@@ -682,7 +676,7 @@ namespace Slutty_ryze
             if (!jungleMinion.IsValidTarget()
                 || jungleMinion == null)
             {
-                if (Config.Item("disablelane", true).GetValue<KeyBind>().Active)
+                if (Config.Item("disablelane").GetValue<KeyBind>().Active)
                 {
                     LaneClear();
                 }
@@ -898,8 +892,6 @@ namespace Slutty_ryze
             {
                 return;
             }
-            if (Config.Item("tearS").GetValue<bool>())
-            {
                 if (Q.IsReady()
                     && Player.ManaPercent >= mtears
                     && ((Items.HasItem(ItemData.Tear_of_the_Goddess.Id)
@@ -907,7 +899,6 @@ namespace Slutty_ryze
                 {
                     Q.Cast(Game.CursorPos);
                 }
-            }
         }
     
 
@@ -985,8 +976,7 @@ private static void AABlock()
                 return;
             }
 
-            if (!Config.Item("autoPassive").GetValue<bool>() 
-                || GetPassiveBuff >= stackSliders )
+            if (GetPassiveBuff >= stackSliders )
             {
                 return;
             }
