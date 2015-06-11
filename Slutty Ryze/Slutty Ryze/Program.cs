@@ -126,7 +126,7 @@ namespace Slutty_ryze
 
             Config.AddSubMenu(new Menu("Items", "Items"));
             Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack Tear").SetValue(new KeyBind('G', KeyBindType.Toggle)));
-            Config.SubMenu("Items").AddItem(new MenuItem("tearoptions", "Stack Tear Onlu in Fountain").SetValue(false));
+            Config.SubMenu("Items").AddItem(new MenuItem("tearoptions", "Stack Tear Only in Fountain").SetValue(false));
             Config.SubMenu("Items").AddItem(new MenuItem("tearSM", "Min Mana").SetValue(new Slider(95)));
             Config.SubMenu("Items").AddItem(new MenuItem("staff", "Use Seraphs Embrace").SetValue(true));
             Config.SubMenu("Items").AddItem(new MenuItem("staffhp", "Seraph's when %HP >").SetValue(new Slider(30)));
