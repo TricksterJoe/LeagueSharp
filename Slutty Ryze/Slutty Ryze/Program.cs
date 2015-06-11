@@ -91,7 +91,8 @@ namespace Slutty_ryze
             Config.SubMenu("Combo").AddItem(new MenuItem("useRww", "Only R if Target Is Rooted").SetValue(true));
 
             Config.AddSubMenu(new Menu("Combo Options", "ComboOptions"));
-            Config.SubMenu("ComboOptions").AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
+            Config.SubMenu("ComboOptions")
+                .AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
 
             Config.AddSubMenu(new Menu("Mixed", "Mixed"));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseQM", "Use Q").SetValue(true));
@@ -103,8 +104,9 @@ namespace Slutty_ryze
 
             Config.AddSubMenu(new Menu("Lane Clear", "LaneClear"));
             Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("disablelane", "Disable ALL Lane Clear options").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
+                .AddItem(new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
+            Config.SubMenu("LaneClear")
+                .AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
             Config.SubMenu("LaneClear")
                 .AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
@@ -121,15 +123,16 @@ namespace Slutty_ryze
             // Config.SubMenu("LaneClear").AddItem(new MenuItem("seplane", "Seperate Lane Clear Key").SetValue(new KeyBind('V', KeyBindType.Press)));
 
             Config.AddSubMenu(new Menu("Jungle Clear", "JungleClear"));
-            Config.SubMenu("JungleClear").AddItem(new MenuItem("useJM", "Minimum Mana For Jungle Clear").SetValue(new Slider(50)));
+            Config.SubMenu("JungleClear")
+                .AddItem(new MenuItem("useJM", "Minimum Mana For Jungle Clear").SetValue(new Slider(50)));
             Config.SubMenu("JungleClear").AddItem(new MenuItem("useQj", "Use Q").SetValue(true));
             Config.SubMenu("JungleClear").AddItem(new MenuItem("useWj", "Use W").SetValue(true));
             Config.SubMenu("JungleClear").AddItem(new MenuItem("useEj", "Use E").SetValue(true));
 
 
             Config.AddSubMenu(new Menu("Items", "Items"));
-            Config.SubMenu("Items").AddItem(new MenuItem("tearoptions", "Don't Stack Tear in Fountain").SetValue(false));
             Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack Tear").SetValue(true));
+            Config.SubMenu("Items").AddItem(new MenuItem("tearoptions", "Stack Tear Onlu in Fountain").SetValue(false));
             Config.SubMenu("Items").AddItem(new MenuItem("tearSM", "Min Mana").SetValue(new Slider(95)));
             Config.SubMenu("Items").AddItem(new MenuItem("staff", "Use Seraphs Embrace").SetValue(true));
             Config.SubMenu("Items").AddItem(new MenuItem("staffhp", "Seraph's when %HP >").SetValue(new Slider(30)));
@@ -151,17 +154,27 @@ namespace Slutty_ryze
             Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
             Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
             Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
-            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(30));
+            Config.SubMenu("autoP")
+                .AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion"))
+                .SetValue(new Slider(30));
             Config.SubMenu("autoP").AddItem(new MenuItem("MANA", "Auto Mana Potion").SetValue(true));
-            Config.SubMenu("autoP").AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion")).SetValue(new Slider(30));
+            Config.SubMenu("autoP")
+                .AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion"))
+                .SetValue(new Slider(30));
             Config.SubMenu("autoP").AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
-            Config.SubMenu("autoP").AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit")).SetValue(new Slider(30));
+            Config.SubMenu("autoP")
+                .AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit"))
+                .SetValue(new Slider(30));
             Config.SubMenu("autoP").AddItem(new MenuItem("flask", "Auto Flask").SetValue(true));
-            Config.SubMenu("autoP").AddItem(new MenuItem("fSlider", "Minimum %Health for flask")).SetValue(new Slider(30));
+            Config.SubMenu("autoP")
+                .AddItem(new MenuItem("fSlider", "Minimum %Health for flask"))
+                .SetValue(new Slider(30));
 
             Config.AddSubMenu(new Menu("Passive Stack", "autoPassive"));
             Config.SubMenu("autoPassive").AddItem(new MenuItem("autoPassive", "Stack Passive").SetValue(true));
-            Config.SubMenu("autoPassive").AddItem(new MenuItem("stackSlider", "Keep passive count at")).SetValue(new Slider(3, 1, 4));
+            Config.SubMenu("autoPassive")
+                .AddItem(new MenuItem("stackSlider", "Keep passive count at"))
+                .SetValue(new Slider(3, 1, 4));
             Config.SubMenu("autoPassive").AddItem(new MenuItem("stackMana", "Minimum %Mana")).SetValue(new Slider(50));
 
             Config.AddToMainMenu();
@@ -178,7 +191,11 @@ namespace Slutty_ryze
 
             if (Player.IsDead)
                 return;
+
             AutoPassive();
+
+
+
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
@@ -209,14 +226,19 @@ namespace Slutty_ryze
             {
                 Orbwalker.SetAttack(true);
                 JungleClear();
-                LaneClear();
+                if (Config.Item("disablelane", true).GetValue<KeyBind>().Active)
+                {
+                    LaneClear();
+                }
             }
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
-                Potion();
+
                 TearStack();
+                Potion();
                 Orbwalker.SetAttack(true);
             }
+
             if (Config.Item("UseQauto").GetValue<bool>())
             {
                 if (target == null)
@@ -228,6 +250,9 @@ namespace Slutty_ryze
                     Q.Cast(target);
                 }
             }
+
+                
+
 
             // Seplane();
             Item();
@@ -242,7 +267,7 @@ namespace Slutty_ryze
                 && target.UnderTurret(true))
             {
                 if (target == null)
-                return;
+                    return;
 
                 if (ObjectManager.Get<Obj_AI_Turret>()
                     .Any(turret => turret.IsValidTarget(300) && turret.IsAlly && turret.Health > 0))
@@ -563,10 +588,6 @@ namespace Slutty_ryze
 
         private static void LaneClear()
         {
-            if (Config.Item("disablelane").GetValue<bool>())
-            {
-                return;
-            }
 
             if (GetPassiveBuff == 4
                 && Config.Item("passiveproc").GetValue<bool>()
@@ -661,7 +682,10 @@ namespace Slutty_ryze
             if (!jungleMinion.IsValidTarget()
                 || jungleMinion == null)
             {
-                LaneClear();
+                if (Config.Item("disablelane", true).GetValue<KeyBind>().Active)
+                {
+                    LaneClear();
+                }
                 return;
             }
             if (GetPassiveBuff == 4)
@@ -758,6 +782,8 @@ namespace Slutty_ryze
         private static void KillSteal()
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            if (target == null)
+                return;
             var qSpell = Config.Item("useQ2KS").GetValue<bool>();
             var wSpell = Config.Item("useW2KS").GetValue<bool>();
             var eSpell = Config.Item("useE2KS").GetValue<bool>();
@@ -856,52 +882,38 @@ namespace Slutty_ryze
         private static void TearStack()
         {
             if (Config.Item("tearoptions").GetValue<bool>()
-                && Player.InFountain())
+                && !Player.InFountain())
             {
                 return;
             }
+
             if (Player.IsRecalling())
                 return;
-            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            var tears = Config.Item("tearS").GetValue<bool>();
+
             var mtears = Config.Item("tearSM").GetValue<Slider>().Value;
             if (ItemData.Tear_of_the_Goddess.Stacks.Equals(750)
                 || Items.HasItem(ItemData.Seraphs_Embrace.Id)
                 || ItemData.Archangels_Staff.Stacks.Equals(750)
                 || GetPassiveBuff == 4)
-                return;
-
-            if (tears
-                && Q.IsReady()
-                && Player.ManaPercent >= mtears
-                && ((Items.HasItem(ItemData.Tear_of_the_Goddess.Id)
-                     || Items.HasItem(ItemData.Archangels_Staff.Id))))
             {
-                var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+                return;
+            }
+            if (Config.Item("tearS").GetValue<bool>())
+            {
+                if (Q.IsReady()
+                    && Player.ManaPercent >= mtears
+                    && ((Items.HasItem(ItemData.Tear_of_the_Goddess.Id)
+                         || Items.HasItem(ItemData.Archangels_Staff.Id))))
                 {
-                    foreach (var minion in minionCount)
-                    {
-                        if (target != null)
-                        {
-                            Q.Cast(target);
-                        }
-
-                        if (minion != null)
-                        {
-                            Q.Cast(minion);
-                        }
-
-                        if (target == null
-                            || minion == null)
-                        {
-                            Q.Cast(Player.Position);
-                        }
-                    }
+                    Q.Cast(Game.CursorPos);
                 }
             }
         }
+    
 
-        private static void AABlock()
+
+
+private static void AABlock()
         {
 
             var aaBlock = Config.Item("AAblock").GetValue<bool>();
@@ -981,7 +993,7 @@ namespace Slutty_ryze
             if (Environment.TickCount - Q.LastCastAttemptT >= 11000
                 && Q.IsReady())
             {
-                Q.Cast(Player.Position);
+                Q.Cast(Game.CursorPos);
             }
 
         }
