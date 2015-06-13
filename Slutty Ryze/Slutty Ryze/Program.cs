@@ -875,13 +875,19 @@ namespace Slutty_ryze
 
         private static void TearStack()
         {
+            var minions = MinionManager.GetMinions(
+   ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy,
+   MinionOrderTypes.MaxHealth);
+
+
             if (Config.Item("tearoptions").GetValue<bool>()
                 && !Player.InFountain())
             {
                 return;
             }
 
-            if (Player.IsRecalling())
+            if (Player.IsRecalling() 
+                || minions.Count >= 1)
                 return;
 
             var mtears = Config.Item("tearSM").GetValue<Slider>().Value;
@@ -963,6 +969,15 @@ private static void AABlock()
 
         private static void AutoPassive()
         {
+
+            var minions = MinionManager.GetMinions(
+ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy,
+MinionOrderTypes.MaxHealth);
+
+            if (Player.IsRecalling()
+                || minions.Count >= 1)
+                return;
+
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
             if (target != null)
