@@ -181,11 +181,6 @@ namespace Slutty_ryze
 
             if (Player.IsDead)
                 return;
-            if (Config.Item("autoPassive").GetValue<KeyBind>().Active)
-            {
-                AutoPassive();
-            }
-
 
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
@@ -230,6 +225,11 @@ namespace Slutty_ryze
                 {
                     TearStack();
                 }
+                if (Config.Item("autoPassive").GetValue<KeyBind>().Active)
+                {
+                    AutoPassive();
+                }
+
                 Potion();
                 Orbwalker.SetAttack(true);
             }
@@ -247,8 +247,6 @@ namespace Slutty_ryze
             }
 
                 
-
-
             // Seplane();
             Item();
             KillSteal();
@@ -395,9 +393,9 @@ namespace Slutty_ryze
             var wSpell = Config.Item("useW").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
             var rwwSpell = Config.Item("useRww").GetValue<bool>();
-            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            Obj_AI_Hero wtarget = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
-            if (target == null)
+            Obj_AI_Hero target = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
+
+            if (!target.IsValidTarget(900))
             {
                 return;
             }
@@ -429,14 +427,14 @@ namespace Slutty_ryze
                     && wSpell
                     && W.IsReady())
                 {
-                    W.CastOnUnit(wtarget);
+                    W.CastOnUnit(target);
                 }
 
                 if (target.IsValidTarget(E.Range)
                     && eSpell
                     && E.IsReady())
                 {
-                    E.CastOnUnit(wtarget);
+                    E.CastOnUnit(target);
                 }
 
                 if (target.IsValidTarget(Q.Range)
@@ -472,14 +470,14 @@ namespace Slutty_ryze
                     && target.IsValidTarget(E.Range))
                 {
                     {
-                        E.CastOnUnit(wtarget);
+                        E.CastOnUnit(target);
                     }
                 }
                 if (W.IsReady()
                     && target.IsValidTarget(W.Range))
                 {
                     {
-                        W.CastOnUnit(wtarget);
+                        W.CastOnUnit(target);
                     }
                 }
                 if (target.IsValidTarget(W.Range)
@@ -508,7 +506,7 @@ namespace Slutty_ryze
                     && wSpell
                     && W.IsReady())
                 {
-                    W.CastOnUnit(wtarget);
+                    W.CastOnUnit(target);
                 }
                 if (target.IsValidTarget(Qn.Range)
                     && Q.IsReady()
@@ -520,7 +518,7 @@ namespace Slutty_ryze
                     && E.IsReady()
                     && eSpell)
                 {
-                    E.CastOnUnit(wtarget);
+                    E.CastOnUnit(target);
                 }
 
                 if (target.IsValidTarget(W.Range)
@@ -544,22 +542,25 @@ namespace Slutty_ryze
             }
             if (Player.HasBuff("ryzepassivecharged"))
             {
-
                 if (wSpell
                     && W.IsReady()
                     && target.IsValidTarget(W.Range))
                 {
-                    W.CastOnUnit(wtarget);
+                    W.CastOnUnit(target);
                 }
 
-                if (qSpell && Q.IsReady() && target.IsValidTarget(Qn.Range) && !W.IsReady())
+                if (qSpell
+                    && Qn.IsReady()
+                    && target.IsValidTarget(Qn.Range))
                 {
                     Qn.Cast(target);
                 }
 
-                if (eSpell && E.IsReady() && target.IsValidTarget(E.Range) && !W.IsReady() && !Q.IsReady())
+                if (eSpell 
+                    && E.IsReady() 
+                    && target.IsValidTarget(E.Range))
                 {
-                    E.CastOnUnit(wtarget);
+                    E.CastOnUnit(target);
                 }
 
                 if (R.IsReady()
@@ -670,11 +671,12 @@ namespace Slutty_ryze
                 return;
             }
 
-            var jungleMinion =
-                MinionManager.GetMinions(Q.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth)
-                    .FirstOrDefault();
-            if (!jungleMinion.IsValidTarget()
-                || jungleMinion == null)
+
+            var jungleMinion = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.Team == GameObjectTeam.Neutral
+                && !x.IsDead
+                && x.Distance(ObjectManager.Player.Position) <= Q.Range).OrderBy(x => x.MaxHealth).FirstOrDefault();
+
+            if (!jungleMinion.IsValidTarget())
             {
                 if (Config.Item("disablelane").GetValue<KeyBind>().Active)
                 {
@@ -730,6 +732,10 @@ namespace Slutty_ryze
 
         private static void Mixed()
         {
+            foreach (var JOE_HAS_NO_PENIS in Player.Buffs)
+            {
+                Console.WriteLine(JOE_HAS_NO_PENIS.Name.ToString(), 1337);
+            }
 
             var qSpell = Config.Item("UseQM").GetValue<bool>();
             var qlSpell = Config.Item("UseQMl").GetValue<bool>();
