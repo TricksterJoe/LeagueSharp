@@ -105,6 +105,7 @@ namespace Slutty_Blitz
             Game.OnUpdate += Game_OnUpdate;
             Interrupter.OnPossibleToInterrupt += BlitzInterruptableSpell;
             Orbwalking.BeforeAttack += BeforeAttack;
+            CustomEvents.Unit.OnDash += Unit_OnDash;
         }
         private static void Game_OnUpdate(EventArgs args)
         {
@@ -360,6 +361,33 @@ namespace Slutty_Blitz
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             Q.Cast(target);
         }
-    }
 
-}
+        private static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
+        {
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
+            if (!sender.IsEnemy)
+            {
+                return;
+            }
+
+            if (sender.NetworkId == target.NetworkId)
+            {
+
+                    if (Q.IsReady()
+                        && args.EndPos.Distance(Player) < Q.Range)
+                    {
+                        var delay = (int)(args.EndTick - Game.Time - Q.Delay - 0.1f);
+                        if (delay > 0)
+                        {
+                            Utility.DelayAction.Add(delay * 1000, () => Q.Cast(args.EndPos));
+                        }
+                        else
+                        {
+                            Q.Cast(args.EndPos);
+                        }
+                    }
+                }
+            }
+        }
+    }
