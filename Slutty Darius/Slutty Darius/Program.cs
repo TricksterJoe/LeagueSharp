@@ -85,17 +85,24 @@ namespace Slutty_Darius
             Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useR2KS", "Use R for ks").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("useQR2KS", "Use Q+R for ks").SetValue(true));
 
             Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
             Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
             Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
-            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(50));
+            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(30));
             Config.SubMenu("autoP").AddItem(new MenuItem("MANA", "Auto Mana Potion").SetValue(true));
-            Config.SubMenu("autoP").AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion")).SetValue(new Slider(50));
+            Config.SubMenu("autoP")
+                .AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion"))
+                .SetValue(new Slider(30));
             Config.SubMenu("autoP").AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
-            Config.SubMenu("autoP").AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit")).SetValue(new Slider(50));
+            Config.SubMenu("autoP")
+                .AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit"))
+                .SetValue(new Slider(30));
             Config.SubMenu("autoP").AddItem(new MenuItem("flask", "Auto Flask").SetValue(true));
-            Config.SubMenu("autoP").AddItem(new MenuItem("fSlider", "Minimum %Health for flask")).SetValue(new Slider(50));
+            Config.SubMenu("autoP")
+                .AddItem(new MenuItem("fSlider", "Minimum %Health for flask"))
+                .SetValue(new Slider(30));
 
 
             Config.AddToMainMenu();
@@ -103,23 +110,73 @@ namespace Slutty_Darius
             Game.OnUpdate += Game_OnUpdate;
             Interrupter.OnPossibleToInterrupt += OnInterruptableSpell;
             Orbwalking.BeforeAttack += BeforeAttack;
+            CustomEvents.Unit.OnDash += Unit_OnDash;
 
 
         }
         private static void OnInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
         {
+            
             var eSpell = Config.Item("useE2I").GetValue<bool>();
             if (eSpell
                 && E.IsReady()
-                && unit.IsValidTarget(E.Range))
+                && unit.IsValidTarget(E.Range)
+                )
             {
                 E.Cast(unit);
             }
         }
+
+        private static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
+        {
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            var qSpell = Config.Item("useQW2D").GetValue<bool>();
+
+            if (!sender.IsEnemy)
+            {
+                return;
+            }
+
+            if (sender.NetworkId == target.NetworkId)
+            {
+                if (qSpell)
+                {
+
+                    if (Q.IsReady()
+                        && args.EndPos.Distance(Player) < Q.Range)
+                    {
+                        var delay = (int)(args.EndTick - Game.Time - Q.Delay - 0.1f);
+                        if (delay > 0)
+                        {
+                            Utility.DelayAction.Add(delay * 1000, () => Q.Cast(args.EndPos));
+                        }
+                        else
+                        {
+                            Q.Cast(args.EndPos);
+                        }
+                        if (E.IsReady()
+                            && args.EndPos.Distance(Player) < E.Range)
+                        {
+                            if (delay > 0)
+                            {
+                                Utility.DelayAction.Add(delay * 1000, () => E.Cast(args.EndPos));
+                            }
+                            else
+                            {
+                                E.Cast(target);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         static void BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
         {
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (args.Target.IsValid<Obj_AI_Hero>()
-                && W.IsReady())
+                && W.IsReady()
+                && Player.Distance(target) <= Player.AttackRange)
             {
                 W.Cast();
             }
@@ -203,7 +260,8 @@ namespace Slutty_Darius
             }
             if (wSpell
                 && W.IsReady()
-                && target.IsValidTarget(W.Range))
+                && target.IsValidTarget(W.Range)
+                && Player.Distance(target) <= Player.AttackRange)
             {
                 W.Cast();
             }
@@ -278,9 +336,21 @@ namespace Slutty_Darius
             var ks = Config.Item("KS").GetValue<bool>();
             var qSpell = Config.Item("useQ2KS").GetValue<bool>();
             var rSpell = Config.Item("useR2KS").GetValue<bool>();
+            var qrSpell = Config.Item("useQR2KS").GetValue<bool>();
+
             if (!ks)
                 return;
+
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+            if (qrSpell
+                && Q.IsReady()
+                && R.IsReady()
+                && target.IsValidTarget(R.Range)
+                && (Q.GetDamage(target) + R.GetDamage(target)) > target.Health)
+            {
+                Q.Cast();
+                R.CastOnUnit(target);
+            }
             if (qSpell
                 && Q.IsReady()
                 && target.IsValidTarget(Q.Range)
@@ -312,43 +382,45 @@ namespace Slutty_Darius
             {
                 return;
             }
-            if (autoPotion
-                && hPotion
+            if (!autoPotion)
+            {
+                return;
+            }
+
+            if (hPotion
                 && Player.HealthPercent <= pSlider
                 && Player.CountEnemiesInRange(1000) >= 0
                 && HealthPotion.IsReady()
-                && !Player.HasBuff("RegenerationPotion")
-                && !Player.HasBuff("ItemCrystalFlask"))
+                && !Player.HasBuff("FlaskOfCrystalWater")
+                && !Player.HasBuff("ItemCrystalFlask")
+                && !Player.HasBuff("RegenerationPotion"))
             {
                 HealthPotion.Cast();
             }
 
-            if (autoPotion
-                && mPotion
+            if (mPotion
                 && Player.ManaPercent <= mSlider
                 && Player.CountEnemiesInRange(1000) >= 0
-                && HealthPotion.IsReady()
+                && ManaPotion.IsReady()
                 && !Player.HasBuff("RegenerationPotion")
-                && !Player.HasBuff("ItemCrystalFlask"))
+                && !Player.HasBuff("FlaskOfCrystalWater"))
             {
                 ManaPotion.Cast();
             }
 
-            if (autoPotion
-                && bPotion
+            if (bPotion
                 && Player.HealthPercent <= bSlider
                 && Player.CountEnemiesInRange(1000) >= 0
-                && HealthPotion.IsReady()
+                && BiscuitofRejuvenation.IsReady()
                 && !Player.HasBuff("ItemMiniRegenPotion"))
             {
                 BiscuitofRejuvenation.Cast();
             }
 
-            if (autoPotion
-                && fPotion
+            if (fPotion
                 && Player.HealthPercent <= fSlider
                 && Player.CountEnemiesInRange(1000) >= 0
-                && HealthPotion.IsReady()
+                && CrystallineFlask.IsReady()
                 && !Player.HasBuff("ItemMiniRegenPotion")
                 && !Player.HasBuff("ItemCrystalFlask")
                 && !Player.HasBuff("RegenerationPotion")
