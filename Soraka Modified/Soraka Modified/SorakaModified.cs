@@ -91,7 +91,7 @@ namespace Soraka_Modified
                             }
                             else
                             {
-                                W.CastOnUnit(target);
+                                E.Cast(args.EndPos);
                             }
                         }
                     }
