@@ -120,7 +120,7 @@ namespace Ult_Notifyer
             if (channeledSpells.TryGetValue(args.SData.Name, out name)
                 && hero.Spellbook.IsCastingSpell)
             {
-                if (hero.IsMe)
+                if (!hero.IsMe)
                 {
                     if ((hero.Distance(point1) <= 1500
                          || hero.Distance(point2) <= 1500
