@@ -152,12 +152,12 @@ namespace Ult_Notifyer
                         {
                             case 0:
                             {
-                                Game.Say(name + "Has Just Casted Ultimate From Botlane! Care!");
+                                Game.Say(name + "Has Just Casted Ultimate From Bot Lane! Care!");
                                 break;
                             }
                             case 1:
                             {
-                                Game.Say(name + "Hat gerade seine Ultimate von der BotLane gecastet! Vorsicht!");
+                                Game.Say(name + "Hat gerade seine Ultimate von der Bot Lane gecastet! Vorsicht!");
                                 break;
                             }
                         }
@@ -178,12 +178,12 @@ namespace Ult_Notifyer
                         {
                             case 0:
                             {
-                                Game.Say(name + "Has Just Casted Ultimate From Botlane! Care!");
+                                Game.Say(name + "Has Just Casted Ultimate From Top Lane! Care!");
                                 break;
                             }
                             case 1:
                             {
-                                Game.Say(name + "Hat gerade seine Ultimate von der TopLane gecastet! Vorsicht!");
+                                Game.Say(name + "Hat gerade seine Ultimate von der Top Lane gecastet! Vorsicht!");
                                 break;
                             }
                         }
@@ -203,12 +203,12 @@ namespace Ult_Notifyer
                         {
                             case 0:
                                 {
-                                    Game.Say(name + "Has Just Casted Ultimate From Botlane! Care!");
+                                    Game.Say(name + "Has Just Casted Ultimate From Mid Lane! Care!");
                                     break;
                                 }
                             case 1:
                                 {
-                                    Game.Say(name + "Hat gerade seine Ultimate von der MidLane gecastet! Vorsicht!");
+                                    Game.Say(name + "Hat gerade seine Ultimate von der Mid Lane gecastet! Vorsicht!");
                                     break;
                                 }
                         }
