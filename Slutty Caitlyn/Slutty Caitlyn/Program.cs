@@ -109,7 +109,7 @@ namespace Slutty_Caitlyn
             Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
             Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
             Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q ks").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("UseR2KS", "Use R").SetValue(true));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("useR2KS", "Use R").SetValue(true));
 
             Config.AddSubMenu(new Menu("Misc", "Misc"));
             Config.SubMenu("Misc").AddItem(new MenuItem("UseW", "Auto W").SetValue(true));
@@ -140,13 +140,12 @@ namespace Slutty_Caitlyn
             if (Player.IsDead)
                 return;
 
-            if (Config.Item("dasht").GetValue<KeyBind>().Active)
+            if (Config.Item("UseRM").GetValue<KeyBind>().Active
+                && R.IsReady())
             {
-                if (E.IsReady())
-                {
-                    E.Cast(Game.CursorPos.Extend(Player.Position, 5000));
-                }
+                ManualR();
             }
+
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 Combo();
@@ -161,6 +160,7 @@ namespace Slutty_Caitlyn
             {
                 LaneClear();
             }
+
             if (Config.Item("fleekey").GetValue<KeyBind>().Active)
             {
                 ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
@@ -169,6 +169,7 @@ namespace Slutty_Caitlyn
                     E.Cast(Game.CursorPos.Extend(Player.Position, 5000));
                 }
             }
+
             if (Config.Item("dasht").GetValue<KeyBind>().Active)
             {
                 if (E.IsReady())
@@ -176,6 +177,7 @@ namespace Slutty_Caitlyn
                     E.Cast(Game.CursorPos.Extend(Player.Position, 5000));
                 }
             }
+
             if (Config.Item("dashte").GetValue<KeyBind>().Active)
             {
                 Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
@@ -190,10 +192,6 @@ namespace Slutty_Caitlyn
             Potion();
             AutoW();
             KillSteal();
-            if (Config.Item("UseRM").GetValue<KeyBind>().Active)
-            {
-                ManualR();
-            }
 
         }
         private static void Drawing_OnDraw(EventArgs args)
@@ -235,7 +233,6 @@ namespace Slutty_Caitlyn
                 && Q.IsReady()
                 && Player.Distance(target) > 800
                 && qHit.MinionsHit <= 4
-                && target.HealthPercent < Player.HealthPercent
                 && target.IsFacing(Player)
                 && Player.CountEnemiesInRange(1000) == 1
                 && target.IsValidTarget(Q.Range))
@@ -296,28 +293,26 @@ namespace Slutty_Caitlyn
         {
             var ks = Config.Item("KS").GetValue<bool>();
             if (!ks)
-
                 return;
+            
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-            if (Player.Distance(target) < 1000)
-                return;
 
             var prediction = R.GetPrediction(target);
             var qcollision = R.GetCollision(Player.ServerPosition.To2D(),
             new List<Vector2> { prediction.CastPosition.To2D() });
             var playerncol = qcollision.Where(x => !(x is Obj_AI_Hero)).Count(x => x.IsTargetable);
-            var rSpell = Config.Item("UseR2KS").GetValue<bool>();
-            var qSpell = Config.Item("UseQ2KS").GetValue<bool>();
+            var rSpell = Config.Item("useR2KS").GetValue<bool>();
+            var qSpell = Config.Item("useQ2KS").GetValue<bool>();
 
             if (rSpell
                 && R.IsReady()
                 && target.IsValidTarget(R.Range)
-                && target.Health < R.GetDamage(target)
                 && Player.CountEnemiesInRange(2000) <= 3
                 && playerncol == 0)
             {
                 R.CastOnUnit(target);
             }
+
             if (qSpell
                 && Q.IsReady()
                 && target.Health < Q.GetDamage(target)
@@ -383,6 +378,7 @@ namespace Slutty_Caitlyn
             {
                 W.Cast(Object.Position, true);
             }
+
             var wSpell = Config.Item("UseW").GetValue<bool>();
             var qSpell = Config.Item("UseQa").GetValue<bool>();
             if (wSpell)
@@ -432,7 +428,7 @@ namespace Slutty_Caitlyn
             if (target == null)
                 return;
 
-            if (target.IsValidTarget(R.Range))
+            if (target.IsValidTarget())
             {
                 R.CastOnUnit(target);
             }
