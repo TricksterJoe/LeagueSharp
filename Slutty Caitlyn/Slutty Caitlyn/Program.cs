@@ -161,6 +161,11 @@ namespace Slutty_Caitlyn
                 LaneClear();
             }
 
+            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
+            {
+                KillSteal();
+            }
+
             if (Config.Item("fleekey").GetValue<KeyBind>().Active)
             {
                 ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
@@ -191,7 +196,6 @@ namespace Slutty_Caitlyn
 
             Potion();
             AutoW();
-            KillSteal();
 
         }
         private static void Drawing_OnDraw(EventArgs args)
@@ -222,12 +226,12 @@ namespace Slutty_Caitlyn
             if (qSpell
                 && !qrSpell
                 && Q.IsReady()
-           
                 && qHit.MinionsHit <= 4
                 && target.IsValidTarget(Q.Range))
             {
                 Q.Cast(target);
             }
+
             if (qSpell
                 && qrSpell
                 && Q.IsReady()
