@@ -100,6 +100,13 @@ namespace Slutty_Blitz
 
             Config.AddItem(new MenuItem("fleekey", "Use Flee Mode")).SetValue(new KeyBind(65, KeyBindType.Press));
 
+
+            foreach (var obj in ObjectManager.Get<Obj_AI_Hero>().Where(obj => obj.Team != Player.Team))
+            {
+                Config.AddItem(new MenuItem("dograb" + obj.ChampionName, obj.ChampionName))
+                    .SetValue(new StringList(new[] { "Dont Grab ", "Normal Grab "}, 1));
+            }
+
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
@@ -112,19 +119,6 @@ namespace Slutty_Blitz
 
             if (Player.IsDead)
                 return;
-            if (Config.Item("useQmanual").GetValue<KeyBind>().Active)
-            {
-                ManualQ();
-            }
-
-            if (Player.IsValid &&
-    Config.Item("fleekey").GetValue<KeyBind>().Active)
-            {
-                Flee();
-            }
-
-            KillSteal();
-            Potion();
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
@@ -135,9 +129,22 @@ namespace Slutty_Blitz
             {
                 LaneClear();
             }
-            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
+
+
+            KillSteal();
+            Potion();
+
+
+            if (Config.Item("UseQmanual").GetValue<KeyBind>().Active)
             {
+                ManualQ();
             }
+
+            if (Config.Item("fleekey").GetValue<KeyBind>().Active)
+            {
+                Flee();
+            }
+
 
 
         }
@@ -165,13 +172,15 @@ namespace Slutty_Blitz
             var rcSlider = Config.Item("UseRc").GetValue<Slider>().Value;
             var qmSpell = Config.Item("UseQm").GetValue<Slider>().Value;
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
             if (qSpell
                 && Q.IsReady()
-                && target.IsValidTarget(Q.Range)
-                && Player.Distance(target) <= qmSpell)
+                && target.IsValidTarget(qmSpell)
+                && (Config.Item("dograb" + target.ChampionName).GetValue<StringList>().SelectedIndex != 0))
             {
                 Q.Cast(target);
             }
+
             if (eSpell
                 && E.IsReady()
                 && target.IsValidTarget(120)
@@ -265,8 +274,13 @@ namespace Slutty_Blitz
 
         private static void Flee()
         {
-                W.Cast();
                 ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+
+            if (W.IsReady())
+            {
+
+                W.Cast();
+            }
         }
 
         private static void Potion()
@@ -359,7 +373,12 @@ namespace Slutty_Blitz
         private static void ManualQ()
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            Q.Cast(target);
+            if (Q.IsReady()
+                && (Config.Item("dograb" + target.ChampionName).GetValue<StringList>().SelectedIndex != 0))
+            {
+                Q.Cast(target);
+            }
+            
         }
 
         private static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
