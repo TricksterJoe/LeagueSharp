@@ -381,6 +381,56 @@ namespace Slutty_ryze
             {
                 Render.Circle.DrawCircle(Player.Position, W.Range, Color.Black);
             }
+            var tears = Config.Item("tearS").GetValue<KeyBind>().Active;
+            var passive = Config.Item("autoPassive").GetValue<KeyBind>().Active;
+            var laneclear = Config.Item("disablelane").GetValue<KeyBind>().Active;
+
+            if (tears)
+            {
+                var heroPosition = Drawing.WorldToScreen(Player.Position);
+                var textDimension = Drawing.GetTextExtent("Stunnable!");
+                Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
+                    Color.DarkGreen, "Tear Stack: On");
+            }
+
+            if (passive)
+            {
+                var heroPosition = Drawing.WorldToScreen(Player.Position);
+                Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30,
+                    Color.DarkGreen, "Passive Stack: On");
+            }
+
+            if (laneclear)
+            {
+                var heroPosition = Drawing.WorldToScreen(Player.Position);
+                Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30,
+                    Color.DarkGreen, "Lane Clear: On");
+            }
+
+            if (!tears)
+            {
+                var heroPosition = Drawing.WorldToScreen(Player.Position);
+                var textDimension = Drawing.GetTextExtent("Stunnable!");
+                Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
+                    Color.Red, "Tear Stack: Off");
+            }
+
+            if (!passive)
+            {
+                var heroPosition = Drawing.WorldToScreen(Player.Position);
+                Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30,
+                    Color.Red, "Passive Stack: Off");
+            }
+
+            if (!laneclear)
+            {
+                var heroPosition = Drawing.WorldToScreen(Player.Position);
+                Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30,
+                    Color.Red, "Lane Clear: Off");
+            }
+
+
+
         }
 
         private static void Combo()
