@@ -71,6 +71,7 @@ namespace Slutty_ryze
             Config.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "w Drawing").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("notdraw", "Float Text").SetValue(true));
             var drawDamageMenu = new MenuItem("RushDrawEDamage", "Combo damage").SetValue(true);
             var drawFill =
             new MenuItem("RushDrawWDamageFill", "Combo Damage Fill").SetValue(new Circle(true, Color.SeaGreen));
@@ -385,50 +386,52 @@ namespace Slutty_ryze
             var passive = Config.Item("autoPassive").GetValue<KeyBind>().Active;
             var laneclear = Config.Item("disablelane").GetValue<KeyBind>().Active;
 
-            if (tears)
+            if (Config.Item("notdraw").GetValue<bool>())
             {
-                var heroPosition = Drawing.WorldToScreen(Player.Position);
-                var textDimension = Drawing.GetTextExtent("Stunnable!");
-                Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
-                    Color.DarkGreen, "Tear Stack: On");
-            }
+                if (tears)
+                {
+                    var heroPosition = Drawing.WorldToScreen(Player.Position);
+                    var textDimension = Drawing.GetTextExtent("Stunnable!");
+                    Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
+                        Color.DarkGreen, "Tear Stack: On");
+                }
 
-            if (passive)
-            {
-                var heroPosition = Drawing.WorldToScreen(Player.Position);
-                Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30,
-                    Color.DarkGreen, "Passive Stack: On");
-            }
+                if (passive)
+                {
+                    var heroPosition = Drawing.WorldToScreen(Player.Position);
+                    Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30,
+                        Color.DarkGreen, "Passive Stack: On");
+                }
 
-            if (laneclear)
-            {
-                var heroPosition = Drawing.WorldToScreen(Player.Position);
-                Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30,
-                    Color.DarkGreen, "Lane Clear: On");
-            }
+                if (laneclear)
+                {
+                    var heroPosition = Drawing.WorldToScreen(Player.Position);
+                    Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30,
+                        Color.DarkGreen, "Lane Clear: On");
+                }
 
-            if (!tears)
-            {
-                var heroPosition = Drawing.WorldToScreen(Player.Position);
-                var textDimension = Drawing.GetTextExtent("Stunnable!");
-                Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
-                    Color.Red, "Tear Stack: Off");
-            }
+                if (!tears)
+                {
+                    var heroPosition = Drawing.WorldToScreen(Player.Position);
+                    var textDimension = Drawing.GetTextExtent("Stunnable!");
+                    Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
+                        Color.Red, "Tear Stack: Off");
+                }
 
-            if (!passive)
-            {
-                var heroPosition = Drawing.WorldToScreen(Player.Position);
-                Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30,
-                    Color.Red, "Passive Stack: Off");
-            }
+                if (!passive)
+                {
+                    var heroPosition = Drawing.WorldToScreen(Player.Position);
+                    Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30,
+                        Color.Red, "Passive Stack: Off");
+                }
 
-            if (!laneclear)
-            {
-                var heroPosition = Drawing.WorldToScreen(Player.Position);
-                Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30,
-                    Color.Red, "Lane Clear: Off");
+                if (!laneclear)
+                {
+                    var heroPosition = Drawing.WorldToScreen(Player.Position);
+                    Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30,
+                        Color.Red, "Lane Clear: Off");
+                }
             }
-
 
 
         }
