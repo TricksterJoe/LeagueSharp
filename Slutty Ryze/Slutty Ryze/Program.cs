@@ -856,8 +856,9 @@ namespace Slutty_ryze
         private static void KillSteal()
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            if (target == null)
+            if (target == null || !target.IsValidTarget() || target.IsInvulnerable)
                 return;
+                
             var qSpell = Config.Item("useQ2KS").GetValue<bool>();
             var wSpell = Config.Item("useW2KS").GetValue<bool>();
             var eSpell = Config.Item("useE2KS").GetValue<bool>();
