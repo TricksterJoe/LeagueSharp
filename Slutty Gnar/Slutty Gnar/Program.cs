@@ -11,6 +11,7 @@ using LeagueSharp.Common;
 using LeagueSharp.Common.Data;
 using Color = System.Drawing.Color;
 using SharpDX;
+using ItemData = LeagueSharp.Common.Data.ItemData;
 
 namespace Slutty_Gnar
 {
