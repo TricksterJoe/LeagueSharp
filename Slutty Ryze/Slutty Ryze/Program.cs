@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common.Data;
 using SharpDX.Win32;
+using ItemData = LeagueSharp.Common.Data.ItemData;
 using Color = System.Drawing.Color;
 using LeagueSharp.Common;
 
