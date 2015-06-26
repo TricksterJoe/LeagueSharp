@@ -106,6 +106,7 @@ namespace Slutty_ryze
 
             Config.AddSubMenu(new Menu("Lane Clear", "LaneClear"));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("presslane", "Press Lane Clear").SetValue(new KeyBind('H', KeyBindType.Press)));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
@@ -118,9 +119,9 @@ namespace Slutty_ryze
             Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
 
             Config.AddSubMenu(new Menu("Last Hit", "LastHit"));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQl2h", "Use Q Last Hit").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useWl2h", "Use W Last Hit").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEl2h", "Use E Last Hit").SetValue(false));
+            Config.SubMenu("LastHit").AddItem(new MenuItem("useQl2h", "Use Q Last Hit").SetValue(true));
+            Config.SubMenu("LastHit").AddItem(new MenuItem("useWl2h", "Use W Last Hit").SetValue(false));
+            Config.SubMenu("LastHit").AddItem(new MenuItem("useEl2h", "Use E Last Hit").SetValue(false));
 
             // Config.SubMenu("LaneClear").AddItem(new MenuItem("seplane", "Seperate Lane Clear Key").SetValue(new KeyBind('V', KeyBindType.Press)));
 
@@ -220,6 +221,11 @@ namespace Slutty_ryze
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 if (Config.Item("disablelane").GetValue<KeyBind>().Active)
+                {
+                    LaneClear();
+                }
+
+                if (Config.Item("presslane").GetValue<KeyBind>().Active)
                 {
                     LaneClear();
                 }
