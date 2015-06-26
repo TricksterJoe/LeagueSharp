@@ -75,7 +75,7 @@ namespace Slutty_ryze
             Config.SubMenu("Drawings").AddItem(new MenuItem("notdraw", "Float Text").SetValue(true));
             var drawDamageMenu = new MenuItem("RushDrawEDamage", "Combo damage").SetValue(true);
             var drawFill =
-            new MenuItem("RushDrawWDamageFill", "Combo Damage Fill").SetValue(new Circle(true, Color.SeaGreen));
+                new MenuItem("RushDrawWDamageFill", "Combo Damage Fill").SetValue(new Circle(true, Color.SeaGreen));
             Config.SubMenu("Drawings").AddItem(drawDamageMenu);
             Config.SubMenu("Drawings").AddItem(drawFill);
 
@@ -93,7 +93,8 @@ namespace Slutty_ryze
             Config.SubMenu("Combo").AddItem(new MenuItem("useRww", "Only R if Target Is Rooted").SetValue(true));
 
             Config.AddSubMenu(new Menu("Combo Options", "ComboOptions"));
-            Config.SubMenu("ComboOptions").AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
+            Config.SubMenu("ComboOptions")
+                .AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
 
             Config.AddSubMenu(new Menu("Mixed", "Mixed"));
 
@@ -105,18 +106,23 @@ namespace Slutty_ryze
 
 
             Config.AddSubMenu(new Menu("Lane Clear", "LaneClear"));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("presslane", "Press Lane Clear").SetValue(new KeyBind('H', KeyBindType.Press)));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
+            Config.SubMenu("LaneClear")
+                .AddItem(new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
+            Config.SubMenu("LaneClear")
+                .AddItem(new MenuItem("presslane", "Press Lane Clear").SetValue(new KeyBind('H', KeyBindType.Press)));
+            Config.SubMenu("LaneClear")
+                .AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
+            Config.SubMenu("LaneClear")
+                .AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useWlc", "Use W Last Hit").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useElc", "Use E Last Hit").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useQ2L", "Use Q To Lane Clear").SetValue(true));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useW2L", "Use W To Lane Clear").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(false));       
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useRl", "Use R In Lane Clear").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
+            Config.SubMenu("LaneClear")
+                .AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
 
             Config.AddSubMenu(new Menu("Last Hit", "LastHit"));
             Config.SubMenu("LastHit").AddItem(new MenuItem("useQl2h", "Use Q Last Hit").SetValue(true));
@@ -134,7 +140,8 @@ namespace Slutty_ryze
 
 
             Config.AddSubMenu(new Menu("Items", "Items"));
-            Config.SubMenu("Items").AddItem(new MenuItem("tearS", "Stack Tear").SetValue(new KeyBind('G', KeyBindType.Toggle)));
+            Config.SubMenu("Items")
+                .AddItem(new MenuItem("tearS", "Stack Tear").SetValue(new KeyBind('G', KeyBindType.Toggle)));
             Config.SubMenu("Items").AddItem(new MenuItem("tearoptions", "Stack Tear Only in Fountain").SetValue(false));
             Config.SubMenu("Items").AddItem(new MenuItem("tearSM", "Min Mana").SetValue(new Slider(95)));
             Config.SubMenu("Items").AddItem(new MenuItem("staff", "Use Seraphs Embrace").SetValue(true));
@@ -157,7 +164,9 @@ namespace Slutty_ryze
             Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
             Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
             Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
-            Config.SubMenu("autoP").AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(30));
+            Config.SubMenu("autoP")
+                .AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion"))
+                .SetValue(new Slider(30));
             Config.SubMenu("autoP").AddItem(new MenuItem("MANA", "Auto Mana Potion").SetValue(true));
             Config.SubMenu("autoP")
                 .AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion"))
@@ -172,8 +181,11 @@ namespace Slutty_ryze
                 .SetValue(new Slider(30));
 
             Config.AddSubMenu(new Menu("Passive Stack", "autoPassive"));
-            Config.SubMenu("autoPassive").AddItem(new MenuItem("autoPassive", "Stack Passive").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
-            Config.SubMenu("autoPassive").AddItem(new MenuItem("stackSlider", "Keep passive count at")).SetValue(new Slider(3, 1, 4));
+            Config.SubMenu("autoPassive")
+                .AddItem(new MenuItem("autoPassive", "Stack Passive").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
+            Config.SubMenu("autoPassive")
+                .AddItem(new MenuItem("stackSlider", "Keep passive count at"))
+                .SetValue(new Slider(3, 1, 4));
             Config.SubMenu("autoPassive").AddItem(new MenuItem("stackMana", "Minimum %Mana")).SetValue(new Slider(50));
 
             Config.AddToMainMenu();
@@ -198,7 +210,7 @@ namespace Slutty_ryze
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 if (((Player.Distance(target) > 440)
-                    || (Q.IsReady() || E.IsReady() || W.IsReady()))
+                     || (Q.IsReady() || E.IsReady() || W.IsReady()))
                     && target.Health > (Player.GetAutoAttackDamage(target)*3))
                 {
                     Orbwalker.SetAttack(false);
@@ -207,8 +219,8 @@ namespace Slutty_ryze
                 {
                     Orbwalker.SetAttack(true);
                 }
-            
-               AABlock();
+
+                AABlock();
                 Combo();
             }
 
@@ -267,7 +279,7 @@ namespace Slutty_ryze
                 }
             }
 
-                
+
             // Seplane();
             Item();
             KillSteal();
@@ -603,7 +615,6 @@ namespace Slutty_ryze
                             }
                         }
                     }
-                    // && target.Health > (Q.GetDamage(target) + E.GetDamage(target)
                 }
 
                 if (Player.HasBuff("ryzepassivecharged"))
@@ -643,14 +654,6 @@ namespace Slutty_ryze
                             {
                                 R.Cast();
                             }
-                        }
-                    }
-
-                    if (R.IsReady())
-                    {
-                        if (target.IsValidTarget(W.Range)
-                            && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
-                        {
                             if (!E.IsReady() && !Q.IsReady() && !W.IsReady())
                             {
                                 R.Cast();
@@ -658,35 +661,29 @@ namespace Slutty_ryze
                         }
                     }
                 }
-                else
+
+            }
+            else
+            {
+                if (wSpell
+                    && W.IsReady()
+                    && target.IsValidTarget(W.Range))
                 {
-                    if (wSpell
-                        && W.IsReady()
-                        && target.IsValidTarget(W.Range))
-                    {
-                        W.CastOnUnit(target);
-                    }
+                    W.CastOnUnit(target);
+                }
 
-                    if (qSpell
-                        && Qn.IsReady()
-                        && target.IsValidTarget(Qn.Range))
-                    {
-                        Qn.Cast(target);
-                    }
+                if (qSpell
+                    && Qn.IsReady()
+                    && target.IsValidTarget(Qn.Range))
+                {
+                    Qn.Cast(target);
+                }
 
-                    if (eSpell
-                        && E.IsReady()
-                        && target.IsValidTarget(E.Range))
-                    {
-                        E.CastOnUnit(target);
-                    }
-
-                    if (eSpell
-                        && R.IsReady()
-                        && target.IsValidTarget(W.Range))
-                    {
-                        R.Cast();
-                    } 
+                if (eSpell
+                    && E.IsReady()
+                    && target.IsValidTarget(E.Range))
+                {
+                    E.CastOnUnit(target);
                 }
             }
         }
