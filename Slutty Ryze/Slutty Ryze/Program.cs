@@ -93,10 +93,10 @@ namespace Slutty_ryze
             Config.SubMenu("Combo").AddItem(new MenuItem("useRww", "Only R if Target Is Rooted").SetValue(true));
 
             Config.AddSubMenu(new Menu("Combo Options", "ComboOptions"));
-            Config.SubMenu("ComboOptions")
-                .AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
+            Config.SubMenu("ComboOptions").AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
 
             Config.AddSubMenu(new Menu("Mixed", "Mixed"));
+
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseQM", "Use Q").SetValue(true));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseQMl", "Use Q last hit minion").SetValue(true));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseEM", "Use E").SetValue(false));
@@ -116,6 +116,12 @@ namespace Slutty_ryze
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(false));       
             Config.SubMenu("LaneClear").AddItem(new MenuItem("useRl", "Use R In Lane Clear").SetValue(false));
             Config.SubMenu("LaneClear").AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
+
+            Config.AddSubMenu(new Menu("Last Hit", "LastHit"));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQl2h", "Use Q Last Hit").SetValue(true));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useWl2h", "Use W Last Hit").SetValue(false));
+            Config.SubMenu("LaneClear").AddItem(new MenuItem("useEl2h", "Use E Last Hit").SetValue(false));
+
             // Config.SubMenu("LaneClear").AddItem(new MenuItem("seplane", "Seperate Lane Clear Key").SetValue(new KeyBind('V', KeyBindType.Press)));
 
             Config.AddSubMenu(new Menu("Jungle Clear", "JungleClear"));
@@ -222,6 +228,12 @@ namespace Slutty_ryze
                 JungleClear();
 
             }
+
+            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
+            {
+                LastHit();
+            }
+
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
                 if (Config.Item("tearS").GetValue<KeyBind>().Active)
@@ -455,12 +467,6 @@ namespace Slutty_ryze
                 return;
             }
 
-            /* if (Player.Distance(target) > W.Range)
-            {
-                Orbwalker.SetAttack(false);
-            }
-            */
-
             if (target.IsValidTarget(W.Range)
                 && (target.Health < IgniteDamage(target) + W.GetDamage(target)))
             {
@@ -593,6 +599,7 @@ namespace Slutty_ryze
                     }
                     // && target.Health > (Q.GetDamage(target) + E.GetDamage(target)
                 }
+
                 if (Player.HasBuff("ryzepassivecharged"))
                 {
                     if (wSpell
@@ -632,6 +639,18 @@ namespace Slutty_ryze
                             }
                         }
                     }
+
+                    if (R.IsReady())
+                    {
+                        if (target.IsValidTarget(W.Range)
+                            && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
+                        {
+                            if (!E.IsReady() && !Q.IsReady() && !W.IsReady())
+                            {
+                                R.Cast();
+                            }
+                        }
+                    }
                 }
                 else
                 {
@@ -654,7 +673,14 @@ namespace Slutty_ryze
                         && target.IsValidTarget(E.Range))
                     {
                         E.CastOnUnit(target);
-                    }                    
+                    }
+
+                    if (eSpell
+                        && R.IsReady()
+                        && target.IsValidTarget(W.Range))
+                    {
+                        R.Cast();
+                    } 
                 }
             }
         }
@@ -743,6 +769,8 @@ namespace Slutty_ryze
             var wSpell = Config.Item("useWj").GetValue<bool>();
             var mSlider = Config.Item("useJM").GetValue<Slider>().Value;
 
+
+
             if (Player.ManaPercent < mSlider)
             {
                 return;
@@ -807,12 +835,51 @@ namespace Slutty_ryze
 
         }
 
+        private static void LastHit()
+        {
+            var qlchSpell = Config.Item("useQl2h").GetValue<bool>();
+            var elchSpell = Config.Item("useEl2h").GetValue<bool>();
+            var wlchSpell = Config.Item("useWl2h").GetValue<bool>();
+
+            var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+
+            foreach (var minion in minionCount)
+            {
+                if (qlchSpell
+                    && Q.IsReady()
+                    && minion.IsValidTarget(Q.Range - 20)
+                    && minion.Health < Q.GetDamage(minion))
+                {
+                    Q.Cast(minion);
+                }
+
+                if (wlchSpell
+                    && W.IsReady()
+                    && minion.IsValidTarget(W.Range - 10)
+                    && minion.Health < W.GetDamage(minion))
+                {
+                    W.CastOnUnit(minion);
+                }
+
+                if (elchSpell
+                    && E.IsReady()
+                    && minion.IsValidTarget(E.Range - 10)
+                    && minion.Health < E.GetDamage(minion))
+                {
+                    E.CastOnUnit(minion);
+                }
+            }
+
+        }
+
         private static void Mixed()
         {
+            /*
             foreach (var JOE_HAS_NO_PENIS in Player.Buffs)
             {
                 Console.WriteLine(JOE_HAS_NO_PENIS.Name.ToString(), 1337);
             }
+             */
 
             var qSpell = Config.Item("UseQM").GetValue<bool>();
             var qlSpell = Config.Item("UseQMl").GetValue<bool>();
@@ -994,7 +1061,7 @@ namespace Slutty_ryze
 
 
 
-private static void AABlock()
+        private static void AABlock()
         {
 
             var aaBlock = Config.Item("AAblock").GetValue<bool>();
@@ -1010,10 +1077,12 @@ private static void AABlock()
             {
                 return Q.GetDamage(enemy)*5;
             }
+
             if (E.IsReady() || Player.Mana <= E.Instance.ManaCost * 5)
             {
                 return E.GetDamage(enemy)*5;
             }
+
             if (W.IsReady() || Player.Mana <= W.Instance.ManaCost * 3)
             {
                 return W.GetDamage(enemy)*3;
