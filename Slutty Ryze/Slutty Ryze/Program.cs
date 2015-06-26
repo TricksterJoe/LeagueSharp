@@ -190,7 +190,9 @@ namespace Slutty_ryze
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                if (Player.Distance(target) > 440)
+                if (((Player.Distance(target) > 440)
+                    || (Q.IsReady() || E.IsReady() || W.IsReady()))
+                    && target.Health > (Player.GetAutoAttackDamage(target)*3))
                 {
                     Orbwalker.SetAttack(false);
                 }
@@ -1004,17 +1006,17 @@ private static void AABlock()
 
         private static float GetComboDamage(Obj_AI_Base enemy)
         {
-            if (Q.IsReady())
+            if (Q.IsReady() || Player.Mana <= Q.Instance.ManaCost*5)
             {
-                return Q.GetDamage(enemy);
+                return Q.GetDamage(enemy)*5;
             }
-            if (E.IsReady())
+            if (E.IsReady() || Player.Mana <= E.Instance.ManaCost * 5)
             {
-                return E.GetDamage(enemy);
+                return E.GetDamage(enemy)*5;
             }
-            if (W.IsReady())
+            if (W.IsReady() || Player.Mana <= W.Instance.ManaCost * 3)
             {
-                return W.GetDamage(enemy);
+                return W.GetDamage(enemy)*3;
             }
             return 0;
         }
@@ -1077,7 +1079,7 @@ MinionOrderTypes.MaxHealth);
             {
                 return;
             }
-            if (Environment.TickCount - Q.LastCastAttemptT >= 11000
+            if (Environment.TickCount - Q.LastCastAttemptT >= 9000
                 && Q.IsReady())
             {
                 Q.Cast(Game.CursorPos);
