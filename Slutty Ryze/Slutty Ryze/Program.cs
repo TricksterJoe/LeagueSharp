@@ -5,6 +5,7 @@ using System.Drawing.Text;
 using System.Dynamic;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,6 +26,9 @@ namespace Slutty_ryze
         public static Orbwalking.Orbwalker Orbwalker;
         public static Spell Q, W, E, R, Qn;
         private static SpellSlot Ignite;
+        private static long LastQCast = 0;
+        private static long LastECast = 0;
+         private static long LastWCast = 0;
 
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
 
@@ -95,6 +99,8 @@ namespace Slutty_ryze
             Config.AddSubMenu(new Menu("Combo Options", "ComboOptions"));
             Config.SubMenu("ComboOptions")
                 .AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
+            Config.SubMenu("ComboOptions").AddItem(new MenuItem("delayenable", "Eanble Humanizer").SetValue(false));
+            Config.SubMenu("ComboOptions").AddItem(new MenuItem("delay", "Delay between Skills").SetValue(new Slider(0, 0, 3000)));
 
             Config.AddSubMenu(new Menu("Mixed", "Mixed"));
 
@@ -469,8 +475,72 @@ namespace Slutty_ryze
 
         }
 
+        public static void qCast(Obj_AI_Base target)
+        {
+            var enabled = Config.Item("delayenable").GetValue<bool>();
+            var delay = Config.Item("delay").GetValue<Slider>().Value;
+
+            if (enabled)
+            {
+                if (Environment.TickCount > LastQCast + delay)
+                {
+                    Q.Cast(target);
+                    LastQCast = Environment.TickCount;
+                }
+            }
+
+            if (!enabled)
+            {
+                Q.Cast(target);
+                LastQCast = Environment.TickCount;
+            }
+        }
+
+        public static void wCast(Obj_AI_Base target)
+        {
+            var enabled = Config.Item("delayenable").GetValue<bool>();
+            var delay = Config.Item("delay").GetValue<Slider>().Value;
+
+            if (enabled)
+            {
+                if (Environment.TickCount > LastWCast + delay)
+                {
+                    W.CastOnUnit(target);
+                    LastWCast = Environment.TickCount;
+                }
+            }
+
+            if (!enabled)
+            {
+                W.CastOnUnit(target);
+                LastWCast = Environment.TickCount;
+            }
+        }
+
+        public static void eCast(Obj_AI_Base target)
+        {
+            var enabled = Config.Item("delayenable").GetValue<bool>();
+            var delay = Config.Item("delay").GetValue<Slider>().Value;
+
+            if (enabled)
+            {
+                if (Environment.TickCount > LastECast + delay)
+                {
+                    E.CastOnUnit(target);
+                    LastECast = Environment.TickCount;
+                }
+            }
+
+            if (!enabled)
+            {
+                E.CastOnUnit(target);
+                LastECast = Environment.TickCount;
+            }
+        }
+
         private static void Combo()
         {
+            Obj_AI_Hero target = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
 
             Ignite = Player.GetSpellSlot("summonerdot");
             var qSpell = Config.Item("useQ").GetValue<bool>();
@@ -478,7 +548,7 @@ namespace Slutty_ryze
             var wSpell = Config.Item("useW").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
             var rwwSpell = Config.Item("useRww").GetValue<bool>();
-            Obj_AI_Hero target = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
+            var delay = Config.Item("delayenable").GetValue<bool>();
 
             if (!target.IsValidTarget(Q.Range))
             {
@@ -500,21 +570,21 @@ namespace Slutty_ryze
                         && qSpell
                         && Q.IsReady())
                     {
-                        Q.Cast(target);
+                        qCast(target);
                     }
 
                     if (target.IsValidTarget(W.Range)
                         && wSpell
                         && W.IsReady())
                     {
-                        W.CastOnUnit(target);
+                        wCast(target);
                     }
 
                     if (target.IsValidTarget(E.Range)
                         && eSpell
                         && E.IsReady())
                     {
-                        E.CastOnUnit(target);
+                        eCast(target);
                     }
 
                     if (R.IsReady()
@@ -542,21 +612,24 @@ namespace Slutty_ryze
                         && target.IsValidTarget(Q.Range))
                     {
                         {
-                            Qn.Cast(target);
+
+                            qCast(target);
+
                         }
                     }
+
                     if (E.IsReady()
                         && target.IsValidTarget(E.Range))
                     {
                         {
-                            E.CastOnUnit(target);
+                            eCast(target);
                         }
                     }
                     if (W.IsReady()
                         && target.IsValidTarget(W.Range))
                     {
                         {
-                            W.CastOnUnit(target);
+                            wCast(target);
                         }
                     }
                     if (R.IsReady()
@@ -584,19 +657,20 @@ namespace Slutty_ryze
                         && wSpell
                         && W.IsReady())
                     {
-                        W.CastOnUnit(target);
+                        wCast(target);
                     }
+
                     if (target.IsValidTarget(Qn.Range)
                         && Q.IsReady()
                         && qSpell)
                     {
-                        Qn.Cast(target);
+                        qCast(target);
                     }
                     if (target.IsValidTarget(E.Range)
                         && E.IsReady()
                         && eSpell)
                     {
-                        E.CastOnUnit(target);
+                        eCast(target);
                     }
 
                     if (R.IsReady()
@@ -623,21 +697,21 @@ namespace Slutty_ryze
                         && W.IsReady()
                         && target.IsValidTarget(W.Range))
                     {
-                        W.CastOnUnit(target);
+                        wCast(target);
                     }
 
                     if (qSpell
                         && Qn.IsReady()
                         && target.IsValidTarget(Qn.Range))
                     {
-                        Qn.Cast(target);
+                        qCast(target);
                     }
 
                     if (eSpell
                         && E.IsReady()
                         && target.IsValidTarget(E.Range))
                     {
-                        E.CastOnUnit(target);
+                        eCast(target);
                     }
 
                     if (R.IsReady()
@@ -659,33 +733,42 @@ namespace Slutty_ryze
                                 R.Cast();
                             }
                         }
+
+                        if (target.IsValidTarget(W.Range)
+                            && (!Q.IsReady() && !W.IsReady() && !E.IsReady()))
+                        {
+                            R.Cast();
+                        }
                     }
                 }
 
             }
+                
             else
             {
                 if (wSpell
                     && W.IsReady()
                     && target.IsValidTarget(W.Range))
                 {
-                    W.CastOnUnit(target);
+                    wCast(target);
                 }
 
                 if (qSpell
                     && Qn.IsReady()
                     && target.IsValidTarget(Qn.Range))
                 {
-                    Qn.Cast(target);
+                    qCast(target);
                 }
 
                 if (eSpell
                     && E.IsReady()
                     && target.IsValidTarget(E.Range))
                 {
-                    E.CastOnUnit(target);
+                    eCast(target);
                 }
+                 
             }
+                 
         }
 
         private static void LaneClear()
