@@ -26,9 +26,10 @@ namespace Slutty_ryze
         public static Orbwalking.Orbwalker Orbwalker;
         public static Spell Q, W, E, R, Qn;
         private static SpellSlot Ignite;
-        private static long LastQCast = 0;
-        private static long LastECast = 0;
-         private static long LastWCast = 0;
+        private static long LastQCast;
+        private static long LastQnCast;
+        private static long LastECast;
+        private static long LastWCast;
 
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
 
@@ -496,6 +497,27 @@ namespace Slutty_ryze
             }
         }
 
+        public static void qnCast(Obj_AI_Base target)
+        {
+            var enabled = Config.Item("delayenable").GetValue<bool>();
+            var delay = Config.Item("delay").GetValue<Slider>().Value;
+
+            if (enabled)
+            {
+                if (Environment.TickCount > LastQnCast + delay)
+                {
+                    Qn.Cast(target);
+                    LastQnCast = Environment.TickCount;
+                }
+            }
+
+            if (!enabled)
+            {
+                Qn.Cast(target);
+                LastQnCast = Environment.TickCount;
+            }
+        }
+
         public static void wCast(Obj_AI_Base target)
         {
             var enabled = Config.Item("delayenable").GetValue<bool>();
@@ -548,7 +570,6 @@ namespace Slutty_ryze
             var wSpell = Config.Item("useW").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
             var rwwSpell = Config.Item("useRww").GetValue<bool>();
-            var delay = Config.Item("delayenable").GetValue<bool>();
 
             if (!target.IsValidTarget(Q.Range))
             {
@@ -613,7 +634,7 @@ namespace Slutty_ryze
                     {
                         {
 
-                            qCast(target);
+                            qnCast(target);
 
                         }
                     }
@@ -664,7 +685,7 @@ namespace Slutty_ryze
                         && Q.IsReady()
                         && qSpell)
                     {
-                        qCast(target);
+                        qnCast(target);
                     }
                     if (target.IsValidTarget(E.Range)
                         && E.IsReady()
@@ -704,7 +725,7 @@ namespace Slutty_ryze
                         && Qn.IsReady()
                         && target.IsValidTarget(Qn.Range))
                     {
-                        qCast(target);
+                        qnCast(target);
                     }
 
                     if (eSpell
@@ -757,7 +778,7 @@ namespace Slutty_ryze
                     && Qn.IsReady()
                     && target.IsValidTarget(Qn.Range))
                 {
-                    qCast(target);
+                    qnCast(target);
                 }
 
                 if (eSpell
