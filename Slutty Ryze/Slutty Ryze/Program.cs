@@ -217,8 +217,7 @@ namespace Slutty_ryze
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                if ((Player.Distance(target) > 420)
-                    || target.Health > (Player.GetAutoAttackDamage(target)*3)
+                if ((Player.Distance(target) < 440)
                     || (Config.Item("WBlock").GetValue<bool>() && W.IsReady())
                     ||  (Q.IsReady() || E.IsReady() || W.IsReady()))
                 {
