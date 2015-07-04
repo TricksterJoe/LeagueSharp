@@ -100,6 +100,7 @@ namespace Slutty_ryze
             Config.AddSubMenu(new Menu("Combo Options", "ComboOptions"));
             Config.SubMenu("ComboOptions")
                 .AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
+            Config.SubMenu("ComboOptions").AddItem(new MenuItem("WBloc", "Block AA If W Up")).SetValue(false);
             Config.SubMenu("ComboOptions").AddItem(new MenuItem("delayenable", "Eanble Humanizer").SetValue(false));
             Config.SubMenu("ComboOptions").AddItem(new MenuItem("delay", "Delay between Skills").SetValue(new Slider(0, 0, 3000)));
 
@@ -216,9 +217,10 @@ namespace Slutty_ryze
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                if (((Player.Distance(target) > 440)
-                     || (Q.IsReady() || E.IsReady() || W.IsReady()))
-                    && target.Health > (Player.GetAutoAttackDamage(target)*3))
+                if ((Player.Distance(target) > 420)
+                    || target.Health > (Player.GetAutoAttackDamage(target)*3)
+                    || (Config.Item("WBlock").GetValue<bool>() && W.IsReady())
+                    ||  (Q.IsReady() || E.IsReady() || W.IsReady()))
                 {
                     Orbwalker.SetAttack(false);
                 }
@@ -410,6 +412,8 @@ namespace Slutty_ryze
             if (Player.IsDead)
                 return;
 
+            
+
             if (Config.Item("qDraw").GetValue<bool>() && Q.Level > 0)
             {
                 Render.Circle.DrawCircle(Player.Position, Q.Range, Color.Green);
@@ -564,6 +568,11 @@ namespace Slutty_ryze
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
 
+            if (target.IsInvulnerable
+                || target.IsZombie
+                || target.IsDead)
+                return;
+
             Ignite = Player.GetSpellSlot("summonerdot");
             var qSpell = Config.Item("useQ").GetValue<bool>();
             var eSpell = Config.Item("useE").GetValue<bool>();
@@ -584,8 +593,7 @@ namespace Slutty_ryze
 
             if (target.IsValidTarget(Q.Range))
             {
-                if (GetPassiveBuff <= 2
-                    || !Player.HasBuff("RyzePassiveStack"))
+                if (GetPassiveBuff <= 2)
                 {
                     if (target.IsValidTarget(Q.Range)
                         && qSpell
@@ -841,7 +849,8 @@ namespace Slutty_ryze
 
                     if (q2LSpell
                         && Q.IsReady()
-                        && minion.IsValidTarget(Q.Range))
+                        && minion.IsValidTarget(Q.Range)
+                        && minion.Health >= (Q.GetDamage(minion) + Player.GetAutoAttackDamage(minion)*1.35f))
                     {
                         Q.Cast(minion);
                     }
@@ -986,7 +995,7 @@ namespace Slutty_ryze
             {
                 Console.WriteLine(JOE_HAS_NO_PENIS.Name.ToString(), 1337);
             }
-             */
+             */ 
 
             var qSpell = Config.Item("UseQM").GetValue<bool>();
             var qlSpell = Config.Item("UseQMl").GetValue<bool>();
@@ -1180,19 +1189,22 @@ namespace Slutty_ryze
 
         private static float GetComboDamage(Obj_AI_Base enemy)
         {
-            if (Q.IsReady() || Player.Mana <= Q.Instance.ManaCost*5)
+            if ((Player.Mana >= Q.Instance.ManaCost*5 
+                + E.Instance.ManaCost*3
+                + W.Instance.ManaCost*2))
             {
-                return Q.GetDamage(enemy)*5;
+                return Q.GetDamage(enemy)*5
+                    + E.GetDamage(enemy)*3 
+                    + W.Instance.ManaCost*2;
             }
 
-            if (E.IsReady() || Player.Mana <= E.Instance.ManaCost * 5)
+            if ((Player.Mana <= Q.Instance.ManaCost * 5
+                + E.Instance.ManaCost * 3
+                + W.Instance.ManaCost * 2))
             {
-                return E.GetDamage(enemy)*5;
-            }
-
-            if (W.IsReady() || Player.Mana <= W.Instance.ManaCost * 3)
-            {
-                return W.GetDamage(enemy)*3;
+                return Q.GetDamage(enemy) 
+                    + E.GetDamage(enemy) 
+                    + W.Instance.ManaCost ;
             }
             return 0;
         }

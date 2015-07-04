@@ -62,7 +62,7 @@ namespace Slutty_ryze
                 {
                     Text.X = (int)barPos.X + XOffset;
                     Text.Y = (int)barPos.Y + YOffset - 13;
-                    Text.text = "Killable: " + (unit.Health - damage);
+                    Text.text = "Killable With Combo Rotation " + (unit.Health - damage);
                     Text.OnEndScene();
                 }
 
