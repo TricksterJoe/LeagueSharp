@@ -24,7 +24,7 @@ namespace Slutty_ryze
         public static Menu Config;
         public static Orbwalking.Orbwalker Orbwalker;
         public static Spell Q, W, E, R, Qn;
-        private static SpellSlot Ignite;
+        private static SpellSlot Ignite ;
 
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
 
@@ -181,6 +181,9 @@ namespace Slutty_ryze
                 .SetValue(new Slider(30));
 
             Config.AddSubMenu(new Menu("Passive Stack", "autoPassive"));
+            Config.SubMenu("autoPasive")
+                .AddItem(new MenuItem("ManapSlider", "Minimum %Mana"))
+                .SetValue(new Slider(30));
             Config.SubMenu("autoPassive")
                 .AddItem(new MenuItem("autoPassive", "Stack Passive").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
             Config.SubMenu("autoPassive")
@@ -491,9 +494,9 @@ namespace Slutty_ryze
                 Player.Spellbook.CastSpell(Ignite, target);
             }
 
-            if (target.IsValidTarget(Q.Range))
+            if (R.IsReady())
             {
-                if (GetPassiveBuff <= 2
+                if (GetPassiveBuff == 1
                     || !Player.HasBuff("RyzePassiveStack"))
                 {
                     if (target.IsValidTarget(Q.Range)
@@ -517,8 +520,7 @@ namespace Slutty_ryze
                         E.CastOnUnit(target);
                     }
 
-                    if (R.IsReady()
-                        && rSpell)
+                    if (rSpell)
                     {
                         if (target.IsValidTarget(W.Range)
                             && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
@@ -535,6 +537,41 @@ namespace Slutty_ryze
                     }
                 }
 
+                if (GetPassiveBuff == 2)
+                {
+                    if (target.IsValidTarget(Q.Range)
+                        && qSpell
+                        && Q.IsReady())
+                    {
+                        Q.Cast(target);
+                    }
+
+                    if (target.IsValidTarget(W.Range)
+                        && wSpell
+                        && W.IsReady())
+                    {
+                        W.CastOnUnit(target);
+                    }
+
+                    if (target.IsValidTarget(E.Range)
+                        && eSpell
+                        && E.IsReady())
+                    {
+                        E.CastOnUnit(target);
+                    }
+
+                    if (rSpell)
+                    {
+                        if (target.IsValidTarget(W.Range)
+                            && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
+                        {
+                            if (target.HasBuff("RyzeW"))
+                            {
+                                R.Cast();
+                            }
+                        }
+                    }
+                }
 
                 if (GetPassiveBuff == 3)
                 {
@@ -565,17 +602,18 @@ namespace Slutty_ryze
                         if (target.IsValidTarget(W.Range)
                             && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
                         {
-                            if (rwwSpell && target.HasBuff("RyzeW"))
+                            if (rwwSpell && target.HasBuff("RyzeW")
+                                && (Q.IsReady() || W.IsReady() || E.IsReady()))
                             {
                                 R.Cast();
                             }
-                            if (!rwwSpell)
+                            if (!rwwSpell
+                                && (Q.IsReady() || W.IsReady() || E.IsReady()))
                             {
                                 R.Cast();
                             }
                         }
                     }
-
                 }
 
                 if (GetPassiveBuff == 4)
@@ -613,12 +651,23 @@ namespace Slutty_ryze
                             {
                                 R.Cast();
                             }
+                            if (!Q.IsReady() && !W.IsReady() && !E.IsReady() && R.IsReady())
+                            {
+                                R.Cast();
+                            }
                         }
                     }
                 }
 
                 if (Player.HasBuff("ryzepassivecharged"))
                 {
+                    if (qSpell
+                        && Qn.IsReady()
+                        && target.IsValidTarget(Qn.Range))
+                    {
+                        Qn.Cast(target);
+                    }
+
                     if (wSpell
                         && W.IsReady()
                         && target.IsValidTarget(W.Range))
@@ -638,6 +687,13 @@ namespace Slutty_ryze
                         && target.IsValidTarget(E.Range))
                     {
                         E.CastOnUnit(target);
+                    }
+
+                    if (qSpell
+                        && Qn.IsReady()
+                        && target.IsValidTarget(Qn.Range))
+                    {
+                        Qn.Cast(target);
                     }
 
                     if (R.IsReady()
@@ -661,29 +717,159 @@ namespace Slutty_ryze
                         }
                     }
                 }
-
             }
-            else
+
+            if (!R.IsReady())
             {
-                if (wSpell
-                    && W.IsReady()
-                    && target.IsValidTarget(W.Range))
+                if (GetPassiveBuff == 1
+                    || !Player.HasBuff("RyzePassiveStack"))
                 {
-                    W.CastOnUnit(target);
+                    if (target.IsValidTarget(W.Range)
+                        && wSpell
+                        && W.IsReady())
+                    {
+                        W.CastOnUnit(target);
+                    }
+
+                    if (target.IsValidTarget(W.Range)
+                        && wSpell
+                        && W.IsReady())
+                    {
+                        W.CastOnUnit(target);
+                    }
+
+                    if (target.IsValidTarget(E.Range)
+                        && eSpell
+                        && E.IsReady())
+                    {
+                        E.CastOnUnit(target);
+                    }
                 }
 
-                if (qSpell
-                    && Qn.IsReady()
-                    && target.IsValidTarget(Qn.Range))
+                if (GetPassiveBuff == 2)
                 {
-                    Qn.Cast(target);
+                    if (target.IsValidTarget(Q.Range)
+                        && qSpell
+                        && Q.IsReady())
+                    {
+                        Q.Cast(target);
+                    }
+
+                    if (target.IsValidTarget(E.Range)
+                        && eSpell
+                        && E.IsReady())
+                    {
+                        E.CastOnUnit(target);
+                    }
+
+                    if (target.IsValidTarget(W.Range)
+                        && wSpell
+                        && W.IsReady())
+                    {
+                        W.CastOnUnit(target);
+                    }
+
+                    if (rSpell)
+                    {
+                        if (target.IsValidTarget(W.Range)
+                            && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
+                        {
+                            if (rwwSpell && target.HasBuff("RyzeW"))
+                            {
+                                R.Cast();
+                            }
+                            if (!rwwSpell)
+                            {
+                                R.Cast();
+                            }
+                        }
+                    }
                 }
 
-                if (eSpell
-                    && E.IsReady()
-                    && target.IsValidTarget(E.Range))
+                if (GetPassiveBuff == 3)
                 {
-                    E.CastOnUnit(target);
+                    if (Q.IsReady()
+                        && target.IsValidTarget(Q.Range))
+                    {
+                        {
+                            Qn.Cast(target);
+                        }
+                    }
+                    if (E.IsReady()
+                        && target.IsValidTarget(E.Range))
+                    {
+                        {
+                            E.CastOnUnit(target);
+                        }
+                    }
+                    if (W.IsReady()
+                        && target.IsValidTarget(W.Range))
+                    {
+                        {
+                            W.CastOnUnit(target);
+                        }
+                    }
+                }
+
+                if (GetPassiveBuff == 4)
+                {
+                    if (target.IsValidTarget(E.Range)
+                        && E.IsReady()
+                        && eSpell)
+                    {
+                        E.CastOnUnit(target);
+                    }
+
+                    if (target.IsValidTarget(W.Range)
+                        && wSpell
+                        && W.IsReady())
+                    {
+                        W.CastOnUnit(target);
+                    }
+                    if (target.IsValidTarget(Qn.Range)
+                        && Q.IsReady()
+                        && qSpell)
+                    {
+                        Qn.Cast(target);
+                    }
+                }
+
+                if (Player.HasBuff("ryzepassivecharged"))
+                {
+                    if (qSpell
+                        && Qn.IsReady()
+                        && target.IsValidTarget(Qn.Range))
+                    {
+                        Qn.Cast(target);
+                    }
+
+                    if (wSpell
+                        && W.IsReady()
+                        && target.IsValidTarget(W.Range))
+                    {
+                        W.CastOnUnit(target);
+                    }
+
+                    if (qSpell
+                        && Qn.IsReady()
+                        && target.IsValidTarget(Qn.Range))
+                    {
+                        Qn.Cast(target);
+                    }
+
+                    if (eSpell
+                        && E.IsReady()
+                        && target.IsValidTarget(E.Range))
+                    {
+                        E.CastOnUnit(target);
+                    }
+
+                    if (qSpell
+                        && Qn.IsReady()
+                        && target.IsValidTarget(Qn.Range))
+                    {
+                        Qn.Cast(target);
+                    }
                 }
             }
         }
@@ -1129,6 +1315,8 @@ namespace Slutty_ryze
             var minions = MinionManager.GetMinions(
 ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy,
 MinionOrderTypes.MaxHealth);
+            if (Player.Mana < Config.Item("ManapSlider").GetValue<Slider>().Value)
+                return;
 
             if (Player.IsRecalling()
                 || minions.Count >= 1)
