@@ -86,10 +86,10 @@ namespace Slutty_ryze
 
 
             Config.AddSubMenu(new Menu("Combo", "Combo"));
-            Config.SubMenu("Combo").AddItem(new MenuItem("useQ", "Use Q").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("useW", "Use W").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("useE", "Use E").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("useR", "Use R").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("useQ", "Use Q (Over Load)").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("useW", "Use W (Rune Prison)").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("useE", "Use E (Spell Flux)").SetValue(true));
+            Config.SubMenu("Combo").AddItem(new MenuItem("useR", "Use R (Desperate Power)").SetValue(true));
             Config.SubMenu("Combo").AddItem(new MenuItem("useRww", "Only R if Target Is Rooted").SetValue(true));
 
             Config.AddSubMenu(new Menu("Combo Options", "ComboOptions"));
@@ -98,6 +98,8 @@ namespace Slutty_ryze
 
             Config.AddSubMenu(new Menu("Mixed", "Mixed"));
 
+            Config.SubMenu("Mixed")
+                .AddItem(new MenuItem("mMin", "Minimum Mana For Spells").SetValue(new Slider(40)));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseQM", "Use Q").SetValue(true));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseQMl", "Use Q last hit minion").SetValue(true));
             Config.SubMenu("Mixed").AddItem(new MenuItem("UseEM", "Use E").SetValue(false));
@@ -651,7 +653,7 @@ namespace Slutty_ryze
                             {
                                 R.Cast();
                             }
-                            if (!Q.IsReady() && !W.IsReady() && !E.IsReady() && R.IsReady())
+                            if (!Q.IsReady() && !W.IsReady() && !E.IsReady())
                             {
                                 R.Cast();
                             }
@@ -872,6 +874,19 @@ namespace Slutty_ryze
                     }
                 }
             }
+
+
+            if (R.IsReady() 
+                && GetPassiveBuff == 4
+                && rSpell)
+            {
+                if (!Q.IsReady() 
+                    && !W.IsReady() 
+                    && !E.IsReady())
+                {
+                    R.Cast();
+                }
+            }
         }
 
         private static void LaneClear()
@@ -900,7 +915,7 @@ namespace Slutty_ryze
                 if (qlchSpell
                     && Q.IsReady()
                     && minion.IsValidTarget(Q.Range)
-                    && minion.Health < Q.GetDamage(minion))
+                    && minion.Health <= Q.GetDamage(minion))
                 {
                     Q.Cast(minion);
                 }
@@ -908,7 +923,7 @@ namespace Slutty_ryze
                 if (wlchSpell
                     && W.IsReady()
                     && minion.IsValidTarget(W.Range)
-                    && minion.Health < W.GetDamage(minion))
+                    && minion.Health <= W.GetDamage(minion))
                 {
                     W.CastOnUnit(minion);
                 }
@@ -916,27 +931,30 @@ namespace Slutty_ryze
                 if (elchSpell
                     && E.IsReady()
                     && minion.IsValidTarget(E.Range)
-                    && minion.Health < E.GetDamage(minion))
+                    && minion.Health <= E.GetDamage(minion))
                 {
                     E.CastOnUnit(minion);
                 }
 
                 if (q2LSpell
                     && Q.IsReady()
-                    && minion.IsValidTarget(Q.Range))
+                    && minion.IsValidTarget(Q.Range)
+                    && minion.Health >= (Player.GetAutoAttackDamage(minion)*1.3))
                 {
                     Q.Cast(minion);
                 }
 
                 if (e2LSpell
                     && E.IsReady()
-                    && minion.IsValidTarget(E.Range))
+                    && minion.IsValidTarget(E.Range)
+                    && minion.Health >= (Player.GetAutoAttackDamage(minion) * 1.3))
                 {
                     E.CastOnUnit(minion);
                 }
                 if (w2LSpell
                     && W.IsReady()
-                    && minion.IsValidTarget(W.Range))
+                    && minion.IsValidTarget(W.Range)
+                    && minion.Health >= (Player.GetAutoAttackDamage(minion) * 1.3))
                 {
                     W.CastOnUnit(minion);
                 }
@@ -1075,6 +1093,10 @@ namespace Slutty_ryze
             var eSpell = Config.Item("UseEM").GetValue<bool>();
             var wSpell = Config.Item("UseWM").GetValue<bool>();
             var minMana = Config.Item("useEPL").GetValue<Slider>().Value;
+
+            if (Player.ManaPercent < Config.Item("mMin").GetValue<Slider>().Value)
+                return;
+            
             Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
             if (qSpell
                 && Q.IsReady()
