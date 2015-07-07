@@ -178,6 +178,7 @@ namespace Slutty_Caitlyn
 
             if (Config.Item("dasht").GetValue<KeyBind>().Active)
             {
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                 if (E.IsReady())
                 {
                     E.Cast(Game.CursorPos.Extend(Player.Position, 5000));
@@ -186,6 +187,7 @@ namespace Slutty_Caitlyn
 
             if (Config.Item("dashte").GetValue<KeyBind>().Active)
             {
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                 Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
                 if (E.IsReady() && Q.IsReady()
                     && Player.Mana > (Q.Instance.ManaCost + E.Instance.ManaCost))
