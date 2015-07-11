@@ -270,7 +270,6 @@ namespace Slutty_Caitlyn
                     && qrSpell
                     && Q.IsReady()
                     && Player.Distance(target) >= 500
-                    && qHit.MinionsHit <= 4
                     && Player.Mana >= Q.Instance.ManaCost*2f
                     && Player.CountEnemiesInRange(1000) <= 3
                     && target.IsValidTarget(Q.Range))
