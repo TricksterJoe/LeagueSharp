@@ -128,7 +128,7 @@ namespace Slutty_Caitlyn
 
             Config.AddItem(new MenuItem("fleekey", "Use Flee Mode")).SetValue(new KeyBind(65, KeyBindType.Press));
 
-            Config.AddItem(new MenuItem("dasht", "Dash E to mouse")).SetValue(new KeyBind(66, KeyBindType.Press));
+         //   Config.AddItem(new MenuItem("dasht", "Dash E to mouse")).SetValue(new KeyBind(66, KeyBindType.Press));
 
 
             Config.AddToMainMenu();
@@ -140,6 +140,38 @@ namespace Slutty_Caitlyn
         {
             if (Player.IsDead)
                 return;
+
+            if (Config.Item("fleekey").GetValue<KeyBind>().Active)
+            {
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                if (E.IsReady())
+                {
+                    Utility.DelayAction.Add(300, () => E.Cast(Game.CursorPos.Extend(Player.Position, 5000)));
+                }
+            }
+
+            /*
+            if (Config.Item("dasht").GetValue<KeyBind>().Active)
+            {
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                if (E.IsReady())
+                {
+                    E.Cast(Game.CursorPos.Extend(Player.Position, 5000));
+                }
+            }
+             */
+
+            if (Config.Item("dashte").GetValue<KeyBind>().Active)
+            {
+                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+                if (E.IsReady() && Q.IsReady()
+                    && Player.Mana > (Q.Instance.ManaCost + E.Instance.ManaCost))
+                {
+                    E.Cast(target.Position);
+                    Q.Cast(target.Position);
+                }
+            }
 
             if (Config.Item("UseRM").GetValue<KeyBind>().Active
                 && R.IsReady())
@@ -166,41 +198,35 @@ namespace Slutty_Caitlyn
             {
                 KillSteal();
             }
-
-            if (Config.Item("fleekey").GetValue<KeyBind>().Active)
-            {
-                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                if (E.IsReady())
-                {
-                    E.Cast(Game.CursorPos.Extend(Player.Position, 5000));
-                }
-            }
-
-            if (Config.Item("dasht").GetValue<KeyBind>().Active)
-            {
-                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                if (E.IsReady())
-                {
-                    E.Cast(Game.CursorPos.Extend(Player.Position, 5000));
-                }
-            }
-
-            if (Config.Item("dashte").GetValue<KeyBind>().Active)
-            {
-                ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-                if (E.IsReady() && Q.IsReady()
-                    && Player.Mana > (Q.Instance.ManaCost + E.Instance.ManaCost))
-                {
-                    E.Cast(target.Position);
-                    Q.Cast(target.Position);
-                }
-            }
-
+            AutoQ();
             Potion();
             AutoW();
 
         }
+
+        private static void AutoQ()
+        {
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+            if (target == null)
+                return;
+
+            var qSpell = Config.Item("UseQa").GetValue<bool>();
+
+            if (qSpell)
+            {
+                if ((target.HasBuffOfType(BuffType.Slow)
+                    || target.HasBuffOfType(BuffType.Charm)
+                    || target.HasBuffOfType(BuffType.Stun)
+                    || target.HasBuffOfType(BuffType.Snare)
+                    || target.HasBuffOfType(BuffType.Knockup)
+                    || target.HasBuffOfType(BuffType.Suppression))
+                    && !target.IsZombie)
+                {
+                    Q.Cast(target);
+                }
+            }
+        }
+
         private static void Drawing_OnDraw(EventArgs args)
         {
             if (Player.IsDead)
@@ -226,25 +252,31 @@ namespace Slutty_Caitlyn
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
             var minionsQ = MinionManager.GetMinions(ObjectManager.Player.ServerPosition, Q.Range);
             var qHit = Q.GetLineFarmLocation(minionsQ, 100);
-            if (qSpell
-                && !qrSpell
-                && Q.IsReady()
-                && qHit.MinionsHit <= 4
-                && target.IsValidTarget(Q.Range))
-            {
-                Q.Cast(target);
-            }
 
-            if (qSpell
-                && qrSpell
-                && Q.IsReady()
-                && Player.Distance(target) > 800
-                && qHit.MinionsHit <= 4
-                && target.IsFacing(Player)
-                && Player.CountEnemiesInRange(1000) == 1
-                && target.IsValidTarget(Q.Range))
+            if ((target != null)
+                && !target.IsZombie)
             {
-                Q.Cast(target);
+
+                if (qSpell
+                    && !qrSpell
+                    && Q.IsReady()
+                    && qHit.MinionsHit <= 4
+                    && target.IsValidTarget(Q.Range))
+                {
+                    Q.Cast(target);
+                }
+
+                if (qSpell
+                    && qrSpell
+                    && Q.IsReady()
+                    && Player.Distance(target) > 800
+                    && qHit.MinionsHit <= 4
+                    && target.IsFacing(Player)
+                    && Player.CountEnemiesInRange(1000) == 1
+                    && target.IsValidTarget(Q.Range))
+                {
+                    Q.Cast(target);
+                }
             }
         }
 
@@ -362,6 +394,8 @@ namespace Slutty_Caitlyn
                 ManaPotion.Cast();
             }
         }
+
+        // NOT MINE, THIS IS SEBBY'S
         static double UnitIsImmobileUntil(Obj_AI_Base unit)
         {
             var time =
@@ -435,7 +469,8 @@ namespace Slutty_Caitlyn
             if (target == null)
                 return;
 
-            if (target.IsValidTarget())
+            if (target.IsValidTarget()
+                && !target.IsZombie)
             {
                 R.CastOnUnit(target);
             }
