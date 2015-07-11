@@ -1194,62 +1194,41 @@ R.Cast();
             }
 
 
-            var jungleMinion = ObjectManager.Get<Obj_AI_Minion>().Where(x => x.Team == GameObjectTeam.Neutral
-                && !x.IsDead
-                && x.Distance(ObjectManager.Player.Position) <= Q.Range).OrderBy(x => x.MaxHealth).FirstOrDefault();
+            var jungle = MinionManager.GetMinions(Q.Range, MinionTypes.All, MinionTeam.Neutral,
+                MinionOrderTypes.MaxHealth);
 
-            if (!jungleMinion.IsValidTarget())
+            if (jungle.Count > 0)
+                foreach (var jungleMinion in jungle)
             {
-                if (Config.Item("disablelane").GetValue<KeyBind>().Active)
+                if (!jungleMinion.IsValidTarget())
                 {
-                    LaneClear();
+                    if (Config.Item("disablelane").GetValue<KeyBind>().Active)
+                    {
+                        LaneClear();
+                    }
+                    return;
                 }
-                return;
-            }
-            if (GetPassiveBuff == 4)
-            {
-                if (eSpell
-                    && E.IsReady()
-                    && jungleMinion.IsValidTarget(E.Range))
+                if (GetPassiveBuff == 4
+                    || Player.HasBuff("RyzePassiveStack"))
                 {
-                    E.CastOnUnit(jungleMinion);
-                }
-                if (qSpell
-                    && Q.IsReady()
-                    && jungleMinion.IsValidTarget(Q.Range))
-                {
-                    Q.Cast(jungleMinion);
-                }
+                    if (eSpell
+                        && E.IsReady())
+                    {
+                        E.CastOnUnit(jungleMinion);
+                    }
+                    if (qSpell
+                        && Q.IsReady())
+                    {
+                        Q.Cast(jungleMinion);
+                    }
 
-                if (wSpell
-                    && W.IsReady()
-                    && jungleMinion.IsValidTarget(W.Range))
-                {
-                    W.CastOnUnit(jungleMinion);
-                }
-            }
-            else
-            {
-                if (qSpell
-                    && Q.IsReady()
-                    && jungleMinion.IsValidTarget(Q.Range))
-                {
-                    Q.Cast(jungleMinion);
-                }
-                if (eSpell
-                    && E.IsReady()
-                    && jungleMinion.IsValidTarget(E.Range))
-                {
-                    E.CastOnUnit(jungleMinion);
-                }
-                if (wSpell
-                    && W.IsReady()
-                    && jungleMinion.IsValidTarget(W.Range))
-                {
-                    W.CastOnUnit(jungleMinion);
+                    if (wSpell
+                        && W.IsReady())
+                    {
+                        W.CastOnUnit(jungleMinion);
+                    }
                 }
             }
-
         }
 
         private static void LastHit()
@@ -1463,13 +1442,13 @@ R.Cast();
                 return;
 
             var mtears = Config.Item("tearSM").GetValue<Slider>().Value;
-            if (ItemData.Tear_of_the_Goddess.Stacks.Equals(750)
-                || Items.HasItem(ItemData.Seraphs_Embrace.Id)
-                || ItemData.Archangels_Staff.Stacks.Equals(750)
-                || GetPassiveBuff == 4)
+            if (GetPassiveBuff == 4
+                && (!Items.HasItem(3070)))
             {
                 return;
             }
+             
+
             if (Q.IsReady()
                 && Player.ManaPercent >= mtears
                 && ((Items.HasItem(ItemData.Tear_of_the_Goddess.Id)
