@@ -269,10 +269,10 @@ namespace Slutty_Caitlyn
                 if (qSpell
                     && qrSpell
                     && Q.IsReady()
-                    && Player.Distance(target) > 800
+                    && Player.Distance(target) >= 500
                     && qHit.MinionsHit <= 4
-                    && target.IsFacing(Player)
-                    && Player.CountEnemiesInRange(1000) == 1
+                    && Player.Mana >= Q.Instance.ManaCost*2f
+                    && Player.CountEnemiesInRange(1000) <= 3
                     && target.IsValidTarget(Q.Range))
                 {
                     Q.Cast(target);
@@ -347,7 +347,8 @@ namespace Slutty_Caitlyn
                 && R.IsReady()
                 && target.IsValidTarget(R.Range)
                 && Player.CountEnemiesInRange(2000) <= 3
-                && playerncol == 0)
+                && playerncol == 0
+                && target.Health < R.GetDamage(target)*0.6f)
             {
                 R.CastOnUnit(target);
             }
