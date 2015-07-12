@@ -1429,9 +1429,6 @@ R.Cast();
             var minions = MinionManager.GetMinions(
    ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy,
    MinionOrderTypes.MaxHealth);
-   if Player.HasBuff("RyzePassiveStack")
-   return;
-
 
             if (Config.Item("tearoptions").GetValue<bool>()
                 && !Player.InFountain())
@@ -1445,7 +1442,7 @@ R.Cast();
 
             var mtears = Config.Item("tearSM").GetValue<Slider>().Value;
             if (GetPassiveBuff == 4
-                && (!Items.HasItem(3070)))
+                || (!Items.HasItem(3070)))
             {
                 return;
             }
