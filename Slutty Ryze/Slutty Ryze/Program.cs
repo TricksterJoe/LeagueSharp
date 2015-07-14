@@ -69,6 +69,7 @@ namespace Slutty_ryze
             Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
 
             Config.AddSubMenu(new Menu("Drawings", "Drawings"));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("Draw", "Display Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "w Drawing").SetValue(true));
@@ -85,116 +86,130 @@ namespace Slutty_ryze
             DamageIndicator.FillColor = drawFill.GetValue<Circle>().Color;
 
 
-            Config.AddSubMenu(new Menu("Combo", "Combo"));
-            Config.SubMenu("Combo")
-                .AddItem(
-                    new MenuItem("combooptions", "Combo Mode").SetValue(new StringList(new[] {"Stable", "Beta Combo"}, 0)));
-            Config.SubMenu("Combo").AddItem(new MenuItem("useQ", "Use Q (Over Load)").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("useW", "Use W (Rune Prison)").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("useE", "Use E (Spell Flux)").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("useR", "Use R (Desperate Power)").SetValue(true));
-            Config.SubMenu("Combo").AddItem(new MenuItem("useRww", "Only R if Target Is Rooted").SetValue(true));
+            var combo1Menu = new Menu("Combo Settings (SB)", "combospells");
+            {
+                combo1Menu
+    .AddItem(
+        new MenuItem("combooptions", "Combo Mode").SetValue(new StringList(new[] { "Stable", "Beta Combo" }, 0)));
+                combo1Menu.AddItem(new MenuItem("useQ", "Use Q (Over Load)").SetValue(true));
+                combo1Menu.AddItem(new MenuItem("useW", "Use W (Rune Prison)").SetValue(true));
+                combo1Menu.AddItem(new MenuItem("useE", "Use E (Spell Flux)").SetValue(true));
+                combo1Menu.AddItem(new MenuItem("useR", "Use R (Desperate Power)").SetValue(true));
+                combo1Menu.AddItem(new MenuItem("useRww", "Only R if Target Is Rooted").SetValue(true));
+                combo1Menu.AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
+            }
+            Config.AddSubMenu(combo1Menu);
 
-            Config.AddSubMenu(new Menu("Combo Options", "ComboOptions"));
-            Config.SubMenu("ComboOptions")
-                .AddItem(new MenuItem("AAblock", "Block auto attack in combo").SetValue(false));
+            var mixedMenu = new Menu("Mixed Settings (C)", "mixedsettings");
+            {
+                mixedMenu.AddItem(new MenuItem("mMin", "Minimum Mana For Spells").SetValue(new Slider(40)));
+                mixedMenu.AddItem(new MenuItem("UseQM", "Use Q").SetValue(true));
+                mixedMenu.AddItem(new MenuItem("UseQMl", "Use Q last hit minion").SetValue(true));
+                mixedMenu.AddItem(new MenuItem("UseEM", "Use E").SetValue(false));
+                mixedMenu.AddItem(new MenuItem("UseWM", "Use W").SetValue(false));
+                mixedMenu.AddItem(new MenuItem("UseQauto", "Auto Q").SetValue(false));
+            }
+            Config.AddSubMenu(mixedMenu);
 
-            Config.AddSubMenu(new Menu("Mixed", "Mixed"));
+            var farmMenu = new Menu("Farming Settings", "farmingsettings");
+            var laneMenu = new Menu("Lane Clear (V)", "lanesettings");
+            {
+                laneMenu.AddItem(new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
+                laneMenu.AddItem(new MenuItem("presslane", "Press Lane Clear").SetValue(new KeyBind('H', KeyBindType.Press)));
+                laneMenu.AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
+                laneMenu.AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
+                laneMenu.AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
+                laneMenu.AddItem(new MenuItem("useWlc", "Use W Last Hit").SetValue(false));
+                laneMenu.AddItem(new MenuItem("useElc", "Use E Last Hit").SetValue(false));
+                laneMenu.AddItem(new MenuItem("useQ2L", "Use Q To Lane Clear").SetValue(true));
+                laneMenu.AddItem(new MenuItem("useW2L", "Use W To Lane Clear").SetValue(false));
+                laneMenu.AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(false));
+                laneMenu.AddItem(new MenuItem("useRl", "Use R In Lane Clear").SetValue(false));
+                laneMenu.AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
+            }
 
-            Config.SubMenu("Mixed")
-                .AddItem(new MenuItem("mMin", "Minimum Mana For Spells").SetValue(new Slider(40)));
-            Config.SubMenu("Mixed").AddItem(new MenuItem("UseQM", "Use Q").SetValue(true));
-            Config.SubMenu("Mixed").AddItem(new MenuItem("UseQMl", "Use Q last hit minion").SetValue(true));
-            Config.SubMenu("Mixed").AddItem(new MenuItem("UseEM", "Use E").SetValue(false));
-            Config.SubMenu("Mixed").AddItem(new MenuItem("UseWM", "Use W").SetValue(false));
-            Config.SubMenu("Mixed").AddItem(new MenuItem("UseQauto", "Auto Q").SetValue(false));
-
-
-            Config.AddSubMenu(new Menu("Lane Clear", "LaneClear"));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("presslane", "Press Lane Clear").SetValue(new KeyBind('H', KeyBindType.Press)));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useWlc", "Use W Last Hit").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useElc", "Use E Last Hit").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useQ2L", "Use Q To Lane Clear").SetValue(true));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useW2L", "Use W To Lane Clear").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useE2L", "Use E To Lane Clear").SetValue(false));
-            Config.SubMenu("LaneClear").AddItem(new MenuItem("useRl", "Use R In Lane Clear").SetValue(false));
-            Config.SubMenu("LaneClear")
-                .AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
-
-            Config.AddSubMenu(new Menu("Last Hit", "LastHit"));
-            Config.SubMenu("LastHit").AddItem(new MenuItem("useQl2h", "Use Q Last Hit").SetValue(true));
-            Config.SubMenu("LastHit").AddItem(new MenuItem("useWl2h", "Use W Last Hit").SetValue(false));
-            Config.SubMenu("LastHit").AddItem(new MenuItem("useEl2h", "Use E Last Hit").SetValue(false));
-
-            // Config.SubMenu("LaneClear").AddItem(new MenuItem("seplane", "Seperate Lane Clear Key").SetValue(new KeyBind('V', KeyBindType.Press)));
-
-            Config.AddSubMenu(new Menu("Jungle Clear", "JungleClear"));
-            Config.SubMenu("JungleClear")
-                .AddItem(new MenuItem("useJM", "Minimum Mana For Jungle Clear").SetValue(new Slider(50)));
-            Config.SubMenu("JungleClear").AddItem(new MenuItem("useQj", "Use Q").SetValue(true));
-            Config.SubMenu("JungleClear").AddItem(new MenuItem("useWj", "Use W").SetValue(true));
-            Config.SubMenu("JungleClear").AddItem(new MenuItem("useEj", "Use E").SetValue(true));
+            var jungleMenu = new Menu("Jungle Settings (V)", "junglesettings");
+            {
+                jungleMenu.AddItem(new MenuItem("useJM", "Minimum Mana For Jungle Clear").SetValue(new Slider(50)));
+                jungleMenu.AddItem(new MenuItem("useQj", "Use Q").SetValue(true));
+                jungleMenu.AddItem(new MenuItem("useWj", "Use W").SetValue(true));
+                jungleMenu.AddItem(new MenuItem("useEj", "Use E").SetValue(true));
+                jungleMenu.AddItem(new MenuItem("useRj", "Use R").SetValue(true));
+            }
 
 
-            Config.AddSubMenu(new Menu("Items", "Items"));
-            Config.SubMenu("Items")
-                .AddItem(new MenuItem("tearS", "Stack Tear").SetValue(new KeyBind('G', KeyBindType.Toggle)));
-            Config.SubMenu("Items").AddItem(new MenuItem("tearoptions", "Stack Tear Only in Fountain").SetValue(false));
-            Config.SubMenu("Items").AddItem(new MenuItem("tearSM", "Min Mana").SetValue(new Slider(95)));
-            Config.SubMenu("Items").AddItem(new MenuItem("staff", "Use Seraphs Embrace").SetValue(true));
-            Config.SubMenu("Items").AddItem(new MenuItem("staffhp", "Seraph's when %HP >").SetValue(new Slider(30)));
-            Config.SubMenu("Items").AddItem(new MenuItem("muramana", "Muramana").SetValue(true));
+            var lastMenu = new Menu("Last Hit Settings (X)", "lastsettings");
+            {
+                lastMenu.AddItem(new MenuItem("useQl2h", "Use Q Last Hit").SetValue(true));
+                lastMenu.AddItem(new MenuItem("useWl2h", "Use W Last Hit").SetValue(false));
+                lastMenu.AddItem(new MenuItem("useEl2h", "Use E Last Hit").SetValue(false));
+            }
 
-            Config.AddSubMenu(new Menu("Misc", "Misc"));
-            Config.SubMenu("Misc").AddItem(new MenuItem("useW2I", "Interrupt with W").SetValue(true));
-            Config.SubMenu("Misc").AddItem(new MenuItem("useQW2D", "W/Q On Dashing").SetValue(true));
-            Config.SubMenu("Misc").AddItem(new MenuItem("level", "Auto Skill Level Up").SetValue(true));
-            Config.SubMenu("Misc").AddItem(new MenuItem("autow", "Auto W enemy under turret").SetValue(true));
+            farmMenu.AddSubMenu(laneMenu);
+            farmMenu.AddSubMenu(jungleMenu);
+            farmMenu.AddSubMenu(lastMenu);
+            Config.AddSubMenu(farmMenu);
 
 
-            Config.AddSubMenu(new Menu("Kill Steal", "KillSteal"));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("useW2KS", "Use W for ks").SetValue(true));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("useE2KS", "Use E for ks").SetValue(true));
+            var miscMenu = new Menu("Miscellaneous (Background)", "miscsettings");
 
-            Config.AddSubMenu(new Menu("Auto Potions", "autoP"));
-            Config.SubMenu("autoP").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
-            Config.SubMenu("autoP").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
-            Config.SubMenu("autoP")
-                .AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion"))
-                .SetValue(new Slider(30));
-            Config.SubMenu("autoP").AddItem(new MenuItem("MANA", "Auto Mana Potion").SetValue(true));
-            Config.SubMenu("autoP")
-                .AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion"))
-                .SetValue(new Slider(30));
-            Config.SubMenu("autoP").AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
-            Config.SubMenu("autoP")
-                .AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit"))
-                .SetValue(new Slider(30));
-            Config.SubMenu("autoP").AddItem(new MenuItem("flask", "Auto Flask").SetValue(true));
-            Config.SubMenu("autoP")
-                .AddItem(new MenuItem("fSlider", "Minimum %Health for flask"))
-                .SetValue(new Slider(30));
+            var passiveMenu = new Menu("Auto Passive", "passivesettings");
+            {
+                passiveMenu.AddItem(new MenuItem("ManapSlider", "Minimum %Mana"))
+                    .SetValue(new Slider(30));
+                passiveMenu.AddItem(new MenuItem("autoPassive", "Stack Passive").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
+                passiveMenu.AddItem(new MenuItem("stackSlider", "Keep passive count at"))
+                    .SetValue(new Slider(3, 1, 4));
+                passiveMenu.AddItem(new MenuItem("stackMana", "Minimum %Mana")).SetValue(new Slider(50));
+            }
 
-            Config.AddSubMenu(new Menu("Passive Stack", "autoPassive"));
-            Config.SubMenu("autoPasive")
-                .AddItem(new MenuItem("ManapSlider", "Minimum %Mana"))
-                .SetValue(new Slider(30));
-            Config.SubMenu("autoPassive")
-                .AddItem(new MenuItem("autoPassive", "Stack Passive").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
-            Config.SubMenu("autoPassive")
-                .AddItem(new MenuItem("stackSlider", "Keep passive count at"))
-                .SetValue(new Slider(3, 1, 4));
-            Config.SubMenu("autoPassive").AddItem(new MenuItem("stackMana", "Minimum %Mana")).SetValue(new Slider(50));
+            var itemMenu = new Menu("Items", "itemsettings");
+            {
+                itemMenu.AddItem(new MenuItem("tearS", "Stack Tear").SetValue(new KeyBind('G', KeyBindType.Toggle)));
+                itemMenu.AddItem(new MenuItem("tearoptions", "Stack Tear Only in Fountain").SetValue(false));
+                itemMenu.AddItem(new MenuItem("tearSM", "Min Mana").SetValue(new Slider(95)));
+                itemMenu.AddItem(new MenuItem("staff", "Use Seraphs Embrace").SetValue(true));
+                itemMenu.AddItem(new MenuItem("staffhp", "Seraph's when %HP >").SetValue(new Slider(30)));
+                itemMenu.AddItem(new MenuItem("muramana", "Muramana").SetValue(true));
+            }
+
+            var hpMenu = new Menu("Auto Potions", "hpsettings");
+            {
+                hpMenu.AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
+                hpMenu.AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
+                hpMenu.AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion")).SetValue(new Slider(30));
+                hpMenu.AddItem(new MenuItem("MANA", "Auto Mana Potion").SetValue(true));
+                hpMenu.AddItem(new MenuItem("MANASlider", "Minimum %Mana for Potion")).SetValue(new Slider(30));
+                hpMenu.AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
+                hpMenu.AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit")).SetValue(new Slider(30));
+                hpMenu.AddItem(new MenuItem("flask", "Auto Flask").SetValue(true));
+                hpMenu.AddItem(new MenuItem("fSlider", "Minimum %Health for flask")).SetValue(new Slider(30));
+            }
+
+            var eventMenu = new Menu("Events", "eventssettings");
+            {
+                eventMenu.AddItem(new MenuItem("useW2I", "Interrupt with W").SetValue(true));
+                eventMenu.AddItem(new MenuItem("useQW2D", "W/Q On Dashing").SetValue(true));
+                eventMenu.AddItem(new MenuItem("level", "Auto Skill Level Up").SetValue(true));
+                eventMenu.AddItem(new MenuItem("autow", "Auto W enemy under turret").SetValue(true));
+            }
+
+            var ksMenu = new Menu("Kill Steal", "kssettings");
+            {
+                ksMenu.AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
+                ksMenu.AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
+                ksMenu.AddItem(new MenuItem("useW2KS", "Use W for ks").SetValue(true));
+                ksMenu.AddItem(new MenuItem("useE2KS", "Use E for ks").SetValue(true));
+            }
+
+            miscMenu.AddSubMenu(passiveMenu);
+            miscMenu.AddSubMenu(itemMenu);
+            miscMenu.AddSubMenu(hpMenu);
+            miscMenu.AddSubMenu(eventMenu);
+            miscMenu.AddSubMenu(ksMenu);
+            Config.AddSubMenu(miscMenu);
+
+
 
             Config.AddToMainMenu();
             Drawing.OnDraw += Drawing_OnDraw;
@@ -410,6 +425,9 @@ namespace Slutty_ryze
         {
             if (Player.IsDead)
                 return;
+            if (!Config.Item("Draw").GetValue<bool>())
+                return;
+            
 
             if (Config.Item("qDraw").GetValue<bool>() && Q.Level > 0)
             {
@@ -1184,6 +1202,7 @@ R.Cast();
             var qSpell = Config.Item("useQj").GetValue<bool>();
             var eSpell = Config.Item("useEj").GetValue<bool>();
             var wSpell = Config.Item("useWj").GetValue<bool>();
+            var rSpell = Config.Item("useRj").GetValue<bool>();
             var mSlider = Config.Item("useJM").GetValue<Slider>().Value;
 
 
@@ -1208,27 +1227,35 @@ R.Cast();
                     }
                     return;
                 }
-                if (GetPassiveBuff == 4
-                    || Player.HasBuff("RyzePassiveStack"))
-                {
+
                     if (eSpell
+                        && jungleMinion.IsValidTarget(E.Range)
                         && E.IsReady())
                     {
                         E.CastOnUnit(jungleMinion);
                     }
                     if (qSpell
+                        && jungleMinion.IsValidTarget(Q.Range)
                         && Q.IsReady())
                     {
                         Q.Cast(jungleMinion);
                     }
 
                     if (wSpell
+                        && jungleMinion.IsValidTarget(W.Range)
                         && W.IsReady())
                     {
                         W.CastOnUnit(jungleMinion);
                     }
+
+                if (rSpell
+                    && GetPassiveBuff == 4
+                    || Player.HasBuff("RyzePassiveStack"))
+                {
+                    R.Cast();
                 }
-            }
+                }
+            
         }
 
         private static void LastHit()
