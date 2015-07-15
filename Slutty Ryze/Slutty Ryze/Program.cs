@@ -31,12 +31,20 @@ namespace Slutty_ryze
         public static int[] abilitySequence;
         public static int qOff = 0, wOff = 0, eOff = 0, rOff = 0;
 
+
+        public static Items.Item TearoftheGoddess = new Items.Item(3070, 0);
+        public static Items.Item TearoftheGoddesss = new Items.Item(3072, 0);
+        public static Items.Item TearoftheGoddessCrystalScar = new Items.Item(3073, 0);
+        public static Items.Item ArchangelsStaff = new Items.Item(3003, 0);
+        public static Items.Item ArchangelsStaffCrystalScar = new Items.Item(3007, 0);
         public static int Muramana = 3042;
         public static Items.Item HealthPotion = new Items.Item(2003);
         public static Items.Item CrystallineFlask = new Items.Item(2041);
         public static Items.Item ManaPotion = new Items.Item(2004);
         public static Items.Item BiscuitofRejuvenation = new Items.Item(2010);
         public static Items.Item SeraphsEmbrace = new Items.Item(3040, 0);
+        public static Items.Item Manamune = new Items.Item(3004, 0);
+        public static Items.Item ManamuneCrystalScar = new Items.Item(3008, 0);
 
         private static void Main(string[] args)
         {
@@ -1214,38 +1222,31 @@ R.Cast();
 
 
             var jungle = MinionManager.GetMinions(Q.Range, MinionTypes.All, MinionTeam.Neutral,
-                MinionOrderTypes.MaxHealth);
+                MinionOrderTypes.MaxHealth).FirstOrDefault();
 
-            if (jungle.Count > 0)
-                foreach (var jungleMinion in jungle)
-            {
-                if (!jungleMinion.IsValidTarget())
+                if (!jungle.IsValidTarget())
                 {
-                    if (Config.Item("disablelane").GetValue<KeyBind>().Active)
-                    {
-                        LaneClear();
-                    }
                     return;
                 }
 
                     if (eSpell
-                        && jungleMinion.IsValidTarget(E.Range)
+                        && jungle.IsValidTarget(E.Range)
                         && E.IsReady())
                     {
-                        E.CastOnUnit(jungleMinion);
+                        E.CastOnUnit(jungle);
                     }
                     if (qSpell
-                        && jungleMinion.IsValidTarget(Q.Range)
+                        && jungle.IsValidTarget(Q.Range)
                         && Q.IsReady())
                     {
-                        Q.Cast(jungleMinion);
+                        Q.Cast(jungle);
                     }
 
                     if (wSpell
-                        && jungleMinion.IsValidTarget(W.Range)
+                        && jungle.IsValidTarget(W.Range)
                         && W.IsReady())
                     {
-                        W.CastOnUnit(jungleMinion);
+                        W.CastOnUnit(jungle);
                     }
 
                 if (rSpell
@@ -1254,7 +1255,7 @@ R.Cast();
                 {
                     R.Cast();
                 }
-                }
+                
             
         }
 
@@ -1298,11 +1299,13 @@ R.Cast();
         private static void Mixed()
         {
             /*
+            
             foreach (var JOE_HAS_NO_PENIS in Player.Buffs)
             {
                 Console.WriteLine(JOE_HAS_NO_PENIS.Name.ToString(), 1337);
             }
              */
+             
 
             var qSpell = Config.Item("UseQM").GetValue<bool>();
             var qlSpell = Config.Item("UseQMl").GetValue<bool>();
@@ -1453,6 +1456,7 @@ R.Cast();
 
         private static void TearStack()
         {
+           Console.Write(Player.Buffs);
             var minions = MinionManager.GetMinions(
    ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy,
    MinionOrderTypes.MaxHealth);
@@ -1468,17 +1472,22 @@ R.Cast();
                 return;
 
             var mtears = Config.Item("tearSM").GetValue<Slider>().Value;
-            if (GetPassiveBuff == 4
-                || (!Items.HasItem(3070)))
+            
+            if (GetPassiveBuff == 4)
             {
                 return;
             }
              
+             
 
-            if (Q.IsReady()
-                && Player.ManaPercent >= mtears
-                && ((Items.HasItem(ItemData.Tear_of_the_Goddess.Id)
-                     || Items.HasItem(ItemData.Archangels_Staff.Id))))
+            if (Q.IsReady() &&
+                (TearoftheGoddess.IsOwned(Player) 
+                || TearoftheGoddessCrystalScar.IsOwned(Player) 
+                || ArchangelsStaff.IsOwned(Player) 
+                || ArchangelsStaffCrystalScar.IsOwned(Player) 
+                || Manamune.IsOwned(Player)
+                || ManamuneCrystalScar.IsOwned(Player))
+                && Player.ManaPercent >= mtears)
             {
                 Q.Cast(Game.CursorPos);
             }
