@@ -1456,7 +1456,7 @@ R.Cast();
 
         private static void TearStack()
         {
-           Console.Write(Player.Buffs);
+           
             var minions = MinionManager.GetMinions(
    ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy,
    MinionOrderTypes.MaxHealth);
