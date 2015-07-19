@@ -240,7 +240,8 @@ namespace Slutty_ryze
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                if (((Player.Distance(target) > 440)
+                if ((target.IsValidTarget() &&
+                    (Player.Distance(target) > 440)
                      || (Q.IsReady() || E.IsReady() || W.IsReady()))
                     && target.Health > (Player.GetAutoAttackDamage(target)*3))
                 {
@@ -1250,8 +1251,8 @@ R.Cast();
                     }
 
                 if (rSpell
-                    && GetPassiveBuff == 4
-                    || Player.HasBuff("RyzePassiveStack"))
+                    && (GetPassiveBuff == 4
+                    || Player.HasBuff("RyzePassiveStack")))
                 {
                     R.Cast();
                 }
