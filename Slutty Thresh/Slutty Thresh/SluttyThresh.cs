@@ -278,11 +278,6 @@ namespace Slutty_Thresh
               
                 Player.Spellbook.CastSpell(FlashSlot, x);
                 Q.Cast(target);
-                if (E.IsReady())
-                {
-                    E.Cast(Player.Position);
-                }
-
             }
         }
         /* 
