@@ -28,9 +28,15 @@ namespace Slutty_Thresh
         private static int lastattempt;
         private static int elastattempt;
         private static int elastattemptin;
+        private static int lastflasheattempt;
+        private static int flashattempt;
+        private static int flasht;
+        private static int flashooke;
 
         public static void OnLoad(EventArgs args)
         {
+            if (Player.ChampionName != ChampName)
+                return;
 
             Q = new Spell(SpellSlot.Q, 1040);
             W = new Spell(SpellSlot.W, 950);
@@ -58,7 +64,7 @@ namespace Slutty_Thresh
             {
                 comboMenu.AddItem(new MenuItem("useQ", "Use Q (Death Sentence)").SetValue(true));
                 comboMenu.AddItem(
-                    new MenuItem("useQ2", "Use Second Q Delay (Death Leap)").SetValue(new Slider(0, 500, 1500)));              
+                    new MenuItem("useQ2", "Use Second Q Delay (Death Leap)").SetValue(new Slider(0, 1000, 1500)));
                 comboMenu.AddItem(new MenuItem("useE", "Use E (Flay)").SetValue(true));
                 comboMenu
                     .AddItem(
@@ -72,17 +78,30 @@ namespace Slutty_Thresh
                 foreach (var hero in HeroManager.Allies)
                 {
                     if (!hero.IsMe)
-                    lantMenu.AddItem(new MenuItem("healop" + hero.ChampionName, hero.ChampionName))
-                        .SetValue(new StringList(new[] { "Lantern", "No Lantern" }, 1));
+                        lantMenu.AddItem(new MenuItem("healop" + hero.ChampionName, hero.ChampionName))
+                            .SetValue(new StringList(new[] {"Lantern", "No Lantern"}, 1));
 
                     lantMenu.AddItem(new MenuItem("hpsettings" + hero.ChampionName, "% Hp to").SetValue(new Slider(20)));
 
                 }
+                lantMenu.AddItem(new MenuItem("autolantern", "Auto Lantern Ally When Q hits").SetValue(false));
+            }
+
+            var laneMenu = new Menu("Lane Clear", "laneclear");
+            {
+                laneMenu.AddItem(new MenuItem("useelch", "Use E").SetValue(true));
+                laneMenu.AddItem(new MenuItem("elchslider", "Minimum Minions For E").SetValue(new Slider(0, 1, 10)));
             }
 
             Config.AddSubMenu(lantMenu);
+            var flashMenu = new Menu("Flash Hook Settings", "flashf");
+            {
+                flashMenu.AddItem(new MenuItem("flashmodes", "Flash Modes")
+                    .SetValue(new StringList(new[] {"Flash->E->Q", "Flash->Q"})));
+                flashMenu.AddItem(new MenuItem("qflash", "Flash Hook").SetValue(new KeyBind('T', KeyBindType.Press)));
+            }
 
-            Config.SubMenu("Fhook").AddItem(new MenuItem("qflash", "Flash Hook").SetValue(new KeyBind('T', KeyBindType.Press)));
+            Config.AddSubMenu(flashMenu);
 
             var miscMenu = new Menu("Miscellaneous (Background)", "miscsettings");
 
@@ -109,8 +128,8 @@ namespace Slutty_Thresh
 
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
-           // Interrupter2.OnInterruptableTarget += ThreshInterruptableSpell;
-           CustomEvents.Unit.OnDash += Unit_OnDash;
+            Interrupter2.OnInterruptableTarget += ThreshInterruptableSpell;
+            CustomEvents.Unit.OnDash += Unit_OnDash;
             AntiGapcloser.OnEnemyGapcloser += OnGapCloser;
             Obj_AI_Hero.OnProcessSpellCast += Game_ProcessSpell;
 
@@ -120,25 +139,31 @@ namespace Slutty_Thresh
 
         private static void Game_OnUpdate(EventArgs args)
         {
-
-         /*   
+            
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            if (target.HasBuff("katarinaereduction")
-                && target != null)
+            
+            if (target != null)
             {
-                if (target.ChampionName == "Katarina"
-                    && target.IsValidTarget(E.Range))
+                if (target.ChampionName == "Katarina")
                 {
-                    E.Cast(target.ServerPosition);
-                    eattempt = Environment.TickCount;
+                    if (target.HasBuff("katarinaereduction"))
+                    {
+                        if (target.ChampionName == "Katarina"
+                            && target.IsValidTarget(E.Range))
+                        {
+                            E.Cast(target.ServerPosition);
+                            eattempt = Environment.TickCount;
+                        }
+                        if (Environment.TickCount - eattempt >= 90f
+                            && Q.IsReady())
+                            Q.Cast(target.ServerPosition);
+                    }
                 }
-                if (Environment.TickCount - eattempt >= 90f
-                    && Q.IsReady())
-                Q.Cast(target.ServerPosition);
             }
-          */
-            
-            
+             
+
+
+
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -146,14 +171,14 @@ namespace Slutty_Thresh
                     break;
 
                 case Orbwalking.OrbwalkingMode.LaneClear:
-                   // LaneClear();
+                    LaneClear();
                     break;
 
-                case Orbwalking.OrbwalkingMode.LastHit:                    
+                case Orbwalking.OrbwalkingMode.LastHit:
                     break;
 
-                 case Orbwalking.OrbwalkingMode.Mixed:
-                 //   Mixed();
+                case Orbwalking.OrbwalkingMode.Mixed:
+                    //   Mixed();
                     break;
 
                 case Orbwalking.OrbwalkingMode.None:
@@ -165,7 +190,8 @@ namespace Slutty_Thresh
             {
                 flashq();
             }
-             
+
+
         }
 
 
@@ -176,12 +202,7 @@ namespace Slutty_Thresh
             var q2Slider = Config.Item("useQ2").GetValue<Slider>().Value;
             var rSpell = Config.Item("useR").GetValue<bool>();
             var eSpell = Config.Item("useE").GetValue<bool>();
-            /*
-            var wSpell = Config.Item("useW").GetValue<bool>();
-            var rSpell = Config.Item("useR").GetValue<bool>();
-            var rwwSpell = Config.Item("useRww").GetValue<bool>();
-
-             */
+           // var wSpell = Config.Item("useW").GetValue<bool>();
 
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
@@ -222,7 +243,7 @@ namespace Slutty_Thresh
                     if (target.IsValidTarget(E.Range)
                         && eSpell
                         && !target.IsImmovable
-                        && Environment.TickCount - lastq >= 700)
+                        && Environment.TickCount - lastq >= 260)
                     {
                         E.Cast(target.ServerPosition);
                         elastattempt = Environment.TickCount;
@@ -230,68 +251,93 @@ namespace Slutty_Thresh
                     break;
                 case 1:
                     if (target.IsValidTarget(E.Range)
-                        && Environment.TickCount - lastq >= 700
-                                                && eSpell)
+                        && Environment.TickCount - lastq >= 260
+                        && eSpell)
                         E.Cast(target.Position.Extend(Player.ServerPosition,
                             Vector3.Distance(target.Position, Player.Position) + 400));
                     elastattemptin = Environment.TickCount;
                     break;
             }
-            
+
             if (target.IsValidTarget(R.Range)
                 && rSpell
-                && (target.HasBuff("threshq") 
-                || (Environment.TickCount - elastattempt > 100f) 
-                || (Environment.TickCount - elastattemptin > 100f)))
+                && ((Environment.TickCount - elastattempt > 250f)
+                    || (Environment.TickCount - elastattemptin > 250f)))
             {
                 R.Cast();
             }
-             
+
 
             foreach (var friend in
-    ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsAlly).Where(x => !x.IsDead).Where(x => !x.IsZombie))
+                ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsAlly).Where(x => !x.IsDead).Where(x => !x.IsZombie))
             {
-                var friendHealth = (int)friend.Health / friend.MaxHealth * 100;
                 var health = Config.Item("autoRPercent").GetValue<Slider>().Value;
 
-                if (friendHealth <= health)
+                if (friend.HealthPercent <= health
+                    && friend.Distance(Player) <= W.Range)
                 {
-                    W.Cast(friend.ServerPosition);
+                    W.Cast(friend);
                 }
             }
-
-            /*  && Q.IsReady()* would be used for second instance */
         }
+
 
         private static void flashq()
         {
-      Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
-      var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-      var x = target.Position.Extend(Prediction.GetPrediction(target, 1).UnitPosition, FlashRange);
-
-            if (Q.IsReady()
-                && FlashSlot.IsReady()
-                && target.Distance(Player) <= Q.Range+450
-                && target.Distance(Player) >= Q.Range-200)
-            { 
-              
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            var x = target.Position.Extend(Prediction.GetPrediction(target, 1).UnitPosition, FlashRange);
+            switch (Config.Item("combooptions").GetValue<StringList>().SelectedIndex)
+            {
+                case 0:
                 Player.Spellbook.CastSpell(FlashSlot, x);
-                Q.Cast(target);
+                Q.Cast(x);
+                E.Cast(Player.Position);
+                    break;
+
+                    /*
+                case 1:
+                E.Cast(Player.Position);
+                Q.Cast(x);
+                Player.Spellbook.CastSpell(FlashSlot, x);
+                    break;
+                     */
+
+                case 1:
+                Player.Spellbook.CastSpell(FlashSlot, x);
+                Q.Cast(x);
+                    break;
             }
         }
-        /* 
-        private static void Mixed()
-        {
-            throw new NotImplementedException();
-        }
 
-        private static void LaneClear()
+        /*
+        private static void Mixed()
         {
             throw new NotImplementedException();
         }
          */
 
+        private static void LaneClear()
+        {
+            var elchSpell = Config.Item("useelch").GetValue<bool>();
+            var elchSlider = Config.Item("elchslider").GetValue<Slider>().Value;
+            var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+
+            if (minionCount == null)
+                return;
+
+            foreach (var minion in minionCount)
+            {
+                if (elchSpell
+                    && E.IsReady())
+                {
+                    E.CastIfWillHit(minion, elchSlider);
+                }
+            }
+        }
+         
+        
         private static void OnGapCloser(ActiveGapcloser gapcloser)
         {
             if (gapcloser.Sender.IsAlly
@@ -306,18 +352,31 @@ namespace Slutty_Thresh
             }
 
         }
+         
 
-        private static void Game_ProcessSpell(Obj_AI_Base hero, GameObjectProcessSpellCastEventArgs args)
+        public static void Game_ProcessSpell(Obj_AI_Base hero, GameObjectProcessSpellCastEventArgs args)
         {
-
             if (!hero.IsMe)
-            {
                 return;
-            }
+            
+           if((args.SData.Name == "threshqinternal" || args.SData.Name == "ThreshQ")
+               && Config.Item("autolantern").GetValue<bool>())
+           {
+               foreach (var heros in HeroManager.Allies)
+               {
+                   if (!heros.IsMe)
+                   {
+                       W.Cast(heros);
+                   }
+               }
+           }
+             
+
+            
+            /*
             channeledSpells["ThreshQinternal"] = "Thresh";
             string name;
             Console.WriteLine(args.SData.Name);
-
             if ((channeledSpells.TryGetValue(args.SData.Name, out name)
                  && hero.Spellbook.IsCastingSpell))
             {
@@ -329,6 +388,7 @@ namespace Slutty_Thresh
                     }
                 }
             }
+             */
         }
 
         
@@ -351,14 +411,19 @@ namespace Slutty_Thresh
             }
 
         }
-
+        
          
-        /*
+        
         private static void ThreshInterruptableSpell(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
-            throw new NotImplementedException();
+            if (E.IsReady()
+                && E.IsInRange(sender)
+                && Config.Item("useE2I").GetValue<bool>())
+            {
+                E.Cast(sender.ServerPosition);
+            }
         }
-         */
+         
 
         private static void Drawing_OnDraw(EventArgs args)
         {
