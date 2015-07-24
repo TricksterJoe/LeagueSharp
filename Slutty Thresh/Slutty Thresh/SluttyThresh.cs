@@ -292,8 +292,6 @@ namespace Slutty_Thresh
             {
                 R.Cast();
             }
-
-            W.Cast(Player.Position);
         }
 
 
