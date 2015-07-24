@@ -146,7 +146,7 @@ namespace Slutty_Thresh
 
         private static void Game_OnUpdate(EventArgs args)
         {
-            
+            Orbwalker.SetAttack(true);
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             
             if (target != null)
