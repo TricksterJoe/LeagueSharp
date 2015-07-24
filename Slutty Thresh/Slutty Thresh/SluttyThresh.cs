@@ -322,13 +322,18 @@ namespace Slutty_Thresh
             channeledSpells["ThreshQinternal"] = "Thresh";
             string name;
             Console.WriteLine(args.SData.Name);
-            
-            if ((channeledSpells.TryGetValue(args.SData.Name, out name)
-                 && hero.Spellbook.IsCastingSpell))
+            foreach (var ally in HeroManager.Allies)
             {
-                W.Cast(Player.Position);
+                if (!ally.IsMe)
+                {
+                    if ((channeledSpells.TryGetValue(args.SData.Name, out name)
+                         && hero.Spellbook.IsCastingSpell))
+                    {
+                        W.Cast(ally);
+                    }
+                }
             }
-             
+
         }
 
         
