@@ -1586,7 +1586,7 @@ MinionOrderTypes.MaxHealth);
             {
                 return;
             }
-            if (Environment.TickCount - Q.LastCastAttemptT >= 9000
+            if (Environment.TickCount - Q.LastCastAttemptT >= 4900
                 && Q.IsReady())
             {
                 Q.Cast(Game.CursorPos);
