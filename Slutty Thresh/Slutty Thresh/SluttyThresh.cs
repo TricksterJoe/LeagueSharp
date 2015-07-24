@@ -75,13 +75,21 @@ namespace Slutty_Thresh
 
             var lantMenu = new Menu("Lantern Settings", "lantern");
             {
-                foreach (var hero in HeroManager.Allies)
+                foreach (var hero in 
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .Where(x => !x.IsEnemy)
+                        .Where(x => !x.IsMe)
+                        .Where( (x=> x.IsAlly)))
                 {
-                    if (!hero.IsMe)
+                    {
                         lantMenu.AddItem(new MenuItem("healop" + hero.ChampionName, hero.ChampionName))
-                            .SetValue(new StringList(new[] {"Lantern", "No Lantern"}, 1));
+                            .SetValue(new StringList(new[] {"Lantern", "No Lantern"}));
 
-                    lantMenu.AddItem(new MenuItem("hpsettings" + hero.ChampionName, "% Hp to").SetValue(new Slider(20)));
+                        lantMenu.AddItem(
+                            new MenuItem("hpsettings" + hero.ChampionName, "Lantern When %HP <").SetValue(new Slider(20)));
+
+                        lantMenu.AddItem(new MenuItem("manalant", "%Mana for lantern").SetValue(new Slider(50)));
+                    }
 
                 }
                 lantMenu.AddItem(new MenuItem("autolantern", "Auto Lantern Ally When Q hits").SetValue(false));
@@ -90,8 +98,9 @@ namespace Slutty_Thresh
             var laneMenu = new Menu("Lane Clear", "laneclear");
             {
                 laneMenu.AddItem(new MenuItem("useelch", "Use E").SetValue(true));
-                laneMenu.AddItem(new MenuItem("elchslider", "Minimum Minions For E").SetValue(new Slider(0, 1, 10)));
+               // laneMenu.AddItem(new MenuItem("elchslider", "Minimum Minions For E").SetValue(new Slider(0, 1, 10)));
             }
+            Config.AddSubMenu(laneMenu);
 
             Config.AddSubMenu(lantMenu);
             var flashMenu = new Menu("Flash Hook Settings", "flashf");
@@ -109,8 +118,6 @@ namespace Slutty_Thresh
             {
                 eventMenu.AddItem(new MenuItem("useW2I", "Interrupt with W").SetValue(true));
                 eventMenu.AddItem(new MenuItem("useQW2D", "W/Q On Dashing").SetValue(true));
-                eventMenu.AddItem(new MenuItem("level", "Auto Skill Level Up").SetValue(true));
-                eventMenu.AddItem(new MenuItem("autow", "Auto W enemy under turret").SetValue(true));
             }
 
             var ksMenu = new Menu("Kill Steal", "kssettings");
@@ -160,8 +167,7 @@ namespace Slutty_Thresh
                     }
                 }
             }
-             
-
+            wcast();
 
 
             switch (Orbwalker.ActiveMode)
@@ -192,6 +198,26 @@ namespace Slutty_Thresh
             }
 
 
+        }
+
+        private static void wcast()
+        {
+            if (Player.ManaPercent < Config.Item("manalant").GetValue<Slider>().Value)
+                return;
+
+            foreach (var hero in
+    ObjectManager.Get<Obj_AI_Hero>()
+        .Where(x => !x.IsEnemy)
+        .Where(x => !x.IsMe)
+        .Where((x => x.IsAlly)))
+            {
+                if (Config.Item("healop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
+                     && hero.HealthPercent <= Config.Item("hpsettings" + hero.ChampionName).GetValue<Slider>().Value
+                    && hero.Distance(Player) <= W.Range)
+                {
+                    W.Cast(hero.Position);
+                }
+            }
         }
 
 
@@ -267,18 +293,7 @@ namespace Slutty_Thresh
                 R.Cast();
             }
 
-
-            foreach (var friend in
-                ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsAlly).Where(x => !x.IsDead).Where(x => !x.IsZombie))
-            {
-                var health = Config.Item("autoRPercent").GetValue<Slider>().Value;
-
-                if (friend.HealthPercent <= health
-                    && friend.Distance(Player) <= W.Range)
-                {
-                    W.Cast(friend);
-                }
-            }
+            W.Cast(Player.Position);
         }
 
 
@@ -321,7 +336,7 @@ namespace Slutty_Thresh
         private static void LaneClear()
         {
             var elchSpell = Config.Item("useelch").GetValue<bool>();
-            var elchSlider = Config.Item("elchslider").GetValue<Slider>().Value;
+          //  var elchSlider = Config.Item("elchslider").GetValue<Slider>().Value;
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
 
             if (minionCount == null)
@@ -332,7 +347,7 @@ namespace Slutty_Thresh
                 if (elchSpell
                     && E.IsReady())
                 {
-                    E.CastIfWillHit(minion, elchSlider);
+                    E.Cast(minion.Position);
                 }
             }
         }
