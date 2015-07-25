@@ -71,9 +71,9 @@ namespace Slutty_Thresh
             var comboMenu = new Menu("Combo Settings (SB)", "combospells");
             {
                 comboMenu.AddItem(new MenuItem("useQ", "Use Q (Death Sentence)").SetValue(true));
+                comboMenu.AddItem(new MenuItem("smartq", "Smart Q").SetValue(true));
                 comboMenu.AddItem(new MenuItem("useQ1", "Use Second Q").SetValue(true));
-                comboMenu.AddItem(
-                    new MenuItem("useQ2", "Use Second Q Delay (Death Leap)").SetValue(new Slider(1000, 0, 1500)));
+                comboMenu.AddItem(new MenuItem("useQ2", "Use Second Q Delay (Death Leap)").SetValue(new Slider(1000, 0, 1500)));
                 comboMenu.AddItem(new MenuItem("useE", "Use E (Flay)").SetValue(true));
                 comboMenu
                     .AddItem(
@@ -239,7 +239,7 @@ namespace Slutty_Thresh
                 }
             }
             wcast();
-            Item();
+            
 
             switch (Orbwalker.ActiveMode)
             {
@@ -267,6 +267,7 @@ namespace Slutty_Thresh
             {
                 flashq();
             }
+            Item();
 
 
         }
@@ -290,14 +291,16 @@ namespace Slutty_Thresh
                 {
                     if (Config.Item("faceop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
                         && hero.HealthPercent <= Config.Item("facehp" + hero.ChampionName).GetValue<Slider>().Value
-                        && hero.Distance(Player) >= 750f)
+                        && hero.Distance(Player) >= 750f
+                        && Items.CanUseItem(Mountain))
                     {
                         Items.UseItem(Mountain, hero);
                     }
 
                     if (Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
                         && hero.HealthPercent <= Config.Item("lockethp" + hero.ChampionName).GetValue<Slider>().Value
-                        && hero.Distance(Player) >= 600)
+                        && hero.Distance(Player) >= 600
+                        && Items.CanUseItem(Locket))
                     {
                         Items.UseItem(Locket);
                     }
@@ -309,7 +312,8 @@ namespace Slutty_Thresh
                                 && !x.IsMe
                                 && !x.IsDead))
             {
-                if (hero.Distance(Player) <= 600)
+                if (hero.Distance(Player) <= 600
+                    && Items.CanUseItem(Mikaels))
                 {
                     if ((charm
                         && hero.HasBuffOfType(BuffType.Charm)
@@ -621,12 +625,13 @@ namespace Slutty_Thresh
             }
 
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            if (target == null)
+                return;
 
             if (Q.IsReady()
                 && FlashSlot.IsReady()
                 && target.Distance(Player) <= Q.Range + 450
-                && target.Distance(Player) >= Q.Range - 200
-                && target != null)
+                && target.Distance(Player) >= Q.Range - 200)
             {
                 var heroPosition = Drawing.WorldToScreen(Player.Position);
                 var textDimension = Drawing.GetTextExtent("Stunnable!");
