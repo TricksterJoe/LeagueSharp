@@ -62,11 +62,16 @@ namespace Slutty_Thresh
 
             var comboMenu = new Menu("Combo Settings (SB)", "combospells");
             {
-                comboMenu.AddItem(new MenuItem("useQ", "Use Q (Death Sentence)").SetValue(true));
-                comboMenu.AddItem(new MenuItem("smartq", "Smart Q").SetValue(true));
-                comboMenu.AddItem(new MenuItem("useQ1", "Use Second Q").SetValue(true));
-                comboMenu.AddItem(
-                    new MenuItem("useQ2", "Use Second Q Delay (Death Leap)").SetValue(new Slider(1000, 0, 1500)));
+                var qsettings = new Menu("Q (Death Sentence) Settings", "settings");
+                {
+                    qsettings.AddItem(new MenuItem("useQ", "Use Q (Death Sentence)").SetValue(true));
+                    qsettings.AddItem(new MenuItem("smartq", "Smart Q").SetValue(true));
+                    qsettings.AddItem(new MenuItem("useQ1", "Use Second Q").SetValue(true));
+                    qsettings.AddItem(new MenuItem("useQ2", "Use Second Q Delay (Death Leap)").SetValue(new Slider(1000, 0, 1500)));
+                    qsettings.AddItem(new MenuItem("qrange", "Q Only When Target Range >=").SetValue(new Slider(500, 0, 1040)));
+                    comboMenu.AddSubMenu(qsettings);
+
+                }
                 comboMenu.AddItem(new MenuItem("useE", "Use E (Flay)").SetValue(true));
                 comboMenu
                     .AddItem(
@@ -234,7 +239,7 @@ namespace Slutty_Thresh
                     break;
 
             }
-            /*
+            
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
             if (target != null)
@@ -254,7 +259,7 @@ namespace Slutty_Thresh
                     }
                 }
             }
-             */
+             
             
             if (Config.Item("qflash").GetValue<KeyBind>().Active)
             {
@@ -359,6 +364,7 @@ namespace Slutty_Thresh
             var qSpell = Config.Item("useQ").GetValue<bool>();
             var q2Spell = Config.Item("useQ1").GetValue<bool>();
             var q2Slider = Config.Item("useQ2").GetValue<Slider>().Value;
+            var qrange1 = Config.Item("qrange").GetValue<Slider>().Value;
             var rSpell = Config.Item("useR").GetValue<bool>();
             var eSpell = Config.Item("useE").GetValue<bool>();
            // var wSpell = Config.Item("useW").GetValue<bool>();
@@ -388,7 +394,7 @@ namespace Slutty_Thresh
                 && qSpell
                 && !target.HasBuff("threshQ")
                 && target.IsValidTarget(Q.Range)
-                && target.Distance(Player) >= 300)
+                && target.Distance(Player) >= qrange1)
             {
                 Q.Cast(target);
             }
