@@ -51,6 +51,7 @@ namespace Slutty_Thresh
             R = new Spell(SpellSlot.R, 400);
 
             Q.SetSkillshot(0.5f, 60f, 1900f, true, SkillshotType.SkillshotLine);
+
             FlashSlot = Player.GetSpellSlot("SummonerFlash");
             Config = new Menu(Menuname, Menuname, true);
             Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
@@ -223,8 +224,7 @@ namespace Slutty_Thresh
                 {
                     if (target.HasBuff("katarinaereduction"))
                     {
-                        if (target.ChampionName == "Katarina"
-                            && target.IsValidTarget(E.Range))
+                        if (target.IsValidTarget(E.Range))
                         {
                             E.Cast(target.ServerPosition);
                             eattempt = Environment.TickCount;
@@ -280,9 +280,8 @@ namespace Slutty_Thresh
 
 
             foreach (var hero in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(x => x.IsAlly
-                    && !x.IsMe))
+                HeroManager.Allies.Where(x => !x.IsMe))
+            {
                 {
                     if (Config.Item("faceop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
                         && hero.HealthPercent <= Config.Item("facehp" + hero.ChampionName).GetValue<Slider>().Value
@@ -300,78 +299,80 @@ namespace Slutty_Thresh
                         Items.UseItem(Locket);
                     }
                 }
+            }
+
             foreach (var hero in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(x => x.IsAlly
-                    && !x.IsMe))
-            {
-                if (hero.Distance(Player) <= 600
-                    && Items.CanUseItem(Mikaels))
+                    HeroManager.Allies.Where(x => !x.IsMe))
                 {
-                    if ((charm
-                        && hero.HasBuffOfType(BuffType.Charm)
-                         && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                        || hero.HealthPercent <= mikaelshp)
+                    if (hero.Distance(Player) <= 600
+                        && Items.CanUseItem(Mikaels))
                     {
-                        Items.UseItem(Mikaels, hero);
-                    }
+                        if ((charm
+                             && hero.HasBuffOfType(BuffType.Charm)
+                             && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
+                            || hero.HealthPercent <= mikaelshp)
+                        {
+                            Items.UseItem(Mikaels, hero);
+                        }
 
-                    if ((stun
-                        && hero.HasBuffOfType(BuffType.Stun)
-                         && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                        || hero.HealthPercent <= mikaelshp)
-                    {
-                        Items.UseItem(Mikaels, hero);
-                    }
+                        if ((stun
+                             && hero.HasBuffOfType(BuffType.Stun)
+                             && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
+                            || hero.HealthPercent <= mikaelshp)
+                        {
+                            Items.UseItem(Mikaels, hero);
+                        }
 
-                    if ((snare
-                        && hero.HasBuffOfType(BuffType.Snare)
-                         && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                        || hero.HealthPercent <= mikaelshp)
-                    {
-                        Items.UseItem(Mikaels, hero);
-                    }
+                        if ((snare
+                             && hero.HasBuffOfType(BuffType.Snare)
+                             && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
+                            || hero.HealthPercent <= mikaelshp)
+                        {
+                            Items.UseItem(Mikaels, hero);
+                        }
 
-                    if ((taunt
-                        && hero.HasBuffOfType(BuffType.Taunt)
-                         && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                        || hero.HealthPercent <= mikaelshp)
-                    {
-                        Items.UseItem(Mikaels, hero);
-                    }
+                        if ((taunt
+                             && hero.HasBuffOfType(BuffType.Taunt)
+                             && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
+                            || hero.HealthPercent <= mikaelshp)
+                        {
+                            Items.UseItem(Mikaels, hero);
+                        }
 
-                    if ((suppresion
-                        && hero.HasBuffOfType(BuffType.Suppression)
-                         && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                        || hero.HealthPercent <= mikaelshp)
-                    {
-                        Items.UseItem(Mikaels, hero);
-                    }
-                }
+                        if ((suppresion
+                             && hero.HasBuffOfType(BuffType.Suppression)
+                             && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
+                            || hero.HealthPercent <= mikaelshp)
+                        {
+                            Items.UseItem(Mikaels, hero);
+                        }
+                    }             
             }
         }
 
         private static void wcast()
-        {
-            if (Player.ManaPercent < Config.Item("manalant").GetValue<Slider>().Value)
-                return;
-
-            foreach (var hero in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(x => x.IsAlly
-                    && !x.IsMe)
-)
             {
+                if (Player.ManaPercent < Config.Item("manalant").GetValue<Slider>().Value)
+                    return;
+
+                foreach (var hero in
+                    HeroManager.Allies.Where(x => !x.IsMe))
                 {
-            if (Config.Item("healop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
-                    && hero.HealthPercent <= Config.Item("hpsettings" + hero.ChampionName).GetValue<Slider>().Value
-                    && hero.Distance(Player) <= W.Range)
-                {
-                    W.Cast(hero.Position);
+
+                    {
+                        {
+                            if (Config.Item("healop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
+                                &&
+                                hero.HealthPercent <=
+                                Config.Item("hpsettings" + hero.ChampionName).GetValue<Slider>().Value
+                                && hero.Distance(Player) <= W.Range)
+                            {
+                                W.Cast(hero.Position);
+                            }
+                        }
+                    }
                 }
             }
-        }
-    }
 
 
         private static void Combo()
@@ -527,21 +528,18 @@ namespace Slutty_Thresh
         {
             if (!hero.IsMe)
                 return;
-            
-           if((args.SData.Name == "threshqinternal" || args.SData.Name == "ThreshQ")
-               && Config.Item("autolantern").GetValue<bool>()
-               && W.IsReady())
-           {
-            foreach (var heros in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(x => x.IsAlly
-                    && !x.IsMe))
-               {
-                   {
-                       W.Cast(heros);
-                   }
-               }
-           }                      
+
+            if ((args.SData.Name == "threshqinternal" || args.SData.Name == "ThreshQ")
+                && Config.Item("autolantern").GetValue<bool>()
+                && W.IsReady()
+                && hero.Distance(Player) <= W.Range)
+            {
+                foreach (var heros in
+                    HeroManager.Allies.Where(x => !x.IsMe))
+                {
+                    W.Cast(heros.Position);
+                }
+            }
         }
 
         
