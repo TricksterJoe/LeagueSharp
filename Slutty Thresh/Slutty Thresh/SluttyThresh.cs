@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -23,22 +24,13 @@ namespace Slutty_Thresh
         public static Orbwalking.Orbwalker Orbwalker;
         public static Spell Q, W, E, R;
         private static SpellSlot Ignite;
-        private static int lastq2;
         private static SpellSlot FlashSlot;
         public static float FlashRange = 450f;
 
-        public static int Locket = 3190;
-        public static int Mountain = 3401;
-        public static int Mikaels = 3222;
-
         public static Dictionary<string, string> channeledSpells = new Dictionary<string, string>();
-        private static int lastattempt;
         private static int elastattempt;
         private static int elastattemptin;
-        private static int lastflasheattempt;
-        private static int flashattempt;
-        private static int flasht;
-        private static int flashooke;
+        private static int lastq2;
 
         public static void OnLoad(EventArgs args)
         {
@@ -74,7 +66,8 @@ namespace Slutty_Thresh
                 comboMenu.AddItem(new MenuItem("useQ", "Use Q (Death Sentence)").SetValue(true));
                 comboMenu.AddItem(new MenuItem("smartq", "Smart Q").SetValue(true));
                 comboMenu.AddItem(new MenuItem("useQ1", "Use Second Q").SetValue(true));
-                comboMenu.AddItem(new MenuItem("useQ2", "Use Second Q Delay (Death Leap)").SetValue(new Slider(1000, 0, 1500)));
+                comboMenu.AddItem(
+                    new MenuItem("useQ2", "Use Second Q Delay (Death Leap)").SetValue(new Slider(1000, 0, 1500)));
                 comboMenu.AddItem(new MenuItem("useE", "Use E (Flay)").SetValue(true));
                 comboMenu
                     .AddItem(
@@ -89,14 +82,14 @@ namespace Slutty_Thresh
                     ObjectManager.Get<Obj_AI_Hero>()
                         .Where(x => !x.IsEnemy)
                         .Where(x => !x.IsMe)
-                        .Where((x=> x.IsAlly)))
+                        .Where((x => x.IsAlly)))
                 {
                     {
                         lantMenu.AddItem(new MenuItem("healop" + hero.ChampionName, hero.ChampionName))
                             .SetValue(new StringList(new[] {"Lantern", "No Lantern"}));
 
                         lantMenu.AddItem(
-                            new MenuItem("hpsettings" + hero.ChampionName, "Lantern When %HP <").SetValue(new Slider(20)));               
+                            new MenuItem("hpsettings" + hero.ChampionName, "Lantern When %HP <").SetValue(new Slider(20)));
                     }
 
                 }
@@ -107,7 +100,7 @@ namespace Slutty_Thresh
             var laneMenu = new Menu("Lane Clear", "laneclear");
             {
                 laneMenu.AddItem(new MenuItem("useelch", "Use E").SetValue(true));
-               // laneMenu.AddItem(new MenuItem("elchslider", "Minimum Minions For E").SetValue(new Slider(0, 1, 10)));
+                // laneMenu.AddItem(new MenuItem("elchslider", "Minimum Minions For E").SetValue(new Slider(0, 1, 10)));
             }
             Config.AddSubMenu(laneMenu);
 
@@ -134,10 +127,10 @@ namespace Slutty_Thresh
             {
                 var mountainmenu = new Menu("Face Of The Mountain", "faceof");
                 {
-            foreach (var hero in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(x => x.IsAlly
-                    && !x.IsMe))
+                    foreach (var hero in
+                        ObjectManager.Get<Obj_AI_Hero>()
+                            .Where(x => x.IsAlly
+                                        && !x.IsMe))
                     {
                         {
                             mountainmenu.AddItem(new MenuItem("faceop" + hero.ChampionName, hero.ChampionName))
@@ -151,10 +144,10 @@ namespace Slutty_Thresh
 
                 var locketmenu = new Menu("Locket Of Solari", "locksol");
                 {
-            foreach (var hero in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(x => x.IsAlly
-                    && !x.IsMe))
+                    foreach (var hero in
+                        ObjectManager.Get<Obj_AI_Hero>()
+                            .Where(x => x.IsAlly
+                                        && !x.IsMe))
                     {
                         {
                             locketmenu.AddItem(new MenuItem("locketop" + hero.ChampionName, hero.ChampionName))
@@ -164,8 +157,8 @@ namespace Slutty_Thresh
                                 new MenuItem("lockethp" + hero.ChampionName, "Use When %HP <").SetValue(new Slider(20)));
                         }
                     }
-                    
-            }
+
+                }
                 shieldMenu.AddSubMenu(locketmenu);
                 shieldMenu.AddSubMenu(mountainmenu);
             }
@@ -178,12 +171,12 @@ namespace Slutty_Thresh
                 mikaelss.AddItem(new MenuItem("taunt", "Taunt", true).SetValue(true));
                 mikaelss.AddItem(new MenuItem("suppression", "Suppression", true).SetValue(true));
                 mikaelss.AddItem(new MenuItem("stun", "Stun", true).SetValue(true));
-                mikaelss.AddItem(new MenuItem("mikaelshp", "Use On %HP", true).SetValue(true));
+                //  mikaelss.AddItem(new MenuItem("mikaelshp", "Use On %HP", true).SetValue(new Slider(20, 40)));
                 var allies = new Menu("Ally Config", "AllysConfig");
-            foreach (var hero in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(x => x.IsAlly
-                    && !x.IsMe))
+                foreach (var hero in
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .Where(x => x.IsAlly
+                                    && !x.IsMe))
                 {
                     {
                         allies.AddItem(new MenuItem("healmikaels" + hero.ChampionName, hero.ChampionName))
@@ -194,7 +187,7 @@ namespace Slutty_Thresh
                 healMenu.AddSubMenu(mikaelss);
             }
             itemMenu.AddSubMenu(shieldMenu);
-            itemMenu.AddSubMenu(healMenu);          
+            itemMenu.AddSubMenu(healMenu);
             Config.AddSubMenu(itemMenu);
 
             miscMenu.AddSubMenu(eventMenu);
@@ -215,9 +208,9 @@ namespace Slutty_Thresh
 
         private static void Game_OnUpdate(EventArgs args)
         {
-            Orbwalker.SetAttack(true);
+            /*
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            
+
             if (target != null)
             {
                 if (target.ChampionName == "Katarina")
@@ -235,143 +228,134 @@ namespace Slutty_Thresh
                     }
                 }
             }
+             */
+            Itemusage();
             wcast();
-            
-
             switch (Orbwalker.ActiveMode)
             {
+
                 case Orbwalking.OrbwalkingMode.Combo:
+                    Orbwalker.SetAttack(true);
                     Combo();
                     break;
 
                 case Orbwalking.OrbwalkingMode.LaneClear:
+                    Orbwalker.SetAttack(true);
                     LaneClear();
                     break;
 
                 case Orbwalking.OrbwalkingMode.LastHit:
+                    Orbwalker.SetAttack(true);
                     break;
 
                 case Orbwalking.OrbwalkingMode.Mixed:
+                    Orbwalker.SetAttack(true);
                     //   Mixed();
                     break;
 
                 case Orbwalking.OrbwalkingMode.None:
+                    Orbwalker.SetAttack(true);
                     break;
 
             }
-
             if (Config.Item("qflash").GetValue<KeyBind>().Active)
             {
                 flashq();
             }
-            Item();
-
-
         }
 
-        private static void Item()
+        private static void Itemusage()
         {
+            
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            if (target == null)
+                return;
+             
+
             var charm = Config.Item("charm").GetValue<bool>();
             var stun = Config.Item("stun").GetValue<bool>();
             var snare = Config.Item("snare").GetValue<bool>();
             var suppresion = Config.Item("suppression").GetValue<bool>();
             var taunt = Config.Item("taunt").GetValue<bool>();
-            var mikaelshp = Config.Item("mikaelshp").GetValue<Slider>().Value;
+            // var mikaelshp = Config.Item("mikaelshp").GetValue<Slider>().Value;
+            var mikael = ItemData.Mikaels_Crucible.GetItem();
+            var locket = ItemData.Locket_of_the_Iron_Solari.GetItem();
+            var mountain = ItemData.Face_of_the_Mountain.GetItem();
+             
 
-
+            
             foreach (var hero in
                 HeroManager.Allies.Where(x => !x.IsMe))
             {
                 {
                     if (Config.Item("faceop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
                         && hero.HealthPercent <= Config.Item("facehp" + hero.ChampionName).GetValue<Slider>().Value
-                        && hero.Distance(Player) >= 750f
-                        && Items.CanUseItem(Mountain))
+                        && hero.Distance(Player) >= 750f)
                     {
-                        Items.UseItem(Mountain, hero);
+                        mountain.Cast();
                     }
 
                     if (Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
                         && hero.HealthPercent <= Config.Item("lockethp" + hero.ChampionName).GetValue<Slider>().Value
-                        && hero.Distance(Player) >= 600
-                        && Items.CanUseItem(Locket))
+                        && hero.Distance(Player) >= 600)
                     {
-                        Items.UseItem(Locket);
+                        locket.Cast();
                     }
                 }
             }
-
-            foreach (var hero in
-                    HeroManager.Allies.Where(x => !x.IsMe))
+             
+            
+            
+            foreach (var hero in HeroManager.Allies.Where(x => !x.IsMe
+                && x.Distance(Player) <= 750))
+            {
+                if (Config.Item("healmikaels" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
                 {
-                    if (hero.Distance(Player) <= 600
-                        && Items.CanUseItem(Mikaels))
+
+                    if (hero.HasBuffOfType(BuffType.Stun)
+                        && stun ||
+                        hero.HasBuffOfType(BuffType.Suppression)
+                        && suppresion ||
+                        hero.HasBuffOfType(BuffType.Taunt)
+                        && taunt ||
+                        hero.HasBuffOfType(BuffType.Charm)
+                        && charm ||
+                        hero.HasBuffOfType(BuffType.Snare)
+                        && snare
+                        || hero.HasBuffOfType(BuffType.CombatDehancer))
                     {
-                        if ((charm
-                             && hero.HasBuffOfType(BuffType.Charm)
-                             && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                            || hero.HealthPercent <= mikaelshp)
-                        {
-                            Items.UseItem(Mikaels, hero);
-                        }
+                        mikael.Cast(hero);
+                    }
+                }
 
-                        if ((stun
-                             && hero.HasBuffOfType(BuffType.Stun)
-                             && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                            || hero.HealthPercent <= mikaelshp)
-                        {
-                            Items.UseItem(Mikaels, hero);
-                        }
-
-                        if ((snare
-                             && hero.HasBuffOfType(BuffType.Snare)
-                             && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                            || hero.HealthPercent <= mikaelshp)
-                        {
-                            Items.UseItem(Mikaels, hero);
-                        }
-
-                        if ((taunt
-                             && hero.HasBuffOfType(BuffType.Taunt)
-                             && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                            || hero.HealthPercent <= mikaelshp)
-                        {
-                            Items.UseItem(Mikaels, hero);
-                        }
-
-                        if ((suppresion
-                             && hero.HasBuffOfType(BuffType.Suppression)
-                             && Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                            || hero.HealthPercent <= mikaelshp)
-                        {
-                            Items.UseItem(Mikaels, hero);
-                        }
-                    }             
             }
+             
         }
+         
+
+
+
 
         private static void wcast()
             {
                 if (Player.ManaPercent < Config.Item("manalant").GetValue<Slider>().Value)
                     return;
+                Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            foreach (var hero in
+                HeroManager.Allies.Where(x => !x.IsMe
+                                              && !x.IsDead))
+            {
 
-                foreach (var hero in
-                    HeroManager.Allies.Where(x => !x.IsMe))
+                if (Config.Item("healop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
+                    &&
+                    hero.HealthPercent <=
+                    Config.Item("hpsettings" + hero.ChampionName).GetValue<Slider>().Value
+                    && hero.Distance(Player) <= W.Range
+                    && target.IsValidTarget(Q.Range))
                 {
-
-                    {
-                        {
-                            if (Config.Item("healop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
-                                &&
-                                hero.HealthPercent <=
-                                Config.Item("hpsettings" + hero.ChampionName).GetValue<Slider>().Value
-                                && hero.Distance(Player) <= W.Range)
-                            {
-                                W.Cast(hero.Position);
-                            }
-                        }
-                    }
+                    W.Cast(hero.Position);
                 }
+            }
             }
 
 
@@ -405,17 +389,17 @@ namespace Slutty_Thresh
                 && (E.IsReady() || ObjectManager.Player.GetSpell(SpellSlot.E).Cooldown <= 3000f)
                 && qSpell
                 && target.IsValidTarget(Q.Range)
-                && target.Distance(Player) >= 400)
+                && target.Distance(Player) >= 300)
             {
                 Q.Cast(target);
-                lastq = Environment.TickCount;
+                lastq2 = Environment.TickCount;
 
                 if (target.HasBuff("threshQ")
-                    && q2Spell /*find buff name in console later!! */
-                    && Environment.TickCount - lastq >= q2Slider)
+                    && q2Spell 
+                    && Environment.TickCount - lastq2 >= q2Slider/*find buff name in console later!! */)
                 {
                     Q.Cast(target);
-                    lastq2 = Environment.TickCount;
+                    lastq = Environment.TickCount;
                 }
             }
 
@@ -458,7 +442,7 @@ namespace Slutty_Thresh
 
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             var x = target.Position.Extend(Prediction.GetPrediction(target, 1).UnitPosition, FlashRange);
-            switch (Config.Item("combooptions").GetValue<StringList>().SelectedIndex)
+            switch (Config.Item("flashmodes").GetValue<StringList>().SelectedIndex)
             {
                 case 0:
                 Player.Spellbook.CastSpell(FlashSlot, x);
@@ -528,17 +512,18 @@ namespace Slutty_Thresh
         {
             if (!hero.IsMe)
                 return;
-
+           // var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if ((args.SData.Name == "threshqinternal" || args.SData.Name == "ThreshQ")
                 && Config.Item("autolantern").GetValue<bool>()
-                && W.IsReady()
-                && hero.Distance(Player) <= W.Range)
+                && W.IsReady())
             {
                 foreach (var heros in
-                    HeroManager.Allies.Where(x => !x.IsMe))
-                {
-                    W.Cast(heros.Position);
-                }
+                    HeroManager.Allies.Where(x => !x.IsMe
+                                                  && x.Distance(Player) <= W.Range))
+                    {
+                    Console.WriteLine("work");
+                        Utility.DelayAction.Add(700, () => W.Cast(heros.Position));
+                    }
             }
         }
 
