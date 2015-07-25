@@ -30,7 +30,6 @@ namespace Slutty_Thresh
         public static Dictionary<string, string> channeledSpells = new Dictionary<string, string>();
         private static int elastattempt;
         private static int elastattemptin;
-        private static int lastq2;
 
         public static void OnLoad(EventArgs args)
         {
@@ -208,29 +207,6 @@ namespace Slutty_Thresh
 
         private static void Game_OnUpdate(EventArgs args)
         {
-            /*
-            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-
-            if (target != null)
-            {
-                if (target.ChampionName == "Katarina")
-                {
-                    if (target.HasBuff("katarinaereduction"))
-                    {
-                        if (target.IsValidTarget(E.Range))
-                        {
-                            E.Cast(target.ServerPosition);
-                            eattempt = Environment.TickCount;
-                        }
-                        if (Environment.TickCount - eattempt >= 90f
-                            && Q.IsReady())
-                            Q.Cast(target.ServerPosition);
-                    }
-                }
-            }
-             */
-            Itemusage();
-            wcast();
             switch (Orbwalker.ActiveMode)
             {
 
@@ -258,20 +234,40 @@ namespace Slutty_Thresh
                     break;
 
             }
+            /*
+            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
+            if (target != null)
+            {
+                if (target.ChampionName == "Katarina")
+                {
+                    if (target.HasBuff("katarinaereduction"))
+                    {
+                        if (target.IsValidTarget(E.Range))
+                        {
+                            E.Cast(target.ServerPosition);
+                            eattempt = Environment.TickCount;
+                        }
+                        if (Environment.TickCount - eattempt >= 90f
+                            && Q.IsReady())
+                            Q.Cast(target.ServerPosition);
+                    }
+                }
+            }
+             */
+            
             if (Config.Item("qflash").GetValue<KeyBind>().Active)
             {
                 flashq();
             }
-        }
-
-        private static void Itemusage()
-        {
-            
-            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            if (target == null)
-                return;
              
-
+            wcast();
+           // Itemusage();
+            
+        }
+        
+        private static void Itemusage()
+        {                     
             var charm = Config.Item("charm").GetValue<bool>();
             var stun = Config.Item("stun").GetValue<bool>();
             var snare = Config.Item("snare").GetValue<bool>();
@@ -281,12 +277,9 @@ namespace Slutty_Thresh
             var mikael = ItemData.Mikaels_Crucible.GetItem();
             var locket = ItemData.Locket_of_the_Iron_Solari.GetItem();
             var mountain = ItemData.Face_of_the_Mountain.GetItem();
-             
-
             
             foreach (var hero in
-                HeroManager.Allies.Where(x => !x.IsMe))
-            {
+                HeroManager.Allies.Where(x => x.IsMe))
                 {
                     if (Config.Item("faceop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
                         && hero.HealthPercent <= Config.Item("facehp" + hero.ChampionName).GetValue<Slider>().Value
@@ -302,7 +295,7 @@ namespace Slutty_Thresh
                         locket.Cast();
                     }
                 }
-            }
+            
              
             
             
@@ -331,6 +324,7 @@ namespace Slutty_Thresh
             }
              
         }
+         
          
 
 
@@ -384,23 +378,26 @@ namespace Slutty_Thresh
                 Orbwalker.SetAttack(true);
             }
 
+            if (target.HasBuff("threshQ"))
+            {
+                lastbuff = Environment.TickCount;
+            }
 
             if (Q.IsReady()
                 && (E.IsReady() || ObjectManager.Player.GetSpell(SpellSlot.E).Cooldown <= 3000f)
                 && qSpell
+                && !target.HasBuff("threshQ")
                 && target.IsValidTarget(Q.Range)
                 && target.Distance(Player) >= 300)
             {
                 Q.Cast(target);
-                lastq2 = Environment.TickCount;
+            }
 
-                if (target.HasBuff("threshQ")
-                    && q2Spell 
-                    && Environment.TickCount - lastq2 >= q2Slider/*find buff name in console later!! */)
-                {
-                    Q.Cast(target);
-                    lastq = Environment.TickCount;
-                }
+            if (q2Spell
+                && target.HasBuff("threshQ"))
+            {
+                Utility.DelayAction.Add(q2Slider, () => Q.Cast());
+                lastq = Environment.TickCount;
             }
 
             switch (Config.Item("combooptions").GetValue<StringList>().SelectedIndex)
@@ -441,6 +438,8 @@ namespace Slutty_Thresh
             Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            if (target == null)
+                return;
             var x = target.Position.Extend(Prediction.GetPrediction(target, 1).UnitPosition, FlashRange);
             switch (Config.Item("flashmodes").GetValue<StringList>().SelectedIndex)
             {
@@ -624,5 +623,7 @@ namespace Slutty_Thresh
         public static int lastq { get; set; }
 
         public static int eattempt { get; set; }
+
+        public static int lastbuff { get; set; }
     }
 }
