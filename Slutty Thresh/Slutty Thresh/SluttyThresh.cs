@@ -504,14 +504,10 @@ namespace Slutty_Thresh
         {
             if (gapcloser.Sender.IsAlly
                 || gapcloser.Sender.IsMe)
-            {
                 return;
-            }
 
             if (E.IsInRange(gapcloser.Start))
-            {
                 E.Cast(Player.Position.Extend(gapcloser.Sender.Position, 400));
-            }
         }
          
 
@@ -528,7 +524,6 @@ namespace Slutty_Thresh
                     HeroManager.Allies.Where(x => !x.IsMe
                                                   && x.Distance(Player) <= W.Range))
                     {
-                    Console.WriteLine("work");
                         Utility.DelayAction.Add(700, () => W.Cast(heros.Position));
                     }
             }
