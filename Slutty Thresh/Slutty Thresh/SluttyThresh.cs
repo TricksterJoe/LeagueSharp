@@ -212,30 +212,26 @@ namespace Slutty_Thresh
 
         private static void Game_OnUpdate(EventArgs args)
         {
+            Orbwalker.SetAttack(true);
             switch (Orbwalker.ActiveMode)
             {
 
                 case Orbwalking.OrbwalkingMode.Combo:
-                    Orbwalker.SetAttack(true);
                     Combo();
                     break;
 
                 case Orbwalking.OrbwalkingMode.LaneClear:
-                    Orbwalker.SetAttack(true);
                     LaneClear();
                     break;
 
                 case Orbwalking.OrbwalkingMode.LastHit:
-                    Orbwalker.SetAttack(true);
                     break;
 
                 case Orbwalking.OrbwalkingMode.Mixed:
-                    Orbwalker.SetAttack(true);
                     //   Mixed();
                     break;
 
                 case Orbwalking.OrbwalkingMode.None:
-                    Orbwalker.SetAttack(true);
                     break;
 
             }
