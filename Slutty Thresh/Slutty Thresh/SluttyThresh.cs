@@ -133,11 +133,10 @@ namespace Slutty_Thresh
             {
                 var mountainmenu = new Menu("Face Of The Mountain", "faceof");
                 {
-                    foreach (var hero in
-                        ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(x => !x.IsEnemy)
-                            .Where(x => !x.IsMe)
-                            .Where(x => x.IsAlly))
+            foreach (var hero in
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Where(x => x.IsAlly
+                    && !x.IsMe))
                     {
                         {
                             mountainmenu.AddItem(new MenuItem("faceop" + hero.ChampionName, hero.ChampionName))
@@ -151,11 +150,10 @@ namespace Slutty_Thresh
 
                 var locketmenu = new Menu("Locket Of Solari", "locksol");
                 {
-                    foreach (var hero in
-                        ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(x => !x.IsEnemy)
-                            .Where(x => !x.IsMe)
-                            .Where(x => x.IsAlly))
+            foreach (var hero in
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Where(x => x.IsAlly
+                    && !x.IsMe))
                     {
                         {
                             locketmenu.AddItem(new MenuItem("locketop" + hero.ChampionName, hero.ChampionName))
@@ -181,11 +179,10 @@ namespace Slutty_Thresh
                 mikaelss.AddItem(new MenuItem("stun", "Stun", true).SetValue(true));
                 mikaelss.AddItem(new MenuItem("mikaelshp", "Use On %HP", true).SetValue(true));
                 var allies = new Menu("Ally Config", "AllysConfig");
-                foreach (var hero in 
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(x => !x.IsEnemy)
-                        .Where(x => !x.IsMe)
-                        .Where((x => x.IsAlly)))
+            foreach (var hero in
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Where(x => x.IsAlly
+                    && !x.IsMe))
                 {
                     {
                         allies.AddItem(new MenuItem("healmikaels" + hero.ChampionName, hero.ChampionName))
@@ -282,12 +279,10 @@ namespace Slutty_Thresh
             var mikaelshp = Config.Item("mikaelshp").GetValue<Slider>().Value;
 
 
-                foreach (var hero in
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(x => !x.IsEnemy 
-                            && x.IsAlly
-                            && !x.IsMe
-                            && !x.IsDead))
+            foreach (var hero in
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Where(x => x.IsAlly
+                    && !x.IsMe))
                 {
                     if (Config.Item("faceop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
                         && hero.HealthPercent <= Config.Item("facehp" + hero.ChampionName).GetValue<Slider>().Value
@@ -307,10 +302,8 @@ namespace Slutty_Thresh
                 }
             foreach (var hero in
                 ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(x => !x.IsEnemy
-                                && x.IsAlly
-                                && !x.IsMe
-                                && !x.IsDead))
+                    .Where(x => x.IsAlly
+                    && !x.IsMe))
             {
                 if (hero.Distance(Player) <= 600
                     && Items.CanUseItem(Mikaels))
@@ -365,10 +358,9 @@ namespace Slutty_Thresh
 
             foreach (var hero in
                 ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(x => !x.IsEnemy)
-                    .Where(x => !x.IsMe)
-                    .Where(x => x.IsAlly)
-                    .Where(x => !x.IsDead))
+                    .Where(x => x.IsAlly
+                    && !x.IsMe)
+)
             {
                 {
             if (Config.Item("healop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0
@@ -507,6 +499,7 @@ namespace Slutty_Thresh
             foreach (var minion in minionCount)
             {
                 if (elchSpell
+                    && minion.IsValidTarget(E.Range)
                     && E.IsReady())
                 {
                     E.Cast(minion.Position);
@@ -539,12 +532,10 @@ namespace Slutty_Thresh
                && Config.Item("autolantern").GetValue<bool>()
                && W.IsReady())
            {
-               foreach (var heros in
-       ObjectManager.Get<Obj_AI_Hero>()
-           .Where(x => !x.IsEnemy)
-           .Where(x => !x.IsMe)
-           .Where(x => x.IsAlly)
-           .Where(x => !x.IsDead))
+            foreach (var heros in
+                ObjectManager.Get<Obj_AI_Hero>()
+                    .Where(x => x.IsAlly
+                    && !x.IsMe))
                {
                    {
                        W.Cast(heros);
