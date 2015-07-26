@@ -24,12 +24,15 @@ namespace Slutty_ryze
         public static Menu Config;
         public static Orbwalking.Orbwalker Orbwalker;
         public static Spell Q, W, E, R, Qn;
-        private static SpellSlot Ignite;
+        private static SpellSlot _ignite;
 
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
 
-        public static int[] abilitySequence;
-        public static int qOff = 0, wOff = 0, eOff = 0, rOff = 0;
+        public static int[] AbilitySequence;
+        public static int QOff = 0;
+        public static int WOff = 0;
+        public static int EOff = 0;
+        public static int ROff = 0;
 
 
         public static Items.Item TearoftheGoddess = new Items.Item(3070, 0);
@@ -51,22 +54,8 @@ namespace Slutty_ryze
             CustomEvents.Game.OnGameLoad += OnLoad;
         }
 
-        private static void OnLoad(EventArgs args)
+        private static void CreateMenu()
         {
-            if (Player.ChampionName != ChampName)
-                return;
-
-            Q = new Spell(SpellSlot.Q, 865);
-            Qn = new Spell(SpellSlot.Q, 865);
-            W = new Spell(SpellSlot.W, 585);
-            E = new Spell(SpellSlot.E, 585);
-            R = new Spell(SpellSlot.R);
-
-            Q.SetSkillshot(0.26f, 50f, 1700f, true, SkillshotType.SkillshotLine);
-            Qn.SetSkillshot(0.26f, 50f, 1700f, false, SkillshotType.SkillshotLine);
-
-            abilitySequence = new int[] {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 2, 2, 3, 4, 3, 3};
-
             Config = new Menu(Menuname, Menuname, true);
             Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
 
@@ -97,8 +86,9 @@ namespace Slutty_ryze
             var combo1Menu = new Menu("Combo Settings (SB)", "combospells");
             {
                 combo1Menu
-    .AddItem(
-        new MenuItem("combooptions", "Combo Mode").SetValue(new StringList(new[] { "Stable", "Beta Combo" }, 0)));
+                    .AddItem(
+                        new MenuItem("combooptions", "Combo Mode").SetValue(
+                            new StringList(new[] { "Stable", "Beta Combo" })));
                 combo1Menu.AddItem(new MenuItem("useQ", "Use Q (Over Load)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useW", "Use W (Rune Prison)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useE", "Use E (Spell Flux)").SetValue(true));
@@ -122,8 +112,10 @@ namespace Slutty_ryze
             var farmMenu = new Menu("Farming Settings", "farmingsettings");
             var laneMenu = new Menu("Lane Clear (V)", "lanesettings");
             {
-                laneMenu.AddItem(new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
-                laneMenu.AddItem(new MenuItem("presslane", "Press Lane Clear").SetValue(new KeyBind('H', KeyBindType.Press)));
+                laneMenu.AddItem(
+                    new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
+                laneMenu.AddItem(
+                    new MenuItem("presslane", "Press Lane Clear").SetValue(new KeyBind('H', KeyBindType.Press)));
                 laneMenu.AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
                 laneMenu.AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
                 laneMenu.AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
@@ -165,9 +157,12 @@ namespace Slutty_ryze
             {
                 passiveMenu.AddItem(new MenuItem("ManapSlider", "Minimum %Mana"))
                     .SetValue(new Slider(30));
-                passiveMenu.AddItem(new MenuItem("autoPassive", "Stack Passive").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
+                passiveMenu.AddItem(
+                    new MenuItem("autoPassive", "Stack Passive").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
                 passiveMenu.AddItem(new MenuItem("stackSlider", "Keep passive count at"))
                     .SetValue(new Slider(3, 1, 4));
+                passiveMenu.AddItem(new MenuItem("autoPassiveTimer", "Refresh passive ever"))
+                    .SetValue(new Slider(5, 1, 10));
                 passiveMenu.AddItem(new MenuItem("stackMana", "Minimum %Mana")).SetValue(new Slider(50));
             }
 
@@ -216,42 +211,49 @@ namespace Slutty_ryze
             miscMenu.AddSubMenu(eventMenu);
             miscMenu.AddSubMenu(ksMenu);
             Config.AddSubMenu(miscMenu);
-
-
-
             Config.AddToMainMenu();
+        }
+
+        private static void OnLoad(EventArgs args)
+        {
+            if (Player.ChampionName != ChampName)
+                return;
+
+            Q = new Spell(SpellSlot.Q, 865);
+            Qn = new Spell(SpellSlot.Q, 865);
+            W = new Spell(SpellSlot.W, 585);
+            E = new Spell(SpellSlot.E, 585);
+            R = new Spell(SpellSlot.R);
+
+            Q.SetSkillshot(0.26f, 50f, 1700f, true, SkillshotType.SkillshotLine);
+            Qn.SetSkillshot(0.26f, 50f, 1700f, false, SkillshotType.SkillshotLine);
+
+            AbilitySequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 2, 2, 3, 4, 3, 3 };
+
+            CreateMenu();
+
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
+#pragma warning disable 618
             Interrupter.OnPossibleToInterrupt += RyzeInterruptableSpell;
+#pragma warning restore 618
             Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
             CustomEvents.Unit.OnDash += Unit_OnDash;
-
         }
 
         private static void Game_OnUpdate(EventArgs args)
         {
-
             if (Player.IsDead)
                 return;
             Orbwalker.SetAttack(true);
 
-            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                if ((target.IsValidTarget() &&
-                    (Player.Distance(target) > 440)
-                     || (Q.IsReady() || E.IsReady() || W.IsReady()))
-                    && target.Health > (Player.GetAutoAttackDamage(target)*3))
-                {
-                    Orbwalker.SetAttack(false);
-                }
-                else
-                {
-                    Orbwalker.SetAttack(true);
-                }
-
+                Orbwalker.SetAttack((target.IsValidTarget() && (Player.Distance(target) > 440) ||
+                                     (Q.IsReady() || E.IsReady() || W.IsReady())));
                 AABlock();
                 Combo();
             }
@@ -265,35 +267,28 @@ namespace Slutty_ryze
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 if (Config.Item("disablelane").GetValue<KeyBind>().Active)
-                {
                     LaneClear();
-                }
+
 
                 if (Config.Item("presslane").GetValue<KeyBind>().Active)
-                {
                     LaneClear();
-                }
+
 
                 Orbwalker.SetAttack(true);
                 JungleClear();
-
             }
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
-            {
                 LastHit();
-            }
+
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
             {
                 if (Config.Item("tearS").GetValue<KeyBind>().Active)
-                {
                     TearStack();
-                }
+
                 if (Config.Item("autoPassive").GetValue<KeyBind>().Active)
-                {
                     AutoPassive();
-                }
 
                 Potion();
                 Orbwalker.SetAttack(true);
@@ -304,11 +299,8 @@ namespace Slutty_ryze
                 if (target == null)
                     return;
 
-                if (Q.IsReady()
-                    && target.IsValidTarget(Q.Range))
-                {
+                if (Q.IsReady() && target.IsValidTarget(Q.Range))
                     Q.Cast(target);
-                }
             }
 
 
@@ -337,9 +329,9 @@ namespace Slutty_ryze
 
         private static float IgniteDamage(Obj_AI_Hero target)
         {
-            if (Ignite == SpellSlot.Unknown || Player.Spellbook.CanUseSpell(Ignite) != SpellState.Ready)
+            if (_ignite == SpellSlot.Unknown || Player.Spellbook.CanUseSpell(_ignite) != SpellState.Ready)
                 return 0f;
-            return (float) Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
+            return (float)Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
         }
 
 
@@ -357,77 +349,67 @@ namespace Slutty_ryze
 
         private static void LevelUpSpells()
         {
-            int qL = Player.Spellbook.GetSpell(SpellSlot.Q).Level + qOff;
-            int wL = Player.Spellbook.GetSpell(SpellSlot.W).Level + wOff;
-            int eL = Player.Spellbook.GetSpell(SpellSlot.E).Level + eOff;
-            int rL = Player.Spellbook.GetSpell(SpellSlot.R).Level + rOff;
-            if (qL + wL + eL + rL < ObjectManager.Player.Level)
-            {
-                int[] level = {0, 0, 0, 0};
-                for (int i = 0; i < ObjectManager.Player.Level; i++)
-                {
-                    level[abilitySequence[i] - 1] = level[abilitySequence[i] - 1] + 1;
-                }
-                if (qL < level[0]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.Q);
-                if (wL < level[1]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.W);
-                if (eL < level[2]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.E);
-                if (rL < level[3]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.R);
+            var qL = Player.Spellbook.GetSpell(SpellSlot.Q).Level + QOff;
+            var wL = Player.Spellbook.GetSpell(SpellSlot.W).Level + WOff;
+            var eL = Player.Spellbook.GetSpell(SpellSlot.E).Level + EOff;
+            var rL = Player.Spellbook.GetSpell(SpellSlot.R).Level + ROff;
 
+            if (qL + wL + eL + rL >= ObjectManager.Player.Level) return;
+
+            int[] level = { 0, 0, 0, 0 };
+
+            for (var i = 0; i < ObjectManager.Player.Level; i++)
+            {
+                level[AbilitySequence[i] - 1] = level[AbilitySequence[i] - 1] + 1;
             }
+
+            if (qL < level[0]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.Q);
+            if (wL < level[1]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.W);
+            if (eL < level[2]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.E);
+            if (rL < level[3]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.R);
         }
 
         private static void RyzeInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
         {
-            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             var wSpell = Config.Item("useW2I").GetValue<bool>();
             if (wSpell)
-            {
                 W.CastOnUnit(target);
-            }
         }
 
         private static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
         {
+            if (!sender.IsEnemy) return;
+
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             var qSpell = Config.Item("useQW2D").GetValue<bool>();
 
-            if (!sender.IsEnemy)
-            {
-                return;
-            }
+            if (sender.NetworkId != target.NetworkId) return;
+            if (!qSpell) return;
+            if (!Q.IsReady() || !(args.EndPos.Distance(Player) < Q.Range)) return;
+            var delay = (int)(args.EndTick - Game.Time - Q.Delay - 0.1f);
 
-            if (sender.NetworkId == target.NetworkId)
-            {
-                if (qSpell)
-                {
+            if (delay > 0)
+                Utility.DelayAction.Add(delay * 1000, () => Q.Cast(args.EndPos));
+            else
+                Q.Cast(args.EndPos);
 
-                    if (Q.IsReady()
-                        && args.EndPos.Distance(Player) < Q.Range)
-                    {
-                        var delay = (int) (args.EndTick - Game.Time - Q.Delay - 0.1f);
-                        if (delay > 0)
-                        {
-                            Utility.DelayAction.Add(delay*1000, () => Q.Cast(args.EndPos));
-                        }
-                        else
-                        {
-                            Q.Cast(args.EndPos);
-                        }
-                        if (Q.IsReady()
-                            && args.EndPos.Distance(Player) < Q.Range)
-                        {
-                            if (delay > 0)
-                            {
-                                Utility.DelayAction.Add(delay*1000, () => Q.Cast(args.EndPos));
-                            }
-                            else
-                            {
-                                W.CastOnUnit(target);
-                            }
-                        }
-                    }
-                }
-            }
+            if (!Q.IsReady() || !(args.EndPos.Distance(Player) < Q.Range)) return;
+
+            if (delay > 0)
+                Utility.DelayAction.Add(delay * 1000, () => Q.Cast(args.EndPos));
+            else
+                W.CastOnUnit(target);
+        }
+
+        private static Color GetColor(bool b)
+        {
+            return b ? Color.DarkGreen : Color.Red;
+        }
+
+        private static string BoolToString(bool b)
+        {
+            return b ? "On" : "off";
         }
 
         private static void Drawing_OnDraw(EventArgs args)
@@ -436,125 +418,72 @@ namespace Slutty_ryze
                 return;
             if (!Config.Item("Draw").GetValue<bool>())
                 return;
-            
+
 
             if (Config.Item("qDraw").GetValue<bool>() && Q.Level > 0)
-            {
                 Render.Circle.DrawCircle(Player.Position, Q.Range, Color.Green);
-            }
             if (Config.Item("eDraw").GetValue<bool>() && E.Level > 0)
-            {
                 Render.Circle.DrawCircle(Player.Position, E.Range, Color.Gold);
-            }
             if (Config.Item("wDraw").GetValue<bool>() && W.Level > 0)
-            {
                 Render.Circle.DrawCircle(Player.Position, W.Range, Color.Black);
-            }
+
             var tears = Config.Item("tearS").GetValue<KeyBind>().Active;
             var passive = Config.Item("autoPassive").GetValue<KeyBind>().Active;
             var laneclear = Config.Item("disablelane").GetValue<KeyBind>().Active;
 
-            if (Config.Item("notdraw").GetValue<bool>())
-            {
-                if (tears)
-                {
-                    var heroPosition = Drawing.WorldToScreen(Player.Position);
-                    var textDimension = Drawing.GetTextExtent("Stunnable!");
-                    Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
-                        Color.DarkGreen, "Tear Stack: On");
-                }
+            if (!Config.Item("notdraw").GetValue<bool>()) return;
 
-                if (passive)
-                {
-                    var heroPosition = Drawing.WorldToScreen(Player.Position);
-                    Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30,
-                        Color.DarkGreen, "Passive Stack: On");
-                }
+            var heroPosition = Drawing.WorldToScreen(Player.Position);
+            var textDimension = Drawing.GetTextExtent("Stunnable!");
 
-                if (laneclear)
-                {
-                    var heroPosition = Drawing.WorldToScreen(Player.Position);
-                    Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30,
-                        Color.DarkGreen, "Lane Clear: On");
-                }
+            Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
+                GetColor(tears),
+                "Tear Stack: " + BoolToString(tears));
 
-                if (!tears)
-                {
-                    var heroPosition = Drawing.WorldToScreen(Player.Position);
-                    var textDimension = Drawing.GetTextExtent("Stunnable!");
-                    Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
-                        Color.Red, "Tear Stack: Off");
-                }
+            Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30, GetColor(passive),
+                "Passive Stack: " + BoolToString(passive));
 
-                if (!passive)
-                {
-                    var heroPosition = Drawing.WorldToScreen(Player.Position);
-                    Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30,
-                        Color.Red, "Passive Stack: Off");
-                }
-
-                if (!laneclear)
-                {
-                    var heroPosition = Drawing.WorldToScreen(Player.Position);
-                    Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30,
-                        Color.Red, "Lane Clear: Off");
-                }
-            }
-
-
+            Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColor(laneclear),
+                "Lane Clear: " + BoolToString(laneclear));
         }
 
         private static void Combo()
         {
-
-            Ignite = Player.GetSpellSlot("summonerdot");
+            _ignite = Player.GetSpellSlot("summonerdot");
             var qSpell = Config.Item("useQ").GetValue<bool>();
             var eSpell = Config.Item("useE").GetValue<bool>();
             var wSpell = Config.Item("useW").GetValue<bool>();
             var rSpell = Config.Item("useR").GetValue<bool>();
             var rwwSpell = Config.Item("useRww").GetValue<bool>();
-            Obj_AI_Hero target = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
 
-            if (!target.IsValidTarget(Q.Range))
-            {
-                return;
-            }
+            if (!target.IsValidTarget(Q.Range)) return;
 
+            if (target.IsValidTarget(W.Range) && (target.Health < IgniteDamage(target) + W.GetDamage(target)))
+                Player.Spellbook.CastSpell(_ignite, target);
 
-            if (target.IsValidTarget(W.Range)
-                && (target.Health < IgniteDamage(target) + W.GetDamage(target)))
-            {
-                Player.Spellbook.CastSpell(Ignite, target);
-            }
 
             switch (Config.Item("combooptions").GetValue<StringList>().SelectedIndex)
             {
                 case 1:
                     if (R.IsReady())
                     {
-                        if (GetPassiveBuff == 1
-                            || !Player.HasBuff("RyzePassiveStack"))
+                        if (GetPassiveBuff == 1 || !Player.HasBuff("RyzePassiveStack"))
                         {
                             if (target.IsValidTarget(Q.Range)
                                 && qSpell
                                 && Q.IsReady())
-                            {
                                 Q.Cast(target);
-                            }
 
                             if (target.IsValidTarget(W.Range)
                                 && wSpell
                                 && W.IsReady())
-                            {
                                 W.CastOnUnit(target);
-                            }
 
                             if (target.IsValidTarget(E.Range)
                                 && eSpell
                                 && E.IsReady())
-                            {
                                 E.CastOnUnit(target);
-                            }
 
                             if (rSpell)
                             {
@@ -562,13 +491,10 @@ namespace Slutty_ryze
                                     && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
                                 {
                                     if (rwwSpell && target.HasBuff("RyzeW"))
-                                    {
                                         R.Cast();
-                                    }
+
                                     if (!rwwSpell)
-                                    {
                                         R.Cast();
-                                    }
                                 }
                             }
                         }
@@ -578,34 +504,24 @@ namespace Slutty_ryze
                             if (target.IsValidTarget(Q.Range)
                                 && qSpell
                                 && Q.IsReady())
-                            {
                                 Q.Cast(target);
-                            }
 
                             if (target.IsValidTarget(W.Range)
                                 && wSpell
                                 && W.IsReady())
-                            {
                                 W.CastOnUnit(target);
-                            }
 
                             if (target.IsValidTarget(E.Range)
                                 && eSpell
                                 && E.IsReady())
-                            {
                                 E.CastOnUnit(target);
-                            }
 
                             if (rSpell)
                             {
                                 if (target.IsValidTarget(W.Range)
                                     && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
-                                {
                                     if (target.HasBuff("RyzeW"))
-                                    {
                                         R.Cast();
-                                    }
-                                }
                             }
                         }
 
@@ -613,25 +529,16 @@ namespace Slutty_ryze
                         {
                             if (Q.IsReady()
                                 && target.IsValidTarget(Q.Range))
-                            {
-                                {
-                                    Qn.Cast(target);
-                                }
-                            }
+                                Qn.Cast(target);
+
                             if (E.IsReady()
                                 && target.IsValidTarget(E.Range))
-                            {
-                                {
-                                    E.CastOnUnit(target);
-                                }
-                            }
+                                E.CastOnUnit(target);
+
                             if (W.IsReady()
                                 && target.IsValidTarget(W.Range))
-                            {
-                                {
-                                    W.CastOnUnit(target);
-                                }
-                            }
+                                W.CastOnUnit(target);
+
                             if (R.IsReady()
                                 && rSpell)
                             {
@@ -640,14 +547,11 @@ namespace Slutty_ryze
                                 {
                                     if (rwwSpell && target.HasBuff("RyzeW")
                                         && (Q.IsReady() || W.IsReady() || E.IsReady()))
-                                    {
                                         R.Cast();
-                                    }
+
                                     if (!rwwSpell
                                         && (Q.IsReady() || W.IsReady() || E.IsReady()))
-                                    {
                                         R.Cast();
-                                    }
                                 }
                             }
                         }
@@ -657,21 +561,17 @@ namespace Slutty_ryze
                             if (target.IsValidTarget(W.Range)
                                 && wSpell
                                 && W.IsReady())
-                            {
                                 W.CastOnUnit(target);
-                            }
+
                             if (target.IsValidTarget(Qn.Range)
                                 && Q.IsReady()
                                 && qSpell)
-                            {
                                 Qn.Cast(target);
-                            }
+
                             if (target.IsValidTarget(E.Range)
                                 && E.IsReady()
                                 && eSpell)
-                            {
                                 E.CastOnUnit(target);
-                            }
 
                             if (R.IsReady()
                                 && rSpell)
@@ -680,17 +580,13 @@ namespace Slutty_ryze
                                     && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
                                 {
                                     if (rwwSpell && target.HasBuff("RyzeW"))
-                                    {
                                         R.Cast();
-                                    }
+
                                     if (!rwwSpell)
-                                    {
                                         R.Cast();
-                                    }
+
                                     if (!Q.IsReady() && !W.IsReady() && !E.IsReady())
-                                    {
                                         R.Cast();
-                                    }
                                 }
                             }
                         }
@@ -700,37 +596,27 @@ namespace Slutty_ryze
                             if (qSpell
                                 && Qn.IsReady()
                                 && target.IsValidTarget(Qn.Range))
-                            {
                                 Qn.Cast(target);
-                            }
 
                             if (wSpell
                                 && W.IsReady()
                                 && target.IsValidTarget(W.Range))
-                            {
                                 W.CastOnUnit(target);
-                            }
 
                             if (qSpell
                                 && Qn.IsReady()
                                 && target.IsValidTarget(Qn.Range))
-                            {
                                 Qn.Cast(target);
-                            }
 
                             if (eSpell
                                 && E.IsReady()
                                 && target.IsValidTarget(E.Range))
-                            {
                                 E.CastOnUnit(target);
-                            }
 
                             if (qSpell
                                 && Qn.IsReady()
                                 && target.IsValidTarget(Qn.Range))
-                            {
                                 Qn.Cast(target);
-                            }
 
                             if (R.IsReady()
                                 && rSpell)
@@ -739,17 +625,11 @@ namespace Slutty_ryze
                                     && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
                                 {
                                     if (rwwSpell && target.HasBuff("RyzeW"))
-                                    {
                                         R.Cast();
-                                    }
                                     if (!rwwSpell)
-                                    {
                                         R.Cast();
-                                    }
                                     if (!E.IsReady() && !Q.IsReady() && !W.IsReady())
-                                    {
                                         R.Cast();
-                                    }
                                 }
                             }
                         }
@@ -763,23 +643,17 @@ namespace Slutty_ryze
                             if (target.IsValidTarget(W.Range)
                                 && wSpell
                                 && W.IsReady())
-                            {
                                 W.CastOnUnit(target);
-                            }
 
                             if (target.IsValidTarget(W.Range)
                                 && wSpell
                                 && W.IsReady())
-                            {
                                 W.CastOnUnit(target);
-                            }
 
                             if (target.IsValidTarget(E.Range)
                                 && eSpell
                                 && E.IsReady())
-                            {
                                 E.CastOnUnit(target);
-                            }
                         }
 
                         if (GetPassiveBuff == 2)
@@ -787,23 +661,17 @@ namespace Slutty_ryze
                             if (target.IsValidTarget(Q.Range)
                                 && qSpell
                                 && Q.IsReady())
-                            {
                                 Q.Cast(target);
-                            }
 
                             if (target.IsValidTarget(E.Range)
                                 && eSpell
                                 && E.IsReady())
-                            {
                                 E.CastOnUnit(target);
-                            }
 
                             if (target.IsValidTarget(W.Range)
                                 && wSpell
                                 && W.IsReady())
-                            {
                                 W.CastOnUnit(target);
-                            }
 
                             if (rSpell)
                             {
@@ -811,13 +679,9 @@ namespace Slutty_ryze
                                     && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
                                 {
                                     if (rwwSpell && target.HasBuff("RyzeW"))
-                                    {
                                         R.Cast();
-                                    }
                                     if (!rwwSpell)
-                                    {
                                         R.Cast();
-                                    }
                                 }
                             }
                         }
@@ -826,25 +690,15 @@ namespace Slutty_ryze
                         {
                             if (Q.IsReady()
                                 && target.IsValidTarget(Q.Range))
-                            {
-                                {
-                                    Qn.Cast(target);
-                                }
-                            }
+                                Qn.Cast(target);
+
                             if (E.IsReady()
                                 && target.IsValidTarget(E.Range))
-                            {
-                                {
-                                    E.CastOnUnit(target);
-                                }
-                            }
+                                E.CastOnUnit(target);
+
                             if (W.IsReady()
                                 && target.IsValidTarget(W.Range))
-                            {
-                                {
-                                    W.CastOnUnit(target);
-                                }
-                            }
+                                W.CastOnUnit(target);
                         }
 
                         if (GetPassiveBuff == 4)
@@ -852,22 +706,17 @@ namespace Slutty_ryze
                             if (target.IsValidTarget(E.Range)
                                 && E.IsReady()
                                 && eSpell)
-                            {
                                 E.CastOnUnit(target);
-                            }
 
                             if (target.IsValidTarget(W.Range)
                                 && wSpell
                                 && W.IsReady())
-                            {
                                 W.CastOnUnit(target);
-                            }
+
                             if (target.IsValidTarget(Qn.Range)
                                 && Q.IsReady()
                                 && qSpell)
-                            {
                                 Qn.Cast(target);
-                            }
                         }
 
                         if (Player.HasBuff("ryzepassivecharged"))
@@ -875,44 +724,33 @@ namespace Slutty_ryze
                             if (qSpell
                                 && Qn.IsReady()
                                 && target.IsValidTarget(Qn.Range))
-                            {
                                 Qn.Cast(target);
-                            }
 
                             if (wSpell
                                 && W.IsReady()
                                 && target.IsValidTarget(W.Range))
-                            {
                                 W.CastOnUnit(target);
-                            }
 
                             if (qSpell
                                 && Qn.IsReady()
                                 && target.IsValidTarget(Qn.Range))
-                            {
                                 Qn.Cast(target);
-                            }
 
                             if (eSpell
                                 && E.IsReady()
                                 && target.IsValidTarget(E.Range))
-                            {
                                 E.CastOnUnit(target);
-                            }
 
                             if (qSpell
                                 && Qn.IsReady()
                                 && target.IsValidTarget(Qn.Range))
-                            {
                                 Qn.Cast(target);
-                            }
                         }
                     }
                     break;
-           
 
 
-            case 0:
+                case 0:
 
                     if (target.IsValidTarget(Q.Range))
                     {
@@ -922,23 +760,17 @@ namespace Slutty_ryze
                             if (target.IsValidTarget(Q.Range)
                                 && qSpell
                                 && Q.IsReady())
-                            {
                                 Q.Cast(target);
-                            }
 
                             if (target.IsValidTarget(W.Range)
                                 && wSpell
                                 && W.IsReady())
-                            {
                                 W.CastOnUnit(target);
-                            }
 
                             if (target.IsValidTarget(E.Range)
                                 && eSpell
                                 && E.IsReady())
-                            {
                                 E.CastOnUnit(target);
-                            }
 
                             if (R.IsReady()
                                 && rSpell)
@@ -947,13 +779,9 @@ namespace Slutty_ryze
                                     && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
                                 {
                                     if (rwwSpell && target.HasBuff("RyzeW"))
-                                    {
                                         R.Cast();
-                                    }
                                     if (!rwwSpell)
-                                    {
                                         R.Cast();
-                                    }
                                 }
                             }
                         }
@@ -963,25 +791,16 @@ namespace Slutty_ryze
                         {
                             if (Q.IsReady()
                                 && target.IsValidTarget(Q.Range))
-                            {
-                                {
-                                    Qn.Cast(target);
-                                }
-                            }
+                                Qn.Cast(target);
+
                             if (E.IsReady()
                                 && target.IsValidTarget(E.Range))
-                            {
-                                {
-                                    E.CastOnUnit(target);
-                                }
-                            }
+                                E.CastOnUnit(target);
+
                             if (W.IsReady()
                                 && target.IsValidTarget(W.Range))
-                            {
-                                {
-                                    W.CastOnUnit(target);
-                                }
-                            }
+                                W.CastOnUnit(target);
+
                             if (R.IsReady()
                                 && rSpell)
                             {
@@ -989,16 +808,11 @@ namespace Slutty_ryze
                                     && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
                                 {
                                     if (rwwSpell && target.HasBuff("RyzeW"))
-                                    {
                                         R.Cast();
-                                    }
                                     if (!rwwSpell)
-                                    {
                                         R.Cast();
-                                    }
                                 }
                             }
-
                         }
 
                         if (GetPassiveBuff == 4)
@@ -1006,21 +820,17 @@ namespace Slutty_ryze
                             if (target.IsValidTarget(W.Range)
                                 && wSpell
                                 && W.IsReady())
-                            {
                                 W.CastOnUnit(target);
-                            }
+
                             if (target.IsValidTarget(Qn.Range)
                                 && Q.IsReady()
                                 && qSpell)
-                            {
                                 Qn.Cast(target);
-                            }
+
                             if (target.IsValidTarget(E.Range)
                                 && E.IsReady()
                                 && eSpell)
-                            {
                                 E.CastOnUnit(target);
-                            }
 
                             if (R.IsReady()
                                 && rSpell)
@@ -1029,13 +839,9 @@ namespace Slutty_ryze
                                     && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
                                 {
                                     if (rwwSpell && target.HasBuff("RyzeW"))
-                                    {
                                         R.Cast();
-                                    }
                                     if (!rwwSpell)
-                                    {
                                         R.Cast();
-                                    }
                                 }
                             }
                         }
@@ -1045,23 +851,17 @@ namespace Slutty_ryze
                             if (wSpell
                                 && W.IsReady()
                                 && target.IsValidTarget(W.Range))
-                            {
                                 W.CastOnUnit(target);
-                            }
 
                             if (qSpell
                                 && Qn.IsReady()
                                 && target.IsValidTarget(Qn.Range))
-                            {
                                 Qn.Cast(target);
-                            }
 
                             if (eSpell
                                 && E.IsReady()
                                 && target.IsValidTarget(E.Range))
-                            {
                                 E.CastOnUnit(target);
-                            }
 
                             if (R.IsReady()
                                 && rSpell)
@@ -1070,65 +870,44 @@ namespace Slutty_ryze
                                     && target.Health > (Q.GetDamage(target) + E.GetDamage(target)))
                                 {
                                     if (rwwSpell && target.HasBuff("RyzeW"))
-                                    {
                                         R.Cast();
-                                    }
                                     if (!rwwSpell)
-                                    {
                                         R.Cast();
-                                    }
                                     if (!E.IsReady() && !Q.IsReady() && !W.IsReady())
-                                    {
                                         R.Cast();
-                                    }
                                 }
                             }
                         }
-
                     }
                     else
                     {
                         if (wSpell
                             && W.IsReady()
                             && target.IsValidTarget(W.Range))
-                        {
                             W.CastOnUnit(target);
-                        }
 
                         if (qSpell
                             && Qn.IsReady()
                             && target.IsValidTarget(Qn.Range))
-                        {
                             Qn.Cast(target);
-                        }
 
                         if (eSpell
                             && E.IsReady()
                             && target.IsValidTarget(E.Range))
-                        {
                             E.CastOnUnit(target);
-                        }
-
                     }
                     break;
             }
 
-if (R.IsReady()
-&& GetPassiveBuff == 4
-&& rSpell)
-{
-if (!Q.IsReady()
-&& !W.IsReady()
-&& !E.IsReady())
-{
-R.Cast();
-}
-}
+            if (!R.IsReady() || GetPassiveBuff != 4 || !rSpell) return;
+
+            if (Q.IsReady() || W.IsReady() || E.IsReady()) return;
+
+            R.Cast();
         }
 
         private static void LaneClear()
         {
-
             if (GetPassiveBuff == 4
                 && !Player.HasBuff("RyzeR")
                 && Config.Item("passiveproc").GetValue<bool>())
@@ -1153,55 +932,43 @@ R.Cast();
                     && Q.IsReady()
                     && minion.IsValidTarget(Q.Range)
                     && minion.Health <= Q.GetDamage(minion))
-                {
                     Q.Cast(minion);
-                }
 
                 if (wlchSpell
                     && W.IsReady()
                     && minion.IsValidTarget(W.Range)
                     && minion.Health <= W.GetDamage(minion))
-                {
                     W.CastOnUnit(minion);
-                }
 
                 if (elchSpell
                     && E.IsReady()
                     && minion.IsValidTarget(E.Range)
                     && minion.Health <= E.GetDamage(minion))
-                {
                     E.CastOnUnit(minion);
-                }
 
                 if (q2LSpell
                     && Q.IsReady()
                     && minion.IsValidTarget(Q.Range)
-                    && minion.Health >= (Player.GetAutoAttackDamage(minion)*1.3))
-                {
+                    && minion.Health >= (Player.GetAutoAttackDamage(minion) * 1.3))
                     Q.Cast(minion);
-                }
 
                 if (e2LSpell
                     && E.IsReady()
                     && minion.IsValidTarget(E.Range)
                     && minion.Health >= (Player.GetAutoAttackDamage(minion) * 1.3))
-                {
                     E.CastOnUnit(minion);
-                }
+
                 if (w2LSpell
                     && W.IsReady()
                     && minion.IsValidTarget(W.Range)
                     && minion.Health >= (Player.GetAutoAttackDamage(minion) * 1.3))
-                {
                     W.CastOnUnit(minion);
-                }
+
                 if (rSpell
                     && R.IsReady()
                     && minion.IsValidTarget(Q.Range)
                     && minionCount.Count > rSlider)
-                {
                     R.Cast();
-                }
             }
         }
 
@@ -1215,49 +982,33 @@ R.Cast();
             var mSlider = Config.Item("useJM").GetValue<Slider>().Value;
 
 
-
             if (Player.ManaPercent < mSlider)
-            {
                 return;
-            }
 
 
             var jungle = MinionManager.GetMinions(Q.Range, MinionTypes.All, MinionTeam.Neutral,
                 MinionOrderTypes.MaxHealth).FirstOrDefault();
 
-                if (!jungle.IsValidTarget())
-                {
-                    return;
-                }
+            if (!jungle.IsValidTarget())
+                return;
 
-                    if (eSpell
-                        && jungle.IsValidTarget(E.Range)
-                        && E.IsReady())
-                    {
-                        E.CastOnUnit(jungle);
-                    }
-                    if (qSpell
-                        && jungle.IsValidTarget(Q.Range)
-                        && Q.IsReady())
-                    {
-                        Q.Cast(jungle);
-                    }
+            if (eSpell
+                && jungle.IsValidTarget(E.Range)
+                && E.IsReady())
+                E.CastOnUnit(jungle);
+            if (qSpell
+                && jungle.IsValidTarget(Q.Range)
+                && Q.IsReady())
+                Q.Cast(jungle);
 
-                    if (wSpell
-                        && jungle.IsValidTarget(W.Range)
-                        && W.IsReady())
-                    {
-                        W.CastOnUnit(jungle);
-                    }
+            if (wSpell
+                && jungle.IsValidTarget(W.Range)
+                && W.IsReady())
+                W.CastOnUnit(jungle);
 
-                if (rSpell
-                    && (GetPassiveBuff == 4
-                    || Player.HasBuff("RyzePassiveStack")))
-                {
-                    R.Cast();
-                }
-                
-            
+            if (!rSpell || (GetPassiveBuff != 4 && !Player.HasBuff("RyzePassiveStack"))) return;
+
+            R.Cast();
         }
 
         private static void LastHit()
@@ -1274,27 +1025,20 @@ R.Cast();
                     && Q.IsReady()
                     && minion.IsValidTarget(Q.Range - 20)
                     && minion.Health < Q.GetDamage(minion))
-                {
                     Q.Cast(minion);
-                }
 
                 if (wlchSpell
                     && W.IsReady()
                     && minion.IsValidTarget(W.Range - 10)
                     && minion.Health < W.GetDamage(minion))
-                {
                     W.CastOnUnit(minion);
-                }
 
                 if (elchSpell
                     && E.IsReady()
                     && minion.IsValidTarget(E.Range - 10)
                     && minion.Health < E.GetDamage(minion))
-                {
                     E.CastOnUnit(minion);
-                }
             }
-
         }
 
         private static void Mixed()
@@ -1306,7 +1050,7 @@ R.Cast();
                 Console.WriteLine(JOE_HAS_NO_PENIS.Name.ToString(), 1337);
             }
              */
-             
+
 
             var qSpell = Config.Item("UseQM").GetValue<bool>();
             var qlSpell = Config.Item("UseQMl").GetValue<bool>();
@@ -1316,47 +1060,39 @@ R.Cast();
 
             if (Player.ManaPercent < Config.Item("mMin").GetValue<Slider>().Value)
                 return;
-            
-            Obj_AI_Hero target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+
+            var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
             if (qSpell
                 && Q.IsReady()
                 && target.IsValidTarget(Q.Range))
-            {
                 Q.Cast(target);
-            }
 
             if (wSpell
                 && W.IsReady()
                 && target.IsValidTarget(W.Range))
-            {
                 W.CastOnUnit(target);
-            }
 
             if (eSpell
                 && E.IsReady()
                 && target.IsValidTarget(E.Range))
-            {
                 E.CastOnUnit(target);
-            }
+
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             {
                 if (Player.ManaPercent <= minMana)
                     return;
+
                 foreach (var minion in minionCount)
                 {
-                    if (qlSpell
-                        && Q.IsReady()
-                        && minion.Health < Q.GetDamage(minion))
-                    {
-                        Q.Cast(minion);
-                    }
+                    if (!qlSpell || !Q.IsReady() || !(minion.Health < Q.GetDamage(minion))) continue;
+                    Q.Cast(minion);
                 }
             }
         }
 
         private static void KillSteal()
         {
-            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (target == null || !target.IsValidTarget() || target.IsInvulnerable)
                 return;
 
@@ -1366,21 +1102,17 @@ R.Cast();
             if (qSpell
                 && Q.GetDamage(target) > target.Health
                 && target.IsValidTarget(Q.Range))
-            {
                 Q.Cast(target);
-            }
+
             if (wSpell
                 && W.GetDamage(target) > target.Health
                 && target.IsValidTarget(W.Range))
-            {
                 W.CastOnUnit(target);
-            }
+
             if (eSpell
                 && E.GetDamage(target) > target.Health
                 && target.IsValidTarget(E.Range))
-            {
                 E.CastOnUnit(target);
-            }
         }
 
         private static int GetPassiveBuff
@@ -1388,6 +1120,8 @@ R.Cast();
             get
             {
                 var data = ObjectManager.Player.Buffs.FirstOrDefault(b => b.DisplayName == "RyzePassiveStack");
+                // Does not use C# v6+ T_T
+                // return data?.Count ?? 0;
                 return data != null ? data.Count : 0;
             }
         }
@@ -1403,14 +1137,9 @@ R.Cast();
             var mSlider = Config.Item("MANASlider").GetValue<Slider>().Value;
             var bSlider = Config.Item("bSlider").GetValue<Slider>().Value;
             var fSlider = Config.Item("fSlider").GetValue<Slider>().Value;
-            if (Player.IsRecalling() || Player.InFountain())
-            {
-                return;
-            }
-            if (!autoPotion)
-            {
-                return;
-            }
+
+            if (Player.IsRecalling() || Player.InFountain()) return;
+            if (!autoPotion) return;
 
             if (hPotion
                 && Player.HealthPercent <= pSlider
@@ -1419,9 +1148,7 @@ R.Cast();
                 && !Player.HasBuff("FlaskOfCrystalWater")
                 && !Player.HasBuff("ItemCrystalFlask")
                 && !Player.HasBuff("RegenerationPotion"))
-            {
                 HealthPotion.Cast();
-            }
 
             if (mPotion
                 && Player.ManaPercent <= mSlider
@@ -1429,18 +1156,14 @@ R.Cast();
                 && ManaPotion.IsReady()
                 && !Player.HasBuff("RegenerationPotion")
                 && !Player.HasBuff("FlaskOfCrystalWater"))
-            {
                 ManaPotion.Cast();
-            }
 
             if (bPotion
                 && Player.HealthPercent <= bSlider
                 && Player.CountEnemiesInRange(1000) >= 0
                 && BiscuitofRejuvenation.IsReady()
                 && !Player.HasBuff("ItemMiniRegenPotion"))
-            {
                 BiscuitofRejuvenation.Cast();
-            }
 
             if (fPotion
                 && Player.HealthPercent <= fSlider
@@ -1450,148 +1173,111 @@ R.Cast();
                 && !Player.HasBuff("ItemCrystalFlask")
                 && !Player.HasBuff("RegenerationPotion")
                 && !Player.HasBuff("FlaskOfCrystalWater"))
-            {
                 CrystallineFlask.Cast();
-            }
         }
 
         private static void TearStack()
         {
-           
             var minions = MinionManager.GetMinions(
-   ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy,
-   MinionOrderTypes.MaxHealth);
+                ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy,
+                MinionOrderTypes.MaxHealth);
 
             if (Config.Item("tearoptions").GetValue<bool>()
                 && !Player.InFountain())
-            {
                 return;
-            }
 
             if (Player.IsRecalling()
                 || minions.Count >= 1)
                 return;
 
             var mtears = Config.Item("tearSM").GetValue<Slider>().Value;
-            
+
             if (GetPassiveBuff == 4)
-            {
                 return;
-            }
-             
-             
 
-            if (Q.IsReady() &&
-                (TearoftheGoddess.IsOwned(Player) 
-                || TearoftheGoddessCrystalScar.IsOwned(Player) 
-                || ArchangelsStaff.IsOwned(Player) 
-                || ArchangelsStaffCrystalScar.IsOwned(Player) 
-                || Manamune.IsOwned(Player)
-                || ManamuneCrystalScar.IsOwned(Player))
-                && Player.ManaPercent >= mtears)
-            {
-                Q.Cast(Game.CursorPos);
-            }
+
+            if (!Q.IsReady() ||
+                (!TearoftheGoddess.IsOwned(Player) && !TearoftheGoddessCrystalScar.IsOwned(Player) &&
+                 !ArchangelsStaff.IsOwned(Player) && !ArchangelsStaffCrystalScar.IsOwned(Player) &&
+                 !Manamune.IsOwned(Player) && !ManamuneCrystalScar.IsOwned(Player)) || !(Player.ManaPercent >= mtears))
+                return;
+
+            Q.Cast(Game.CursorPos);
         }
-
-
 
 
         private static void AABlock()
         {
-
             var aaBlock = Config.Item("AAblock").GetValue<bool>();
             if (aaBlock)
-            {
                 Orbwalker.SetAttack(false);
-            }
         }
 
         private static float GetComboDamage(Obj_AI_Base enemy)
         {
             if (Q.IsReady() || Player.Mana <= Q.Instance.ManaCost * 5)
-            {
                 return Q.GetDamage(enemy) * 5;
-            }
 
             if (E.IsReady() || Player.Mana <= E.Instance.ManaCost * 5)
-            {
                 return E.GetDamage(enemy) * 5;
-            }
 
             if (W.IsReady() || Player.Mana <= W.Instance.ManaCost * 3)
-            {
                 return W.GetDamage(enemy) * 3;
-            }
+
             return 0;
         }
 
         private static void Item()
         {
-
             var staff = Config.Item("staff").GetValue<bool>();
             var staffhp = Config.Item("staffhp").GetValue<Slider>().Value;
-            if (staff
-                && Items.HasItem(ItemData.Seraphs_Embrace.Id)
-                && Player.HealthPercent <= staffhp)
-            {
-                Items.UseItem(ItemData.Seraphs_Embrace.Id);
-            }
+
+            if (!staff || !Items.HasItem(ItemData.Seraphs_Embrace.Id) || !(Player.HealthPercent <= staffhp)) return;
+
+            Items.UseItem(ItemData.Seraphs_Embrace.Id);
         }
 
         private static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
         {
             var mura = Config.Item("muramana").GetValue<bool>();
-            if (mura)
-            {
-                var muramanai = Items.HasItem(Muramana) ? 3042 : 3043;
-                if (args.Target.IsValid<Obj_AI_Hero>()
-                    && args.Target.IsEnemy
-                    && Items.HasItem(muramanai)
-                    && Items.CanUseItem(muramanai))
-                {
-                    if (!ObjectManager.Player.HasBuff("Muramana"))
-                        Items.UseItem(muramanai);
-                }
-            }
+
+            if (!mura) return;
+
+            var muramanai = Items.HasItem(Muramana) ? 3042 : 3043;
+
+            if (!args.Target.IsValid<Obj_AI_Hero>() || !args.Target.IsEnemy || !Items.HasItem(muramanai) ||
+                !Items.CanUseItem(muramanai))
+                return;
+
+            if (!ObjectManager.Player.HasBuff("Muramana"))
+                Items.UseItem(muramanai);
         }
 
         private static void AutoPassive()
         {
-
             var minions = MinionManager.GetMinions(
-ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy,
-MinionOrderTypes.MaxHealth);
-            if (Player.Mana < Config.Item("ManapSlider").GetValue<Slider>().Value)
-                return;
+                ObjectManager.Player.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy,
+                MinionOrderTypes.MaxHealth);
 
-            if (Player.IsRecalling()
-                || minions.Count >= 1)
-                return;
+            if (Player.Mana < Config.Item("ManapSlider").GetValue<Slider>().Value) return;
 
-            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            if (Player.IsRecalling() || minions.Count >= 1) return;
 
-            if (target != null)
-            {
-                return;
-            }
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
+            if (target != null) return;
 
             var stackSliders = Config.Item("stackSlider").GetValue<Slider>().Value;
-            if (Player.IsRecalling() || Player.InFountain())
-            {
-                return;
-            }
+            if (Player.IsRecalling() || Player.InFountain()) return;
 
             if (GetPassiveBuff >= stackSliders)
-            {
                 return;
-            }
-            if (Environment.TickCount - Q.LastCastAttemptT >= 4900
-                && Q.IsReady())
-            {
+
+            if (Environment.TickCount - Q.LastCastAttemptT >=
+                (Config.Item("autoPassiveTimer").GetValue<Slider>().Value * 1000 - 100) && Q.IsReady())
                 Q.Cast(Game.CursorPos);
-            }
 
         }
+
     }
 }
