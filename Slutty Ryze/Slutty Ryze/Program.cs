@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing.Text;
@@ -14,6 +14,8 @@ using SharpDX.Win32;
 using ItemData = LeagueSharp.Common.Data.ItemData;
 using Color = System.Drawing.Color;
 using LeagueSharp.Common;
+using SharpDX;
+using Circle = LeagueSharp.Common.Circle;
 
 namespace Slutty_ryze
 {
@@ -411,14 +413,53 @@ namespace Slutty_ryze
         {
             return b ? "On" : "off";
         }
+       /*
+        static Point[] getPoints(Vector2 c, int R)
+        {
+            int X = (int)c.X;
+            int Y = (int)c.Y;
 
+            int R2 = (int)(R / Math.PI);
+
+            Point[] pt = new Point[5];
+
+            pt[0].X = X;
+            pt[0].Y = Y;
+
+            pt[1].X = X;
+            pt[1].Y = Y + R * 2;
+
+            pt[2].X = X + R * 2;
+            pt[2].Y = Y;
+
+            pt[3].X = X - R * 2;
+            pt[3].Y = Y;
+
+            pt[4].X = X;
+            pt[4].Y = Y - R * 2;
+
+            return pt;
+        }
+
+        private static void drawCircleThing(int radius, SharpDX.Vector2 center, Color c)
+        {
+            var lineWalls = getPoints(center,radius);
+            Drawing.DrawLine(lineWalls[0], lineWalls[1], 2, c);
+            Drawing.DrawLine(lineWalls[0], lineWalls[2], 2, c);
+            Drawing.DrawLine(lineWalls[0], lineWalls[3], 2, c);
+            Drawing.DrawLine(lineWalls[0], lineWalls[4], 2, c);
+        }
+        */
         private static void Drawing_OnDraw(EventArgs args)
         {
             if (Player.IsDead)
                 return;
             if (!Config.Item("Draw").GetValue<bool>())
                 return;
+            if (!Player.Position.IsOnScreen())
+                return;
 
+           // drawCircleThing((int)Q.Range/2, Drawing.WorldToScreen(Player.Position), Color.Pink);
 
             if (Config.Item("qDraw").GetValue<bool>() && Q.Level > 0)
                 Render.Circle.DrawCircle(Player.Position, Q.Range, Color.Green);
@@ -445,6 +486,7 @@ namespace Slutty_ryze
 
             Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColor(laneclear),
                 "Lane Clear: " + BoolToString(laneclear));
+            
         }
 
         private static void Combo()
@@ -1252,7 +1294,7 @@ namespace Slutty_ryze
             if (!ObjectManager.Player.HasBuff("Muramana"))
                 Items.UseItem(muramanai);
         }
-
+     
         private static void AutoPassive()
         {
             var minions = MinionManager.GetMinions(
@@ -1274,8 +1316,10 @@ namespace Slutty_ryze
                 return;
 
             if (Environment.TickCount - Q.LastCastAttemptT >=
-                (Config.Item("autoPassiveTimer").GetValue<Slider>().Value * 1000 - 100) && Q.IsReady())
+                Config.Item("autoPassiveTimer").GetValue<Slider>().Value * 1000 - (100+Game.Ping) && Q.IsReady())
                 Q.Cast(Game.CursorPos);
+
+            Console.WriteLine(Game.Ping);
 
         }
 
