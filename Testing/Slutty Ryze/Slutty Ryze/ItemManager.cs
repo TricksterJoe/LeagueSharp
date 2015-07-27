@@ -19,7 +19,11 @@ namespace Slutty_ryze
         private static Items.Item Manamune = new Items.Item(id: 3004, range: 0);
         private static Items.Item ManamuneCrystalScar = new Items.Item(id: 3008, range: 0);
 
-        public static int Muramana() => pMuramana;
+        // public static int Muramana() => pMuramana;
+        public static int Muramana()
+        {
+            get {return pMuramana;}   
+        }
         public static void Potion()
         {
             var autoPotion = GlobalManager.Config.Item("autoPO").GetValue<bool>();
