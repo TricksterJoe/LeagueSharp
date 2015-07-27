@@ -9,8 +9,11 @@ namespace Slutty_ryze
         public static Menu Config { get; set; }
 
         private static readonly Obj_AI_Hero PrivatePlayerHero = ObjectManager.Player;
-        public static Obj_AI_Hero GetHero() => PrivatePlayerHero;
-
+        //public static Obj_AI_Hero GetHero() => PrivatePlayerHero;
+        public static Obj_AI_Hero GetHero()
+        {
+            get {return PrivatePlayerHero;}
+        }
         public static int GetPassiveBuff
         {
             get
