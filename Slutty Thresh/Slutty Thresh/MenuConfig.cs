@@ -32,10 +32,11 @@ namespace Slutty_Thresh
             Config.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("qfDraw", "Q->Flash Draw").SetValue(true));
 
-            var comboMenu = new Menu("Combo Settings (SB)", "combospells");
+            var comboMenu = new Menu("Combo Settings" , "combospells");
             {
                 var qsettings = new Menu("Q (Death Sentence) Settings", "settings");
                 {
+                    
                     qsettings.AddItem(new MenuItem("useQ", "Use Q (Death Sentence)").SetValue(true));
                     qsettings.AddItem(new MenuItem("smartq", "Smart Q").SetValue(true));
                     qsettings.AddItem(new MenuItem("useQ1", "Use Second Q").SetValue(true));
