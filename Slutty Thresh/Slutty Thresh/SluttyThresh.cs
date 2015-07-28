@@ -206,6 +206,7 @@ namespace Slutty_Thresh
             var q2Spell = Config.Item("useQ1").GetValue<bool>();
             var q2Slider = Config.Item("useQ2").GetValue<Slider>().Value;
             var qrange1 = Config.Item("qrange").GetValue<Slider>().Value;
+            var rslider = Config.Item("rslider").GetValue<Slider>().Value;
             var rSpell = Config.Item("useR").GetValue<bool>();
             var eSpell = Config.Item("useE").GetValue<bool>();
            // var wSpell = Config.Item("useW").GetValue<bool>();
@@ -267,8 +268,8 @@ namespace Slutty_Thresh
                     break;
             }
 
-            if (target.IsValidTarget(R.Range)
-                && rSpell
+            if (rSpell
+                && Player.CountEnemiesInRange(R.Range - 30) >= rslider
                 && ((Environment.TickCount - elastattempt > 180f + Game.Ping)
                     || (Environment.TickCount - elastattemptin > 180f + Game.Ping)))
                 R.Cast();

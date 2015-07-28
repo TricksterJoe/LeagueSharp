@@ -48,10 +48,11 @@ namespace Slutty_Thresh
 
                 }
                 comboMenu.AddItem(new MenuItem("useE", "Use E (Flay)").SetValue(true));
-                comboMenu
-                    .AddItem(
-                        new MenuItem("combooptions", "E Mode").SetValue(new StringList(new[] {"Out", "In"}, 1)));
+                comboMenu.AddItem(new MenuItem("combooptions", "E Mode").SetValue(new StringList(new[] {"Out", "In"}, 1)));
                 comboMenu.AddItem(new MenuItem("useR", "Use R (The Box)").SetValue(true));
+                comboMenu.AddItem(
+    new MenuItem("rslider", "R Only if X Enemies In Range").SetValue(new Slider(3, 1, 5)));
+
             }
             Config.AddSubMenu(comboMenu);
 
