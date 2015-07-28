@@ -31,7 +31,7 @@ namespace Slutty_ryze
 
             //assign menu from MenuManager to Config
             GlobalManager.Config = MenuManager.GetMenu();
-
+            GlobalManager.Config.AddToMainMenu();
             //Other damge inficators in MenuManager ????
             DamageIndicator.DamageToUnit = GetComboDamage;
 
@@ -991,9 +991,14 @@ namespace Slutty_ryze
                 return;
 
             if (Environment.TickCount - Champion.Q.LastCastAttemptT >=
-                GlobalManager.Config.Item("autoPassiveTimer").GetValue<Slider>().Value * 1000 - (100+Game.Ping) && Champion.Q.IsReady())
-                Champion.Q.Cast(Game.CursorPos);
-
+                GlobalManager.Config.Item("autoPassiveTimer").GetValue<Slider>().Value*1000 - (100 + Game.Ping) &&
+                Champion.Q.IsReady())
+            {
+                if (!Game.CursorPos.IsZero)
+                    Champion.Q.Cast(Game.CursorPos);
+                else
+                    Champion.Q.Cast();
+            }
             Console.WriteLine(Game.Ping);
 
         }
