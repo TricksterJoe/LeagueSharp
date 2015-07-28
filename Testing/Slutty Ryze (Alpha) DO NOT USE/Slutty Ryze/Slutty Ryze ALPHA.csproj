@@ -8,7 +8,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Slutty_ryze</RootNamespace>
-    <AssemblyName>Slutty ryze</AssemblyName>
+    <AssemblyName>Slutty ryze ALPHA</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
