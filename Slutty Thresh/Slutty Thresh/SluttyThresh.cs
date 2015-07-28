@@ -92,7 +92,7 @@ namespace Slutty_Thresh
                             E.Cast(target.ServerPosition);
                             eattempt = Environment.TickCount;
                         }
-                        if (Environment.TickCount - eattempt >= 90f
+                        if (Environment.TickCount - eattempt >= 90f + Game.Ping
                             && Q.IsReady())
                             Q.Cast(target.ServerPosition);
                     }
@@ -111,7 +111,6 @@ namespace Slutty_Thresh
         private static void Itemusage()
         {
             var charm = Config.Item("charm").GetValue<bool>();
-
             var stun = Config.Item("stun").GetValue<bool>();
             var snare = Config.Item("snare").GetValue<bool>();
             var suppresion = Config.Item("suppression").GetValue<bool>();
@@ -132,10 +131,13 @@ namespace Slutty_Thresh
                     if (hero.HealthPercent <= Config.Item("facehp" + hero.ChampionName).GetValue<Slider>().Value)
                     {
                         if (hero.Distance(Player) >= 750f)
-                            mountain.Cast();
+                            mountain.Cast(hero);
                     }
                 }
-
+            }
+            foreach (var hero in
+                HeroManager.Allies.Where(x => !x.IsMe))
+            {
                 if (Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
                 {
                     if (hero.HealthPercent <= Config.Item("lockethp" + hero.ChampionName).GetValue<Slider>().Value)
@@ -145,6 +147,7 @@ namespace Slutty_Thresh
                     }
                 }
             }
+
 
 
 
@@ -178,22 +181,16 @@ namespace Slutty_Thresh
         {
             if (Player.ManaPercent < Config.Item("manalant").GetValue<Slider>().Value)
                 return;
-            Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+           // Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             foreach (var hero in
                 HeroManager.Allies.Where(x => !x.IsMe
-                                              && !x.IsDead))
+                                              && !x.IsDead
+                                              && x.Distance(Player) <= W.Range))
             {
-
-                if (Config.Item("healop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
+                if (hero.HealthPercent <= Config.Item("hpsettings" + hero.ChampionName).GetValue<Slider>().Value)
                 {
-                    if (hero.HealthPercent <= Config.Item("hpsettings" + hero.ChampionName).GetValue<Slider>().Value)
-                    {
-                        if (hero.Distance(Player) <= W.Range
-                            && target.IsValidTarget(1400))
-                        {
-                                W.Cast(hero.Position);
-                        }
-                    }
+                    if (Config.Item("healop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
+                                W.Cast(hero.Position - 100);
                 }
             }
 
@@ -220,13 +217,9 @@ namespace Slutty_Thresh
 
             if (target.HasBuff("threshQ")
                 || (Player.Distance(target) <= 650 && E.IsReady()))
-            {
                 Orbwalker.SetAttack(false);
-            }
             else
-            {
                 Orbwalker.SetAttack(true);
-            }
 
             if (target.HasBuff("threshQ"))
             {
@@ -241,13 +234,14 @@ namespace Slutty_Thresh
                 && target.Distance(Player) >= qrange1)
             {
                 Q.Cast(target);
+                lastq = Environment.TickCount;
             }
 
             if (q2Spell
                 && target.HasBuff("threshQ"))
             {
                 Utility.DelayAction.Add(q2Slider, () => Q.Cast());
-                lastq = Environment.TickCount;
+                
             }
 
             switch (Config.Item("combooptions").GetValue<StringList>().SelectedIndex)
@@ -256,7 +250,7 @@ namespace Slutty_Thresh
                     if (target.IsValidTarget(E.Range)
                         && eSpell
                         && !target.IsImmovable
-                        && Environment.TickCount - lastq >= 150)
+                        && Environment.TickCount - lastq >= 120f)
                     {
                         E.Cast(target.ServerPosition);
                         elastattempt = Environment.TickCount;
@@ -265,7 +259,7 @@ namespace Slutty_Thresh
 
                 case 1:
                     if (target.IsValidTarget(E.Range)
-                        && Environment.TickCount - lastq >= 150
+                        && Environment.TickCount - lastq >= 120f 
                         && eSpell)
                         E.Cast(target.Position.Extend(Player.ServerPosition,
                             Vector3.Distance(target.Position, Player.Position) + 400));
@@ -275,11 +269,9 @@ namespace Slutty_Thresh
 
             if (target.IsValidTarget(R.Range)
                 && rSpell
-                && ((Environment.TickCount - elastattempt > 250f)
-                    || (Environment.TickCount - elastattemptin > 250f)))
-            {
+                && ((Environment.TickCount - elastattempt > 180f + Game.Ping)
+                    || (Environment.TickCount - elastattemptin > 180f + Game.Ping)))
                 R.Cast();
-            }
         }
 
 
@@ -366,7 +358,7 @@ namespace Slutty_Thresh
                     HeroManager.Allies.Where(x => !x.IsMe
                                                   && x.Distance(Player) <= W.Range))
                     {
-                        Utility.DelayAction.Add(700, () => W.Cast(heros.Position));
+                        Utility.DelayAction.Add(400, () => W.Cast(heros.Position - 100));
                     }
             }
         }
