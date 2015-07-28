@@ -111,7 +111,10 @@ namespace Slutty_ryze
                  !_manamune.IsOwned(GlobalManager.GetHero) && !_manamuneCrystalScar.IsOwned(GlobalManager.GetHero)) || !(GlobalManager.GetHero.ManaPercent >= mtears))
                 return;
 
-            Champion.Q.Cast(Game.CursorPos);
+            if (!Game.CursorPos.IsZero)
+                Champion.Q.Cast(Game.CursorPos);
+            else
+                Champion.Q.Cast();
         }
     }
 }
