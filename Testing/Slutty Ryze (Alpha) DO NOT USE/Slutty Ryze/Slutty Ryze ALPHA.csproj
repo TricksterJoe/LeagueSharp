@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoLevelManager.cs" />
     <Compile Include="Champion.cs" />
     <Compile Include="DamageIndictaor.cs" />
     <Compile Include="GlobalManager.cs" />

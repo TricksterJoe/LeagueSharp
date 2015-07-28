@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using LeagueSharp;
-using ItemData = LeagueSharp.Common.Data.ItemData;
 using Color = System.Drawing.Color;
 using LeagueSharp.Common;
 
@@ -10,21 +9,15 @@ namespace Slutty_ryze
     internal class Program
     {
 
-        public static int[] AbilitySequence;
-        public static int QOff = 0;
-        public static int WOff = 0;
-        public static int EOff = 0;
-        public static int ROff = 0;
-       
-
         private static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += OnLoad;
         }
 
+
         private static void OnLoad(EventArgs args)
         {
-            if (GlobalManager.GetHero().ChampionName != Champion.ChampName)
+            if (GlobalManager.GetHero.ChampionName != Champion.ChampName)
                 return;
 
             Champion.Q = new Spell(SpellSlot.Q, 865);
@@ -35,8 +28,6 @@ namespace Slutty_ryze
 
             Champion.Q.SetSkillshot(0.26f, 50f, 1700f, true, SkillshotType.SkillshotLine);
             Champion.Qn.SetSkillshot(0.26f, 50f, 1700f, false, SkillshotType.SkillshotLine);
-
-            AbilitySequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 2, 2, 3, 4, 3, 3 };
 
             //assign menu from MenuManager to Config
             GlobalManager.Config = MenuManager.GetMenu();
@@ -55,7 +46,7 @@ namespace Slutty_ryze
 
         private static void Game_OnUpdate(EventArgs args)
         {
-            if (GlobalManager.GetHero().IsDead)
+            if (GlobalManager.GetHero.IsDead)
                 return;
             MenuManager.Orbwalker.SetAttack(true);
 
@@ -64,7 +55,7 @@ namespace Slutty_ryze
 
             if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                MenuManager.Orbwalker.SetAttack((target.IsValidTarget() && (GlobalManager.GetHero().Distance(target) > 440) ||
+                MenuManager.Orbwalker.SetAttack((target.IsValidTarget() && (GlobalManager.GetHero.Distance(target) > 440) ||
                                      (Champion.Q.IsReady() || Champion.E.IsReady() || Champion.W.IsReady())));
                 AABlock();
                 Combo();
@@ -117,13 +108,13 @@ namespace Slutty_ryze
 
 
             // Seplane();
-            Item();
+            ItemManager.Item();
             KillSteal();
             ItemManager.Potion();
 
             if (GlobalManager.Config.Item("level").GetValue<bool>())
             {
-                LevelUpSpells();
+                AutoLevelManager.LevelUpSpells();
             }
             if (GlobalManager.Config.Item("autow").GetValue<bool>()
                 && target.UnderTurret(true))
@@ -141,45 +132,25 @@ namespace Slutty_ryze
 
         private static float IgniteDamage(Obj_AI_Hero target)
         {
-            if (Champion.GetIgniteSlot() == SpellSlot.Unknown || GlobalManager.GetHero().Spellbook.CanUseSpell(Champion.GetIgniteSlot()) != SpellState.Ready)
+            if (Champion.GetIgniteSlot() == SpellSlot.Unknown || GlobalManager.GetHero.Spellbook.CanUseSpell(Champion.GetIgniteSlot()) != SpellState.Ready)
                 return 0f;
-            return (float)GlobalManager.GetHero().GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
+            return (float)GlobalManager.GetHero.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
         }
 
 
         /*
         private static void Seplane()
         {
-            if (GlobalManager.GetHero().IsValid &&
+            if (GlobalManager.GetHero.IsValid &&
                 GlobalManager.Config.Item("seplane").GetValue<KeyBind>().Active)
             {
-                ObjectManager.GlobalManager.GetHero().IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                ObjectManager.GlobalManager.GetHero.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                 LaneClear();
             }
         }
          */
 
-        private static void LevelUpSpells()
-        {
-            var qL = GlobalManager.GetHero().Spellbook.GetSpell(SpellSlot.Q).Level + QOff;
-            var wL = GlobalManager.GetHero().Spellbook.GetSpell(SpellSlot.W).Level + WOff;
-            var eL = GlobalManager.GetHero().Spellbook.GetSpell(SpellSlot.E).Level + EOff;
-            var rL = GlobalManager.GetHero().Spellbook.GetSpell(SpellSlot.R).Level + ROff;
-
-            if (qL + wL + eL + rL >= GlobalManager.GetHero().Level) return;
-
-            int[] level = { 0, 0, 0, 0 };
-
-            for (var i = 0; i < GlobalManager.GetHero().Level; i++)
-            {
-                level[AbilitySequence[i] - 1] = level[AbilitySequence[i] - 1] + 1;
-            }
-
-            if (qL < level[0]) GlobalManager.GetHero().Spellbook.LevelSpell(SpellSlot.Q);
-            if (wL < level[1]) GlobalManager.GetHero().Spellbook.LevelSpell(SpellSlot.W);
-            if (eL < level[2]) GlobalManager.GetHero().Spellbook.LevelSpell(SpellSlot.E);
-            if (rL < level[3]) GlobalManager.GetHero().Spellbook.LevelSpell(SpellSlot.R);
-        }
+  
 
         private static void RyzeInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
         {
@@ -198,7 +169,7 @@ namespace Slutty_ryze
 
             if (sender.NetworkId != target.NetworkId) return;
             if (!qSpell) return;
-            if (!Champion.Q.IsReady() || !(args.EndPos.Distance(GlobalManager.GetHero()) < Champion.Q.Range)) return;
+            if (!Champion.Q.IsReady() || !(args.EndPos.Distance(GlobalManager.GetHero) < Champion.Q.Range)) return;
             var delay = (int)(args.EndTick - Game.Time - Champion.Q.Delay - 0.1f);
 
             if (delay > 0)
@@ -206,7 +177,7 @@ namespace Slutty_ryze
             else
                 Champion.Q.Cast(args.EndPos);
 
-            if (!Champion.Q.IsReady() || !(args.EndPos.Distance(GlobalManager.GetHero()) < Champion.Q.Range)) return;
+            if (!Champion.Q.IsReady() || !(args.EndPos.Distance(GlobalManager.GetHero) < Champion.Q.Range)) return;
 
             if (delay > 0)
                 Utility.DelayAction.Add(delay * 1000, () => Champion.Q.Cast(args.EndPos));
@@ -263,21 +234,21 @@ namespace Slutty_ryze
  
         private static void Drawing_OnDraw(EventArgs args)
         {
-            if (GlobalManager.GetHero().IsDead)
+            if (GlobalManager.GetHero.IsDead)
                 return;
             if (!GlobalManager.Config.Item("Draw").GetValue<bool>())
                 return;
-            if (!GlobalManager.GetHero().Position.IsOnScreen())
+            if (!GlobalManager.GetHero.Position.IsOnScreen())
                 return;
 
-           // drawCircleThing((int)Champion.Q.Range/2, Drawing.WorldToScreen(GlobalManager.GetHero().Position), Color.Pink);
+           // drawCircleThing((int)Champion.Q.Range/2, Drawing.WorldToScreen(GlobalManager.GetHero.Position), Color.Pink);
 
             if (GlobalManager.Config.Item("qDraw").GetValue<bool>() && Champion.Q.Level > 0)
-                Render.Circle.DrawCircle(GlobalManager.GetHero().Position, Champion.Q.Range, Color.Green);
+                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.Q.Range, Color.Green);
             if (GlobalManager.Config.Item("eDraw").GetValue<bool>() && Champion.E.Level > 0)
-                Render.Circle.DrawCircle(GlobalManager.GetHero().Position, Champion.E.Range, Color.Gold);
+                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.E.Range, Color.Gold);
             if (GlobalManager.Config.Item("wDraw").GetValue<bool>() && Champion.W.Level > 0)
-                Render.Circle.DrawCircle(GlobalManager.GetHero().Position, Champion.W.Range, Color.Black);
+                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.W.Range, Color.Black);
 
             var tears = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active;
             var passive = GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active;
@@ -285,7 +256,7 @@ namespace Slutty_ryze
 
             if (!GlobalManager.Config.Item("notdraw").GetValue<bool>()) return;
 
-            var heroPosition = Drawing.WorldToScreen(GlobalManager.GetHero().Position);
+            var heroPosition = Drawing.WorldToScreen(GlobalManager.GetHero.Position);
             var textDimension = Drawing.GetTextExtent("Stunnable!");
 
             Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
@@ -302,7 +273,7 @@ namespace Slutty_ryze
 
         private static void Combo()
         {
-            Champion.SetIgniteSlot(GlobalManager.GetHero().GetSpellSlot("summonerdot"));
+            Champion.SetIgniteSlot(GlobalManager.GetHero.GetSpellSlot("summonerdot"));
             var qSpell = GlobalManager.Config.Item("useQ").GetValue<bool>();
             var eSpell = GlobalManager.Config.Item("useE").GetValue<bool>();
             var wSpell = GlobalManager.Config.Item("useW").GetValue<bool>();
@@ -313,7 +284,7 @@ namespace Slutty_ryze
             if (!target.IsValidTarget(Champion.Q.Range)) return;
 
             if (target.IsValidTarget(Champion.W.Range) && (target.Health < IgniteDamage(target) + Champion.W.GetDamage(target)))
-                GlobalManager.GetHero().Spellbook.CastSpell(Champion.GetIgniteSlot(), target);
+                GlobalManager.GetHero.Spellbook.CastSpell(Champion.GetIgniteSlot(), target);
 
 
             switch (GlobalManager.Config.Item("combooptions").GetValue<StringList>().SelectedIndex)
@@ -321,7 +292,7 @@ namespace Slutty_ryze
                 case 1:
                     if (Champion.R.IsReady())
                     {
-                        if (GlobalManager.GetPassiveBuff == 1 || !GlobalManager.GetHero().HasBuff("RyzePassiveStack"))
+                        if (GlobalManager.GetPassiveBuff == 1 || !GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
                         {
                             if (target.IsValidTarget(Champion.Q.Range)
                                 && qSpell
@@ -444,7 +415,7 @@ namespace Slutty_ryze
                             }
                         }
 
-                        if (GlobalManager.GetHero().HasBuff("ryzepassivecharged"))
+                        if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
                         {
                             if (qSpell
                                 && Champion.Qn.IsReady()
@@ -491,7 +462,7 @@ namespace Slutty_ryze
                     if (!Champion.R.IsReady())
                     {
                         if (GlobalManager.GetPassiveBuff == 1
-                            || !GlobalManager.GetHero().HasBuff("RyzePassiveStack"))
+                            || !GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
                         {
                             if (target.IsValidTarget(Champion.W.Range)
                                 && wSpell
@@ -572,7 +543,7 @@ namespace Slutty_ryze
                                 Champion.Qn.Cast(target);
                         }
 
-                        if (GlobalManager.GetHero().HasBuff("ryzepassivecharged"))
+                        if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
                         {
                             if (qSpell
                                 && Champion.Qn.IsReady()
@@ -608,7 +579,7 @@ namespace Slutty_ryze
                     if (target.IsValidTarget(Champion.Q.Range))
                     {
                         if (GlobalManager.GetPassiveBuff <= 2
-                            || !GlobalManager.GetHero().HasBuff("RyzePassiveStack"))
+                            || !GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
                         {
                             if (target.IsValidTarget(Champion.Q.Range)
                                 && qSpell
@@ -699,7 +670,7 @@ namespace Slutty_ryze
                             }
                         }
 
-                        if (GlobalManager.GetHero().HasBuff("ryzepassivecharged"))
+                        if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
                         {
                             if (wSpell
                                 && Champion.W.IsReady()
@@ -762,7 +733,7 @@ namespace Slutty_ryze
         private static void LaneClear()
         {
             if (GlobalManager.GetPassiveBuff == 4
-                && !GlobalManager.GetHero().HasBuff("RyzeR")
+                && !GlobalManager.GetHero.HasBuff("RyzeR")
                 && GlobalManager.Config.Item("passiveproc").GetValue<bool>())
                 return;
 
@@ -775,8 +746,8 @@ namespace Slutty_ryze
             var rSpell = GlobalManager.Config.Item("useRl").GetValue<bool>();
             var rSlider = GlobalManager.Config.Item("rMin").GetValue<Slider>().Value;
             var minMana = GlobalManager.Config.Item("useEPL").GetValue<Slider>().Value;
-            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero().Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-            if (GlobalManager.GetHero().ManaPercent <= minMana)
+            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+            if (GlobalManager.GetHero.ManaPercent <= minMana)
                 return;
 
             foreach (var minion in minionCount)
@@ -802,19 +773,19 @@ namespace Slutty_ryze
                 if (q2LSpell
                     && Champion.Q.IsReady()
                     && minion.IsValidTarget(Champion.Q.Range)
-                    && minion.Health >= (GlobalManager.GetHero().GetAutoAttackDamage(minion) * 1.3))
+                    && minion.Health >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3))
                     Champion.Q.Cast(minion);
 
                 if (e2LSpell
                     && Champion.E.IsReady()
                     && minion.IsValidTarget(Champion.E.Range)
-                    && minion.Health >= (GlobalManager.GetHero().GetAutoAttackDamage(minion) * 1.3))
+                    && minion.Health >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3))
                     Champion.E.CastOnUnit(minion);
 
                 if (w2LSpell
                     && Champion.W.IsReady()
                     && minion.IsValidTarget(Champion.W.Range)
-                    && minion.Health >= (GlobalManager.GetHero().GetAutoAttackDamage(minion) * 1.3))
+                    && minion.Health >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3))
                     Champion.W.CastOnUnit(minion);
 
                 if (rSpell
@@ -835,7 +806,7 @@ namespace Slutty_ryze
             var mSlider = GlobalManager.Config.Item("useJM").GetValue<Slider>().Value;
 
 
-            if (GlobalManager.GetHero().ManaPercent < mSlider)
+            if (GlobalManager.GetHero.ManaPercent < mSlider)
                 return;
 
 
@@ -859,7 +830,7 @@ namespace Slutty_ryze
                 && Champion.W.IsReady())
                 Champion.W.CastOnUnit(jungle);
 
-            if (!rSpell || (GlobalManager.GetPassiveBuff != 4 && !GlobalManager.GetHero().HasBuff("RyzePassiveStack"))) return;
+            if (!rSpell || (GlobalManager.GetPassiveBuff != 4 && !GlobalManager.GetHero.HasBuff("RyzePassiveStack"))) return;
 
             Champion.R.Cast();
         }
@@ -870,7 +841,7 @@ namespace Slutty_ryze
             var elchSpell = GlobalManager.Config.Item("useEl2h").GetValue<bool>();
             var wlchSpell = GlobalManager.Config.Item("useWl2h").GetValue<bool>();
 
-            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero().Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
 
             foreach (var minion in minionCount)
             {
@@ -902,7 +873,7 @@ namespace Slutty_ryze
             var wSpell = GlobalManager.Config.Item("UseWM").GetValue<bool>();
             var minMana = GlobalManager.Config.Item("useEPL").GetValue<Slider>().Value;
 
-            if (GlobalManager.GetHero().ManaPercent < GlobalManager.Config.Item("mMin").GetValue<Slider>().Value)
+            if (GlobalManager.GetHero.ManaPercent < GlobalManager.Config.Item("mMin").GetValue<Slider>().Value)
                 return;
 
             var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
@@ -921,9 +892,9 @@ namespace Slutty_ryze
                 && target.IsValidTarget(Champion.E.Range))
                 Champion.E.CastOnUnit(target);
 
-            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero().Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             {
-                if (GlobalManager.GetHero().ManaPercent <= minMana)
+                if (GlobalManager.GetHero.ManaPercent <= minMana)
                     return;
 
                 foreach (var minion in minionCount)
@@ -969,27 +940,19 @@ namespace Slutty_ryze
 
         private static float GetComboDamage(Obj_AI_Base enemy)
         {
-            if (Champion.Q.IsReady() || GlobalManager.GetHero().Mana <= Champion.Q.Instance.ManaCost * 5)
+            if (Champion.Q.IsReady() || GlobalManager.GetHero.Mana <= Champion.Q.Instance.ManaCost * 5)
                 return Champion.Q.GetDamage(enemy) * 5;
 
-            if (Champion.E.IsReady() || GlobalManager.GetHero().Mana <= Champion.E.Instance.ManaCost * 5)
+            if (Champion.E.IsReady() || GlobalManager.GetHero.Mana <= Champion.E.Instance.ManaCost * 5)
                 return Champion.E.GetDamage(enemy) * 5;
 
-            if (Champion.W.IsReady() || GlobalManager.GetHero().Mana <= Champion.W.Instance.ManaCost * 3)
+            if (Champion.W.IsReady() || GlobalManager.GetHero.Mana <= Champion.W.Instance.ManaCost * 3)
                 return Champion.W.GetDamage(enemy) * 3;
 
             return 0;
         }
 
-        private static void Item()
-        {
-            var staff = GlobalManager.Config.Item("staff").GetValue<bool>();
-            var staffhp = GlobalManager.Config.Item("staffhp").GetValue<Slider>().Value;
-
-            if (!staff || !Items.HasItem(ItemData.Seraphs_Embrace.Id) || !(GlobalManager.GetHero().HealthPercent <= staffhp)) return;
-
-            Items.UseItem(ItemData.Seraphs_Embrace.Id);
-        }
+      
 
         private static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
         {
@@ -997,32 +960,32 @@ namespace Slutty_ryze
 
             if (!mura) return;
 
-            var muramanai = Items.HasItem(ItemManager.Muramana()) ? 3042 : 3043;
+            var muramanai = Items.HasItem(ItemManager.Muramana) ? 3042 : 3043;
 
             if (!args.Target.IsValid<Obj_AI_Hero>() || !args.Target.IsEnemy || !Items.HasItem(muramanai) ||
                 !Items.CanUseItem(muramanai))
                 return;
 
-            if (!GlobalManager.GetHero().HasBuff("Muramana"))
+            if (!GlobalManager.GetHero.HasBuff("Muramana"))
                 Items.UseItem(muramanai);
         }
      
         private static void AutoPassive()
         {
             var minions = MinionManager.GetMinions(
-                GlobalManager.GetHero().ServerPosition, Champion.Q.Range, MinionTypes.All, MinionTeam.Enemy,
+                GlobalManager.GetHero.ServerPosition, Champion.Q.Range, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.MaxHealth);
 
-            if (GlobalManager.GetHero().Mana < GlobalManager.Config.Item("ManapSlider").GetValue<Slider>().Value) return;
+            if (GlobalManager.GetHero.Mana < GlobalManager.Config.Item("ManapSlider").GetValue<Slider>().Value) return;
 
-            if (GlobalManager.GetHero().IsRecalling() || minions.Count >= 1) return;
+            if (GlobalManager.GetHero.IsRecalling() || minions.Count >= 1) return;
 
             var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
 
             if (target != null) return;
 
             var stackSliders = GlobalManager.Config.Item("stackSlider").GetValue<Slider>().Value;
-            if (GlobalManager.GetHero().IsRecalling() || GlobalManager.GetHero().InFountain()) return;
+            if (GlobalManager.GetHero.IsRecalling() || GlobalManager.GetHero.InFountain()) return;
 
             if (GlobalManager.GetPassiveBuff >= stackSliders)
                 return;

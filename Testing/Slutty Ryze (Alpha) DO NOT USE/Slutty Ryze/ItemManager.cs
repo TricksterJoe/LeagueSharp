@@ -1,28 +1,39 @@
 ﻿using LeagueSharp.Common;
 using LeagueSharp;
+using ItemData = LeagueSharp.Common.Data.ItemData;
 
 namespace Slutty_ryze
 {
     class ItemManager
     {
-        private static Items.Item TearoftheGoddess = new Items.Item(id: 3070, range: 0);
-        private static Items.Item TearoftheGoddesss = new Items.Item(id: 3072, range: 0);
-        private static Items.Item TearoftheGoddessCrystalScar = new Items.Item(id: 3073, range: 0);
-        private static Items.Item ArchangelsStaff = new Items.Item(id: 3003, range: 0);
-        private static Items.Item ArchangelsStaffCrystalScar = new Items.Item(id: 3007, range: 0);
-        private static int pMuramana = 3042;
-        private static Items.Item HealthPotion = new Items.Item(id: 2003, range: 0);
-        private static Items.Item CrystallineFlask = new Items.Item(id: 2041,range: 0);
-        private static Items.Item ManaPotion = new Items.Item(id: 2004);
-        private static Items.Item BiscuitofRejuvenation = new Items.Item(id: 2010,range: 0);
-        private static Items.Item SeraphsEmbrace = new Items.Item(id: 3040, range: 0);
-        private static Items.Item Manamune = new Items.Item(id: 3004, range: 0);
-        private static Items.Item ManamuneCrystalScar = new Items.Item(id: 3008, range: 0);
+        private static Items.Item _tearoftheGoddess = new Items.Item(id: 3070, range: 0);
+        private static Items.Item _tearoftheGoddesss = new Items.Item(id: 3072, range: 0);
+        private static Items.Item _tearoftheGoddessCrystalScar = new Items.Item(id: 3073, range: 0);
+        private static Items.Item _archangelsStaff = new Items.Item(id: 3003, range: 0);
+        private static Items.Item _archangelsStaffCrystalScar = new Items.Item(id: 3007, range: 0);
+        private static int _pMuramana = 3042;
+        private static Items.Item _healthPotion = new Items.Item(id: 2003, range: 0);
+        private static Items.Item _crystallineFlask = new Items.Item(id: 2041,range: 0);
+        private static Items.Item _manaPotion = new Items.Item(id: 2004);
+        private static Items.Item _biscuitofRejuvenation = new Items.Item(id: 2010,range: 0);
+        private static Items.Item _seraphsEmbrace = new Items.Item(id: 3040, range: 0);
+        private static Items.Item _manamune = new Items.Item(id: 3004, range: 0);
+        private static Items.Item _manamuneCrystalScar = new Items.Item(id: 3008, range: 0);
 
         // public static int Muramana() => pMuramana;
-        public static int Muramana()
+        public static int Muramana
         {
-            get {return pMuramana;}   
+            get {return _pMuramana;}   
+        }
+
+        public static void Item()
+        {
+            var staff = GlobalManager.Config.Item("staff").GetValue<bool>();
+            var staffhp = GlobalManager.Config.Item("staffhp").GetValue<Slider>().Value;
+
+            if (!staff || !Items.HasItem(id: ItemData.Seraphs_Embrace.Id) || !(GlobalManager.GetHero.HealthPercent <= staffhp)) return;
+
+            Items.UseItem(id: ItemData.Seraphs_Embrace.Id);
         }
         public static void Potion()
         {
@@ -36,55 +47,55 @@ namespace Slutty_ryze
             var bSlider = GlobalManager.Config.Item("bSlider").GetValue<Slider>().Value;
             var fSlider = GlobalManager.Config.Item("fSlider").GetValue<Slider>().Value;
 
-            if (GlobalManager.GetHero().IsRecalling() || GlobalManager.GetHero().InFountain()) return;
+            if (GlobalManager.GetHero.IsRecalling() || GlobalManager.GetHero.InFountain()) return;
             if (!autoPotion) return;
 
             if (hPotion
-                && GlobalManager.GetHero().HealthPercent <= pSlider
-                && GlobalManager.GetHero().CountEnemiesInRange(1000) >= 0
-                && HealthPotion.IsReady()
-                && !GlobalManager.GetHero().HasBuff("FlaskOfCrystalWater")
-                && !GlobalManager.GetHero().HasBuff("ItemCrystalFlask")
-                && !GlobalManager.GetHero().HasBuff("RegenerationPotion"))
-                HealthPotion.Cast();
+                && GlobalManager.GetHero.HealthPercent <= pSlider
+                && GlobalManager.GetHero.CountEnemiesInRange(1000) >= 0
+                && _healthPotion.IsReady()
+                && !GlobalManager.GetHero.HasBuff("FlaskOfCrystalWater")
+                && !GlobalManager.GetHero.HasBuff("ItemCrystalFlask")
+                && !GlobalManager.GetHero.HasBuff("RegenerationPotion"))
+                _healthPotion.Cast();
 
             if (mPotion
-                && GlobalManager.GetHero().ManaPercent <= mSlider
-                && GlobalManager.GetHero().CountEnemiesInRange(1000) >= 0
-                && ManaPotion.IsReady()
-                && !GlobalManager.GetHero().HasBuff("RegenerationPotion")
-                && !GlobalManager.GetHero().HasBuff("FlaskOfCrystalWater"))
-                ManaPotion.Cast();
+                && GlobalManager.GetHero.ManaPercent <= mSlider
+                && GlobalManager.GetHero.CountEnemiesInRange(1000) >= 0
+                && _manaPotion.IsReady()
+                && !GlobalManager.GetHero.HasBuff("RegenerationPotion")
+                && !GlobalManager.GetHero.HasBuff("FlaskOfCrystalWater"))
+                _manaPotion.Cast();
 
             if (bPotion
-                && GlobalManager.GetHero().HealthPercent <= bSlider
-                && GlobalManager.GetHero().CountEnemiesInRange(1000) >= 0
-                && BiscuitofRejuvenation.IsReady()
-                && !GlobalManager.GetHero().HasBuff("ItemMiniRegenPotion"))
-                BiscuitofRejuvenation.Cast();
+                && GlobalManager.GetHero.HealthPercent <= bSlider
+                && GlobalManager.GetHero.CountEnemiesInRange(1000) >= 0
+                && _biscuitofRejuvenation.IsReady()
+                && !GlobalManager.GetHero.HasBuff("ItemMiniRegenPotion"))
+                _biscuitofRejuvenation.Cast();
 
             if (fPotion
-                && GlobalManager.GetHero().HealthPercent <= fSlider
-                && GlobalManager.GetHero().CountEnemiesInRange(1000) >= 0
-                && CrystallineFlask.IsReady()
-                && !GlobalManager.GetHero().HasBuff("ItemMiniRegenPotion")
-                && !GlobalManager.GetHero().HasBuff("ItemCrystalFlask")
-                && !GlobalManager.GetHero().HasBuff("RegenerationPotion")
-                && !GlobalManager.GetHero().HasBuff("FlaskOfCrystalWater"))
-                CrystallineFlask.Cast();
+                && GlobalManager.GetHero.HealthPercent <= fSlider
+                && GlobalManager.GetHero.CountEnemiesInRange(1000) >= 0
+                && _crystallineFlask.IsReady()
+                && !GlobalManager.GetHero.HasBuff("ItemMiniRegenPotion")
+                && !GlobalManager.GetHero.HasBuff("ItemCrystalFlask")
+                && !GlobalManager.GetHero.HasBuff("RegenerationPotion")
+                && !GlobalManager.GetHero.HasBuff("FlaskOfCrystalWater"))
+                _crystallineFlask.Cast();
         }
 
         public static void TearStack()
         {
             var minions = MinionManager.GetMinions(
-                GlobalManager.GetHero().ServerPosition, Champion.Q.Range, MinionTypes.All, MinionTeam.Enemy,
+                GlobalManager.GetHero.ServerPosition, Champion.Q.Range, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.MaxHealth);
 
             if (GlobalManager.Config.Item("tearoptions").GetValue<bool>()
-                && !GlobalManager.GetHero().InFountain())
+                && !GlobalManager.GetHero.InFountain())
                 return;
 
-            if (GlobalManager.GetHero().IsRecalling()
+            if (GlobalManager.GetHero.IsRecalling()
                 || minions.Count >= 1)
                 return;
 
@@ -95,9 +106,9 @@ namespace Slutty_ryze
 
 
             if (!Champion.Q.IsReady() ||
-                (!TearoftheGoddess.IsOwned(GlobalManager.GetHero()) && !TearoftheGoddessCrystalScar.IsOwned(GlobalManager.GetHero()) &&
-                 !ArchangelsStaff.IsOwned(GlobalManager.GetHero()) && !ArchangelsStaffCrystalScar.IsOwned(GlobalManager.GetHero()) &&
-                 !Manamune.IsOwned(GlobalManager.GetHero()) && !ManamuneCrystalScar.IsOwned(GlobalManager.GetHero())) || !(GlobalManager.GetHero().ManaPercent >= mtears))
+                (!_tearoftheGoddess.IsOwned(GlobalManager.GetHero) && !_tearoftheGoddessCrystalScar.IsOwned(GlobalManager.GetHero) &&
+                 !_archangelsStaff.IsOwned(GlobalManager.GetHero) && !_archangelsStaffCrystalScar.IsOwned(GlobalManager.GetHero) &&
+                 !_manamune.IsOwned(GlobalManager.GetHero) && !_manamuneCrystalScar.IsOwned(GlobalManager.GetHero)) || !(GlobalManager.GetHero.ManaPercent >= mtears))
                 return;
 
             Champion.Q.Cast(Game.CursorPos);
