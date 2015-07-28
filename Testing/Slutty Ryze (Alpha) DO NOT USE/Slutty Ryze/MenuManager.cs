@@ -15,12 +15,13 @@ namespace Slutty_ryze
         public static Menu GetMenu()
         {
             _config = new Menu(Menuname, Menuname, true);
-            _config.AddSubMenu(OrbWalkingMenu());
+            
             _config.AddSubMenu(DrawingMenu());
             _config.AddSubMenu(ComboMenu());
             _config.AddSubMenu(MixedMenu());
             _config.AddSubMenu(FarmMenu());
             _config.AddSubMenu(MiscMenu());
+            _config.AddSubMenu(OrbWalkingMenu());
             return _config;
         }
         

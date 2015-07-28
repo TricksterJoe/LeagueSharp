@@ -32,6 +32,7 @@ namespace Slutty_ryze
             //assign menu from MenuManager to Config
             GlobalManager.Config = MenuManager.GetMenu();
             GlobalManager.Config.AddToMainMenu();
+
             //Other damge inficators in MenuManager ????
             DamageIndicator.DamageToUnit = GetComboDamage;
 
