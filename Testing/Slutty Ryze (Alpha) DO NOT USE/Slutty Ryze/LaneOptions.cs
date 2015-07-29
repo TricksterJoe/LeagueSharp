@@ -1,10 +1,18 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using LeagueSharp.Common;
+using SharpDX;
 
 namespace Slutty_ryze
 {
     class LaneOptions
     {
+
+        public static void DisplayLaneOption(String line)
+        {
+            var displayAlert = new Alerter(250, 450, line, 7, new ColorBGRA(255f, 0f, 255f, 255f), "Calibri", 5F);
+            displayAlert.Remove();
+        }
         public static void LaneClear()
         {
             if (GlobalManager.GetPassiveBuff == 4
@@ -25,6 +33,7 @@ namespace Slutty_ryze
             if (GlobalManager.GetHero.ManaPercent <= minMana)
                 return;
 
+            DisplayLaneOption("Clearing Lane");
             foreach (var minion in minionCount)
             {
                 if (qlchSpell
@@ -91,6 +100,8 @@ namespace Slutty_ryze
             if (!jungle.IsValidTarget())
                 return;
 
+
+            DisplayLaneOption("Clearing Jungle");
             if (eSpell
                 && jungle.IsValidTarget(Champion.E.Range)
                 && Champion.E.IsReady())
@@ -118,6 +129,8 @@ namespace Slutty_ryze
 
             var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
 
+
+            DisplayLaneOption("Last hitting");
             foreach (var minion in minionCount)
             {
                 if (qlchSpell
@@ -151,6 +164,8 @@ namespace Slutty_ryze
             if (GlobalManager.GetHero.ManaPercent < GlobalManager.Config.Item("mMin").GetValue<Slider>().Value)
                 return;
 
+
+            DisplayLaneOption("Mixed Laneing");
             var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
             if (qSpell
                 && Champion.Q.IsReady()
@@ -172,9 +187,8 @@ namespace Slutty_ryze
                 if (GlobalManager.GetHero.ManaPercent <= minMana)
                     return;
 
-                foreach (var minion in minionCount)
+                foreach (var minion in minionCount.Where(minion => qlSpell && Champion.Q.IsReady() && minion.Health < Champion.Q.GetDamage(minion)))
                 {
-                    if (!qlSpell || !Champion.Q.IsReady() || !(minion.Health < Champion.Q.GetDamage(minion))) continue;
                     Champion.Q.Cast(minion);
                 }
             }

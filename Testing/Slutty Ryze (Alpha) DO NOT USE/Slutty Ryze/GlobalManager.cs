@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -8,12 +9,13 @@ namespace Slutty_ryze
     {
         public static Menu Config { get; set; }
 
-        private static readonly Obj_AI_Hero PrivatePlayerHero = ObjectManager.Player;
+        private static readonly Obj_AI_Hero _playerHero = ObjectManager.Player;
+ 
         //public static Obj_AI_Hero GetHero() => PrivatePlayerHero;
 
         public static Obj_AI_Hero GetHero
         {
-            get {return PrivatePlayerHero;}
+            get {return _playerHero;}
         }
 
         public static int GetPassiveBuff

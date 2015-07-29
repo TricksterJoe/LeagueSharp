@@ -14,7 +14,6 @@ namespace Slutty_ryze
             CustomEvents.Game.OnGameLoad += OnLoad;
         }
 
-
         private static void OnLoad(EventArgs args)
         {
             if (GlobalManager.GetHero.ChampionName != Champion.ChampName)
