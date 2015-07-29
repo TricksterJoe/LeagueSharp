@@ -113,22 +113,22 @@ namespace Slutty_ryze
 
 
             // Seplane();
-            ItemManager.Item();
-            Champion.KillSteal();
-            ItemManager.Potion();
+            //ItemManager.Item();
+           // Champion.KillSteal();
+           // ItemManager.Potion();
 
             if (GlobalManager.Config.Item("level").GetValue<bool>())
             {
                 AutoLevelManager.LevelUpSpells();
             }
+            
+            if (!GlobalManager.Config.Item("autow").GetValue<bool>() || !target.UnderTurret(true)) return;
 
-            //if (!GlobalManager.Config.Item("autow").GetValue<bool>() || !target.UnderTurret(true)) return;
+            if (target == null)
+                 return;
 
-            // if (target == null)
-            //     return;
-
-            // if (!ObjectManager.Get<Obj_AI_Turret>()
-            //     .Any(turret => turret.IsValidTarget(300) && turret.IsAlly && turret.Health > 0)) return;
+             if (!ObjectManager.Get<Obj_AI_Turret>()
+                 .Any(turret => turret.IsValidTarget(300) && turret.IsAlly && turret.Health > 0)) return;
 
             // Champion.W.CastOnUnit(target);
             //// DebugClass.ShowDebugInfo(true);
