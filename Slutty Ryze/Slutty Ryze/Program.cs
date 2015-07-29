@@ -51,86 +51,86 @@ namespace Slutty_ryze
         #region onGameUpdate
         private static void Game_OnUpdate(EventArgs args)
         {
-            if (GlobalManager.GetHero.IsDead)
-                return;
-            MenuManager.Orbwalker.SetAttack(true);
+           // if (GlobalManager.GetHero.IsDead)
+           //     return;
+           // MenuManager.Orbwalker.SetAttack(true);
 
-            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
-
-
-            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
-            {
-                MenuManager.Orbwalker.SetAttack((target.IsValidTarget() && (GlobalManager.GetHero.Distance(target) > 440) ||
-                                     (Champion.Q.IsReady() || Champion.E.IsReady() || Champion.W.IsReady())));
-                Champion.AABlock();
-                LaneOptions.Combo();
-            }
-
-            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
-            {
-                LaneOptions.Mixed();
-                MenuManager.Orbwalker.SetAttack(true);
-            }
-
-            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
-            {
-                if (GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active)
-                    LaneOptions.LaneClear();
+           // var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
 
 
-                if (GlobalManager.Config.Item("presslane").GetValue<KeyBind>().Active)
-                    LaneOptions.LaneClear();
+           // if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+           // {
+           //     MenuManager.Orbwalker.SetAttack((target.IsValidTarget() && (GlobalManager.GetHero.Distance(target) > 440) ||
+           //                          (Champion.Q.IsReady() || Champion.E.IsReady() || Champion.W.IsReady())));
+           //     Champion.AABlock();
+           //     LaneOptions.Combo();
+           // }
+
+           // if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
+           // {
+           //     LaneOptions.Mixed();
+           //     MenuManager.Orbwalker.SetAttack(true);
+           // }
+
+           // if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+           // {
+           //     if (GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active)
+           //         LaneOptions.LaneClear();
 
 
-                MenuManager.Orbwalker.SetAttack(true);
-                LaneOptions.JungleClear();
-            }
-
-            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
-                LaneOptions.LastHit();
+           //     if (GlobalManager.Config.Item("presslane").GetValue<KeyBind>().Active)
+           //         LaneOptions.LaneClear();
 
 
-            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
-            {
-                if (GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active)
-                    ItemManager.TearStack();
+           //     MenuManager.Orbwalker.SetAttack(true);
+           //     LaneOptions.JungleClear();
+           // }
 
-                if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
-                    Champion.AutoPassive();
-
-                ItemManager.Potion();
-                MenuManager.Orbwalker.SetAttack(true);
-            }
-
-            if (GlobalManager.Config.Item("UseQauto").GetValue<bool>())
-            {
-                if (target == null)
-                    return;
-
-                if (Champion.Q.IsReady() && target.IsValidTarget(Champion.Q.Range))
-                    Champion.Q.Cast(target);
-            }
+           // if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
+           //     LaneOptions.LastHit();
 
 
-            // Seplane();
-            ItemManager.Item();
-            Champion.KillSteal();
-            ItemManager.Potion();
+           // if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
+           // {
+           //     if (GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active)
+           //         ItemManager.TearStack();
 
-            if (GlobalManager.Config.Item("level").GetValue<bool>())
-            {
-                AutoLevelManager.LevelUpSpells();
-            }
-            if (!GlobalManager.Config.Item("autow").GetValue<bool>() || !target.UnderTurret(true)) return;
+           //     if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
+           //         Champion.AutoPassive();
 
-            if (target == null)
-                return;
+           //     ItemManager.Potion();
+           //     MenuManager.Orbwalker.SetAttack(true);
+           // }
 
-            if (!ObjectManager.Get<Obj_AI_Turret>()
-                .Any(turret => turret.IsValidTarget(300) && turret.IsAlly && turret.Health > 0)) return;
+           // if (GlobalManager.Config.Item("UseQauto").GetValue<bool>())
+           // {
+           //     if (target == null)
+           //         return;
 
-            Champion.W.CastOnUnit(target);
-           // DebugClass.ShowDebugInfo(true);
+           //     if (Champion.Q.IsReady() && target.IsValidTarget(Champion.Q.Range))
+           //         Champion.Q.Cast(target);
+           // }
+
+
+           // // Seplane();
+           // ItemManager.Item();
+           // Champion.KillSteal();
+           // ItemManager.Potion();
+
+           // if (GlobalManager.Config.Item("level").GetValue<bool>())
+           // {
+           //     AutoLevelManager.LevelUpSpells();
+           // }
+           // if (!GlobalManager.Config.Item("autow").GetValue<bool>() || !target.UnderTurret(true)) return;
+
+           // if (target == null)
+           //     return;
+
+           // if (!ObjectManager.Get<Obj_AI_Turret>()
+           //     .Any(turret => turret.IsValidTarget(300) && turret.IsAlly && turret.Health > 0)) return;
+
+           // Champion.W.CastOnUnit(target);
+           //// DebugClass.ShowDebugInfo(true);
         }
         #endregion
 

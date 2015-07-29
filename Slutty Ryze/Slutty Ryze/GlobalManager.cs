@@ -50,7 +50,7 @@ namespace Slutty_ryze
 
         public static bool CheckTarget(Obj_AI_Base minion)
         {
-            return (minion.IsMinion || minion.MaxHealth > 3 || minion.Armor > 0 || minion.IsTargetable);
+            return (minion.IsMinion && minion.MaxHealth > 3 || minion.Armor > 0 || minion.IsTargetable);
         }
 
         public static int GetPassiveBuff
