@@ -90,38 +90,38 @@ namespace Slutty_ryze
                 LaneOptions.LastHit();
 
 
-            // if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
-            // {
-            //     if (GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active)
-            //         ItemManager.TearStack();
+            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
+            {
+                if (GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active)
+                    ItemManager.TearStack();
 
-            //     if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
-            //         Champion.AutoPassive();
+                if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
+                    Champion.AutoPassive();
 
-            //     ItemManager.Potion();
-            //     MenuManager.Orbwalker.SetAttack(true);
-            // }
+                ItemManager.Potion();
+                MenuManager.Orbwalker.SetAttack(true);
+            }
 
-            // if (GlobalManager.Config.Item("UseQauto").GetValue<bool>())
-            // {
-            //     if (target == null)
-            //         return;
+            if (GlobalManager.Config.Item("UseQauto").GetValue<bool>())
+            {
+                if (target == null)
+                    return;
 
-            //     if (Champion.Q.IsReady() && target.IsValidTarget(Champion.Q.Range))
-            //         Champion.Q.Cast(target);
-            // }
+                if (Champion.Q.IsReady() && target.IsValidTarget(Champion.Q.Range))
+                    Champion.Q.Cast(target);
+            }
 
 
-            // // Seplane();
-            // ItemManager.Item();
-            // Champion.KillSteal();
-            // ItemManager.Potion();
+            // Seplane();
+            ItemManager.Item();
+            Champion.KillSteal();
+            ItemManager.Potion();
 
-            // if (GlobalManager.Config.Item("level").GetValue<bool>())
-            // {
-            //     AutoLevelManager.LevelUpSpells();
-            // }
-            // if (!GlobalManager.Config.Item("autow").GetValue<bool>() || !target.UnderTurret(true)) return;
+            if (GlobalManager.Config.Item("level").GetValue<bool>())
+            {
+                AutoLevelManager.LevelUpSpells();
+            }
+            if (!GlobalManager.Config.Item("autow").GetValue<bool>() || !target.UnderTurret(true)) return;
 
             // if (target == null)
             //     return;
