@@ -22,6 +22,7 @@ namespace Slutty_ryze
             _config.AddSubMenu(FarmMenu());
             _config.AddSubMenu(MiscMenu());
             _config.AddSubMenu(OrbWalkingMenu());
+            Orbwalker = new Orbwalking.Orbwalker(_config.SubMenu("Orbwalking"));
             return _config;
         }
         
@@ -31,7 +32,6 @@ namespace Slutty_ryze
             var targetSelectorMenu = new Menu("Target Selector", "Target Selector");
             TargetSelector.AddToMenu(targetSelectorMenu);
             orbWalkingMenu.AddSubMenu(targetSelectorMenu);
-            Orbwalker = new Orbwalking.Orbwalker(_config.SubMenu("Orbwalking"));
             return orbWalkingMenu;
         }
         private static Menu DrawingMenu()
