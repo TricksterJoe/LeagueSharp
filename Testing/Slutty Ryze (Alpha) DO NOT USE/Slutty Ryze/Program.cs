@@ -34,15 +34,15 @@ namespace Slutty_ryze
             GlobalManager.Config.AddToMainMenu();
 
             //Other damge inficators in MenuManager ????
-            DamageIndicator.DamageToUnit = GetComboDamage;
+            DamageIndicator.DamageToUnit = Champion.GetComboDamage;
 
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
 #pragma warning disable 618
-            Interrupter.OnPossibleToInterrupt += RyzeInterruptableSpell;
+            Interrupter.OnPossibleToInterrupt += Champion.RyzeInterruptableSpell;
 #pragma warning restore 618
-            Orbwalking.BeforeAttack += Orbwalking_BeforeAttack;
-            CustomEvents.Unit.OnDash += Unit_OnDash;
+            Orbwalking.BeforeAttack += Champion.Orbwalking_BeforeAttack;
+            CustomEvents.Unit.OnDash += Champion.Unit_OnDash;
         }
 
         private static void Game_OnUpdate(EventArgs args)
@@ -58,32 +58,32 @@ namespace Slutty_ryze
             {
                 MenuManager.Orbwalker.SetAttack((target.IsValidTarget() && (GlobalManager.GetHero.Distance(target) > 440) ||
                                      (Champion.Q.IsReady() || Champion.E.IsReady() || Champion.W.IsReady())));
-                AABlock();
+                Champion.AABlock();
                 Combo();
             }
 
             if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
-                Mixed();
+                LaneOptions.Mixed();
                 MenuManager.Orbwalker.SetAttack(true);
             }
 
             if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
                 if (GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active)
-                    LaneClear();
+                    LaneOptions.LaneClear();
 
 
                 if (GlobalManager.Config.Item("presslane").GetValue<KeyBind>().Active)
-                    LaneClear();
+                    LaneOptions.LaneClear();
 
 
                 MenuManager.Orbwalker.SetAttack(true);
-                JungleClear();
+                LaneOptions.JungleClear();
             }
 
             if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
-                LastHit();
+                LaneOptions.LastHit();
 
 
             if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
@@ -92,7 +92,7 @@ namespace Slutty_ryze
                     ItemManager.TearStack();
 
                 if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
-                    AutoPassive();
+                    Champion.AutoPassive();
 
                 ItemManager.Potion();
                 MenuManager.Orbwalker.SetAttack(true);
@@ -110,7 +110,7 @@ namespace Slutty_ryze
 
             // Seplane();
             ItemManager.Item();
-            KillSteal();
+            Champion.KillSteal();
             ItemManager.Potion();
 
             if (GlobalManager.Config.Item("level").GetValue<bool>())
@@ -131,14 +131,6 @@ namespace Slutty_ryze
             }
         }
 
-        private static float IgniteDamage(Obj_AI_Hero target)
-        {
-            if (Champion.GetIgniteSlot() == SpellSlot.Unknown || GlobalManager.GetHero.Spellbook.CanUseSpell(Champion.GetIgniteSlot()) != SpellState.Ready)
-                return 0f;
-            return (float)GlobalManager.GetHero.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
-        }
-
-
         /*
         private static void Seplane()
         {
@@ -153,38 +145,7 @@ namespace Slutty_ryze
 
   
 
-        private static void RyzeInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
-        {
-            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
-            var wSpell = GlobalManager.Config.Item("useW2I").GetValue<bool>();
-            if (wSpell)
-                Champion.W.CastOnUnit(target);
-        }
-
-        private static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
-        {
-            if (!sender.IsEnemy) return;
-
-            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
-            var qSpell = GlobalManager.Config.Item("useQW2D").GetValue<bool>();
-
-            if (sender.NetworkId != target.NetworkId) return;
-            if (!qSpell) return;
-            if (!Champion.Q.IsReady() || !(args.EndPos.Distance(GlobalManager.GetHero) < Champion.Q.Range)) return;
-            var delay = (int)(args.EndTick - Game.Time - Champion.Q.Delay - 0.1f);
-
-            if (delay > 0)
-                Utility.DelayAction.Add(delay * 1000, () => Champion.Q.Cast(args.EndPos));
-            else
-                Champion.Q.Cast(args.EndPos);
-
-            if (!Champion.Q.IsReady() || !(args.EndPos.Distance(GlobalManager.GetHero) < Champion.Q.Range)) return;
-
-            if (delay > 0)
-                Utility.DelayAction.Add(delay * 1000, () => Champion.Q.Cast(args.EndPos));
-            else
-                Champion.W.CastOnUnit(target);
-        }
+       
 
         private static Color GetColor(bool b)
         {
@@ -284,7 +245,7 @@ namespace Slutty_ryze
 
             if (!target.IsValidTarget(Champion.Q.Range)) return;
 
-            if (target.IsValidTarget(Champion.W.Range) && (target.Health < IgniteDamage(target) + Champion.W.GetDamage(target)))
+            if (target.IsValidTarget(Champion.W.Range) && (target.Health < Champion.IgniteDamage(target) + Champion.W.GetDamage(target)))
                 GlobalManager.GetHero.Spellbook.CastSpell(Champion.GetIgniteSlot(), target);
 
 
@@ -730,279 +691,5 @@ namespace Slutty_ryze
 
             Champion.R.Cast();
         }
-
-        private static void LaneClear()
-        {
-            if (GlobalManager.GetPassiveBuff == 4
-                && !GlobalManager.GetHero.HasBuff("RyzeR")
-                && GlobalManager.Config.Item("passiveproc").GetValue<bool>())
-                return;
-
-            var qlchSpell = GlobalManager.Config.Item("useQlc").GetValue<bool>();
-            var elchSpell = GlobalManager.Config.Item("useElc").GetValue<bool>();
-            var wlchSpell = GlobalManager.Config.Item("useWlc").GetValue<bool>();
-            var q2LSpell = GlobalManager.Config.Item("useQ2L").GetValue<bool>();
-            var e2LSpell = GlobalManager.Config.Item("useE2L").GetValue<bool>();
-            var w2LSpell = GlobalManager.Config.Item("useW2L").GetValue<bool>();
-            var rSpell = GlobalManager.Config.Item("useRl").GetValue<bool>();
-            var rSlider = GlobalManager.Config.Item("rMin").GetValue<Slider>().Value;
-            var minMana = GlobalManager.Config.Item("useEPL").GetValue<Slider>().Value;
-            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-            if (GlobalManager.GetHero.ManaPercent <= minMana)
-                return;
-
-            foreach (var minion in minionCount)
-            {
-                if (qlchSpell
-                    && Champion.Q.IsReady()
-                    && minion.IsValidTarget(Champion.Q.Range)
-                    && minion.Health <= Champion.Q.GetDamage(minion))
-                    Champion.Q.Cast(minion);
-
-                if (wlchSpell
-                    && Champion.W.IsReady()
-                    && minion.IsValidTarget(Champion.W.Range)
-                    && minion.Health <= Champion.W.GetDamage(minion))
-                    Champion.W.CastOnUnit(minion);
-
-                if (elchSpell
-                    && Champion.E.IsReady()
-                    && minion.IsValidTarget(Champion.E.Range)
-                    && minion.Health <= Champion.E.GetDamage(minion))
-                    Champion.E.CastOnUnit(minion);
-
-                if (q2LSpell
-                    && Champion.Q.IsReady()
-                    && minion.IsValidTarget(Champion.Q.Range)
-                    && minion.Health >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3))
-                    Champion.Q.Cast(minion);
-
-                if (e2LSpell
-                    && Champion.E.IsReady()
-                    && minion.IsValidTarget(Champion.E.Range)
-                    && minion.Health >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3))
-                    Champion.E.CastOnUnit(minion);
-
-                if (w2LSpell
-                    && Champion.W.IsReady()
-                    && minion.IsValidTarget(Champion.W.Range)
-                    && minion.Health >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3))
-                    Champion.W.CastOnUnit(minion);
-
-                if (rSpell
-                    && Champion.R.IsReady()
-                    && minion.IsValidTarget(Champion.Q.Range)
-                    && minionCount.Count > rSlider)
-                    Champion.R.Cast();
-            }
-        }
-
-
-        private static void JungleClear()
-        {
-            var qSpell = GlobalManager.Config.Item("useQj").GetValue<bool>();
-            var eSpell = GlobalManager.Config.Item("useEj").GetValue<bool>();
-            var wSpell = GlobalManager.Config.Item("useWj").GetValue<bool>();
-            var rSpell = GlobalManager.Config.Item("useRj").GetValue<bool>();
-            var mSlider = GlobalManager.Config.Item("useJM").GetValue<Slider>().Value;
-
-
-            if (GlobalManager.GetHero.ManaPercent < mSlider)
-                return;
-
-
-            var jungle = MinionManager.GetMinions(Champion.Q.Range, MinionTypes.All, MinionTeam.Neutral,
-                MinionOrderTypes.MaxHealth).FirstOrDefault();
-
-            if (!jungle.IsValidTarget())
-                return;
-
-            if (eSpell
-                && jungle.IsValidTarget(Champion.E.Range)
-                && Champion.E.IsReady())
-                Champion.E.CastOnUnit(jungle);
-            if (qSpell
-                && jungle.IsValidTarget(Champion.Q.Range)
-                && Champion.Q.IsReady())
-                Champion.Q.Cast(jungle);
-
-            if (wSpell
-                && jungle.IsValidTarget(Champion.W.Range)
-                && Champion.W.IsReady())
-                Champion.W.CastOnUnit(jungle);
-
-            if (!rSpell || (GlobalManager.GetPassiveBuff != 4 && !GlobalManager.GetHero.HasBuff("RyzePassiveStack"))) return;
-
-            Champion.R.Cast();
-        }
-
-        private static void LastHit()
-        {
-            var qlchSpell = GlobalManager.Config.Item("useQl2h").GetValue<bool>();
-            var elchSpell = GlobalManager.Config.Item("useEl2h").GetValue<bool>();
-            var wlchSpell = GlobalManager.Config.Item("useWl2h").GetValue<bool>();
-
-            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-
-            foreach (var minion in minionCount)
-            {
-                if (qlchSpell
-                    && Champion.Q.IsReady()
-                    && minion.IsValidTarget(Champion.Q.Range - 20)
-                    && minion.Health < Champion.Q.GetDamage(minion))
-                    Champion.Q.Cast(minion);
-
-                if (wlchSpell
-                    && Champion.W.IsReady()
-                    && minion.IsValidTarget(Champion.W.Range - 10)
-                    && minion.Health < Champion.W.GetDamage(minion))
-                    Champion.W.CastOnUnit(minion);
-
-                if (elchSpell
-                    && Champion.E.IsReady()
-                    && minion.IsValidTarget(Champion.E.Range - 10)
-                    && minion.Health < Champion.E.GetDamage(minion))
-                    Champion.E.CastOnUnit(minion);
-            }
-        }
-
-        private static void Mixed()
-        {
-            var qSpell = GlobalManager.Config.Item("UseQM").GetValue<bool>();
-            var qlSpell = GlobalManager.Config.Item("UseQMl").GetValue<bool>();
-            var eSpell = GlobalManager.Config.Item("UseEM").GetValue<bool>();
-            var wSpell = GlobalManager.Config.Item("UseWM").GetValue<bool>();
-            var minMana = GlobalManager.Config.Item("useEPL").GetValue<Slider>().Value;
-
-            if (GlobalManager.GetHero.ManaPercent < GlobalManager.Config.Item("mMin").GetValue<Slider>().Value)
-                return;
-
-            var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
-            if (qSpell
-                && Champion.Q.IsReady()
-                && target.IsValidTarget(Champion.Q.Range))
-                Champion.Q.Cast(target);
-
-            if (wSpell
-                && Champion.W.IsReady()
-                && target.IsValidTarget(Champion.W.Range))
-                Champion.W.CastOnUnit(target);
-
-            if (eSpell
-                && Champion.E.IsReady()
-                && target.IsValidTarget(Champion.E.Range))
-                Champion.E.CastOnUnit(target);
-
-            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
-            {
-                if (GlobalManager.GetHero.ManaPercent <= minMana)
-                    return;
-
-                foreach (var minion in minionCount)
-                {
-                    if (!qlSpell || !Champion.Q.IsReady() || !(minion.Health < Champion.Q.GetDamage(minion))) continue;
-                    Champion.Q.Cast(minion);
-                }
-            }
-        }
-
-        private static void KillSteal()
-        {
-            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
-            if (target == null || !target.IsValidTarget() || target.IsInvulnerable)
-                return;
-
-            var qSpell = GlobalManager.Config.Item("useQ2KS").GetValue<bool>();
-            var wSpell = GlobalManager.Config.Item("useW2KS").GetValue<bool>();
-            var eSpell = GlobalManager.Config.Item("useE2KS").GetValue<bool>();
-            if (qSpell
-                && Champion.Q.GetDamage(target) > target.Health
-                && target.IsValidTarget(Champion.Q.Range))
-                Champion.Q.Cast(target);
-
-            if (wSpell
-                && Champion.W.GetDamage(target) > target.Health
-                && target.IsValidTarget(Champion.W.Range))
-                Champion.W.CastOnUnit(target);
-
-            if (eSpell
-                && Champion.E.GetDamage(target) > target.Health
-                && target.IsValidTarget(Champion.E.Range))
-                Champion.E.CastOnUnit(target);
-        }
-
-
-        private static void AABlock()
-        {
-            var aaBlock = GlobalManager.Config.Item("AAblock").GetValue<bool>();
-            if (aaBlock)
-                MenuManager.Orbwalker.SetAttack(false);
-        }
-
-        private static float GetComboDamage(Obj_AI_Base enemy)
-        {
-            if (Champion.Q.IsReady() || GlobalManager.GetHero.Mana <= Champion.Q.Instance.ManaCost * 5)
-                return Champion.Q.GetDamage(enemy) * 5;
-
-            if (Champion.E.IsReady() || GlobalManager.GetHero.Mana <= Champion.E.Instance.ManaCost * 5)
-                return Champion.E.GetDamage(enemy) * 5;
-
-            if (Champion.W.IsReady() || GlobalManager.GetHero.Mana <= Champion.W.Instance.ManaCost * 3)
-                return Champion.W.GetDamage(enemy) * 3;
-
-            return 0;
-        }
-
-      
-
-        private static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
-        {
-            var mura = GlobalManager.Config.Item("muramana").GetValue<bool>();
-
-            if (!mura) return;
-
-            var muramanai = Items.HasItem(ItemManager.Muramana) ? 3042 : 3043;
-
-            if (!args.Target.IsValid<Obj_AI_Hero>() || !args.Target.IsEnemy || !Items.HasItem(muramanai) ||
-                !Items.CanUseItem(muramanai))
-                return;
-
-            if (!GlobalManager.GetHero.HasBuff("Muramana"))
-                Items.UseItem(muramanai);
-        }
-     
-        private static void AutoPassive()
-        {
-            var minions = MinionManager.GetMinions(
-                GlobalManager.GetHero.ServerPosition, Champion.Q.Range, MinionTypes.All, MinionTeam.Enemy,
-                MinionOrderTypes.MaxHealth);
-
-            if (GlobalManager.GetHero.Mana < GlobalManager.Config.Item("ManapSlider").GetValue<Slider>().Value) return;
-
-            if (GlobalManager.GetHero.IsRecalling() || minions.Count >= 1) return;
-
-            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
-
-            if (target != null) return;
-
-            var stackSliders = GlobalManager.Config.Item("stackSlider").GetValue<Slider>().Value;
-            if (GlobalManager.GetHero.IsRecalling() || GlobalManager.GetHero.InFountain()) return;
-
-            if (GlobalManager.GetPassiveBuff >= stackSliders)
-                return;
-
-            if (Environment.TickCount - Champion.Q.LastCastAttemptT >=
-                GlobalManager.Config.Item("autoPassiveTimer").GetValue<Slider>().Value*1000 - (100 + Game.Ping) &&
-                Champion.Q.IsReady())
-            {
-                if (!Game.CursorPos.IsZero)
-                    Champion.Q.Cast(Game.CursorPos);
-                else
-                    Champion.Q.Cast();
-            }
-            Console.WriteLine(Game.Ping);
-
-        }
-
     }
 }

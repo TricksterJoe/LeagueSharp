@@ -60,6 +60,7 @@
     <Compile Include="DamageIndictaor.cs" />
     <Compile Include="GlobalManager.cs" />
     <Compile Include="ItemManager.cs" />
+    <Compile Include="LaneOptions.cs" />
     <Compile Include="MenuManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
