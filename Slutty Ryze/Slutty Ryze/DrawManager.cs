@@ -104,7 +104,7 @@ namespace Slutty_ryze
             Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColor(laneclear),
                 "Lane Clear: " + BoolToString(laneclear));
 
-            if(!showKeyBind) return;
+           // if(!showKeyBind) return;
 
             //Drawing.DrawText(heroPosition.X + 100, heroPosition.Y - 50, GetColor(showKeyBind),
             //   "Key:","Last Hit: {0}", GlobalManager.Config.Item("LastHit").GetValue<KeyBind>().Key);
