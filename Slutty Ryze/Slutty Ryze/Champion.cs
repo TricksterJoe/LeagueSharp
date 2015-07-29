@@ -90,14 +90,20 @@ namespace Slutty_ryze
 
             if (GlobalManager.GetHero.Mana < GlobalManager.Config.Item("ManapSlider").GetValue<Slider>().Value) return;
 
-            if (GlobalManager.GetHero.IsRecalling() || minions.Count >= 1) return;
+            //Maybe check if any minons can be killed?
+            //foreach(var minion in minions)
+            //if(minion.Headth < Champion.Q.GetDamage)
+            //break;
+            
+           if (GlobalManager.GetHero.IsRecalling()) return;
+
+           if (minions.Count >= 1) return;
 
             var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
-
             if (target != null) return;
 
             var stackSliders = GlobalManager.Config.Item("stackSlider").GetValue<Slider>().Value;
-            if (GlobalManager.GetHero.IsRecalling() || GlobalManager.GetHero.InFountain()) return;
+            if (GlobalManager.GetHero.InFountain()) return;
 
             if (GlobalManager.GetPassiveBuff >= stackSliders)
                 return;
