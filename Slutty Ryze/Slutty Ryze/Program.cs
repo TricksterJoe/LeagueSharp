@@ -72,22 +72,22 @@ namespace Slutty_ryze
                 MenuManager.Orbwalker.SetAttack(true);
             }
 
-            // if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
-            // {
-            //     if (GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active)
-            //         LaneOptions.LaneClear();
+            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+            {
+                if (GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active)
+                    LaneOptions.LaneClear();
 
 
-            //     if (GlobalManager.Config.Item("presslane").GetValue<KeyBind>().Active)
-            //         LaneOptions.LaneClear();
+                if (GlobalManager.Config.Item("presslane").GetValue<KeyBind>().Active)
+                    LaneOptions.LaneClear();
 
 
-            //     MenuManager.Orbwalker.SetAttack(true);
-            //     LaneOptions.JungleClear();
-            // }
+                MenuManager.Orbwalker.SetAttack(true);
+                LaneOptions.JungleClear();
+            }
 
-            // if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
-            //     LaneOptions.LastHit();
+            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
+                LaneOptions.LastHit();
 
 
             // if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
