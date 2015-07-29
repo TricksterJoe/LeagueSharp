@@ -127,6 +127,7 @@ namespace Slutty_ryze
                 .Any(turret => turret.IsValidTarget(300) && turret.IsAlly && turret.Health > 0)) return;
 
             Champion.W.CastOnUnit(target);
+            DebugClass.ShowDebugInfo(true);
         }
         #endregion
 

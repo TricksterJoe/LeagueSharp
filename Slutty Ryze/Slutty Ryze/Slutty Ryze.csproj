@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="AutoLevelManager.cs" />
     <Compile Include="Champion.cs" />
+    <Compile Include="DebugClass.cs" />
     <Compile Include="DrawManager.cs" />
     <Compile Include="GlobalManager.cs" />
     <Compile Include="ItemManager.cs" />

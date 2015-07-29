@@ -21,7 +21,7 @@ namespace Slutty_ryze
         #region Public Properties
         public static Menu Config { get; set; }
 
-        public static string MenuNAme
+        public static string MenuName
         {
             get
             {

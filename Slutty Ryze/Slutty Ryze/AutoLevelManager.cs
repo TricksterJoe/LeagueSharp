@@ -15,7 +15,7 @@ namespace Slutty_ryze
         }
         #endregion
         #region Variable Declaration
-        private static readonly int[] _abilitySequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 2, 2, 3, 4, 3, 3 };
+      //  private static readonly int[] _abilitySequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 2, 2, 3, 4, 3, 3 };
         private static readonly int[] AbilitySequence ={
             Abilitys.Q, Abilitys.W, Abilitys.E, Abilitys.Q, Abilitys.Q, Abilitys.R, Abilitys.Q, Abilitys.W, Abilitys.Q,
             Abilitys.W, Abilitys.R, Abilitys.E, Abilitys.W, Abilitys.W, Abilitys.E, Abilitys.R, Abilitys.E, Abilitys.E
