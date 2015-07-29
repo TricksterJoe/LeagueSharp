@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp.Common;
 using LeagueSharp;
-using SharpDX;
 using Color = System.Drawing.Color;
 
 namespace Slutty_ryze
@@ -70,10 +66,10 @@ namespace Slutty_ryze
 
                 if (Fill)
                 {
-                    float differenceInHP = xPosCurrentHp - xPosDamage;
+                    float differenceInHp = xPosCurrentHp - xPosDamage;
                     var pos1 = barPos.X + 9 + (107 * percentHealthAfterDamage);
 
-                    for (int i = 0; i < differenceInHP; i++)
+                    for (var i = 0; i < differenceInHp; i++)
                     {
                         Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + Height, 1, FillColor);
                     }
