@@ -87,7 +87,7 @@ namespace Slutty_ryze
             var tears = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active;
             var passive = GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active;
             var laneclear = GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
-            var showKeyBind = GlobalManager.Config.Item("keyBindDisplay").GetValue<KeyBind>().Active;
+            //var showKeyBind = GlobalManager.Config.Item("keyBindDisplay").GetValue<KeyBind>().Active;
 
             if (!GlobalManager.Config.Item("notdraw").GetValue<bool>()) return;
 
@@ -106,8 +106,8 @@ namespace Slutty_ryze
 
            // if(!showKeyBind) return;
 
-            Drawing.DrawText(heroPosition.X + 100, heroPosition.Y - 50, GetColor(showKeyBind),
-               "Key:","Last Hit: {0}", GlobalManager.Config.Item("LastHit").GetValue<KeyBind>().Key);
+         //   Drawing.DrawText(heroPosition.X + 100, heroPosition.Y - 50, GetColor(showKeyBind),
+             //  "Key:","Last Hit: {0}", GlobalManager.Config.Item("LastHit").GetValue<KeyBind>().Key);
 
         }
 
