@@ -121,7 +121,8 @@ namespace Slutty_ryze
             {
                 AutoLevelManager.LevelUpSpells();
             }
-            if (!GlobalManager.Config.Item("autow").GetValue<bool>() || !target.UnderTurret(true)) return;
+
+            //if (!GlobalManager.Config.Item("autow").GetValue<bool>() || !target.UnderTurret(true)) return;
 
             // if (target == null)
             //     return;
