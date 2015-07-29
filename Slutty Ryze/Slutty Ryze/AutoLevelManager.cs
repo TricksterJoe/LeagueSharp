@@ -15,25 +15,25 @@ namespace Slutty_ryze
         }
         #endregion
         #region Variable Declaration
-        //private static readonly int[] _abilitySequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 2, 2, 3, 4, 3, 3 };
+        private static readonly int[] _abilitySequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 2, 2, 3, 4, 3, 3 };
         private static readonly int[] AbilitySequence ={
             Abilitys.Q, Abilitys.W, Abilitys.E, Abilitys.Q, Abilitys.Q, Abilitys.R, Abilitys.Q, Abilitys.W, Abilitys.Q,
             Abilitys.W, Abilitys.R, Abilitys.E, Abilitys.W, Abilitys.W, Abilitys.E, Abilitys.R, Abilitys.E, Abilitys.E
         };
 
         // What used for?
-        //private static int QOff = 0;
-        // private static int WOff = 0;
-        // private static int EOff = 0;
-        //private static int ROff = 0;
+        private static int QOff = 0;
+        private static int WOff = 0;
+        private static int EOff = 0;
+        private static int ROff = 0;
         #endregion
         #region Public Functions
         public static void LevelUpSpells()
         {
-            var qL = GlobalManager.GetHero.Spellbook.GetSpell(Champion.Q.Slot).Level;
-            var wL = GlobalManager.GetHero.Spellbook.GetSpell(Champion.W.Slot).Level;
-            var eL = GlobalManager.GetHero.Spellbook.GetSpell(Champion.Q.Slot).Level;
-            var rL = GlobalManager.GetHero.Spellbook.GetSpell(Champion.R.Slot).Level;
+            var qL = GlobalManager.GetHero.Spellbook.GetSpell(Champion.Q.Slot).Level + QOff;
+            var wL = GlobalManager.GetHero.Spellbook.GetSpell(Champion.W.Slot).Level + WOff;
+            var eL = GlobalManager.GetHero.Spellbook.GetSpell(Champion.E.Slot).Level + EOff;
+            var rL = GlobalManager.GetHero.Spellbook.GetSpell(Champion.R.Slot).Level + ROff;
 
             if (qL + wL + eL + rL >= GlobalManager.GetHero.Level) return;
 
