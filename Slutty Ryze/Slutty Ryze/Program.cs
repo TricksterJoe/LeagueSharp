@@ -11,7 +11,10 @@ namespace Slutty_ryze
         private static void Main(string[] args)
         {
             if (args == null) throw new ArgumentNullException("args");
+            // So you can test if it in VS wihout crahses
+#if !DEBUG
             CustomEvents.Game.OnGameLoad += OnLoad;
+#endif
         }
 
         private static void OnLoad(EventArgs args)

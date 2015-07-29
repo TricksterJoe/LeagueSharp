@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using Color = System.Drawing.Color;
+
 namespace Slutty_ryze
 {
     class DrawManager
@@ -16,8 +14,8 @@ namespace Slutty_ryze
         private const int Width = 103;
         private const int Height = 8;
         private static readonly Render.Text Text = new Render.Text(0, 0, "", 14, SharpDX.Color.Red, "monospace");
-        private static Color _color = Color.Lime;
-        private static Color _fillColor = Color.Goldenrod;
+        private static readonly Color _color = Color.Lime;
+        private static readonly Color _fillColor = Color.Goldenrod;
         #endregion
         #region Private Fuctions
         private static Color GetColor(bool b)
@@ -89,6 +87,7 @@ namespace Slutty_ryze
             var tears = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active;
             var passive = GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active;
             var laneclear = GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
+            var showKeyBind = GlobalManager.Config.Item("keyBindDisplay").GetValue<KeyBind>().Active;
 
             if (!GlobalManager.Config.Item("notdraw").GetValue<bool>()) return;
 
@@ -104,6 +103,11 @@ namespace Slutty_ryze
 
             Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColor(laneclear),
                 "Lane Clear: " + BoolToString(laneclear));
+
+            if(!showKeyBind) return;
+
+            //Drawing.DrawText(heroPosition.X + 100, heroPosition.Y - 50, GetColor(showKeyBind),
+            //   "Key:","Last Hit: {0}", GlobalManager.Config.Item("LastHit").GetValue<KeyBind>().Key);
 
         }
 

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
-using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
 
 namespace Slutty_ryze
 {

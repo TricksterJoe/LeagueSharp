@@ -43,6 +43,8 @@ namespace Slutty_ryze
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "w Drawing").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("notdraw", "Float Text").SetValue(true));
+            drawMenu.SubMenu("Drawings").AddItem(new MenuItem("keyBindDisplay", "Display KeyBinds").SetValue(true));
+
             var drawDamageMenu = new MenuItem("RushDrawEDamage", "Combo damage").SetValue(true);
             var drawFill =
                 new MenuItem("RushDrawWDamageFill", "Combo Damage Fill").SetValue(new Circle(true, Color.SeaGreen));
