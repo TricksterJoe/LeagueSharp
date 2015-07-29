@@ -137,7 +137,7 @@ namespace Slutty_ryze
             DisplayLaneOption("Last hitting");
             foreach (var minion in minionCount)
             {
-                if (!GlobalManager.CheckTarget(minion)) continue;
+                //if (!GlobalManager.CheckTarget(minion)) continue;
 
                     if (qlchSpell
                     && Champion.Q.IsReady()
