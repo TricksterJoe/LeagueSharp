@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 
 namespace Slutty_ryze
 {
@@ -38,7 +40,7 @@ namespace Slutty_ryze
             DisplayLaneOption("Clearing Lane");
             foreach (var minion in minionCount)
             {
-                if(!GlobalManager.CheckTarget(minion)) continue; 
+                if (!GlobalManager.CheckTarget(minion)) continue;
                 if (qlchSpell
                     && Champion.Q.IsReady()
                     && minion.IsValidTarget(Champion.Q.Range)
@@ -137,12 +139,12 @@ namespace Slutty_ryze
             DisplayLaneOption("Last hitting");
             foreach (var minion in minionCount)
             {
-                //if (!GlobalManager.CheckTarget(minion)) continue;
+                if (!GlobalManager.CheckTarget(minion)) continue;
 
-                    if (qlchSpell
-                    && Champion.Q.IsReady()
-                    && minion.IsValidTarget(Champion.Q.Range - 20)
-                    && minion.Health < Champion.Q.GetDamage(minion))
+                if (qlchSpell
+                && Champion.Q.IsReady()
+                && minion.IsValidTarget(Champion.Q.Range - 20)
+                && minion.Health < Champion.Q.GetDamage(minion))
                     Champion.Q.Cast(minion);
 
                 if (wlchSpell
@@ -659,5 +661,5 @@ namespace Slutty_ryze
             Champion.R.Cast();
         }
     }
-#endregion
+    #endregion
 }

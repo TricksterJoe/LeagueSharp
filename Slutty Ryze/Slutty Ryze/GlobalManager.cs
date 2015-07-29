@@ -21,17 +21,17 @@ namespace Slutty_ryze
         #region Public Properties
         public static Menu Config { get; set; }
 
-        public static string MenuName
+        public static string MenuNAme
         {
             get
             {
                 return _menuName;
             }
         }
-        
+
         public static Obj_AI_Hero GetHero
         {
-            get {return PlayerHero;}
+            get { return PlayerHero; }
         }
 
         public static DamageToUnitDelegate DamageToUnit
@@ -68,7 +68,7 @@ namespace Slutty_ryze
         {
             get { return _enableFillDamage; }
 
-            set { _enableFillDamage = value;}
+            set { _enableFillDamage = value; }
         }
 
         public static bool EnableDrawingDamage
