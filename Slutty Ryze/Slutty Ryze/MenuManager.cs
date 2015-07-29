@@ -1,17 +1,17 @@
 ﻿using Color = System.Drawing.Color;
 using LeagueSharp.Common;
 
-
-
 namespace Slutty_ryze
 {
     internal class MenuManager
     {
+        #region Variable Declaration
         public const string Menuname = "Slutty Ryze";
 
         public static Orbwalking.Orbwalker Orbwalker;
         private static Menu _config;
-
+        #endregion
+        #region Public Functions
         public static Menu GetMenu()
         {
             _config = new Menu(Menuname, Menuname, true);
@@ -25,7 +25,8 @@ namespace Slutty_ryze
             Orbwalker = new Orbwalking.Orbwalker(_config.SubMenu("Orbwalking"));
             return _config;
         }
-        
+        #endregion
+        #region Private Functions
         private static Menu OrbWalkingMenu()
         {
             Menu orbWalkingMenu = new Menu("Orbwalking", "Orbwalking");
@@ -48,9 +49,9 @@ namespace Slutty_ryze
             drawMenu.SubMenu("Drawings").AddItem(drawDamageMenu);
             drawMenu.SubMenu("Drawings").AddItem(drawFill);
 
-            DamageIndicator.Enabled = drawDamageMenu.GetValue<bool>();
-            DamageIndicator.Fill = drawFill.GetValue<Circle>().Active;
-            DamageIndicator.FillColor = drawFill.GetValue<Circle>().Color;
+            GlobalManager.EnableDrawingDamage = drawDamageMenu.GetValue<bool>();
+            GlobalManager.EnableFillDamage = drawFill.GetValue<Circle>().Active;
+            GlobalManager.DamageFillColor = drawFill.GetValue<Circle>().Color;
 
             return drawMenu;
         }
@@ -195,5 +196,7 @@ namespace Slutty_ryze
             miscMenu.AddSubMenu(ksMenu);
             return miscMenu;
         }
+        #endregion
     }
+
 }
