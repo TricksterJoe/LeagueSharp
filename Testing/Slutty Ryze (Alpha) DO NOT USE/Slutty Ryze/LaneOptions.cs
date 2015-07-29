@@ -11,7 +11,7 @@ namespace Slutty_ryze
         public static void DisplayLaneOption(String line)
         {
             var displayAlert = new Alerter(250, 450, line, 7, new ColorBGRA(255f, 0f, 255f, 255f), "Calibri", 5F);
-            displayAlert.Remove();
+           // displayAlert.Remove();
         }
         public static void LaneClear()
         {
