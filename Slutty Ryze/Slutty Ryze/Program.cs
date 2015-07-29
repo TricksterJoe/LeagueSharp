@@ -51,87 +51,99 @@ namespace Slutty_ryze
         #region onGameUpdate
         private static void Game_OnUpdate(EventArgs args)
         {
-            if (GlobalManager.GetHero.IsDead)
-                return;
-            MenuManager.Orbwalker.SetAttack(true);
-
-            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
-
-
-            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            try // lazy
             {
-                MenuManager.Orbwalker.SetAttack((target.IsValidTarget() && (GlobalManager.GetHero.Distance(target) > 440) ||
-                                     (Champion.Q.IsReady() || Champion.E.IsReady() || Champion.W.IsReady())));
-                Champion.AABlock();
-                LaneOptions.Combo();
-            }
 
-            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
-            {
-                LaneOptions.Mixed();
+                if (GlobalManager.GetHero.IsDead)
+                    return;
                 MenuManager.Orbwalker.SetAttack(true);
-            }
 
-            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
-            {
-                if (GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active)
-                    LaneOptions.LaneClear();
+                var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
 
 
-                if (GlobalManager.Config.Item("presslane").GetValue<KeyBind>().Active)
-                    LaneOptions.LaneClear();
+                if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                {
+                    MenuManager.Orbwalker.SetAttack((target.IsValidTarget() &&
+                                                     (GlobalManager.GetHero.Distance(target) > 440) ||
+                                                     (Champion.Q.IsReady() || Champion.E.IsReady() ||
+                                                      Champion.W.IsReady())));
+                    Champion.AABlock();
+                    LaneOptions.Combo();
+                }
+
+                if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
+                {
+                    LaneOptions.Mixed();
+                    MenuManager.Orbwalker.SetAttack(true);
+                }
+
+                if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
+                {
+                    if (GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active)
+                        LaneOptions.LaneClear();
 
 
-                MenuManager.Orbwalker.SetAttack(true);
-                LaneOptions.JungleClear();
-            }
-
-            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
-                LaneOptions.LastHit();
+                    if (GlobalManager.Config.Item("presslane").GetValue<KeyBind>().Active)
+                        LaneOptions.LaneClear();
 
 
-            if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
-            {
-                if (GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active)
-                    ItemManager.TearStack();
+                    MenuManager.Orbwalker.SetAttack(true);
+                    LaneOptions.JungleClear();
+                }
 
-                if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
-                    Champion.AutoPassive();
+                if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
+                    LaneOptions.LastHit();
 
+
+                if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None)
+                {
+                    if (GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active)
+                        ItemManager.TearStack();
+
+                    if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
+                        Champion.AutoPassive();
+
+                    ItemManager.Potion();
+                    MenuManager.Orbwalker.SetAttack(true);
+                }
+
+                if (GlobalManager.Config.Item("UseQauto").GetValue<bool>())
+                {
+                    if (target == null)
+                        return;
+
+                    if (Champion.Q.IsReady() && target.IsValidTarget(Champion.Q.Range))
+                        Champion.Q.Cast(target);
+                }
+
+
+                // Seplane();
+                ItemManager.Item();
+                Champion.KillSteal();
                 ItemManager.Potion();
-                MenuManager.Orbwalker.SetAttack(true);
-            }
 
-            if (GlobalManager.Config.Item("UseQauto").GetValue<bool>())
-            {
+                if (GlobalManager.Config.Item("level").GetValue<bool>())
+                {
+                    AutoLevelManager.LevelUpSpells();
+                }
+
+                if (!GlobalManager.Config.Item("autow").GetValue<bool>() || !target.UnderTurret(true)) return;
+
                 if (target == null)
                     return;
 
-                if (Champion.Q.IsReady() && target.IsValidTarget(Champion.Q.Range))
-                    Champion.Q.Cast(target);
+                if (!ObjectManager.Get<Obj_AI_Turret>()
+                    .Any(turret => turret.IsValidTarget(300) && turret.IsAlly && turret.Health > 0))
+                    return;
+
+                // Champion.W.CastOnUnit(target);
+                //// DebugClass.ShowDebugInfo(true);
             }
-
-
-            // Seplane();
-            //ItemManager.Item();
-           // Champion.KillSteal();
-           // ItemManager.Potion();
-
-            if (GlobalManager.Config.Item("level").GetValue<bool>())
+            catch 
             {
-                AutoLevelManager.LevelUpSpells();
+                
             }
-            
-            if (!GlobalManager.Config.Item("autow").GetValue<bool>() || !target.UnderTurret(true)) return;
 
-            if (target == null)
-                 return;
-
-             if (!ObjectManager.Get<Obj_AI_Turret>()
-                 .Any(turret => turret.IsValidTarget(300) && turret.IsAlly && turret.Health > 0)) return;
-
-            // Champion.W.CastOnUnit(target);
-            //// DebugClass.ShowDebugInfo(true);
         }
         #endregion
 
