@@ -7,6 +7,8 @@ namespace Slutty_ryze
 {
     internal class Program
     {
+        readonly static Random Seeder = new Random();
+
         #region onload
         private static void Main(string[] args)
         {
@@ -21,6 +23,8 @@ namespace Slutty_ryze
         {
             if (GlobalManager.GetHero.ChampionName != Champion.ChampName)
                 return;
+
+            Humanizer.AddAction("generalDelay",35.0f);
 
             Champion.Q = new Spell(SpellSlot.Q, 865);
             Champion.Qn = new Spell(SpellSlot.Q, 865);
@@ -60,6 +64,14 @@ namespace Slutty_ryze
 
                 var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
 
+                if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
+                {
+                    if(!Humanizer.CheckDelay("generalDelay"))// Wait for delay for all other events
+                    return;
+
+                    var nDelay = Seeder.Next(GlobalManager.Config.Item("minDelay").GetValue<Slider>().Value, GlobalManager.Config.Item("maxDelay").GetValue<Slider>().Value); // set a new random delay :D
+                    Humanizer.ChangeDelay("generalDelay", nDelay);                   
+                }
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
@@ -100,7 +112,7 @@ namespace Slutty_ryze
                     if (GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active)
                         ItemManager.TearStack();
 
-                    if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
+                    else if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
                         Champion.AutoPassive();
 
                     ItemManager.Potion();
@@ -137,7 +149,7 @@ namespace Slutty_ryze
                     return;
 
                  Champion.W.CastOnUnit(target);
-                //// DebugClass.ShowDebugInfo(true);
+                // DebugClass.ShowDebugInfo(true);
             }
             catch
             {

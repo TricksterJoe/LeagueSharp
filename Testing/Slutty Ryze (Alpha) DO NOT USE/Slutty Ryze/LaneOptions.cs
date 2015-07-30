@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Linq;
-using System.Runtime.InteropServices;
-using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
 
 namespace Slutty_ryze
 {
@@ -11,8 +8,8 @@ namespace Slutty_ryze
     {
         #region Public Functions
 
-        readonly static int RandomThreshold = 10; // 10%
-        readonly static Random _seeder = new Random();
+        private const int RandomThreshold = 10; // 10%
+        readonly static Random Seeder = new Random();
         public static void DisplayLaneOption(String line)
         {
             // not working o-o?
@@ -76,8 +73,8 @@ namespace Slutty_ryze
             DisplayLaneOption("Clearing Lane");
             foreach (var minion in minionCount)
             {
-                float randSeed = _seeder.Next(1,RandomThreshold);
-                var minionHp = minion.Health * (1 + (randSeed / 100)) ; // Reduce Calls and add in randomization buffer.
+                float randSeed = Seeder.Next(1,RandomThreshold);
+                var minionHp = minion.Health * (1 + (randSeed / 100.0f)) ; // Reduce Calls and add in randomization buffer.
                 if (!GlobalManager.CheckTarget(minion)) continue;
 
                 if (qlchSpell
@@ -143,6 +140,7 @@ namespace Slutty_ryze
 
             if (!jungle.IsValidTarget())
                 return;
+
             if (!GlobalManager.CheckTarget(jungle))
                 return;
 
@@ -181,8 +179,8 @@ namespace Slutty_ryze
             {
                 if (!GlobalManager.CheckTarget(minion)) continue;
 
-                float randSeed = _seeder.Next(1,RandomThreshold);
-                var minionHp = minion.Health * (1 + (randSeed / 100)); // Reduce Calls and add in randomization buffer.
+                float randSeed = Seeder.Next(1,RandomThreshold);
+                var minionHp = minion.Health * (1 + (randSeed / 100.0f)); // Reduce Calls and add in randomization buffer.
 
                 if (qlchSpell
                 && Champion.Q.IsReady()
@@ -238,7 +236,7 @@ namespace Slutty_ryze
                 if (GlobalManager.GetHero.ManaPercent <= minMana)
                     return;
 
-                var hpRand = (1 + (float)(_seeder.Next(1,RandomThreshold) / 100)); // randomization buffer.
+                var hpRand = (1 + (float)(Seeder.Next(1, maxValue: RandomThreshold) / 100.0f)); // randomization buffer.
 
                 foreach (var minion in minionCount.Where(minion => qlSpell && Champion.Q.IsReady() && minion.Health * hpRand < Champion.Q.GetDamage(minion) && GlobalManager.CheckTarget(minion)))
                 {

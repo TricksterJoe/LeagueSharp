@@ -60,6 +60,7 @@
     <Compile Include="DebugClass.cs" />
     <Compile Include="DrawManager.cs" />
     <Compile Include="GlobalManager.cs" />
+    <Compile Include="Humanizer.cs" />
     <Compile Include="ItemManager.cs" />
     <Compile Include="LaneOptions.cs" />
     <Compile Include="MenuManager.cs" />

@@ -15,7 +15,7 @@ namespace Slutty_ryze
         public static Menu GetMenu()
         {
             _config = new Menu(Menuname, Menuname, true);
-            
+            _config.AddSubMenu(HumanizerMenu());
             _config.AddSubMenu(DrawingMenu());
             _config.AddSubMenu(ComboMenu());
             _config.AddSubMenu(MixedMenu());
@@ -27,6 +27,18 @@ namespace Slutty_ryze
         }
         #endregion
         #region Private Functions
+
+        private static Menu HumanizerMenu()
+        {
+            var humanizerMenu = new Menu("Humanizer", "Humanizer");
+
+            humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("minDelay", "Minimum delay for actions (ms)").SetValue(new Slider(10, 0, 200)));
+            humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("maxDelay", "Maximum delay for actions (ms)").SetValue(new Slider(75, 0, 250)));
+            humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("doHuman", "Humanize").SetValue(true));
+
+            return humanizerMenu;
+        }
+
         private static Menu OrbWalkingMenu()
         {
             Menu orbWalkingMenu = new Menu("Orbwalking", "Orbwalking");

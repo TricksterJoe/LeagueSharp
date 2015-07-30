@@ -108,8 +108,8 @@ namespace Slutty_ryze
             if (GlobalManager.GetPassiveBuff >= stackSliders)
                 return;
 
-            if (Environment.TickCount - Champion.Q.LastCastAttemptT >=
-                GlobalManager.Config.Item("autoPassiveTimer").GetValue<Slider>().Value * 1000 - (100 + Game.Ping) &&
+            if (Utils.TickCount - Champion.Q.LastCastAttemptT >=
+                GlobalManager.Config.Item("autoPassiveTimer").GetValue<Slider>().Value * 1000 - (100 + (Game.Ping/2)) &&
                 Champion.Q.IsReady())
             {
                 if (!Game.CursorPos.IsZero)
