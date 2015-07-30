@@ -5,6 +5,7 @@ namespace Slutty_ryze
 {
     class AutoLevelManager
     {
+        #region Structures
         struct Abilitys
         {
             public const int Q = 1;
@@ -12,9 +13,11 @@ namespace Slutty_ryze
             public const int E = 3;
             public const int R = 4;
         }
-      
-        //private static readonly int[] _abilitySequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 2, 2, 3, 4, 3, 3 };
+        #endregion
+        #region Variable Declaration
 
+        //  private static readonly int[] _abilitySequence = new[] { 1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 3, 2, 2, 3, 4, 3, 3 };
+        
         private static readonly int[] AbilitySequence ={
             Abilitys.Q, Abilitys.W, Abilitys.E, Abilitys.Q, Abilitys.Q, Abilitys.R, Abilitys.Q, Abilitys.W, Abilitys.Q,
             Abilitys.W, Abilitys.R, Abilitys.E, Abilitys.W, Abilitys.W, Abilitys.E, Abilitys.R, Abilitys.E, Abilitys.E
@@ -25,7 +28,8 @@ namespace Slutty_ryze
         private static int WOff = 0;
         private static int EOff = 0;
         private static int ROff = 0;
-
+        #endregion
+        #region Public Functions
         public static void LevelUpSpells()
         {
             var qL = GlobalManager.GetHero.Spellbook.GetSpell(Champion.Q.Slot).Level + QOff;
@@ -47,6 +51,6 @@ namespace Slutty_ryze
             if (eL < level[2]) GlobalManager.GetHero.Spellbook.LevelSpell(SpellSlot.E);
             if (rL < level[3]) GlobalManager.GetHero.Spellbook.LevelSpell(SpellSlot.R);
         }
-
+        #endregion
     }
 }

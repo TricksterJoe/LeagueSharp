@@ -6,12 +6,50 @@ namespace Slutty_ryze
 {
     class Champion
     {
-        public const string ChampName = "Ryze";
-        public const string Menuname = "Slutty Ryze";
-        public static Spell Q, W, E, R, Qn;
+        #region Variable Declaration
         private static SpellSlot _ignite;
         private static readonly Obj_AI_Hero Player = ObjectManager.Player;
+        private const string _champName = "Ryze";
+        //private static Spell _q, _w, _e, _r, _qn;
+        // Does not work as a property o-o
+        public static Spell Q, W, E, R, Qn;
+        #endregion
+        #region Public Properties
+        //public static Spell Q
+        //{
+        //    get { return _q; }
+        //    set { _q = value; }
+        //}
 
+        //public static Spell QN
+        //{
+        //    get { return _qn; }
+        //    set { _qn = value; }
+        //}
+        //public static Spell W
+        //{
+        //    get { return _w; }
+        //    set { _w = value; }
+        //}
+        //public static Spell WE
+        //{
+        //    get { return _e; }
+        //    set { _e = value; }
+        //}
+        //public static Spell R
+        //{
+        //    get { return _r; }
+        //    set { _r = value; }
+        //}
+        public static string ChampName
+        {
+            get
+           {
+                return _champName;
+           }
+        }
+        #endregion
+        #region Public Functions
         public static float IgniteDamage(Obj_AI_Hero target)
         {
             if (_ignite == SpellSlot.Unknown || Player.Spellbook.CanUseSpell(_ignite) != SpellState.Ready)
@@ -52,14 +90,20 @@ namespace Slutty_ryze
 
             if (GlobalManager.GetHero.Mana < GlobalManager.Config.Item("ManapSlider").GetValue<Slider>().Value) return;
 
-            if (GlobalManager.GetHero.IsRecalling() || minions.Count >= 1) return;
+            //Maybe check if any minons can be killed?
+            //foreach(var minion in minions)
+            //if(minion.Headth < Champion.Q.GetDamage)
+            //break;
+            
+           if (GlobalManager.GetHero.IsRecalling()) return;
+
+           if (minions.Count >= 1) return;
 
             var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
-
             if (target != null) return;
 
             var stackSliders = GlobalManager.Config.Item("stackSlider").GetValue<Slider>().Value;
-            if (GlobalManager.GetHero.IsRecalling() || GlobalManager.GetHero.InFountain()) return;
+            if (GlobalManager.GetHero.InFountain()) return;
 
             if (GlobalManager.GetPassiveBuff >= stackSliders)
                 return;
@@ -120,7 +164,7 @@ namespace Slutty_ryze
         public static void KillSteal()
         {
             var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
-            if (target == null || !target.IsValidTarget() || target.IsInvulnerable)
+            if (target == null || !target.IsValidTarget() || target.IsInvulnerable || !GlobalManager.CheckTarget(target))
                 return;
 
             var qSpell = GlobalManager.Config.Item("useQ2KS").GetValue<bool>();
@@ -158,6 +202,6 @@ namespace Slutty_ryze
                 Items.UseItem(muramanai);
         }
 
-
+        #endregion
     }
 }

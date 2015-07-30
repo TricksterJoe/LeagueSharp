@@ -6,6 +6,7 @@ namespace Slutty_ryze
 {
     class ItemManager
     {
+        #region Variable Declaration
         private static Items.Item _tearoftheGoddess = new Items.Item(id: 3070, range: 0);
         private static Items.Item _tearoftheGoddesss = new Items.Item(id: 3072, range: 0);
         private static Items.Item _tearoftheGoddessCrystalScar = new Items.Item(id: 3073, range: 0);
@@ -19,13 +20,15 @@ namespace Slutty_ryze
         private static Items.Item _seraphsEmbrace = new Items.Item(id: 3040, range: 0);
         private static Items.Item _manamune = new Items.Item(id: 3004, range: 0);
         private static Items.Item _manamuneCrystalScar = new Items.Item(id: 3008, range: 0);
-
+        #endregion
+        #region Public Properties
         // public static int Muramana() => pMuramana;
         public static int Muramana
         {
             get {return _pMuramana;}   
         }
-
+        #endregion
+        #region Public Functions
         public static void Item()
         {
             var staff = GlobalManager.Config.Item("staff").GetValue<bool>();
@@ -116,5 +119,6 @@ namespace Slutty_ryze
             else
                 Champion.Q.Cast();
         }
+        #endregion
     }
 }
