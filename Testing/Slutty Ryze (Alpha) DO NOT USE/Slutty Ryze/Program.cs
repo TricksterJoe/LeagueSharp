@@ -137,6 +137,7 @@ namespace Slutty_ryze
 
                 if (GlobalManager.Config.Item("level").GetValue<bool>())
                 {
+                    Console.WriteLine("Level Spells");
                     AutoLevelManager.LevelUpSpells();
                 }
 
