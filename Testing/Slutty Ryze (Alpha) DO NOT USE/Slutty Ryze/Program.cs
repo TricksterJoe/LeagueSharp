@@ -24,6 +24,8 @@ namespace Slutty_ryze
             if (GlobalManager.GetHero.ChampionName != Champion.ChampName)
                 return;
 
+            Console.WriteLine("Loading Slutty Ryze...");
+
             Humanizer.AddAction("generalDelay",35.0f);
 
             Champion.Q = new Spell(SpellSlot.Q, 865);
@@ -36,6 +38,7 @@ namespace Slutty_ryze
             Champion.Qn.SetSkillshot(0.26f, 50f, 1700f, false, SkillshotType.SkillshotLine);
 
             //assign menu from MenuManager to Config
+            Console.WriteLine("Loading Slutty Menu...");
             GlobalManager.Config = MenuManager.GetMenu();
             GlobalManager.Config.AddToMainMenu();
 
@@ -67,9 +70,12 @@ namespace Slutty_ryze
 
                 if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
                 {
-                    if (!Humanizer.CheckDelay("generalDelay"))// Wait for delay for all other events
+                    if (!Humanizer.CheckDelay("generalDelay")) // Wait for delay for all other events
+                    {
+                        Console.WriteLine("Waiting on Human Dealy");
                         return;
-
+                    }
+                    Console.WriteLine("Seeding Human Delay");
                     var nDelay = Seeder.Next(GlobalManager.Config.Item("minDelay").GetValue<Slider>().Value, GlobalManager.Config.Item("maxDelay").GetValue<Slider>().Value); // set a new random delay :D
                     Humanizer.ChangeDelay("generalDelay", nDelay);
                 }
@@ -134,7 +140,6 @@ namespace Slutty_ryze
 
                 if (GlobalManager.Config.Item("level").GetValue<bool>())
                 {
-                    Console.WriteLine("Level Spells");
                     AutoLevelManager.LevelUpSpells();
                 }
 

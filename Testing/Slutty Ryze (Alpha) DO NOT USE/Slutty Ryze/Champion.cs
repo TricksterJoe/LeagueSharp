@@ -126,7 +126,10 @@ namespace Slutty_ryze
             var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
             var wSpell = GlobalManager.Config.Item("useW2I").GetValue<bool>();
             if (wSpell)
+            {
                 Champion.W.CastOnUnit(target);
+                Console.WriteLine("Plz no Senpai");
+            }
         }
 
         public static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
@@ -156,20 +159,19 @@ namespace Slutty_ryze
 
         public static void AABlock()
         {
-            var aaBlock = GlobalManager.Config.Item("AAblock").GetValue<bool>();
-            if (aaBlock)
-                MenuManager.Orbwalker.SetAttack(false);
+                MenuManager.Orbwalker.SetAttack(GlobalManager.Config.Item("AAblock").GetValue<bool>());
         }
 
         public static void KillSteal()
         {
             var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
-            if (target == null || !target.IsValidTarget() || target.IsInvulnerable || !GlobalManager.CheckTarget(target))
+            if (target == null || !target.IsValidTarget() || target.IsInvulnerable)
                 return;
 
             var qSpell = GlobalManager.Config.Item("useQ2KS").GetValue<bool>();
             var wSpell = GlobalManager.Config.Item("useW2KS").GetValue<bool>();
             var eSpell = GlobalManager.Config.Item("useE2KS").GetValue<bool>();
+            Console.WriteLine("KS that shit");
             if (qSpell
                 && Champion.Q.GetDamage(target) > target.Health
                 && target.IsValidTarget(Champion.Q.Range))

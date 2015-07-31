@@ -77,48 +77,48 @@ namespace Slutty_ryze
             {
                 float randSeed = Seeder.Next(1,RandomThreshold);
                 var minionHp = minion.Health * (1 + (randSeed / 100.0f)) ; // Reduce Calls and add in randomization buffer.
-                if (!GlobalManager.CheckTarget(minion)) continue;
+                if (!GlobalManager.CheckMinion(minion)) continue;
 
                 if (qlchSpell
                     && Champion.Q.IsReady()
                     && minion.IsValidTarget(Champion.Q.Range)
-                    && minionHp <= Champion.Q.GetDamage(minion))
+                    && minionHp <= Champion.Q.GetDamage(minion) && GlobalManager.CheckMinion(minion))
                     Champion.Q.Cast(minion);
 
                 else if (wlchSpell
                     && Champion.W.IsReady()
                     && minion.IsValidTarget(Champion.W.Range)
-                    && minionHp <= Champion.W.GetDamage(minion))
+                    && minionHp <= Champion.W.GetDamage(minion) && GlobalManager.CheckMinion(minion))
                     Champion.W.CastOnUnit(minion);
 
                else if (elchSpell
                     && Champion.E.IsReady()
                     && minion.IsValidTarget(Champion.E.Range)
-                    && minionHp <= Champion.E.GetDamage(minion))
+                    && minionHp <= Champion.E.GetDamage(minion) && GlobalManager.CheckMinion(minion))
                     Champion.E.CastOnUnit(minion);
 
                 else if (q2LSpell
                     && Champion.Q.IsReady()
                     && minion.IsValidTarget(Champion.Q.Range)
-                    && minionHp >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3))
+                    && minionHp >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3) && GlobalManager.CheckMinion(minion))
                     Champion.Q.Cast(minion);
 
                 else if (e2LSpell
                     && Champion.E.IsReady()
                     && minion.IsValidTarget(Champion.E.Range)
-                    && minionHp >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3))
+                    && minionHp >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3) && GlobalManager.CheckMinion(minion))
                     Champion.E.CastOnUnit(minion);
 
                 else if (w2LSpell
                     && Champion.W.IsReady()
                     && minion.IsValidTarget(Champion.W.Range)
-                    && minionHp >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3))
+                    && minionHp >= (GlobalManager.GetHero.GetAutoAttackDamage(minion) * 1.3) && GlobalManager.CheckMinion(minion))
                     Champion.W.CastOnUnit(minion);
 
                 if (rSpell
                     && Champion.R.IsReady()
                     && minion.IsValidTarget(Champion.Q.Range)
-                    && minionCount.Count > rSlider)
+                    && minionCount.Count > rSlider && GlobalManager.CheckMinion(minion))
                     Champion.R.Cast();
             }
         }
@@ -143,8 +143,8 @@ namespace Slutty_ryze
             if (!jungle.IsValidTarget())
                 return;
 
-            if (!GlobalManager.CheckTarget(jungle))
-                return;
+            //if (!GlobalManager.CheckMinion(jungle))
+             //   return;
 
             DisplayLaneOption("Clearing Jungle");
             if (eSpell
@@ -179,7 +179,7 @@ namespace Slutty_ryze
             DisplayLaneOption("Last hitting");
             foreach (var minion in minionCount)
             {
-                if (!GlobalManager.CheckTarget(minion)) continue;
+                if (!GlobalManager.CheckMinion(minion)) continue;
 
                 float randSeed = Seeder.Next(1,RandomThreshold);
                 var minionHp = minion.Health * (1 + (randSeed / 100.0f)); // Reduce Calls and add in randomization buffer.
@@ -187,19 +187,19 @@ namespace Slutty_ryze
                 if (qlchSpell
                 && Champion.Q.IsReady()
                 && minion.IsValidTarget(Champion.Q.Range - 20)
-                && minionHp < Champion.Q.GetDamage(minion))
+                && minionHp < Champion.Q.GetDamage(minion) && GlobalManager.CheckMinion(minion))
                     Champion.Q.Cast(minion);
 
                 else if (wlchSpell
                     && Champion.W.IsReady()
                     && minion.IsValidTarget(Champion.W.Range - 10)
-                    && minionHp < Champion.W.GetDamage(minion))
+                    && minionHp < Champion.W.GetDamage(minion) && GlobalManager.CheckMinion(minion))
                     Champion.W.CastOnUnit(minion);
 
                 else if (elchSpell
                     && Champion.E.IsReady()
                     && minion.IsValidTarget(Champion.E.Range - 10)
-                    && minionHp < Champion.E.GetDamage(minion))
+                    && minionHp < Champion.E.GetDamage(minion) && GlobalManager.CheckMinion(minion))
                     Champion.E.CastOnUnit(minion);
             }
         }
@@ -229,7 +229,7 @@ namespace Slutty_ryze
 
                 var hpRand = (1 + (float)(Seeder.Next(1, maxValue: RandomThreshold) / 100.0f)); // randomization buffer.
 
-                foreach (var minion in minionCount.Where(minion => qlSpell && Champion.Q.IsReady() && minion.Health * hpRand < Champion.Q.GetDamage(minion) && GlobalManager.CheckTarget(minion)))
+                foreach (var minion in minionCount.Where(minion => qlSpell && Champion.Q.IsReady() && minion.Health * hpRand < Champion.Q.GetDamage(minion) && GlobalManager.CheckMinion(minion)))
                 {
                     Champion.Q.Cast(minion);
                 }
@@ -247,18 +247,14 @@ namespace Slutty_ryze
             bSpells[4] = GlobalManager.Config.Item("useRww").GetValue<bool>();
 
             var target = TargetSelector.GetTarget(Champion.W.Range, TargetSelector.DamageType.Magical);
-
-           // if (!target.IsValidTarget(Champion.Q.Range) || !GlobalManager.CheckTarget(target)) return;
-
             if (target.IsValidTarget(Champion.W.Range) && (target.Health < Champion.IgniteDamage(target) + Champion.W.GetDamage(target)))
                 GlobalManager.GetHero.Spellbook.CastSpell(Champion.GetIgniteSlot(), target);
 
-            Console.WriteLine("Combo Start");
-            Console.WriteLine("Passive Amount{0}", GlobalManager.GetPassiveBuff);
-
-
             if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
-                StartComboSequence(target, bSpells, new char[] { 'Q', 'W', 'Q', 'E', 'Q', 'R' });
+            {
+                Console.WriteLine("Using Ryze Combo Sequence 4");
+                StartComboSequence(target, bSpells, new[] {'Q', 'W', 'Q', 'E', 'Q', 'R'});
+            }
             else
 
             {
@@ -266,13 +262,16 @@ namespace Slutty_ryze
                 {
                     case 1:
                     case 2:
-                        StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'E', 'R' });
+                        Console.WriteLine("Using Ryze Combo Sequence 1");
+                        StartComboSequence(target, bSpells, new[] {'Q', 'W', 'E', 'R'});
                         break;
                     case 3:
-                        StartComboSequence(target, bSpells, new[] { 'Q', 'E', 'W', 'R' });
+                        Console.WriteLine("Using Ryze Combo Sequence 2");
+                        StartComboSequence(target, bSpells, new[] {'Q', 'E', 'W', 'R'});
                         break;
                     case 4:
-                        StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E', 'R' });
+                        Console.WriteLine("Using Ryze Combo Sequence 3");
+                        StartComboSequence(target, bSpells, new[] {'W', 'Q', 'E', 'R'});
                         break;
                 }
             }
@@ -287,28 +286,28 @@ namespace Slutty_ryze
                     case 'Q':
                         Console.WriteLine("Use Q Start");
                         if (!bSpells[0]) continue;
-                        if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady())
+                        if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
                             Champion.Q.Cast(target);
 
-                        else if (target.IsValidTarget(Champion.Qn.Range) && Champion.Q.IsReady())
+                        else if (target.IsValidTarget(Champion.Qn.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
                             Champion.Qn.Cast(target);
 
                         continue;
                     case 'W':
                         Console.WriteLine("Use W Start");
-                        if (target.IsValidTarget(Champion.W.Range) && bSpells[1] && Champion.W.IsReady())
+                        if (target.IsValidTarget(Champion.W.Range) && bSpells[1] && Champion.W.IsReady() && !target.IsInvulnerable)
                             Champion.W.CastOnUnit(target);
                         continue;
                     case 'E':
                         Console.WriteLine("Use E Start");
-                        if (target.IsValidTarget(Champion.E.Range) && bSpells[2] && Champion.E.IsReady())
+                        if (target.IsValidTarget(Champion.E.Range) && bSpells[2] && Champion.E.IsReady() && !target.IsInvulnerable)
                             Champion.E.CastOnUnit(target);
                         continue;
                     case 'R':
                         Console.WriteLine("Use R Start");
                         if (!bSpells[3]) continue;
 
-                        if (!target.IsValidTarget(Champion.W.Range) || !(target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target))))
+                        if (!target.IsValidTarget(Champion.W.Range) || !(target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target))) || target.IsInvulnerable)
                             continue;
 
                         if (!Champion.R.IsReady()) continue;

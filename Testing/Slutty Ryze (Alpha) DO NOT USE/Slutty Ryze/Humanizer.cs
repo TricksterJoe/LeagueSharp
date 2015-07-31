@@ -6,7 +6,7 @@ namespace Slutty_ryze
 {
     class Humanizer
     {
-
+      
         struct Action
         {
             public string Name { get; set; }
