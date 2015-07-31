@@ -268,7 +268,6 @@ namespace Slutty_ryze
                     case 2:
                         StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'E', 'R' });
                         break;
-
                     case 3:
                         StartComboSequence(target, bSpells, new[] { 'Q', 'E', 'W', 'R' });
                         break;
@@ -283,11 +282,10 @@ namespace Slutty_ryze
         {
             foreach (var com in seq)
             {
-                Console.WriteLine("Foreach Start");
                 switch (com)
                 {
                     case 'Q':
-
+                        Console.WriteLine("Use Q Start");
                         if (!bSpells[0]) continue;
                         if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady())
                             Champion.Q.Cast(target);
@@ -297,14 +295,17 @@ namespace Slutty_ryze
 
                         continue;
                     case 'W':
+                        Console.WriteLine("Use W Start");
                         if (target.IsValidTarget(Champion.W.Range) && bSpells[1] && Champion.W.IsReady())
                             Champion.W.CastOnUnit(target);
                         continue;
                     case 'E':
+                        Console.WriteLine("Use E Start");
                         if (target.IsValidTarget(Champion.E.Range) && bSpells[2] && Champion.E.IsReady())
                             Champion.E.CastOnUnit(target);
                         continue;
                     case 'R':
+                        Console.WriteLine("Use R Start");
                         if (!bSpells[3]) continue;
 
                         if (!target.IsValidTarget(Champion.W.Range) || !(target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target))))
