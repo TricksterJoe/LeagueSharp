@@ -65,14 +65,14 @@ namespace Slutty_ryze
 
                 var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
 
-                //if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
-                //{
-                //    if(!Humanizer.CheckDelay("generalDelay"))// Wait for delay for all other events
-                //    return;
+                if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
+                {
+                    if (!Humanizer.CheckDelay("generalDelay"))// Wait for delay for all other events
+                        return;
 
-                //    var nDelay = Seeder.Next(GlobalManager.Config.Item("minDelay").GetValue<Slider>().Value, GlobalManager.Config.Item("maxDelay").GetValue<Slider>().Value); // set a new random delay :D
-                //    Humanizer.ChangeDelay("generalDelay", nDelay);                   
-                //}
+                    var nDelay = Seeder.Next(GlobalManager.Config.Item("minDelay").GetValue<Slider>().Value, GlobalManager.Config.Item("maxDelay").GetValue<Slider>().Value); // set a new random delay :D
+                    Humanizer.ChangeDelay("generalDelay", nDelay);
+                }
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
@@ -120,11 +120,8 @@ namespace Slutty_ryze
                     MenuManager.Orbwalker.SetAttack(true);
                 }
 
-                if (GlobalManager.Config.Item("UseQauto").GetValue<bool>())
+                if (GlobalManager.Config.Item("UseQauto").GetValue<bool>() && target != null)
                 {
-                    if (target == null)
-                        return;
-
                     if (Champion.Q.IsReady() && target.IsValidTarget(Champion.Q.Range))
                         Champion.Q.Cast(target);
                 }
