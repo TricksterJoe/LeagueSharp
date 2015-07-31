@@ -60,6 +60,7 @@ namespace Slutty_ryze
 
                 if (GlobalManager.GetHero.IsDead)
                     return;
+
                 MenuManager.Orbwalker.SetAttack(true);
 
                 var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
