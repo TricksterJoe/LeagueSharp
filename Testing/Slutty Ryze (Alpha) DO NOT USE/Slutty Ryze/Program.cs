@@ -80,7 +80,7 @@ namespace Slutty_ryze
                                                      (Champion.Q.IsReady() || Champion.E.IsReady() ||
                                                       Champion.W.IsReady())));
                     Champion.AABlock();
-                    LaneOptions.Combo();
+                    LaneOptions.ImprovedCombo();
                 }
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
