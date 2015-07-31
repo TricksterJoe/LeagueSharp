@@ -159,7 +159,7 @@ namespace Slutty_ryze
 
         public static void AABlock()
         {
-                MenuManager.Orbwalker.SetAttack(GlobalManager.Config.Item("AAblock").GetValue<bool>());
+                MenuManager.Orbwalker.SetAttack(!GlobalManager.Config.Item("AAblock").GetValue<bool>());
         }
 
         public static void KillSteal()

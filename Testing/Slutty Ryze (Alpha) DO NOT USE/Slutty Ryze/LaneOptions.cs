@@ -256,6 +256,10 @@ namespace Slutty_ryze
                         Console.WriteLine("Using Ryze Combo Sequence 3");
                         StartComboSequence(target, bSpells, new[] {'W', 'Q', 'E', 'R'});
                         break;
+                    default:
+                        Console.WriteLine("Using Ryze Combo Sequence default");
+                        StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E' });
+                        break;
                 }
             }
         }
@@ -274,10 +278,17 @@ namespace Slutty_ryze
                             if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
                             {
                                 if (!isMinion)
-                                    Champion.Q.Cast(target);
-                                else if (target.Health * hpOffset < Champion.Q.GetDamage(target) && GlobalManager.CheckMinion(target))
-                                    Champion.Q.Cast(target);
+                                {
+                                    if (GlobalManager.GetPassiveBuff >= 2)
+                                        Champion.Qn.Cast(target);
+                                    else
+                                        Champion.Q.Cast(target);
+                                }
                             }
+                                else if (target.Health*hpOffset < Champion.Q.GetDamage(target) &&
+                                         GlobalManager.CheckMinion(target))
+                                    Champion.Q.Cast(target);
+                            
 
                             else if (target.IsValidTarget(Champion.Qn.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
                             {
@@ -329,6 +340,7 @@ namespace Slutty_ryze
                             Champion.R.Cast();
                         continue;
                 }
+               
             }
 
             if (!Champion.R.IsReady() || GlobalManager.GetPassiveBuff != 4 || !bSpells[4]) return;
