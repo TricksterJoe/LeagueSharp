@@ -39,6 +39,7 @@ namespace Slutty_Thresh
             R = new Spell(SpellSlot.R, 400);
 
             Q.SetSkillshot(0.5f, 60f, 1900f, true, SkillshotType.SkillshotLine);
+            W.SetSkillshot(0.5f, 50f, 2200f, false, SkillshotType.SkillshotCircle);
 
             FlashSlot = Player.GetSpellSlot("SummonerFlash");
 
@@ -182,15 +183,16 @@ namespace Slutty_Thresh
             if (Player.ManaPercent < Config.Item("manalant").GetValue<Slider>().Value)
                 return;
            // Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
             foreach (var hero in
                 HeroManager.Allies.Where(x => !x.IsMe
-                                              && !x.IsDead
-                                              && x.Distance(Player) <= W.Range))
+                                              && !x.IsDead))
             {
-                if (hero.HealthPercent <= Config.Item("hpsettings" + hero.ChampionName).GetValue<Slider>().Value)
+                if (Config.Item("healop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
                 {
-                    if (Config.Item("healop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                                W.Cast(hero.Position - 100);
+                    if (hero.HealthPercent <= Config.Item("hpsettings" + hero.ChampionName).GetValue<Slider>().Value
+                        && hero.Distance(Player) <= W.Range)
+                        W.Cast(hero.Position - 100);
                 }
             }
 
@@ -358,9 +360,10 @@ namespace Slutty_Thresh
                 foreach (var heros in
                     HeroManager.Allies.Where(x => !x.IsMe
                                                   && x.Distance(Player) <= W.Range))
-                    {
+                {
+                    if (heros.Distance(Player) <= W.Range)
                         Utility.DelayAction.Add(400, () => W.Cast(heros.Position - 100));
-                    }
+                }
             }
         }
 
