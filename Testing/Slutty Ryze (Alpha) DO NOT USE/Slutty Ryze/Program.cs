@@ -75,7 +75,7 @@ namespace Slutty_ryze
                         Console.WriteLine("Waiting on Human Dealy");
                         return;
                     }
-                    Console.WriteLine("Seeding Human Delay");
+                    //Console.WriteLine("Seeding Human Delay");
                     var nDelay = Seeder.Next(GlobalManager.Config.Item("minDelay").GetValue<Slider>().Value, GlobalManager.Config.Item("maxDelay").GetValue<Slider>().Value); // set a new random delay :D
                     Humanizer.ChangeDelay("generalDelay", nDelay);
                 }
