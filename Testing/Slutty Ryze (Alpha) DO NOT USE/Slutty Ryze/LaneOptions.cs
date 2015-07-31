@@ -254,7 +254,6 @@ namespace Slutty_ryze
                 GlobalManager.GetHero.Spellbook.CastSpell(Champion.GetIgniteSlot(), target);
             Console.WriteLine("Combo Start");
             Console.WriteLine("Passive Amount{0}", GlobalManager.GetPassiveBuff);
-            if (!GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
 
 
             if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
