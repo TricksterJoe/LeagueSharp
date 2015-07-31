@@ -248,10 +248,11 @@ namespace Slutty_ryze
 
             var target = TargetSelector.GetTarget(Champion.W.Range, TargetSelector.DamageType.Magical);
 
-            if (!target.IsValidTarget(Champion.Q.Range) || !GlobalManager.CheckTarget(target)) return;
+           // if (!target.IsValidTarget(Champion.Q.Range) || !GlobalManager.CheckTarget(target)) return;
 
             if (target.IsValidTarget(Champion.W.Range) && (target.Health < Champion.IgniteDamage(target) + Champion.W.GetDamage(target)))
                 GlobalManager.GetHero.Spellbook.CastSpell(Champion.GetIgniteSlot(), target);
+
             Console.WriteLine("Combo Start");
             Console.WriteLine("Passive Amount{0}", GlobalManager.GetPassiveBuff);
 
