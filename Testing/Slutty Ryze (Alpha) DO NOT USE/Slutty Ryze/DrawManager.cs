@@ -120,10 +120,9 @@ namespace Slutty_ryze
             int col = 0;
             Drawing.DrawText(pos.X, pos.Y, Color.SteelBlue, "Key Table");
             //var tearStackKey = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key;
-            //var tearKey = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key.ToString();
-            
-            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue,"Stack Tear Key:{0}", GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key.ToString());
-
+            //var tearKey = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key.ToString();     
+            Drawing.DrawText(pos.X, ++col*25 + pos.Y, Color.SteelBlue, "Stack Tear Key:{0}",
+                (char) int.Parse(GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key.ToString()));
         }
 
         public static void Drawing_OnDrawChamp(EventArgs args)
