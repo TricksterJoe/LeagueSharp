@@ -236,7 +236,7 @@ namespace Slutty_ryze
             if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
             {
                 Console.WriteLine("Using Ryze Combo Sequence 4");
-                StartComboSequence(target, bSpells, new[] {'Q', 'W', 'Q', 'E', 'Q', 'R'});
+                StartComboSequence(target, bSpells, new[] {'Qn', 'W', 'Qn', 'E', 'Q', 'R'});
             }
             else
 
@@ -254,11 +254,11 @@ namespace Slutty_ryze
                         break;
                     case 4:
                         Console.WriteLine("Using Ryze Combo Sequence 3");
-                        StartComboSequence(target, bSpells, new[] {'W', 'Q', 'E', 'R'});
+                        StartComboSequence(target, bSpells, new[] {'W', 'Qn', 'E', 'R'});
                         break;
                     default:
                         Console.WriteLine("Using Ryze Combo Sequence default");
-                        StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E' });
+                        StartComboSequence(target, bSpells, new[] { 'W', 'Qn', 'E' });
                         break;
                 }
             }
