@@ -112,6 +112,15 @@ namespace Slutty_ryze
 
         }
 
+        private static string KeyToString(KeyBind key)
+        {
+            string sKey = key.Key.ToString();
+            int iKey = int.Parse(sKey);
+            if (iKey > 26)
+                return sKey;
+            else
+                return ((char) iKey).ToString();
+        }
         private static void DrawKeys(Vector2 pos)
         {
 
@@ -122,7 +131,7 @@ namespace Slutty_ryze
             //var tearStackKey = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key;
             //var tearKey = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key.ToString();     
             Drawing.DrawText(pos.X, ++col*25 + pos.Y, Color.SteelBlue, "Stack Tear Key:{0}",
-                (char) (26+int.Parse(GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key.ToString())));
+                KeyToString(GlobalManager.Config.Item("tearS").GetValue<KeyBind>()));
         }
 
         public static void Drawing_OnDrawChamp(EventArgs args)
