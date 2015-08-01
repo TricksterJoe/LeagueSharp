@@ -108,7 +108,7 @@ namespace Slutty_ryze
                 "Lane Clear: " + BoolToString(laneclear));
 
            // if(!showKeyBind) return;
-            DrawKeys(new Vector2(Drawing.Width - 300, Drawing.Height/2));
+            DrawKeys(new Vector2(Drawing.Width - 300, (float)Drawing.Height / 2));
 
         }
 
@@ -119,16 +119,14 @@ namespace Slutty_ryze
 
             int col = 0;
             Drawing.DrawText(pos.X, pos.Y, Color.SteelBlue, "Key Table");
-            var tearStackKey = (char) GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key;
-            var tearString = tearStackKey.ToString();
-            Game.Say(tearString);
-            Drawing.DrawText(pos.X, col * 25 + pos.Y, Color.SteelBlue, tearString);
-            //foreach (var key in GlobalManager.Config.Items.Where(key => key.GetValue<KeyBind>().Active))
-            //{
-            //    var keyCode = key.GetValue<KeyBind>().Key;
-            //    Drawing.DrawText(pos.X, col * 25 + pos.Y, Color.SteelBlue, "{0}:{1}", key.Name, keyCode);
-            //    col++;
-            //}
+            //var tearStackKey = (char) GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key;
+            //var tearString = tearStackKey.ToString();
+            //Game.Say(tearString);
+            //Drawing.DrawText(pos.X, col * 25 + pos.Y, Color.SteelBlue, tearString);
+            foreach (var key in GlobalManager.Config.Items.Where(key => key.GetValue<KeyBind>().Active))
+            {
+                Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "{0}", key.Name);
+            }
 
         }
 
