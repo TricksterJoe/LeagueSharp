@@ -114,12 +114,9 @@ namespace Slutty_ryze
 
         private static string KeyToString(KeyBind key)
         {
-            string sKey = key.Key.ToString();
-            int iKey = int.Parse(sKey);
-            if (iKey > 26)
-                return sKey;
-            else
-                return ((char) iKey).ToString();
+            var sKey = key.Key.ToString();
+            var iKey = int.Parse(sKey);
+            return iKey > 90 ? sKey : ((char) iKey).ToString();
         }
         private static void DrawKeys(Vector2 pos)
         {
