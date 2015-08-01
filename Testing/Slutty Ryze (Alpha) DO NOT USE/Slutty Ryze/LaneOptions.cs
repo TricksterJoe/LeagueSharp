@@ -352,11 +352,11 @@ namespace Slutty_ryze
                             Champion.R.Cast();
                         continue;
                 }
-                if (!autoAttack) continue;
-                // Stop orbwalk AA to use are own
-                Champion.AABlock(GlobalManager.Config.Item("AAblock").GetValue<bool>());
-                Champion.PreformAutoAttack(target);
-                Champion.AABlock(!GlobalManager.Config.Item("AAblock").GetValue<bool>());
+                //if (!autoAttack) continue;
+                //// Stop orbwalk AA to use are own
+                //Champion.AABlock(false);
+                //Champion.PreformAutoAttack(target);
+                //Champion.AABlock(true);
             }
 
             if (!Champion.R.IsReady() || GlobalManager.GetPassiveBuff != 4 || !bSpells[4]) return;
