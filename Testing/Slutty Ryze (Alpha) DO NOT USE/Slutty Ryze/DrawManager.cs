@@ -123,7 +123,7 @@ namespace Slutty_ryze
             //var tearString = tearStackKey.ToString();
             //Game.Say(tearString);
             //Drawing.DrawText(pos.X, col * 25 + pos.Y, Color.SteelBlue, tearString);
-            foreach (var key in GlobalManager.Config.Items.Where(key => key.GetValue<KeyBind>().Active))
+            foreach (var key in GlobalManager.Config.Items)
             {
                 Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "{0}", key.Name);
             }
