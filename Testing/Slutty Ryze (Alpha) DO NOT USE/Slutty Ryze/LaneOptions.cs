@@ -266,6 +266,7 @@ namespace Slutty_ryze
 
         private static void StartComboSequence(Obj_AI_Base target, IReadOnlyList<bool> bSpells, IEnumerable<char> seq,float hpOffset = 1)
         {
+            var autoAttack = !GlobalManager.Config.Item("AAblock").GetValue<bool>();
             foreach (var com in seq)
             {
                 var isMinion = target.IsMinion;
@@ -275,6 +276,7 @@ namespace Slutty_ryze
                         Console.WriteLine("Use Q Start");
                         if (!bSpells[0]) continue;
 
+                        //Is Hero
                             if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
                             {
                                 if (!isMinion)
@@ -285,18 +287,22 @@ namespace Slutty_ryze
                                         Champion.Q.Cast(target);
                                 }
                             }
-                                else if (target.Health*hpOffset < Champion.Q.GetDamage(target) &&
-                                         GlobalManager.CheckMinion(target))
-                                    Champion.Q.Cast(target);
-                            
 
-                            else if (target.IsValidTarget(Champion.Qn.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
+                            // is minion
+                            else
                             {
-                                if (!isMinion)
-                                    Champion.Qn.Cast(target);
-                                else if (target.Health * hpOffset < Champion.Q.GetDamage(target) && GlobalManager.CheckMinion(target))
-                                    Champion.Qn.Cast(target);
+                                if (GlobalManager.GetPassiveBuff >= 2)
+                                {
+                                    if (target.Health*hpOffset < Champion.Qn.GetDamage(target) && GlobalManager.CheckMinion(target))
+                                        Champion.Qn.Cast(target);
+                                }
+                                else
+                                {
+                                    if (target.Health*hpOffset < Champion.Q.GetDamage(target) && GlobalManager.CheckMinion(target))
+                                        Champion.Q.Cast(target);
+                                }
                             }
+
                         continue;
 
                     case 'W':
@@ -340,7 +346,11 @@ namespace Slutty_ryze
                             Champion.R.Cast();
                         continue;
                 }
-               
+                if (!autoAttack) continue;
+                // Stop orbwalk AA to use are own
+                Champion.AABlock(GlobalManager.Config.Item("AAblock").GetValue<bool>());
+                Champion.PreformAutoAttack(target);
+                Champion.AABlock(!GlobalManager.Config.Item("AAblock").GetValue<bool>());
             }
 
             if (!Champion.R.IsReady() || GlobalManager.GetPassiveBuff != 4 || !bSpells[4]) return;

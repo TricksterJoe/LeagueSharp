@@ -86,7 +86,7 @@ namespace Slutty_ryze
                                                      (GlobalManager.GetHero.Distance(target) > 440) ||
                                                      (Champion.Q.IsReady() || Champion.E.IsReady() ||
                                                       Champion.W.IsReady())));
-                    Champion.AABlock();
+                    Champion.AABlock(!GlobalManager.Config.Item("AAblock").GetValue<bool>());
                     LaneOptions.ImprovedCombo();
                 }
 

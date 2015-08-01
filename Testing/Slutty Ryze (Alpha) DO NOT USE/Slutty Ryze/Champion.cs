@@ -48,6 +48,23 @@ namespace Slutty_ryze
                 return _champName;
            }
         }
+
+        public static float AutoAttackRange
+        {
+            get
+            {
+                return Player.AttackRange;
+            }
+        }
+
+        public static void PreformAutoAttack(Obj_AI_Base target)
+        {
+            if (target.IsInvulnerable) return;
+            if (!target.IsValid) return;
+            if (!target.IsValidTarget(Player.AttackRange)) return;
+            Player.IssueOrder(GameObjectOrder.AutoAttack, target);
+        }
+
         #endregion
         #region Public Functions
         public static float IgniteDamage(Obj_AI_Hero target)
@@ -157,9 +174,9 @@ namespace Slutty_ryze
                 Champion.W.CastOnUnit(target);
         }
 
-        public static void AABlock()
+        public static void AABlock(bool block)
         {
-                MenuManager.Orbwalker.SetAttack(!GlobalManager.Config.Item("AAblock").GetValue<bool>());
+                MenuManager.Orbwalker.SetAttack(block);
         }
 
         public static void KillSteal()
