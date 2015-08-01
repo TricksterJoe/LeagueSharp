@@ -119,12 +119,14 @@ namespace Slutty_ryze
 
             var col = 1;
             Drawing.DrawText(pos.X, pos.Y, Color.SteelBlue, "Key Table");
-            foreach (var key in GlobalManager.Config.Items.Where(key => key.GetValue<KeyBind>().Active))
-            {
-                var keyCode = key.GetValue<KeyBind>().Key;
-                Drawing.DrawText(pos.X, col * 25 + pos.Y, Color.SteelBlue, "{0}:{1}", key.Name, keyCode);
-                col++;
-            }
+            var tearStackKey = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key;
+            Drawing.DrawText(pos.X, col * 25 + pos.Y, Color.SteelBlue, "Tear Stack Key:{1}", tearStackKey);
+            //foreach (var key in GlobalManager.Config.Items.Where(key => key.GetValue<KeyBind>().Active))
+            //{
+            //    var keyCode = key.GetValue<KeyBind>().Key;
+            //    Drawing.DrawText(pos.X, col * 25 + pos.Y, Color.SteelBlue, "{0}:{1}", key.Name, keyCode);
+            //    col++;
+            //}
 
         }
 
