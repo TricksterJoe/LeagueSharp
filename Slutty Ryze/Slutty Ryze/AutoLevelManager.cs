@@ -1,5 +1,4 @@
-﻿
-using LeagueSharp;
+﻿using LeagueSharp;
 
 namespace Slutty_ryze
 {

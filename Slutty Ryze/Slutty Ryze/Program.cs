@@ -7,6 +7,8 @@ namespace Slutty_ryze
 {
     internal class Program
     {
+        readonly static Random Seeder = new Random();
+
         #region onload
         private static void Main(string[] args)
         {
@@ -22,6 +24,10 @@ namespace Slutty_ryze
             if (GlobalManager.GetHero.ChampionName != Champion.ChampName)
                 return;
 
+            Console.WriteLine("Loading Slutty Ryze...");
+
+            Humanizer.AddAction("generalDelay",35.0f);
+
             Champion.Q = new Spell(SpellSlot.Q, 865);
             Champion.Qn = new Spell(SpellSlot.Q, 865);
             Champion.W = new Spell(SpellSlot.W, 585);
@@ -32,6 +38,7 @@ namespace Slutty_ryze
             Champion.Qn.SetSkillshot(0.26f, 50f, 1700f, false, SkillshotType.SkillshotLine);
 
             //assign menu from MenuManager to Config
+            Console.WriteLine("Loading Slutty Menu...");
             GlobalManager.Config = MenuManager.GetMenu();
             GlobalManager.Config.AddToMainMenu();
 
@@ -56,10 +63,22 @@ namespace Slutty_ryze
 
                 if (GlobalManager.GetHero.IsDead)
                     return;
+
                 MenuManager.Orbwalker.SetAttack(true);
 
                 var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
 
+                if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
+                {
+                    if (!Humanizer.CheckDelay("generalDelay")) // Wait for delay for all other events
+                    {
+                        Console.WriteLine("Waiting on Human Dealy");
+                        return;
+                    }
+                    //Console.WriteLine("Seeding Human Delay");
+                    var nDelay = Seeder.Next(GlobalManager.Config.Item("minDelay").GetValue<Slider>().Value, GlobalManager.Config.Item("maxDelay").GetValue<Slider>().Value); // set a new random delay :D
+                    Humanizer.ChangeDelay("generalDelay", nDelay);
+                }
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
@@ -68,7 +87,7 @@ namespace Slutty_ryze
                                                      (Champion.Q.IsReady() || Champion.E.IsReady() ||
                                                       Champion.W.IsReady())));
                     Champion.AABlock();
-                    LaneOptions.Combo();
+                    LaneOptions.ImprovedCombo();
                 }
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
@@ -100,18 +119,15 @@ namespace Slutty_ryze
                     if (GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active)
                         ItemManager.TearStack();
 
-                    if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
+                    else if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
                         Champion.AutoPassive();
 
                     ItemManager.Potion();
                     MenuManager.Orbwalker.SetAttack(true);
                 }
 
-                if (GlobalManager.Config.Item("UseQauto").GetValue<bool>())
+                if (GlobalManager.Config.Item("UseQauto").GetValue<bool>() && target != null)
                 {
-                    if (target == null)
-                        return;
-
                     if (Champion.Q.IsReady() && target.IsValidTarget(Champion.Q.Range))
                         Champion.Q.Cast(target);
                 }
@@ -136,14 +152,13 @@ namespace Slutty_ryze
                     .Any(turret => turret.IsValidTarget(300) && turret.IsAlly && turret.Health > 0))
                     return;
 
-                // Champion.W.CastOnUnit(target);
-                //// DebugClass.ShowDebugInfo(true);
+                 Champion.W.CastOnUnit(target);
+                // DebugClass.ShowDebugInfo(true);
             }
-            catch 
+            catch
             {
-                
+                // ignored
             }
-
         }
         #endregion
 
