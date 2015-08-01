@@ -2,6 +2,7 @@
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 using Color = System.Drawing.Color;
 
 namespace Slutty_ryze
@@ -89,7 +90,7 @@ namespace Slutty_ryze
 
             var laneclear = GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
             //    var laneclear = !GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
-            //var showKeyBind = GlobalManager.Config.Item("keyBindDisplay").GetValue<KeyBind>().Active;
+            var showKeyBind = GlobalManager.Config.Item("keyBindDisplay").GetValue<KeyBind>().Active;
 
             if (!GlobalManager.Config.Item("notdraw").GetValue<bool>()) return;
 
@@ -106,11 +107,24 @@ namespace Slutty_ryze
             Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColor(laneclear),
                 "Lane Clear: " + BoolToString(laneclear));
 
-           // if(!showKeyBind) return;
+            if(!showKeyBind) return;
+            DrawKeys(new Vector2(Drawing.Width - 300, Drawing.Height/2));
 
-         //   Drawing.DrawText(heroPosition.X + 100, heroPosition.Y - 50, GetColor(showKeyBind),
-             //  "Key:","Last Hit: {0}", GlobalManager.Config.Item("LastHit").GetValue<KeyBind>().Key);
+        }
 
+        private static void DrawKeys(Vector2 pos)
+        {
+
+            Drawing.DrawLine(new Vector2(pos.X - 15 , pos.Y + 20), new Vector2(pos.X + 165, pos.Y + 20), 2, Color.SteelBlue);
+
+            var col = 1;
+            Drawing.DrawText(pos.X, pos.Y, Color.SteelBlue, "Key Table");
+            foreach (var key in GlobalManager.Config.Items.Where(key => key.GetValue<KeyBind>().Active))
+            {
+                var keyCode = (char)(int.Parse((key.GetValue<KeyBind>().Key).ToString()));
+                Drawing.DrawText(pos.X, col*25 + pos.Y, Color.SteelBlue, "{0}:{1}", key.Name, keyCode);
+                col++;
+            }
         }
 
         public static void Drawing_OnDrawChamp(EventArgs args)

@@ -56,7 +56,7 @@ namespace Slutty_ryze
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "w Drawing").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("notdraw", "Float Text").SetValue(true));
 
-           // drawMenu.SubMenu("Drawings").AddItem(new MenuItem("keyBindDisplay", "Display KeyBinds").SetValue(false));
+           drawMenu.SubMenu("Drawings").AddItem(new MenuItem("keyBindDisplay", "Display KeyBinds").SetValue(false));
 
             var drawDamageMenu = new MenuItem("RushDrawEDamage", "Combo damage").SetValue(true);
             var drawFill =
@@ -73,7 +73,7 @@ namespace Slutty_ryze
 
         private static Menu ComboMenu()
         {
-            var combo1Menu = new Menu("Combo Settings (SB)", "combospells");
+            var combo1Menu = new Menu("Combo Settings", "combospells");
             {
                 combo1Menu
                     .AddItem(
@@ -92,7 +92,7 @@ namespace Slutty_ryze
         private static Menu MixedMenu()
         {
 
-            var mixedMenu = new Menu("Mixed Settings (C)", "mixedsettings");
+            var mixedMenu = new Menu("Mixed Settings", "mixedsettings");
             {
                 mixedMenu.AddItem(new MenuItem("mMin", "Minimum Mana For Spells").SetValue(new Slider(40)));
                 mixedMenu.AddItem(new MenuItem("UseQM", "Use Q").SetValue(true));
@@ -107,7 +107,7 @@ namespace Slutty_ryze
         private static Menu FarmMenu()
         {
             var farmMenu = new Menu("Farming Settings", "farmingsettings");
-            var laneMenu = new Menu("Lane Clear (V)", "lanesettings");
+            var laneMenu = new Menu("Lane Clear", "lanesettings");
             {
                 laneMenu.AddItem(
                     new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
@@ -125,7 +125,7 @@ namespace Slutty_ryze
                 laneMenu.AddItem(new MenuItem("rMin", "Minimum Minions For R").SetValue(new Slider(3, 1, 20)));
             }
 
-            var jungleMenu = new Menu("Jungle Settings (V)", "junglesettings");
+            var jungleMenu = new Menu("Jungle Settings", "junglesettings");
             {
                 jungleMenu.AddItem(new MenuItem("useJM", "Minimum Mana For Jungle Clear").SetValue(new Slider(50)));
                 jungleMenu.AddItem(new MenuItem("useQj", "Use Q").SetValue(true));
@@ -135,7 +135,7 @@ namespace Slutty_ryze
             }
 
 
-            var lastMenu = new Menu("Last Hit Settings (X)", "lastsettings");
+            var lastMenu = new Menu("Last Hit Settings", "lastsettings");
             {
                 lastMenu.AddItem(new MenuItem("useQl2h", "Use Q Last Hit").SetValue(true));
                 lastMenu.AddItem(new MenuItem("useWl2h", "Use W Last Hit").SetValue(false));

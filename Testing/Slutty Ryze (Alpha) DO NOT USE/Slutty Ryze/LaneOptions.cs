@@ -10,7 +10,7 @@ namespace Slutty_ryze
     {
         #region Public Functions
 
-        private const int RandomThreshold = 10; // 10%
+        private const int RandomThreshold = 15; // 10%
         readonly static Random Seeder = new Random();
         public static void DisplayLaneOption(String line)
         {
@@ -256,7 +256,7 @@ namespace Slutty_ryze
                         Console.WriteLine("Using Ryze Combo Sequence 3");
                         StartComboSequence(target, bSpells, new[] {'W', 'Q', 'E', 'R'});
                         break;
-                    default:
+                    default: // 0
                         Console.WriteLine("Using Ryze Combo Sequence default");
                         StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E' });
                         break;
