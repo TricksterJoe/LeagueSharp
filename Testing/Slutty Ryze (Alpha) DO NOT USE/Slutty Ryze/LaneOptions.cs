@@ -271,37 +271,43 @@ namespace Slutty_ryze
             {
                 var isMinion = target.IsMinion;
                 switch (com)
-                {                    
+                {
                     case 'Q':
                         Console.WriteLine("Use Q Start");
                         if (!bSpells[0]) continue;
 
                         //Is Hero
-                            if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
+                        if (!isMinion)
+                        {
+                            if (GlobalManager.GetPassiveBuff >= 2)
                             {
-                                if (!isMinion)
+                                if (target.IsValidTarget(Champion.Qn.Range) && Champion.Qn.IsReady() &&
+                                    !target.IsInvulnerable)
                                 {
-                                    if (GlobalManager.GetPassiveBuff >= 2)
-                                        Champion.Qn.Cast(target);
-                                    else
-                                        Champion.Q.Cast(target);
+                                    Champion.Qn.Cast(target);
                                 }
                             }
 
-                            // is minion
+                            else if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
+                                        Champion.Q.Cast(target);
+                            
+                        }
+                        // is Minion
+                        else
+                        {
+                            if (GlobalManager.GetPassiveBuff >= 2)
+                            {
+                                if (target.Health*hpOffset < Champion.Qn.GetDamage(target) &&
+                                    GlobalManager.CheckMinion(target))
+                                    Champion.Qn.Cast(target);
+                            }
                             else
                             {
-                                if (GlobalManager.GetPassiveBuff >= 2)
-                                {
-                                    if (target.Health*hpOffset < Champion.Qn.GetDamage(target) && GlobalManager.CheckMinion(target))
-                                        Champion.Qn.Cast(target);
-                                }
-                                else
-                                {
-                                    if (target.Health*hpOffset < Champion.Q.GetDamage(target) && GlobalManager.CheckMinion(target))
-                                        Champion.Q.Cast(target);
-                                }
+                                if (target.Health*hpOffset < Champion.Q.GetDamage(target) &&
+                                    GlobalManager.CheckMinion(target))
+                                    Champion.Q.Cast(target);
                             }
+                        }
 
                         continue;
 
