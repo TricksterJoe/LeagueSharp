@@ -129,6 +129,16 @@ namespace Slutty_ryze
             //var tearKey = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key.ToString();     
             Drawing.DrawText(pos.X, ++col*25 + pos.Y, Color.SteelBlue, "Stack Tear Key:{0}",
                 KeyToString(GlobalManager.Config.Item("tearS").GetValue<KeyBind>()));
+
+            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Auto Passive Key:{0}",
+               KeyToString(GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>()));
+
+            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Press Lane Key:{0}",
+               KeyToString(GlobalManager.Config.Item("presslane").GetValue<KeyBind>()));
+
+            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Disable Lane Clear Key:{0}",
+               KeyToString(GlobalManager.Config.Item("orbwalking").GetValue<KeyBind>()));
+
         }
 
         public static void Drawing_OnDrawChamp(EventArgs args)
