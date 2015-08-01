@@ -127,6 +127,7 @@ namespace Slutty_ryze
             Drawing.DrawText(pos.X, pos.Y, Color.SteelBlue, "Key Table");
             //var tearStackKey = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key;
             //var tearKey = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key.ToString();     
+
             Drawing.DrawText(pos.X, ++col*25 + pos.Y, Color.SteelBlue, "Stack Tear Key:{0}",
                 KeyToString(GlobalManager.Config.Item("tearS").GetValue<KeyBind>()));
 
@@ -137,7 +138,7 @@ namespace Slutty_ryze
                KeyToString(GlobalManager.Config.Item("presslane").GetValue<KeyBind>()));
 
             Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Disable Lane Clear Key:{0}",
-               KeyToString(GlobalManager.Config.Item("orbwalking").GetValue<KeyBind>()));
+               KeyToString(GlobalManager.Config.Item("disablelane").GetValue<KeyBind>()));
 
         }
 
