@@ -115,7 +115,7 @@ namespace Slutty_ryze
         private static void DrawKeys(Vector2 pos)
         {
 
-            Drawing.DrawLine(new Vector2(pos.X - 15 , pos.Y + 20), new Vector2(pos.X + 150, pos.Y + 20), 2, Color.SteelBlue);
+            Drawing.DrawLine(new Vector2(pos.X - 15 , pos.Y + 20), new Vector2(pos.X + 200, pos.Y + 20), 2, Color.SteelBlue);
 
             int col = 0;
             Drawing.DrawText(pos.X, pos.Y, Color.SteelBlue, "Key Table");
