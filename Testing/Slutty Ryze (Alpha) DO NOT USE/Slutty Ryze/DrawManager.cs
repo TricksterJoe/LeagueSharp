@@ -121,10 +121,11 @@ namespace Slutty_ryze
             Drawing.DrawText(pos.X, pos.Y, Color.SteelBlue, "Key Table");
             foreach (var key in GlobalManager.Config.Items.Where(key => key.GetValue<KeyBind>().Active))
             {
-                var keyCode = ((key.GetValue<KeyBind>().Key).ToString());
+                var keyCode = key.GetValue<KeyBind>().Key;
                 Drawing.DrawText(pos.X, col*25 + pos.Y, Color.SteelBlue, "{0}:{1}", key.Name, keyCode);
                 col++;
             }
+
         }
 
         public static void Drawing_OnDrawChamp(EventArgs args)
