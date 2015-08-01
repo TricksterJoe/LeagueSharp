@@ -90,7 +90,7 @@ namespace Slutty_ryze
 
             var laneclear = GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
             //    var laneclear = !GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
-            var showKeyBind = GlobalManager.Config.Item("keyBindDisplay").GetValue<KeyBind>().Active;
+            //var showKeyBind = GlobalManager.Config.Item("keyBindDisplay").GetValue<KeyBind>().Active;
 
             if (!GlobalManager.Config.Item("notdraw").GetValue<bool>()) return;
 
@@ -107,7 +107,7 @@ namespace Slutty_ryze
             Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColor(laneclear),
                 "Lane Clear: " + BoolToString(laneclear));
 
-            if(!showKeyBind) return;
+           // if(!showKeyBind) return;
             DrawKeys(new Vector2(Drawing.Width - 300, Drawing.Height/2));
 
         }
