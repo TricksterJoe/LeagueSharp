@@ -119,7 +119,7 @@ namespace Slutty_ryze
                     if (GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active)
                         ItemManager.TearStack();
 
-                    else if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
+                    if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
                         Champion.AutoPassive();
 
                     ItemManager.Potion();
