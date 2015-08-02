@@ -190,33 +190,18 @@ namespace Slutty_ryze
 
         public static void Mixed()
         {
-            var minMana = GlobalManager.Config.Item("useEPL").GetValue<Slider>().Value;
             var bSpells = new bool[3];
             bSpells[0] = GlobalManager.Config.Item("UseQM").GetValue<bool>();
             bSpells[1] = GlobalManager.Config.Item("UseEM").GetValue<bool>();
             bSpells[2] = GlobalManager.Config.Item("UseWM").GetValue<bool>();
 
             if (GlobalManager.GetHero.ManaPercent < GlobalManager.Config.Item("mMin").GetValue<Slider>().Value)
-                return;
-
-
-            DisplayLaneOption("Mixed Laneing");
-
-            var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
-            StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'E' });
-
-            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             {
-                if (GlobalManager.GetHero.ManaPercent <= minMana)
-                    return;
-
-                float randSeed = Seeder.Next(1, RandomThreshold);
-                var minionHpOffset = (1 + (randSeed / 100.0f)); // Reduce Calls and add in randomization buffer.
-                foreach (var minion in minionCount)
-                {
-                    StartComboSequence(minion, new[] {true}, new[] {'Q'}, minionHpOffset);
-                }
+                DisplayLaneOption("Mixed Laneing");
+                var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+                StartComboSequence(target, bSpells, new[] {'Q', 'W', 'E'});
             }
+            LastHit();
         }
         public static void ImprovedCombo()
         {
@@ -267,9 +252,10 @@ namespace Slutty_ryze
         private static void StartComboSequence(Obj_AI_Base target, IReadOnlyList<bool> bSpells, IEnumerable<char> seq,float hpOffset = 1)
         {
             var autoAttack = !GlobalManager.Config.Item("AAblock").GetValue<bool>();
+            var isMinion = target.IsMinion;
             foreach (var com in seq)
             {
-                var isMinion = target.IsMinion;
+                
                 switch (com)
                 {
                     case 'Q':
@@ -318,9 +304,9 @@ namespace Slutty_ryze
                         if (target.IsValidTarget(Champion.W.Range) && bSpells[1] && Champion.W.IsReady() && !target.IsInvulnerable)
                         {
                             if (!isMinion)
-                                Champion.W.Cast(target);
+                                Champion.W.CastOnUnit(target);
                             else if (target.Health * hpOffset < Champion.W.GetDamage(target) && GlobalManager.CheckMinion(target))
-                                Champion.W.Cast(target);
+                                Champion.W.CastOnUnit(target);
                         }
 
                         continue;
@@ -332,9 +318,9 @@ namespace Slutty_ryze
                         if (target.IsValidTarget(Champion.E.Range) && bSpells[2] && Champion.E.IsReady() && !target.IsInvulnerable)
                         {
                             if (!isMinion)
-                                Champion.E.Cast(target);
+                                Champion.E.CastOnUnit(target);
                             else if (target.Health * hpOffset < Champion.E.GetDamage(target) && GlobalManager.CheckMinion(target))
-                                Champion.E.Cast(target);
+                                Champion.E.CastOnUnit(target);
                         }
 
                         continue;
