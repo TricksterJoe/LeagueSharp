@@ -175,28 +175,101 @@ namespace Slutty_ryze
 
         public static void LastHit()
         {
-            var bSpells = new bool[3];
-            bSpells[0] = GlobalManager.Config.Item("useQl2h").GetValue<bool>();
-            bSpells[1] = GlobalManager.Config.Item("useEl2h").GetValue<bool>();
-            bSpells[2] = GlobalManager.Config.Item("useWl2h").GetValue<bool>();
+            var qlchSpell = GlobalManager.Config.Item("useQl2h").GetValue<bool>();
+            var elchSpell = GlobalManager.Config.Item("useEl2h").GetValue<bool>();
+            var wlchSpell = GlobalManager.Config.Item("useWl2h").GetValue<bool>();
 
-            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All,
-                MinionTeam.NotAlly);
+            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
 
 
             DisplayLaneOption("Last hitting");
-            float randSeed = Seeder.Next(1, RandomThreshold);
-            var minionHpOffset = (1 + (randSeed/100.0f)); // Reduce Calls and add in randomization buffer.
-
             foreach (var minion in minionCount)
             {
-                StartComboSequence(minion, bSpells, new[] {'Q', 'W', 'E'}, minionHpOffset);
+                if (!GlobalManager.CheckTarget(minion)) continue;
+
+                if (qlchSpell
+                && Champion.Q.IsReady()
+                && minion.IsValidTarget(Champion.Q.Range - 20)
+                && minion.Health < Champion.Q.GetDamage(minion))
+                    Champion.Q.Cast(minion);
+
+                if (wlchSpell
+                    && Champion.W.IsReady()
+                    && minion.IsValidTarget(Champion.W.Range - 10)
+                    && minion.Health < Champion.W.GetDamage(minion))
+                    Champion.W.CastOnUnit(minion);
+
+                if (elchSpell
+                    && Champion.E.IsReady()
+                    && minion.IsValidTarget(Champion.E.Range - 10)
+                    && minion.Health < Champion.E.GetDamage(minion))
+                    Champion.E.CastOnUnit(minion);
             }
+
+            //New verion
+            //var bSpells = new bool[3];
+            //bSpells[0] = GlobalManager.Config.Item("useQl2h").GetValue<bool>();
+            //bSpells[1] = GlobalManager.Config.Item("useEl2h").GetValue<bool>();
+            //bSpells[2] = GlobalManager.Config.Item("useWl2h").GetValue<bool>();
+
+
+            //var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All,
+            //    MinionTeam.NotAlly);
+
+
+            //DisplayLaneOption("Last hitting");
+            //float randSeed = Seeder.Next(1, RandomThreshold);
+            //var minionHpOffset = (1 + (randSeed/100.0f)); // Reduce Calls and add in randomization buffer.
+
+            //foreach (var minion in minionCount)
+            //{
+            //    StartComboSequence(minion, bSpells, new[] {'Q', 'W', 'E'}, minionHpOffset);
+            //}
 
         }
 
         public static void Mixed()
         {
+            var qSpell = GlobalManager.Config.Item("UseQM").GetValue<bool>();
+            var qlSpell = GlobalManager.Config.Item("UseQMl").GetValue<bool>();
+            var eSpell = GlobalManager.Config.Item("UseEM").GetValue<bool>();
+            var wSpell = GlobalManager.Config.Item("UseWM").GetValue<bool>();
+            var minMana = GlobalManager.Config.Item("useEPL").GetValue<Slider>().Value;
+
+            if (GlobalManager.GetHero.ManaPercent < GlobalManager.Config.Item("mMin").GetValue<Slider>().Value)
+                return;
+
+
+            DisplayLaneOption("Mixed Laneing");
+            var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
+            if (qSpell
+                && Champion.Q.IsReady()
+                && target.IsValidTarget(Champion.Q.Range))
+                Champion.Q.Cast(target);
+
+            if (wSpell
+                && Champion.W.IsReady()
+                && target.IsValidTarget(Champion.W.Range))
+                Champion.W.CastOnUnit(target);
+
+            if (eSpell
+                && Champion.E.IsReady()
+                && target.IsValidTarget(Champion.E.Range))
+                Champion.E.CastOnUnit(target);
+
+            var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All, MinionTeam.NotAlly);
+            {
+                if (GlobalManager.GetHero.ManaPercent <= minMana)
+                    return;
+
+                foreach (var minion in minionCount.Where(minion => qlSpell && Champion.Q.IsReady() && minion.Health < Champion.Q.GetDamage(minion) && GlobalManager.CheckTarget(minion)))
+                {
+                    Champion.Q.Cast(minion);
+                }
+            }
+
+            //New region
+            /*
             var minMana = GlobalManager.Config.Item("useEPL").GetValue<Slider>().Value;
             var bSpells = new bool[3];
             bSpells[0] = GlobalManager.Config.Item("UseQM").GetValue<bool>();
@@ -220,11 +293,14 @@ namespace Slutty_ryze
 
                 float randSeed = Seeder.Next(1, RandomThreshold);
                 var minionHpOffset = (1 + (randSeed/100.0f)); // Reduce Calls and add in randomization buffer.
+
                 foreach (var minion in minionCount)
                 {
                     StartComboSequence(minion, new[] {true}, new[] {'Q'}, minionHpOffset);
                 }
             }
+            */
+
         }
 
         public static void ImprovedCombo()
@@ -295,7 +371,7 @@ namespace Slutty_ryze
                         break;
                 }
             }
-             */
+            */ 
 #endregion ty
             Champion.SetIgniteSlot(GlobalManager.GetHero.GetSpellSlot("summonerdot"));
             var qSpell = GlobalManager.Config.Item("useQ").GetValue<bool>();
