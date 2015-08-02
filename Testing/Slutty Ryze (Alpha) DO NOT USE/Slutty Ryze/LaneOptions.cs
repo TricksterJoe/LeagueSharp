@@ -319,7 +319,7 @@ namespace Slutty_ryze
                         {
                             if (!isMinion)
                                 Champion.W.Cast(target);
-                            else if (target.Health * hpOffset < Champion.Q.GetDamage(target) && GlobalManager.CheckMinion(target))
+                            else if (target.Health * hpOffset < Champion.W.GetDamage(target) && GlobalManager.CheckMinion(target))
                                 Champion.W.Cast(target);
                         }
 
@@ -333,7 +333,7 @@ namespace Slutty_ryze
                         {
                             if (!isMinion)
                                 Champion.E.Cast(target);
-                            else if (target.Health * hpOffset < Champion.Q.GetDamage(target) && GlobalManager.CheckMinion(target))
+                            else if (target.Health * hpOffset < Champion.E.GetDamage(target) && GlobalManager.CheckMinion(target))
                                 Champion.E.Cast(target);
                         }
 
@@ -343,7 +343,7 @@ namespace Slutty_ryze
                         Console.WriteLine("Use R Start");
                         if (!bSpells[3]) continue;
 
-                        if (!target.IsValidTarget(Champion.W.Range) || !(target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target))) || target.IsInvulnerable)
+                        if (!target.IsValidTarget(Champion.W.Range) || !(target.Health > (Champion.W.GetDamage(target) + Champion.E.GetDamage(target))) || target.IsInvulnerable)
                             continue;
 
                         if (!Champion.R.IsReady()) continue;
