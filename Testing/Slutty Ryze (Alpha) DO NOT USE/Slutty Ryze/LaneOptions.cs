@@ -10,7 +10,7 @@ namespace Slutty_ryze
     {
         #region Public Functions
 
-        private const int RandomThreshold = 15; // 10%
+        private const int RandomThreshold = 15; // 15%
         readonly static Random Seeder = new Random();
         public static void DisplayLaneOption(String line)
         {

@@ -73,6 +73,11 @@ namespace Slutty_ryze
                 return;
             if (!GlobalManager.Config.Item("Draw").GetValue<bool>())
                 return;
+
+            if (!GlobalManager.Config.Item("notdraw").GetValue<bool>()) return;
+
+            DrawKeys(new Vector2(Drawing.Width - 250, (float)Drawing.Height / 2));
+
             if (!GlobalManager.GetHero.Position.IsOnScreen())
                 return;
 
@@ -89,10 +94,6 @@ namespace Slutty_ryze
             var passive = GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active;
 
             var laneclear = GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
-            //    var laneclear = !GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
-            //var showKeyBind = GlobalManager.Config.Item("keyBindDisplay").GetValue<KeyBind>().Active;
-
-            if (!GlobalManager.Config.Item("notdraw").GetValue<bool>()) return;
 
             var heroPosition = Drawing.WorldToScreen(GlobalManager.GetHero.Position);
             var textDimension = Drawing.GetTextExtent("Stunnable!");
@@ -108,8 +109,6 @@ namespace Slutty_ryze
                 "Lane Clear: " + BoolToString(laneclear));
 
            // if(!showKeyBind) return;
-            DrawKeys(new Vector2(Drawing.Width - 250, (float)Drawing.Height / 2));
-
         }
 
         private static string KeyToString(KeyBind key)
@@ -118,15 +117,14 @@ namespace Slutty_ryze
             var iKey = int.Parse(sKey);
             return iKey > 90 ? sKey : ((char) iKey).ToString();
         }
+
         private static void DrawKeys(Vector2 pos)
         {
 
             Drawing.DrawLine(new Vector2(pos.X - 25 , pos.Y + 20), new Vector2(pos.X + 150, pos.Y + 20), 2, Color.SteelBlue);
 
-            int col = 0;
+            var col = 0;
             Drawing.DrawText(pos.X, pos.Y, Color.SteelBlue, "Key Table");
-            //var tearStackKey = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key;
-            //var tearKey = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Key.ToString();     
 
             Drawing.DrawText(pos.X, ++col*25 + pos.Y, Color.SteelBlue, "Stack Tear Key:{0}",
                 KeyToString(GlobalManager.Config.Item("tearS").GetValue<KeyBind>()));
@@ -145,9 +143,7 @@ namespace Slutty_ryze
         public static void Drawing_OnDrawChamp(EventArgs args)
         {
             if (!GlobalManager.EnableDrawingDamage || GlobalManager.DamageToUnit == null)
-            {
                 return;
-            }
 
             foreach (var unit in HeroManager.Enemies.Where(h => h.IsValid && h.IsHPBarRendered))
             {
@@ -168,15 +164,13 @@ namespace Slutty_ryze
 
                 Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + Height, 1, _color);
 
-                if (GlobalManager.EnableFillDamage)
-                {
-                    float differenceInHp = xPosCurrentHp - xPosDamage;
-                    var pos1 = barPos.X + 9 + (107 * percentHealthAfterDamage);
+                if (!GlobalManager.EnableFillDamage) continue;
+                var differenceInHp = xPosCurrentHp - xPosDamage;
+                var pos1 = barPos.X + 9 + (107 * percentHealthAfterDamage);
 
-                    for (var i = 0; i < differenceInHp; i++)
-                    {
-                        Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + Height, 1, _fillColor);
-                    }
+                for (var i = 0; i < differenceInHp; i++)
+                {
+                    Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + Height, 1, _fillColor);
                 }
             }
         }
