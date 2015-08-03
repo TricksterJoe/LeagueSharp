@@ -201,6 +201,7 @@ namespace Slutty_ryze
                 var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
                 StartComboSequence(target, bSpells, new[] {'Q', 'W', 'E'});
             }
+            // No target to harass
             LastHit();
         }
         public static void ImprovedCombo()
@@ -251,7 +252,7 @@ namespace Slutty_ryze
 
         private static void StartComboSequence(Obj_AI_Base target, IReadOnlyList<bool> bSpells, IEnumerable<char> seq,float hpOffset = 1)
         {
-            var autoAttack = !GlobalManager.Config.Item("AAblock").GetValue<bool>();
+            //var autoAttack = !GlobalManager.Config.Item("AAblock").GetValue<bool>();
             var isMinion = target.IsMinion;
             foreach (var com in seq)
             {
@@ -261,36 +262,35 @@ namespace Slutty_ryze
                     case 'Q':
                         Console.WriteLine("Use Q Start");
                         if (!bSpells[0]) continue;
-
+                        if (target.IsInvulnerable) continue;
                         //Is Hero
                         if (!isMinion)
                         {
                             if (GlobalManager.GetPassiveBuff >= 2)
                             {
-                                if (target.IsValidTarget(Champion.Qn.Range) && Champion.Qn.IsReady() &&
-                                    !target.IsInvulnerable)
+                                if (target.IsValidTarget(Champion.Qn.Range) && Champion.Qn.IsReady())
                                 {
                                     Champion.Qn.Cast(target);
                                 }
                             }
 
-                            else if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
+                            else if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady())
                                         Champion.Q.Cast(target);
                             
                         }
                         // is Minion
-                        else
+                        else if(!GlobalManager.CheckMinion(target))
                         {
+                            if(!target.IsValidTarget(Champion.Q.Range - 20)) continue;
+
                             if (GlobalManager.GetPassiveBuff >= 2)
                             {
-                                if (target.Health*hpOffset < Champion.Qn.GetDamage(target) &&
-                                    GlobalManager.CheckMinion(target))
+                                if (target.Health*hpOffset < Champion.Qn.GetDamage(target))
                                     Champion.Qn.Cast(target);
                             }
                             else
                             {
-                                if (target.Health*hpOffset < Champion.Q.GetDamage(target) &&
-                                    GlobalManager.CheckMinion(target))
+                                if (target.Health*hpOffset < Champion.Q.GetDamage(target))
                                     Champion.Q.Cast(target);
                             }
                         }
@@ -300,8 +300,9 @@ namespace Slutty_ryze
                     case 'W':
                         Console.WriteLine("Use W Start");
                         if (!bSpells[1]) continue;
+                        if (target.IsInvulnerable) continue;
 
-                        if (target.IsValidTarget(Champion.W.Range) && bSpells[1] && Champion.W.IsReady() && !target.IsInvulnerable)
+                        if (target.IsValidTarget(Champion.W.Range) && bSpells[1] && Champion.W.IsReady())
                         {
                             if (!isMinion)
                                 Champion.W.CastOnUnit(target);
@@ -314,8 +315,9 @@ namespace Slutty_ryze
                     case 'E':
                         Console.WriteLine("Use E Start");
                         if (!bSpells[2]) continue;
+                        if (target.IsInvulnerable) continue;
 
-                        if (target.IsValidTarget(Champion.E.Range) && bSpells[2] && Champion.E.IsReady() && !target.IsInvulnerable)
+                        if (target.IsValidTarget(Champion.E.Range) && Champion.E.IsReady())
                         {
                             if (!isMinion)
                                 Champion.E.CastOnUnit(target);
@@ -326,16 +328,17 @@ namespace Slutty_ryze
                         continue;
 
                     case 'R':
+
                         Console.WriteLine("Use R Start");
                         if (!bSpells[3]) continue;
-
-                        if (!target.IsValidTarget(Champion.W.Range) || !(target.Health > (Champion.W.GetDamage(target) + Champion.E.GetDamage(target))) || target.IsInvulnerable)
-                            continue;
-
+                        if (target.IsInvulnerable) continue;
+                        if (!target.IsValidTarget(Champion.W.Range))continue;
+                        if(!(target.Health > Champion.W.GetDamage(target) + Champion.E.GetDamage(target))) continue;
                         if (!Champion.R.IsReady()) continue;
-
-                        if (bSpells[4] && target.HasBuff("RyzeW") || !bSpells[4])
+                        if (!bSpells[4]) continue;
+                        if (target.HasBuff("RyzeW"))
                             Champion.R.Cast();
+
                         continue;
                 }
                 //if (!autoAttack) continue;
