@@ -87,7 +87,7 @@ namespace Slutty_ryze
             var tears = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active;
             var passive = GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active;
 
-            var laneclear = GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
+            var laneclear = !GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
             //    var laneclear = !GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
             //var showKeyBind = GlobalManager.Config.Item("keyBindDisplay").GetValue<KeyBind>().Active;
 
