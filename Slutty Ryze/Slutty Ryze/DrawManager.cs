@@ -103,8 +103,8 @@ namespace Slutty_ryze
             Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30, GetColor(passive),
                 "Passive Stack: " + BoolToString(passive));
 
-            Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColor(!laneclear),
-                "Lane Clear: " + BoolToString(!laneclear));
+            Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColor(laneclear),
+                "Lane Clear: " + BoolToString(laneclear));
 
            // if(!showKeyBind) return;
 
