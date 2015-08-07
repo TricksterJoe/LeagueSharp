@@ -93,7 +93,7 @@ namespace Slutty_ryze
             var tears = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active;
             var passive = GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active;
 
-            var laneclear = GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
+            var laneclear = !GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
 
             var heroPosition = Drawing.WorldToScreen(GlobalManager.GetHero.Position);
             var textDimension = Drawing.GetTextExtent("Stunnable!");
