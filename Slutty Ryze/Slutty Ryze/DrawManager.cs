@@ -56,7 +56,7 @@ namespace Slutty_ryze
             Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Disable Lane Clear Key:{0}",
                KeyToString(GlobalManager.Config.Item("disablelane").GetValue<KeyBind>()));
 
-            Drawing.DrawLine(new Vector2(pos.X - 25, ++col * 25 + pos.Y), new Vector2(pos.X + 150, pos.Y + 20), 2, Color.SteelBlue);
+            Drawing.DrawLine(new Vector2(pos.X - 25, ++col * 25 + pos.Y), new Vector2(pos.X + 150, col * 25 + pos.Y), 2, Color.SteelBlue);
         }
 
         /*
