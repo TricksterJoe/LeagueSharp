@@ -10,7 +10,7 @@ namespace Slutty_ryze
     {
         static FastDraw()
         {
-            Quality = .1f;
+            Quality = 1.5f;
         }
 
         public static float Quality { get; set; }
