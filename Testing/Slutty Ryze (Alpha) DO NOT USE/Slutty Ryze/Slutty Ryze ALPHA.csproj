@@ -61,6 +61,7 @@
     <Compile Include="GlobalManager.cs" />
     <Compile Include="Humanizer.cs" />
     <Compile Include="ItemManager.cs" />
+    <Compile Include="FastDraw.cs" />
     <Compile Include="LaneOptions.cs" />
     <Compile Include="MenuManager.cs" />
     <Compile Include="Program.cs" />

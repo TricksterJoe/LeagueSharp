@@ -80,6 +80,7 @@ namespace Slutty_ryze
             {
                 float randSeed = Seeder.Next(1,RandomThreshold);
                 var minionHp = minion.Health * (1 + (randSeed / 100.0f)) ; // Reduce Calls and add in randomization buffer.
+
                 if (!GlobalManager.CheckMinion(minion)) continue;
 
                 if (qlchSpell
