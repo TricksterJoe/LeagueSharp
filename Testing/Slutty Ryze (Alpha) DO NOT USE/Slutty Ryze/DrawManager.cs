@@ -84,12 +84,12 @@ namespace Slutty_ryze
             // drawCircleThing((int)Champion.Q.Range/2, Drawing.WorldToScreen(GlobalManager.GetHero.Position), Color.Pink);
 
             if (GlobalManager.Config.Item("qDraw").GetValue<bool>() && Champion.Q.Level > 0)
-                FastDraw.DrawCircle(GlobalManager.GetHero.Position.X, GlobalManager.GetHero.Position.Y, Champion.Q.Range, 100, Color.Green);
+                FastDraw.DrawCircle(GlobalManager.GetHero.Position.X, GlobalManager.GetHero.Position.Y, Champion.Q.Range, 10, Color.Green);
                 //Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.Q.Range, Color.Green);
             if (GlobalManager.Config.Item("eDraw").GetValue<bool>() && Champion.E.Level > 0)
-                FastDraw.DrawCircle(GlobalManager.GetHero.Position.X, GlobalManager.GetHero.Position.Y, Champion.E.Range, 100, Color.Gold);
+                FastDraw.DrawCircle(GlobalManager.GetHero.Position.X, GlobalManager.GetHero.Position.Y, Champion.E.Range, 10, Color.Gold);
             if (GlobalManager.Config.Item("wDraw").GetValue<bool>() && Champion.W.Level > 0)
-                FastDraw.DrawCircle(GlobalManager.GetHero.Position.X, GlobalManager.GetHero.Position.Y, Champion.W.Range, 100, Color.Black);
+                FastDraw.DrawCircle(GlobalManager.GetHero.Position.X, GlobalManager.GetHero.Position.Y, Champion.W.Range, 10, Color.Black);
 
             var tears = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active;
             var passive = GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active;
