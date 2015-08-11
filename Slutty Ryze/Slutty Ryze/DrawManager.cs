@@ -2,6 +2,7 @@
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 using Color = System.Drawing.Color;
 
 namespace Slutty_ryze
@@ -27,6 +28,37 @@ namespace Slutty_ryze
         {
             return b ? "On" : "off";
         }
+
+        private static string KeyToString(KeyBind key)
+        {
+            var sKey = key.Key.ToString();
+            var iKey = int.Parse(sKey);
+            return iKey > 90 ? sKey : ((char)iKey).ToString();
+        }
+
+        private static void DrawKeys(Vector2 pos)
+        {
+
+            Drawing.DrawLine(new Vector2(pos.X - 25, pos.Y + 20), new Vector2(pos.X + 150, pos.Y + 20), 2, Color.SteelBlue);
+
+            var col = 0;
+            Drawing.DrawText(pos.X, pos.Y, Color.SteelBlue, "Key Table");
+
+            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Stack Tear Key:{0}",
+                KeyToString(GlobalManager.Config.Item("tearS").GetValue<KeyBind>()));
+
+            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Auto Passive Key:{0}",
+               KeyToString(GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>()));
+
+            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Press Lane Key:{0}",
+               KeyToString(GlobalManager.Config.Item("presslane").GetValue<KeyBind>()));
+
+            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Disable Lane Clear Key:{0}",
+               KeyToString(GlobalManager.Config.Item("disablelane").GetValue<KeyBind>()));
+
+            Drawing.DrawLine(new Vector2(pos.X - 25, ++col * 25 + pos.Y), new Vector2(pos.X + 150, pos.Y + 20), 2, Color.SteelBlue);
+        }
+
         /*
          static Point[] getPoints(Vector2 c, int R)
          {
@@ -72,17 +104,21 @@ namespace Slutty_ryze
                 return;
             if (!GlobalManager.Config.Item("Draw").GetValue<bool>())
                 return;
+
+            if (GlobalManager.Config.Item("keyBindDisplay").GetValue<bool>())
+            DrawKeys(new Vector2(Drawing.Width - 250, (float)Drawing.Height / 2));
+
             if (!GlobalManager.GetHero.Position.IsOnScreen())
                 return;
 
             // drawCircleThing((int)Champion.Q.Range/2, Drawing.WorldToScreen(GlobalManager.GetHero.Position), Color.Pink);
 
             if (GlobalManager.Config.Item("qDraw").GetValue<bool>() && Champion.Q.Level > 0)
-                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.Q.Range, Color.Green);
+                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.Q.Range, Color.Green,3);
             if (GlobalManager.Config.Item("eDraw").GetValue<bool>() && Champion.E.Level > 0)
-                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.E.Range, Color.Gold);
+                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.E.Range, Color.Gold,3);
             if (GlobalManager.Config.Item("wDraw").GetValue<bool>() && Champion.W.Level > 0)
-                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.W.Range, Color.Black);
+                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.W.Range, Color.Black,3);
 
             var tears = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active;
             var passive = GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active;
@@ -139,15 +175,13 @@ namespace Slutty_ryze
 
                 Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + Height, 1, _color);
 
-                if (GlobalManager.EnableFillDamage)
-                {
-                    float differenceInHp = xPosCurrentHp - xPosDamage;
-                    var pos1 = barPos.X + 9 + (107 * percentHealthAfterDamage);
+                if (!GlobalManager.EnableFillDamage) continue;
+                var differenceInHp = xPosCurrentHp - xPosDamage;
+                var pos1 = barPos.X + 9 + (107 * percentHealthAfterDamage);
 
-                    for (var i = 0; i < differenceInHp; i++)
-                    {
-                        Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + Height, 1, _fillColor);
-                    }
+                for (var i = 0; i < differenceInHp; i++)
+                {
+                    Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + Height, 1, _fillColor);
                 }
             }
         }

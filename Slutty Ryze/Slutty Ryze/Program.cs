@@ -52,10 +52,19 @@ namespace Slutty_ryze
 #pragma warning restore 618
             Orbwalking.BeforeAttack += Champion.Orbwalking_BeforeAttack;
             CustomEvents.Unit.OnDash += Champion.Unit_OnDash;
+            ShowDisplayMessage();
+
         }
         #endregion
 
         #region onGameUpdate
+
+        private static void ShowDisplayMessage()
+        {
+            var txt = Properties.Resources.display.Split('\n');
+            foreach (var s in txt)
+                Console.WriteLine(s);
+        }
         private static void Game_OnUpdate(EventArgs args)
         {
             try // lazy
