@@ -62,7 +62,7 @@ namespace Slutty_ryze
         private static void ShowDisplayMessage()
         {
             var r = new Random();
-            var i = 3;//r.Next(1, 3);
+            var i = r.Next(1, 3);
             var txt = Properties.Resources.display.Split('\n');
             switch (i)
             {
