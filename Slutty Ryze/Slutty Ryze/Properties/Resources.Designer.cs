@@ -61,15 +61,19 @@ namespace Slutty_ryze.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to             ___                                              
-        ///    _.-~~   ~~~-.                                         
-        ///   /         _   ~.                                       
-        ///  |#`       /#`    \     They asked me what i wanted to be
-        ///  |-&apos;|      |-&apos;|    |                                     
-        ///  /--        --     |-.      I said BE A SQUIRTLE            
-        ///  \__   .  .        / /\_                                 
-        ///   \ ~~--___---~~/\| |   ~-.                              
-        ///.---`~~--____---_)  \ \-__ [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to                _,........__
+        ///            ,-&apos;            &quot;`-.
+        ///          ,&apos;                   `-.
+        ///        ,&apos;                        \
+        ///      ,&apos;                           .
+        ///      .&apos;\               ,&quot;&quot;.       `
+        ///     ._.&apos;|             / |  `       \
+        ///     |   |            `-.&apos;  ||       `.
+        ///     |   |            &apos;-._,&apos;||       | \
+        ///     .`.,&apos;             `..,&apos;.&apos;       , |`-.
+        ///     l                       .&apos;`.  _/  |   `.
+        ///     `-.._&apos;-   ,          _ _&apos;   -&quot; \  .     `
+        ///`.&quot;&quot;&quot;&quot;&quot;&apos;-.`-...,---------&apos;,&apos;         `. [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string display {
             get {
@@ -78,12 +82,20 @@ namespace Slutty_ryze.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to `&apos;:,,,,,;:                                                           
-        ///                             ;:,.,,,,,,,,:+                                                         
-        ///                            +,,,..,,,,,,,,:&apos;`                                                       
-        ///                          `,.``...,,,,,,,,,:+                                                       
-        ///                         .,.```...,,,,,,,,,::#                                                      
-        ///                         :,```... [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to            _.--&quot;&quot;`-..
+        ///            ,&apos;          `.
+        ///          ,&apos;          __  `.
+        ///         /|          &quot; __   \
+        ///        , |           / |.   .
+        ///        |,&apos;          !_.&apos;|   |
+        ///      ,&apos;             &apos;   |   |
+        ///     /              |`--&apos;|   |
+        ///    |                `---&apos;   |
+        ///     .   ,                   |                       ,&quot;.
+        ///      ._     &apos;           _&apos;  |                    , &apos; \ `
+        ///  `.. `.`-...___,...---&quot;&quot;    |       __,.        ,`&quot;   L,|
+        ///  |, `- .`._        _,-,.&apos;   .  __.-&apos;-. /        .   ,    \
+        ///-: [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string display2 {
             get {
@@ -92,12 +104,16 @@ namespace Slutty_ryze.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to `@                                                                           
-        ///                       @@                                                                           
-        ///                      @@@                                                                           
-        ///                     +@@@                                                                           
-        ///                     @@@@`                                                                          
-        ///                    @@@@@ [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to                                                   /
+        ///                        _,.------....___,.&apos; &apos;,.-.
+        ///                     ,-&apos;          _,.--&quot;        |
+        ///                   ,&apos;         _.-&apos;              .
+        ///                  /   ,     ,&apos;                   `
+        ///                 .   /     /                     ``.
+        ///                 |  |     .                       \.\
+        ///       ____      |___._.  |       __               \ `.
+        ///     .&apos;    `---&quot;&quot;       ``&quot;-.--&quot;&apos;`  \               .  \
+        ///    .  ,            __         [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string display3 {
             get {
