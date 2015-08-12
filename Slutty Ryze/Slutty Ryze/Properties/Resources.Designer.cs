@@ -78,9 +78,12 @@ namespace Slutty_ryze.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .;+##@@@##.                                                                                                                                                  
-        ///                                     `.#@@@@@@@@@@@@@@@@@.                                                                                                                                              
-        ///                                  .#@@@@##+;;::::::::+#@@@@+                                                                                            [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to `&apos;:,,,,,;:                                                           
+        ///                             ;:,.,,,,,,,,:+                                                         
+        ///                            +,,,..,,,,,,,,:&apos;`                                                       
+        ///                          `,.``...,,,,,,,,,:+                                                       
+        ///                         .,.```...,,,,,,,,,::#                                                      
+        ///                         :,```... [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string display2 {
             get {
@@ -89,10 +92,12 @@ namespace Slutty_ryze.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &apos;                                                                           
-        ///                                                                                                                           @@                                                                           
-        ///                                                                                                                          @@@:                                                                          
-        ///                               [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to `@                                                                           
+        ///                       @@                                                                           
+        ///                      @@@                                                                           
+        ///                     +@@@                                                                           
+        ///                     @@@@`                                                                          
+        ///                    @@@@@ [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string display3 {
             get {
