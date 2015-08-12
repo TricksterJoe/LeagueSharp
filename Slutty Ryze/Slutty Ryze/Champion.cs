@@ -125,11 +125,9 @@ namespace Slutty_ryze
         {
             var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
             var wSpell = GlobalManager.Config.Item("useW2I").GetValue<bool>();
-            if (wSpell)
-            {
-                Champion.W.CastOnUnit(target);
-                Console.WriteLine("Plz no Senpai");
-            }
+            if (!wSpell) return;
+            Champion.W.CastOnUnit(target);
+            Console.WriteLine(@"Plz no Senpai");
         }
 
         public static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)

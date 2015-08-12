@@ -24,7 +24,7 @@ namespace Slutty_ryze
             if (GlobalManager.GetHero.ChampionName != Champion.ChampName)
                 return;
 
-            Console.WriteLine("Loading Slutty Ryze...");
+            Console.WriteLine(@"Loading Your Slutty Ryze");
 
             Humanizer.AddAction("generalDelay",35.0f);
 
@@ -38,7 +38,7 @@ namespace Slutty_ryze
             Champion.Qn.SetSkillshot(0.26f, 50f, 1700f, false, SkillshotType.SkillshotLine);
 
             //assign menu from MenuManager to Config
-            Console.WriteLine("Loading Slutty Menu...");
+            Console.WriteLine(@"Loading Your Slutty Menu...");
             GlobalManager.Config = MenuManager.GetMenu();
             GlobalManager.Config.AddToMainMenu();
 
@@ -61,7 +61,19 @@ namespace Slutty_ryze
 
         private static void ShowDisplayMessage()
         {
-            var txt = Properties.Resources.display.Split('\n');
+            var r = new Random();
+            var i = r.Next(1, 3);
+            var txt = Properties.Resources.display.Split('\n'); ;
+            switch (i)
+            {
+                case 2:
+                    txt = Properties.Resources.display2.Split('\n');
+                    break;
+                case 3:
+                    txt = Properties.Resources.display3.Split('\n');
+                    break;
+            }
+
             foreach (var s in txt)
                 Console.WriteLine(s);
         }
@@ -81,7 +93,7 @@ namespace Slutty_ryze
                 {
                     if (!Humanizer.CheckDelay("generalDelay")) // Wait for delay for all other events
                     {
-                        Console.WriteLine("Waiting on Human Dealy");
+                        Console.WriteLine(@"Waiting on Human delay");
                         return;
                     }
                     //Console.WriteLine("Seeding Human Delay");

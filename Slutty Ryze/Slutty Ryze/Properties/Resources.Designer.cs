@@ -76,5 +76,28 @@ namespace Slutty_ryze.Properties {
                 return ResourceManager.GetString("display", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .;+##@@@##.                                                                                                                                                  
+        ///                                     `.#@@@@@@@@@@@@@@@@@.                                                                                                                                              
+        ///                                  .#@@@@##+;;::::::::+#@@@@+                                                                                            [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string display2 {
+            get {
+                return ResourceManager.GetString("display2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;                                                                           
+        ///                                                                                                                           @@                                                                           
+        ///                                                                                                                          @@@:                                                                          
+        ///                               [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string display3 {
+            get {
+                return ResourceManager.GetString("display3", resourceCulture);
+            }
+        }
     }
 }

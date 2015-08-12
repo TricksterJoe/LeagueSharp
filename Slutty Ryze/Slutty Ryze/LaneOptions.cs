@@ -830,7 +830,6 @@ namespace Slutty_ryze
                 switch (com)
                 {                    
                     case 'Q':
-                        Console.WriteLine("Use Q Start");
                         if (!bSpells[0]) continue;
 
                         if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
@@ -847,7 +846,6 @@ namespace Slutty_ryze
                         continue;
 
                     case 'W':
-                        Console.WriteLine("Use W Start");
                         if (!bSpells[1]) continue;
 
                         if (target.IsValidTarget(Champion.W.Range) && bSpells[1] && Champion.W.IsReady() && !target.IsInvulnerable)
@@ -857,7 +855,6 @@ namespace Slutty_ryze
                         continue;
 
                     case 'E':
-                        Console.WriteLine("Use E Start");
                         if (!bSpells[2]) continue;
 
                         if (target.IsValidTarget(Champion.E.Range) && bSpells[2] && Champion.E.IsReady() && !target.IsInvulnerable)
@@ -868,7 +865,6 @@ namespace Slutty_ryze
                         continue;
 
                     case 'R':
-                        Console.WriteLine("Use R Start");
                         if (!bSpells[3]) continue;
                         if (!target.IsValidTarget(Champion.W.Range) || !(target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target))) || target.IsInvulnerable)
                             continue;
