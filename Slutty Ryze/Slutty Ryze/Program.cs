@@ -62,9 +62,9 @@ namespace Slutty_ryze
         private static void ShowDisplayMessage()
         {
             var r = new Random();
-            var i = r.Next(1, 3);
+      
             var txt = Properties.Resources.display.Split('\n');
-            switch (i)
+            switch (r.Next(1, 3))
             {
                 case 2:
                     txt = Properties.Resources.display2.Split('\n');
@@ -76,6 +76,21 @@ namespace Slutty_ryze
 
             foreach (var s in txt)
                 Console.WriteLine(s);
+
+            try
+            {
+                var sr = new System.IO.StreamReader(System.Net.WebRequest.Create(string.Format("http://www.fiikus.net/asciiart/pokemon/{0}{1}{2}.txt", r.Next(0, 1), r.Next(0, 3), r.Next(0, 9))).GetResponse().GetResponseStream());
+                string line;
+                while ((line = sr.ReadLine()) != null)
+                {
+                    Console.WriteLine(line);
+                }
+            }
+
+            catch
+            {
+                // ignored
+            }
         }
         private static void Game_OnUpdate(EventArgs args)
         {
