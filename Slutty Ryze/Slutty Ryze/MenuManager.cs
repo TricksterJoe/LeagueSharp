@@ -109,7 +109,7 @@ namespace Slutty_ryze
             var laneMenu = new Menu("Lane Clear (V)", "lanesettings");
             {
                 laneMenu.AddItem(
-                    new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
+                    new MenuItem("disablelane", "Disable Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
                 laneMenu.AddItem(
                     new MenuItem("presslane", "Press Lane Clear").SetValue(new KeyBind('H', KeyBindType.Press)));
                 laneMenu.AddItem(new MenuItem("useEPL", "Minimum %Mana For Lane Clear").SetValue(new Slider(50)));
