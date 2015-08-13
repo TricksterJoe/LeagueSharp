@@ -34,6 +34,8 @@ namespace Slutty_ryze
 
             humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("minDelay", "Minimum delay for actions (ms)").SetValue(new Slider(10, 0, 200)));
             humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("maxDelay", "Maximum delay for actions (ms)").SetValue(new Slider(75, 0, 250)));
+            humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("minCreepHPOffset", "Minimum HP for a minion to have before CSing Damage >= HP+(%)").SetValue(new Slider(5, 0, 25)));
+            humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("maxCreepHPOffset", "Maximum HP for a minion to have before CSing Damage >= HP+(%)").SetValue(new Slider(15, 0, 25)));
             humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("doHuman", "Humanize").SetValue(true));
 
             return humanizerMenu;

@@ -10,7 +10,7 @@ namespace Slutty_ryze
     {
         #region Public Functions
 
-        private const int RandomThreshold = 10; // 10%
+        //private const int RandomThreshold = 10; // 10%
         private static readonly Random Seeder = new Random();
 
         public static void DisplayLaneOption(String line)
@@ -81,9 +81,11 @@ namespace Slutty_ryze
             DisplayLaneOption("Clearing Lane");
             foreach (var minion in minionCount)
             {
-                float randSeed = Seeder.Next(1, RandomThreshold);
-                var minionHp = minion.Health*(1 + (randSeed/100.0f)); // Reduce Calls and add in randomization buffer.
                 if (!GlobalManager.CheckMinion(minion)) continue;
+
+                var minionHp = minion.Health;// Reduce Calls and add in randomization buffer.
+                if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
+                    minionHp = minion.Health * (1 + (Seeder.Next(GlobalManager.Config.Item("minCreepHPOffset").GetValue<Slider>().Value, GlobalManager.Config.Item("maxCreepHPOffset").GetValue<Slider>().Value) / 100.0f));//Randomioze Minion Hp from min to max hp less than damage
 
                 if (qlchSpell
                     && Champion.Q.IsReady()
@@ -185,26 +187,28 @@ namespace Slutty_ryze
 
 
             DisplayLaneOption("Last hitting");
-            foreach (var minion in minionCount)
+            foreach (var minion in minionCount.Where(GlobalManager.CheckTarget))
             {
-                if (!GlobalManager.CheckTarget(minion)) continue;
+                var minionHp = minion.Health;// Reduce Calls and add in randomization buffer.
+                if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
+                    minionHp = minion.Health * (1 + (Seeder.Next(GlobalManager.Config.Item("minCreepHPOffset").GetValue<Slider>().Value, GlobalManager.Config.Item("maxCreepHPOffset").GetValue<Slider>().Value) / 100.0f));//Randomioze Minion Hp from min to max hp less than damage
 
                 if (qlchSpell
                     && Champion.Q.IsReady()
                     && minion.IsValidTarget(Champion.Q.Range - 20)
-                    && minion.Health < Champion.Q.GetDamage(minion))
+                    && minionHp < Champion.Q.GetDamage(minion))
                     Champion.Q.Cast(minion);
 
                 if (wlchSpell
                     && Champion.W.IsReady()
                     && minion.IsValidTarget(Champion.W.Range - 10)
-                    && minion.Health < Champion.W.GetDamage(minion))
+                    && minionHp < Champion.W.GetDamage(minion))
                     Champion.W.CastOnUnit(minion);
 
                 if (elchSpell
                     && Champion.E.IsReady()
                     && minion.IsValidTarget(Champion.E.Range - 10)
-                    && minion.Health < Champion.E.GetDamage(minion))
+                    && minionHp < Champion.E.GetDamage(minion))
                     Champion.E.CastOnUnit(minion);
             }
 

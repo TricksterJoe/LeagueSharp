@@ -5,7 +5,7 @@ namespace Slutty_ryze
     class AutoLevelManager
     {
         #region Structures
-        struct Abilitys
+        struct Abilitys // So you can refeer to spell to level by slot rather than 1,2,3,4
         {
             public const int Q = 1;
             public const int W = 2;
