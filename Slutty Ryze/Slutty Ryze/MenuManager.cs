@@ -63,9 +63,9 @@ namespace Slutty_ryze
             drawMenu.SubMenu("Drawings").AddItem(drawDamageMenu);
             drawMenu.SubMenu("Drawings").AddItem(drawFill);
 
-            GlobalManager.EnableDrawingDamage = drawDamageMenu.GetValue<bool>();
-            GlobalManager.EnableFillDamage = drawFill.GetValue<Circle>().Active;
-            GlobalManager.DamageFillColor = drawFill.GetValue<Circle>().Color;
+            //GlobalManager.EnableDrawingDamage = drawDamageMenu.GetValue<bool>();
+            //GlobalManager.EnableFillDamage = drawFill.GetValue<Circle>().Active;
+            //GlobalManager.DamageFillColor = drawFill.GetValue<Circle>().Color;
 
             return drawMenu;
         }

@@ -100,6 +100,11 @@ namespace Slutty_ryze
         #region Public Functions
         public static void Drawing_OnDraw(EventArgs args)
         {
+
+            GlobalManager.EnableDrawingDamage = GlobalManager.Config.Item("RushDrawEDamage").GetValue<bool>();
+            GlobalManager.EnableFillDamage = GlobalManager.Config.Item("RushDrawWDamageFill").GetValue<Circle>().Active;
+            GlobalManager.DamageFillColor = GlobalManager.Config.Item("RushDrawWDamageFill").GetValue<Circle>().Color;
+
             if (GlobalManager.GetHero.IsDead)
                 return;
             if (!GlobalManager.Config.Item("Draw").GetValue<bool>())
@@ -120,9 +125,10 @@ namespace Slutty_ryze
             if (GlobalManager.Config.Item("wDraw").GetValue<bool>() && Champion.W.Level > 0)
                 Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.W.Range, Color.Black,3);
 
+
+
             var tears = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active;
             var passive = GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active;
-
             var laneclear = !GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
             //    var laneclear = !GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
             //var showKeyBind = GlobalManager.Config.Item("keyBindDisplay").GetValue<KeyBind>().Active;

@@ -53,6 +53,7 @@ namespace Slutty_ryze
         //    return minionsStruct;
         //}
 
+        // ReSharper disable once FunctionComplexityOverflow
         public static void LaneClear()
         {
             if (GlobalManager.GetPassiveBuff == 4
@@ -310,6 +311,7 @@ namespace Slutty_ryze
 
         }
 
+        // ReSharper disable once FunctionComplexityOverflow
         public static void ImprovedCombo()
         {
             Champion.SetIgniteSlot(GlobalManager.GetHero.GetSpellSlot("summonerdot"));
@@ -340,7 +342,7 @@ namespace Slutty_ryze
 
                     if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
                     {
-                        Console.WriteLine("Using Ryze Combo Sequence 4");
+                        Console.WriteLine(@"Using Ryze Combo Sequence 4");
                         StartComboSequence(target, bSpells, new[] {'Q', 'W', 'Q', 'E', 'Q', 'R'});
                     }
                     else
@@ -350,19 +352,19 @@ namespace Slutty_ryze
                         {
                             case 1:
                             case 2:
-                                Console.WriteLine("Using Ryze Combo Sequence 1");
+                                Console.WriteLine(@"Using Ryze Combo Sequence 1");
                                 StartComboSequence(target, bSpells, new[] {'Q', 'W', 'E', 'R'});
                                 break;
                             case 3:
-                                Console.WriteLine("Using Ryze Combo Sequence 2");
+                                Console.WriteLine(@"Using Ryze Combo Sequence 2");
                                 StartComboSequence(target, bSpells, new[] {'Q', 'E', 'W', 'R'});
                                 break;
                             case 4:
-                                Console.WriteLine("Using Ryze Combo Sequence 3");
+                                Console.WriteLine(@"Using Ryze Combo Sequence 3");
                                 StartComboSequence(target, bSpells, new[] {'W', 'Q', 'E', 'R'});
                                 break;
                             default: // 0
-                                Console.WriteLine("Using Ryze Combo Sequence default");
+                                Console.WriteLine(@"Using Ryze Combo Sequence default");
                                 StartComboSequence(target, bSpells, new[] {'W', 'Q', 'E'});
                                 break;
                         }
