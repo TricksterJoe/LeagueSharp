@@ -59,11 +59,11 @@ namespace Slutty_ryze
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("Draw", "Display Drawing").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
-            drawMenu.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "w Drawing").SetValue(true));
+            drawMenu.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "W Drawing").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("notdraw", "Float Text").SetValue(true));
-            drawMenu.SubMenu("Drawings").AddItem(new MenuItem("keyBindDisplay", "Display KeyBinds").SetValue(true));  
+            drawMenu.SubMenu("Drawings").AddItem(new MenuItem("keyBindDisplay", "Display Keybinds").SetValue(true));  
 
-            var drawDamageMenu = new MenuItem("RushDrawEDamage", "Combo damage").SetValue(true);
+            var drawDamageMenu = new MenuItem("RushDrawEDamage", "Combo Damage").SetValue(true);
             var drawFill =
                 new MenuItem("RushDrawWDamageFill", "Combo Damage Fill").SetValue(new Circle(true, Color.SeaGreen));
             drawMenu.SubMenu("Drawings").AddItem(drawDamageMenu);
@@ -83,7 +83,7 @@ namespace Slutty_ryze
                 combo1Menu
                     .AddItem(
                         new MenuItem("combooptions", "Combo Mode").SetValue(
-                            new StringList(new[] {"OLD Combo System","NEWWW Combo System"})));
+                            new StringList(new[] {"Old Combo System","New Combo System"})));
                 combo1Menu.AddItem(new MenuItem("useQ", "Use Q (Over Load)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useW", "Use W (Rune Prison)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useE", "Use E (Spell Flux)").SetValue(true));

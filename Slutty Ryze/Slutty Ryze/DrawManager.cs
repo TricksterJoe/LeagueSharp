@@ -28,7 +28,7 @@ namespace Slutty_ryze
 
         private static string BoolToString(bool b)
         {
-            return b ? "On" : "off";
+            return b ? "ON" : "OFF";
         }
 
         private static Color GetColorblind(bool c)
@@ -38,7 +38,7 @@ namespace Slutty_ryze
 
         private static string BoolToStringblind(bool c)
         {
-            return c ? "On" : "off";
+            return c ? "ON" : "OFF";
         }
 
         private static string KeyToString(KeyBind key)
@@ -170,7 +170,7 @@ namespace Slutty_ryze
                     if (GlobalManager.Config.Item("eDraw").GetValue<bool>() && Champion.E.Level > 0)
                         Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.E.Range, Color.Gold, 3);
                     if (GlobalManager.Config.Item("wDraw").GetValue<bool>() && Champion.W.Level > 0)
-                        Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.W.Range, Color.Black, 3);
+                        Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.W.Range, Color.Blue, 3);
 
                     if (!GlobalManager.Config.Item("notdraw").GetValue<bool>()) return;
 
