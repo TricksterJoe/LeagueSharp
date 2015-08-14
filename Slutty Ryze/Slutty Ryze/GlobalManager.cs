@@ -9,18 +9,18 @@ namespace Slutty_ryze
         #region Variable Declaration
         private static readonly Obj_AI_Hero PlayerHero = ObjectManager.Player;
         private static DamageToUnitDelegate _damageToUnit;
-        private static bool _enableFillDamage = true;
-        private static System.Drawing.Color _damageFillColor;
-        private static bool _enableDrawingDamage = true;
         private const string _menuName = "Slutty Ryze";
 
         public delegate float DamageToUnitDelegate(Obj_AI_Hero hero);
 
-        //public static Obj_AI_Hero GetHero() => PrivatePlayerHero;
         #endregion
         #region Public Properties
+        #region Auto Properties
         public static Menu Config { get; set; }
-
+        public static bool EnableFillDamage { get; set; }
+        public static bool EnableDrawingDamage { get; set; }
+        public static System.Drawing.Color DamageFillColor { get; set; }
+        #endregion
         public static string MenuNAme
         {
             get
@@ -55,7 +55,7 @@ namespace Slutty_ryze
 
         public static bool CheckMinion(Obj_AI_Base minion)
         {
-            return (minion.IsMinion && minion.MaxHealth > 3 && minion.IsTargetable);
+            return minion != null && (minion.IsMinion && minion.MaxHealth > 3 && minion.IsTargetable);
         }
 
         public static int GetPassiveBuff
@@ -69,26 +69,6 @@ namespace Slutty_ryze
             }
         }
 
-        public static bool EnableFillDamage
-        {
-            get { return _enableFillDamage; }
-
-            set { _enableFillDamage = value; }
-        }
-
-        public static bool EnableDrawingDamage
-        {
-            get { return _enableDrawingDamage; }
-
-            set { _enableDrawingDamage = value; }
-        }
-
-        public static System.Drawing.Color DamageFillColor
-        {
-            get { return _damageFillColor; }
-
-            set { _damageFillColor = value; }
-        }
         #endregion
     }
 }

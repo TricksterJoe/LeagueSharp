@@ -100,6 +100,8 @@ namespace Slutty_ryze
 
                 if (GlobalManager.GetHero.IsDead)
                     return;
+                if (GlobalManager.GetHero.IsRecalling())
+                    return;
 
                 MenuManager.Orbwalker.SetAttack(true);
 

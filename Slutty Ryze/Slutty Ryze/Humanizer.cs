@@ -4,6 +4,7 @@ using LeagueSharp.Common;
 
 namespace Slutty_ryze
 {
+    //By 0x0539
     class Humanizer
     {
       
@@ -28,8 +29,6 @@ namespace Slutty_ryze
         {
             if (ActionDelayList.All(a => a.Name != actionName)) return; // ID is not in list
             ActionDelayList.Remove(ActionDelayList.First(a => a.Name == actionName));
-            //foreach (var i in ActionDelayList.Where(action => action.Name == actionId).ToArray())
-            //   ActionDelayList.Remove(i);
         }
 
         public static void ChangeDelay(string actionName,float nDelay)

@@ -158,9 +158,8 @@ namespace Slutty_ryze
         public static void Drawing_OnDrawChamp(EventArgs args)
         {
             if (!GlobalManager.EnableDrawingDamage || GlobalManager.DamageToUnit == null)
-            {
                 return;
-            }
+            
 
             foreach (var unit in HeroManager.Enemies.Where(h => h.IsValid && h.IsHPBarRendered))
             {
