@@ -52,6 +52,10 @@ namespace Slutty_ryze
         private static Menu DrawingMenu()
         {
             var drawMenu = new Menu("Drawing Settings", "Drawings");
+            drawMenu
+                .AddItem(
+                    new MenuItem("drawoptions", "Drawing Mode Mode").SetValue(
+                        new StringList(new[] { "Normal Mode", "Color Blind Mode" })));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("Draw", "Display Drawing").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
