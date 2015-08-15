@@ -1,58 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
+﻿using System.Collections.Generic;
 using LeagueSharp;
 using LeagueSharp.Common;
-using LeagueSharp.Common.Data;
-using Color = System.Drawing.Color;
-using SharpDX;
 
 namespace Slutty_Gnar
 {
     public static class Gnar_Spells
     {
-
-        private static Obj_AI_Hero player = ObjectManager.Player;
-        public static Spell QMini { get; private set; }
-        public static Spell WMini { get; private set; }
-        public static Spell EMini { get; private set; }
-        public static Spell RMini { get; private set; }
-
-        public static Spell QMega { get; private set; }
-        public static Spell WMega { get; private set; }
-        public static Spell EMega { get; private set; }
-        public static Spell RMega { get; private set; }
+        private static readonly Obj_AI_Hero Player = ObjectManager.Player;
         public static Spell SummonerDot;
-
-        public static Spell Q
-        {
-            get { return player.IsMiniGnar() ? QMini : QMega; }
-        }
-
-        public static Spell W
-        {
-            get { return player.IsMiniGnar() ? WMini : WMega; }
-        }
-
-        public static Spell E
-        {
-            get { return player.IsMiniGnar() ? EMini : EMega; }
-        }
-
-        public static Spell R
-        {
-            get { return player.IsMiniGnar() ? RMini : RMega; }
-        }
-
-        private static float lastCastedStun = 0;
-
-        public static bool HasCastedStun
-        {
-            get { return Game.Time - lastCastedStun < 0.25; }
-        }
+        private static float _lastCastedStun;
 
         static Gnar_Spells()
         {
@@ -79,22 +35,54 @@ namespace Slutty_Gnar
             SummonerDot.SetTargetted(0.1f, float.MaxValue);
 
 
-
             Spellbook.OnCastSpell += Spellbook_OnCastSpell;
+        }
+
+        public static Spell QMini { get; private set; }
+        public static Spell WMini { get; private set; }
+        public static Spell EMini { get; private set; }
+        public static Spell RMini { get; private set; }
+        public static Spell QMega { get; private set; }
+        public static Spell WMega { get; private set; }
+        public static Spell EMega { get; private set; }
+        public static Spell RMega { get; private set; }
+
+        public static Spell Q
+        {
+            get { return Player.IsMiniGnar() ? QMini : QMega; }
+        }
+
+        public static Spell W
+        {
+            get { return Player.IsMiniGnar() ? WMini : WMega; }
+        }
+
+        public static Spell E
+        {
+            get { return Player.IsMiniGnar() ? EMini : EMega; }
+        }
+
+        public static Spell R
+        {
+            get { return Player.IsMiniGnar() ? RMini : RMega; }
+        }
+
+        public static bool HasCastedStun
+        {
+            get { return Game.Time - _lastCastedStun < 0.25; }
         }
 
         private static void Spellbook_OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
         {
-            if (sender.Owner.IsMe && player.IsMegaGnar())
+            if (!sender.Owner.IsMe || !Player.IsMegaGnar())
+                return;
+            switch (args.Slot)
             {
-                switch (args.Slot)
-                {
-                    case SpellSlot.W:
-                    case SpellSlot.R:
+                case SpellSlot.W:
+                case SpellSlot.R:
 
-                        lastCastedStun = Game.Time;
-                        break;
-                }
+                    _lastCastedStun = Game.Time;
+                    break;
             }
         }
 
@@ -118,16 +106,19 @@ namespace Slutty_Gnar
         {
             return target.IsMiniGnar() &&
                    (target.Mana == target.MaxMana
-                    && (target.HasBuff("gnartransformsoon") 
-                    || target.HasBuff("gnartransform")))
-                    || target.IsMegaGnar() && target.ManaPercent <= 0.1;
+                    && (target.HasBuff("gnartransformsoon")
+                        || target.HasBuff("gnartransform")))
+                   || target.IsMegaGnar() && target.ManaPercent <= 0.1;
         }
-        public static MinionManager.FarmLocation? GetFarmLocation(this Spell spell, MinionTeam team = MinionTeam.Enemy, List<Obj_AI_Base> targets = null)
+
+        public static MinionManager.FarmLocation? GetFarmLocation(this Spell spell, MinionTeam team = MinionTeam.Enemy,
+            List<Obj_AI_Base> targets = null)
         {
-                targets = MinionManager.GetMinions(spell.Range, MinionTypes.All, team, MinionOrderTypes.MaxHealth);
+            targets = MinionManager.GetMinions(spell.Range, MinionTypes.All, team, MinionOrderTypes.MaxHealth);
             if (!spell.IsSkillshot || targets.Count == 0)
                 return null;
-            var positions = MinionManager.GetMinionsPredictedPositions(targets, spell.Delay, spell.Width, spell.Speed, spell.From, spell.Range, spell.Collision, spell.Type);
+            var positions = MinionManager.GetMinionsPredictedPositions(targets, spell.Delay, spell.Width, spell.Speed,
+                spell.From, spell.Range, spell.Collision, spell.Type);
             var farmLocation = MinionManager.GetBestLineFarmLocation(positions, spell.Width, spell.Range);
             if (farmLocation.MinionsHit == 0)
                 return null;

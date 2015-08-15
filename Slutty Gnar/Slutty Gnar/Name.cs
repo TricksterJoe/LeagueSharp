@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using LeagueSharp;
-using LeagueSharp.Common;
-using LeagueSharp.Common.Data;
-using Color = System.Drawing.Color;
-using SharpDX;
+﻿using LeagueSharp;
 
 namespace Slutty_Gnar
 {
@@ -16,12 +6,12 @@ namespace Slutty_Gnar
     {
         public static bool IsMiniGnar(this Obj_AI_Hero target)
         {
-            return target.BaseSkinName == "Gnar";
+            return target.CharData.BaseSkinName == "Gnar";
         }
 
         public static bool IsMegaGnar(this Obj_AI_Hero target)
         {
-            return target.BaseSkinName == "gnarbig";
+            return target.CharData.BaseSkinName == "gnarbig";
         }
     }
 }

@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using LeagueSharp;
 using LeagueSharp.Common;
-using LeagueSharp.Common.Data;
-using Color = System.Drawing.Color;
 using SharpDX;
 
 namespace Slutty_Gnar
