@@ -890,9 +890,9 @@ namespace Slutty_ryze
                             if (isMinion &&
                                 !(target.Health*hpOffset < Champion.Q.GetDamage(target) &&
                                   GlobalManager.CheckMinion(target))) continue;
-
-                            if (GlobalManager.GetPassiveBuff > 2 || GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
+                            if(Champion.Qn.IsReady())
                                 Champion.Qn.Cast(target);
+                            // if (GlobalManager.GetPassiveBuff > 2 || GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
                             else
                                 Champion.Q.Cast(target);
                         }
