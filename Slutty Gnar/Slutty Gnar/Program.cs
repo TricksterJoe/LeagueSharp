@@ -1,17 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
-using System.Drawing.Printing;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using LeagueSharp;
 using LeagueSharp.Common;
-using LeagueSharp.Common.Data;
 using Color = System.Drawing.Color;
 using SharpDX;
-using ItemData = LeagueSharp.Common.Data.ItemData;
 
 namespace Slutty_Gnar
 {
@@ -66,12 +59,6 @@ namespace Slutty_Gnar
         public static int QOff = 0, WOff = 0, EOff = 0, ROff = 0;
 
         private static float _lastCheckTick;
-        private static float _lastCheckTick2;
-
-        private static SpellSlot Ignite;
-
-        private static Obj_AI_Hero player;
-
 
         private static void Main(string[] args)
         {
@@ -80,9 +67,7 @@ namespace Slutty_Gnar
 
         private static void OnLoad(EventArgs args)
         {
-
-
-            if (Player.ChampionName != ChampName)
+            if (Player.CharData.BaseSkinName != ChampName)
                 return;
 
             AbilitySequence = new[] {1, 2, 3, 1, 1, 4, 1, 2, 1, 2, 4, 2, 2, 3, 3, 4, 3, 3};
@@ -238,7 +223,7 @@ namespace Slutty_Gnar
             var qSpell = Config.Item("focust").GetValue<bool>();
             if (qSpell)
             {
-                var target = HeroManager.Enemies.Find(en => en.IsValidTarget(ObjectManager.Player.AttackRange) 
+                var target = HeroManager.Enemies.Find(en => en.IsValidTarget(Player.AttackRange) 
                     && en.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2));
                 if (target != null)
                 {
@@ -308,12 +293,9 @@ namespace Slutty_Gnar
         }
         static float GetComboDamage(Obj_AI_Base enemy)
         {
-            foreach (var Buff in enemy.Buffs)
+            if (enemy.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2))
             {
-                if (Buff.Name == "gnarwproc" && Buff.Count == 2)
-                {
-                    return W.GetDamage(enemy) + (float)Player.GetAutoAttackDamage(enemy, true);
-                }
+                return W.GetDamage(enemy) + (float)Player.GetAutoAttackDamage(enemy, true);
             }
 
             return 0;
@@ -376,10 +358,10 @@ namespace Slutty_Gnar
                                 .FirstOrDefault();
                         var edm = Player.ServerPosition.Extend(minionPrediction.CastPosition,
                             Player.ServerPosition.Distance(minionPrediction.CastPosition) + E.Range);
-                        if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.IsMinion != Player.IsMinion
-                                                                            && !type.IsDead
-                                                                            && type.Distance(edm, true) < 775*775
-                                                                            && k.IsValid)
+                        if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => k != null && (type.IsMinion != Player.IsMinion
+                                                                                          && !type.IsDead
+                                                                                          && type.Distance(edm, true) < 775*775
+                                                                                          && k.IsValid))
                             && Player.Distance(target) > 300)
                         {
                             E.Cast(k);
@@ -506,14 +488,14 @@ namespace Slutty_Gnar
             var eqSlider = Config.Item("useQPL").GetValue<Slider>().Value;
             var wlSpell = Config.Item("useW2L").GetValue<bool>();
             var elSlider = Config.Item("useWSlider").GetValue<Slider>().Value;
-            var MinionN =
+            var minionN =
                 MinionManager.GetMinions(Q.Range, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth)
                     .FirstOrDefault();
             var minionCount = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly);
             if (uSpell
                 && Player.IsAboutToTransform())
                 return;
-            if (MinionN.IsValidTarget())
+            if (minionN.IsValidTarget())
             {
                 JungleClear();
                 return;
@@ -560,7 +542,7 @@ namespace Slutty_Gnar
                         var minions =
                             MinionManager.GetMinions(Q.Range, MinionTypes.All, MinionTeam.Enemy,
                                 MinionOrderTypes.MaxHealth).Where(m =>
-                                    m.Health > player.GetAutoAttackDamage(m)/2 && m.Health < Q.GetDamage(m));
+                                    m.Health > Player.GetAutoAttackDamage(m)/2 && m.Health < Q.GetDamage(m));
           
                         if (q2LSpell)
                         {
@@ -618,6 +600,8 @@ namespace Slutty_Gnar
         private static void KillSteal()
         {
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+            if (target == null)
+                return;
             var prediction = Q.GetPrediction(target);
             var qcollision = Q.GetCollision(Player.ServerPosition.To2D(),
             new List<Vector2> {prediction.CastPosition.To2D()});
@@ -652,17 +636,17 @@ namespace Slutty_Gnar
             int wL = Player.Spellbook.GetSpell(SpellSlot.W).Level;
             int eL = Player.Spellbook.GetSpell(SpellSlot.E).Level;
             int rL = Player.Spellbook.GetSpell(SpellSlot.R).Level;
-            if (qL + wL + eL + rL < ObjectManager.Player.Level)
+            if (qL + wL + eL + rL < Player.Level)
             {
                 int[] level = {0, 0, 0, 0};
-                for (int i = 0; i < ObjectManager.Player.Level; i++)
+                for (int i = 0; i < Player.Level; i++)
                 {
                     level[AbilitySequence[i] - 1] = level[AbilitySequence[i] - 1] + 1;
                 }
-                if (qL < level[0]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.Q);
-                if (wL < level[1]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.W);
-                if (eL < level[2]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.E);
-                if (rL < level[3]) ObjectManager.Player.Spellbook.LevelSpell(SpellSlot.R);
+                if (qL < level[0]) Player.Spellbook.LevelSpell(SpellSlot.Q);
+                if (wL < level[1]) Player.Spellbook.LevelSpell(SpellSlot.W);
+                if (eL < level[2]) Player.Spellbook.LevelSpell(SpellSlot.E);
+                if (rL < level[3]) Player.Spellbook.LevelSpell(SpellSlot.R);
             }
         }
 
@@ -767,7 +751,7 @@ namespace Slutty_Gnar
         private static void Flee()
         {
 
-            ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
 
                 var prediction = E.GetPrediction(target);

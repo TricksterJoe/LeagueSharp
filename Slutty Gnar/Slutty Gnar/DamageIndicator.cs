@@ -1,11 +1,7 @@
-﻿    using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp.Common;
 using LeagueSharp;
-using SharpDX;
 using Color = System.Drawing.Color;
 
 namespace Slutty_Gnar
@@ -68,15 +64,14 @@ namespace Slutty_Gnar
 
                 Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + Height, 1, Color);
 
-                if (Fill)
-                {
-                    float differenceInHP = xPosCurrentHp - xPosDamage;
-                    var pos1 = barPos.X + 9 + (107 * percentHealthAfterDamage);
+                if (!Fill)
+                    continue;
+                float differenceInHp = xPosCurrentHp - xPosDamage;
+                var pos1 = barPos.X + 9 + (107 * percentHealthAfterDamage);
 
-                    for (int i = 0; i < differenceInHP; i++)
-                    {
-                        Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + Height, 1, FillColor);
-                    }
+                for (int i = 0; i < differenceInHp; i++)
+                {
+                    Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + Height, 1, FillColor);
                 }
             }
         }
