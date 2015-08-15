@@ -891,7 +891,7 @@ namespace Slutty_ryze
                                 !(target.Health*hpOffset < Champion.Q.GetDamage(target) &&
                                   GlobalManager.CheckMinion(target))) continue;
 
-                            if (GlobalManager.GetPassiveBuff > 2 && GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
+                            if (GlobalManager.GetPassiveBuff > 2 || GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
                                 Champion.Qn.Cast(target);
                             else
                                 Champion.Q.Cast(target);
