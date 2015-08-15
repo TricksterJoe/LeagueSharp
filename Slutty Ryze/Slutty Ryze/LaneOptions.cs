@@ -10,15 +10,7 @@ namespace Slutty_ryze
     {
         #region Public Functions
 
-        //private const int RandomThreshold = 10; // 10%
         private static readonly Random Seeder = new Random();
-
-        public static void DisplayLaneOption(String line)
-        {
-            // not working o-o?
-            // var displayAlert = new Alerter(250, 450, line, 7, new ColorBGRA(255f, 0f, 255f, 255f), "Calibri", 5F);
-            // displayAlert.Remove();
-        }
 
         //struct MinionHealthPerSecond
         //{
@@ -77,8 +69,7 @@ namespace Slutty_ryze
                 MinionTeam.NotAlly);
             if (GlobalManager.GetHero.ManaPercent <= minMana)
                 return;
-
-            DisplayLaneOption("Clearing Lane");
+            
             foreach (var minion in minionCount)
             {
                 if (!GlobalManager.CheckMinion(minion)) continue;
@@ -154,7 +145,6 @@ namespace Slutty_ryze
             if (!jungle.IsValidTarget())
                 return;
 
-            DisplayLaneOption("Clearing Jungle");
             if (eSpell
                 && jungle.IsValidTarget(Champion.E.Range)
                 && Champion.E.IsReady())
@@ -224,8 +214,6 @@ namespace Slutty_ryze
             var minionCount = MinionManager.GetMinions(GlobalManager.GetHero.Position, Champion.Q.Range, MinionTypes.All,
                 MinionTeam.NotAlly);
 
-
-            DisplayLaneOption("Last hitting");
             var minionHpOffset = 1.0f;
             if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
                 minionHpOffset = (1 + (Seeder.Next(GlobalManager.Config.Item("minCreepHPOffset").GetValue<Slider>().Value, GlobalManager.Config.Item("maxCreepHPOffset").GetValue<Slider>().Value) / 100.0f));//Randomioze Minion Hp from min to max hp less than damage
@@ -295,9 +283,6 @@ namespace Slutty_ryze
             if (GlobalManager.GetHero.ManaPercent < GlobalManager.Config.Item("mMin").GetValue<Slider>().Value)
                 return;
 
-
-            DisplayLaneOption("Mixed Laneing");
-
             var target = TargetSelector.GetTarget(900, TargetSelector.DamageType.Magical);
             StartComboSequence(target, bSpells, new[] {'Q', 'W', 'E'});
 
@@ -347,35 +332,54 @@ namespace Slutty_ryze
                     if (target.IsValidTarget(Champion.W.Range) &&
                         (target.Health < Champion.IgniteDamage(target) + Champion.W.GetDamage(target)))
                         GlobalManager.GetHero.Spellbook.CastSpell(Champion.GetIgniteSlot(), target);
-                    if (!Champion.R.IsReady()) goto humanCombo; // lazy way
+                    
 
                     if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
                     {
                         Console.WriteLine(@"Using Ryze Combo Sequence 4");
-                        StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'Q', 'E', 'Q', 'R' });
+                        StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' , 'Q', 'E', 'Q', 'W' });
                     }
-                    else
-
+                    else if(Champion.R.IsReady())
                     {
                         switch (GlobalManager.GetPassiveBuff)
                         {
                             case 1:
-                                Console.WriteLine(@"Using Ryze Combo Sequence 1");
-                                StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'E', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
-                                break;
                             case 2:
                                 Console.WriteLine(@"Using Ryze Combo Sequence 1");
-                                StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'E', 'R' });
+                                StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' ,'Q', 'E', 'Q', 'W' });
                                 break;
                             case 3:
                                 Console.WriteLine(@"Using Ryze Combo Sequence 2");
-                                StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q','W' });
+                                StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q','W' ,'Q', 'E', 'Q', 'W' });
                                 break;
                             case 4:
                                 Console.WriteLine(@"Using Ryze Combo Sequence 3");
-                                StartComboSequence(target, bSpells, new[] { 'W', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
+                                StartComboSequence(target, bSpells, new[] { 'W', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
                                 break;
                             default: // 0
+                                Console.WriteLine(@"Using Ryze Combo Sequence default");
+                                StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E' });
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (GlobalManager.GetPassiveBuff)
+                        {
+                            case 2:
+                                Console.WriteLine(@"Using Ryze Combo Sequence 1");
+                                StartComboSequence(target, bSpells, new[] { 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
+                                break;
+                            case 3:
+                                Console.WriteLine(@"Using Ryze Combo Sequence 2");
+                                StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
+                                break;
+                            case 4:
+                                Console.WriteLine(@"Using Ryze Combo Sequence 3");
+                                StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
+                                break;
+
+                            default: // 0 and 1
                                 Console.WriteLine(@"Using Ryze Combo Sequence default");
                                 StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E' });
                                 break;
@@ -386,7 +390,7 @@ namespace Slutty_ryze
                 #region Human Combo
                     
                 case 1:
-                humanCombo:
+                
                     bSpells[0] = GlobalManager.Config.Item("useQ").GetValue<bool>();
                     bSpells[1] = GlobalManager.Config.Item("useE").GetValue<bool>();
                     bSpells[2] = GlobalManager.Config.Item("useW").GetValue<bool>();
