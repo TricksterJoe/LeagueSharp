@@ -484,11 +484,19 @@ namespace Slutty_Gnar_Reworked
                 var emSpell = Config.Item("UseEMega").GetValue<bool>();
                 var qmSpell = Config.Item("UseQMega").GetValue<bool>();
                 var wSpell = Config.Item("UseWMega").GetValue<bool>();
+                if (target == null)
+                    return;
                 if (GnarSpells.RMega.IsReady()
                     && Config.Item("UseRMega").GetValue<bool>())
                 {
-                    if (target != null
-                        && Player.CountEnemiesInRange(420) >= rSlider)
+                    if (target.IsValidTarget(GnarSpells.RMega.Range)
+                        && target.Health <= GnarSpells.RMega.GetDamage(target) + GnarSpells.QMini.GetDamage(target))
+                    {
+                        GnarSpells.RMega.Cast(target.Position.Extend(Player.ServerPosition,
+                            Vector3.Distance(target.ServerPosition, Player.ServerPosition) + 200));
+
+                    }
+                    if (Player.CountEnemiesInRange(420) >= rSlider)
                     {
                         var prediction = Prediction.GetPrediction(target, GnarSpells.RMega.Delay);
                         if (GnarSpells.RMega.IsInRange(prediction.UnitPosition))
