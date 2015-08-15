@@ -12,6 +12,7 @@ namespace Slutty_Gnar_Reworked
         private static Obj_AI_Hero Player = ObjectManager.Player;
         internal static void OnLoad(EventArgs args)
         {
+            #region OnLoad
             if (Player.ChampionName != "Gnar")
                 return;
             CreateMenu();
@@ -21,10 +22,12 @@ namespace Slutty_Gnar_Reworked
             Drawing.OnDraw += Drawing_OnDraw;
             Interrupter2.OnInterruptableTarget += GnarInterruptableSpell;
             AntiGapcloser.OnEnemyGapcloser += OnGapCloser;
+#endregion
         }
 
         private static void GnarInterruptableSpell(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
+            #region Interruptable
             if (Player.IsMegaGnar())
             {
                 if (GnarSpells.WMega.IsReady()
@@ -32,10 +35,12 @@ namespace Slutty_Gnar_Reworked
                     && Config.Item("qwi").GetValue<bool>())
                     GnarSpells.WMega.Cast(sender.ServerPosition);
             }
+#endregion
         }
 
         private static void OnGapCloser(ActiveGapcloser gapcloser)
         {
+            #region on gap closer
             if (gapcloser.Sender.IsAlly
                 || gapcloser.Sender.IsMe)
                 return;
@@ -44,10 +49,12 @@ namespace Slutty_Gnar_Reworked
                 if (GnarSpells.QMini.IsInRange(gapcloser.Start))
                     GnarSpells.QMini.Cast((gapcloser.Sender.Position));
             }
+#endregion
         }
 
         private static void Drawing_OnDraw(EventArgs args)
         {
+            #region Drawings
             if (!Player.Position.IsOnScreen())
                return;
 
@@ -79,10 +86,12 @@ namespace Slutty_Gnar_Reworked
                 if (eDraw && GnarSpells.EMini.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, GnarSpells.EMini.Range, Color.LightBlue, 3);
             }
+#endregion
         }
 
         private static void AfterAttack(AttackableUnit unit, AttackableUnit target)
         {
+            #region After attack
             if (!Player.IsMiniGnar())
                 return;
 
@@ -92,11 +101,13 @@ namespace Slutty_Gnar_Reworked
                 if (GnarSpells.QnMini.IsReady())
                     GnarSpells.QnMini.Cast(targets);
             }
+#endregion
         }
 
-        #region dash
+
         private static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
         {
+            #region dash
             var useQ = Config.Item("UseQMini").GetValue<bool>();
             var useQm = Config.Item("UseQMega").GetValue<bool>();
             var target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Magical);
@@ -149,6 +160,7 @@ namespace Slutty_Gnar_Reworked
 
         private static void Game_OnUpdate(EventArgs args)
         {
+            #region On Update
             KillSteal();
             switch (Orbwalker.ActiveMode)
             {
@@ -167,6 +179,7 @@ namespace Slutty_Gnar_Reworked
                 case Orbwalking.OrbwalkingMode.None:
                     break;
             }
+
             if (Config.Item("fleekey").GetValue<KeyBind>().Active)
                 Flee();
 
@@ -184,15 +197,17 @@ namespace Slutty_Gnar_Reworked
             
 #endregion
 
+            #region Auto Q
             var autoQ = Config.Item("autoq").GetValue<bool>();
             if (autoQ && target != null)
                 GnarSpells.QMini.Cast(target);
+#endregion
+#endregion
         }
 
-        #region flee
         private static void Flee()
         {
-
+            #region flee
             ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             if (Player.IsMiniGnar())
             { 
@@ -236,6 +251,7 @@ namespace Slutty_Gnar_Reworked
 
         private static void KillSteal()
         {
+            #region Kill Steal
             Obj_AI_Hero target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Physical);
 
             if (target == null)
@@ -315,10 +331,12 @@ namespace Slutty_Gnar_Reworked
                     GnarSpells.QMini.Cast(target);
                 }
             }
+#endregion
         }
 
         private static void JungleClear()
         {
+            #region Jungle Clear
             var qSpell = Config.Item("UseQj").GetValue<bool>();
             var wSpell = Config.Item("UseWj").GetValue<bool>();
 
@@ -341,10 +359,12 @@ namespace Slutty_Gnar_Reworked
                         GnarSpells.WMega.Cast(jungleminion);
                 }
             }
+#endregion
         }
 
         private static void LaneClear()
         {
+            #region laneclear
             var qSpell = Config.Item("UseQl").GetValue<bool>();
             var wSpell = Config.Item("UseWl").GetValue<bool>();
             var qlSpell = Config.Item("UseQlslider").GetValue<Slider>().Value;
@@ -381,10 +401,12 @@ namespace Slutty_Gnar_Reworked
                 if (qSpell && GnarSpells.QMega.IsReady())
                     GnarSpells.QMega.Cast(minions[0]);
             }
+#endregion
         }
 
         private static void Mixed()
         {
+            #region mixed
             Obj_AI_Hero target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Physical);
             var qSpell = Config.Item("qharras").GetValue<bool>();
             var qsSpell = Config.Item("qharras2").GetValue<bool>();
@@ -415,6 +437,7 @@ namespace Slutty_Gnar_Reworked
                     GnarSpells.QMega.Cast(target);
             }
         }
+#endregion
 
         private static void Combo()
         {
@@ -535,10 +558,8 @@ namespace Slutty_Gnar_Reworked
                                     target.Health >=
                                     (GnarSpells.QMega.GetDamage(target) + Player.GetAutoAttackDamage(target)))
                                 {
-                                    Game.PrintChat("Cast R1");
                                     GnarSpells.RMega.Cast(Player.Position +
                                                           500*(checkPoint - prediction.UnitPosition).Normalized());
-                                    Game.PrintChat("Cast R");
                                     rcast = Environment.TickCount;
                                     break;
                                 }
