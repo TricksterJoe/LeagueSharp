@@ -19,24 +19,18 @@ namespace Slutty_ryze
         private static readonly Color _fillColor = Color.Goldenrod;
         private static readonly Color _colorblind = Color.LightBlue;
         private static readonly Color _fillColorblind = Color.Teal;
+        private static Color _tableColor;
+        private static Color[] _circleColors;
+
         #endregion
         #region Private Fuctions
-        private static Color GetColor(bool b)
+
+        private static Color GetColor(bool b, bool c)
         {
-            return b ? Color.DarkGreen : Color.Red;
+            return c ? (b ? Color.Teal : Color.Magenta) : (b ? Color.DarkGreen : Color.Red);
         }
 
-        private static string BoolToString(bool b)
-        {
-            return b ? "ON" : "OFF";
-        }
-
-        private static Color GetColorblind(bool c)
-        {
-            return c ? Color.Teal : Color.Magenta;
-        }
-
-        private static string BoolToStringblind(bool c)
+        private static string BoolToString(bool c)
         {
             return c ? "ON" : "OFF";
         }
@@ -48,55 +42,48 @@ namespace Slutty_ryze
             return iKey > 90 ? sKey : ((char)iKey).ToString();
         }
 
+        private static void SetColors(bool ColorBlind)
+        {
+            if (ColorBlind)
+            {
+                _circleColors[0] = Color.Teal;
+                _circleColors[1] = Color.Magenta;
+                _circleColors[2] = Color.Black;
+                _tableColor = Color.LightBlue;
+            }
+            else
+            {
+                _circleColors[0] = Color.Green;
+                _circleColors[1] = Color.Gold;
+                _circleColors[2] = Color.Black;
+                _tableColor = Color.SteelBlue;
+            }
+        }
+
         private static void DrawKeys(Vector2 pos)
         {
-            switch (GlobalManager.Config.Item("drawoptions").GetValue<StringList>().SelectedIndex)
-            {
-                case 0:
-                    Drawing.DrawLine(new Vector2(pos.X - 25, pos.Y + 20), new Vector2(pos.X + 150, pos.Y + 20), 2,
-                        Color.SteelBlue);
+            var col = 0;
+            SetColors(GlobalManager.Config.Item("drawoptions").GetValue<StringList>().SelectedIndex == 1);
 
-                    var col = 0;
-                    Drawing.DrawText(pos.X, pos.Y, Color.SteelBlue, "Key Table");
+            Drawing.DrawLine(new Vector2(pos.X - 25, pos.Y + 20), new Vector2(pos.X + 150, pos.Y + 20), 2,
+                _tableColor);
 
-                    Drawing.DrawText(pos.X, ++col*25 + pos.Y, Color.SteelBlue, "Stack Tear Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("tearS").GetValue<KeyBind>()));
+            Drawing.DrawText(pos.X, pos.Y, _tableColor, "Key Table");
 
-                    Drawing.DrawText(pos.X, ++col*25 + pos.Y, Color.SteelBlue, "Auto Passive Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>()));
+            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, _tableColor, "Stack Tear Key:{0}",
+                KeyToString(GlobalManager.Config.Item("tearS").GetValue<KeyBind>()));
 
-                    Drawing.DrawText(pos.X, ++col*25 + pos.Y, Color.SteelBlue, "Press Lane Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("presslane").GetValue<KeyBind>()));
+            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, _tableColor, "Auto Passive Key:{0}",
+                KeyToString(GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>()));
 
-                    Drawing.DrawText(pos.X, ++col*25 + pos.Y, Color.SteelBlue, "Disable Lane Clear Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("disablelane").GetValue<KeyBind>()));
+            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, _tableColor, "Press Lane Key:{0}",
+                KeyToString(GlobalManager.Config.Item("presslane").GetValue<KeyBind>()));
 
-                    Drawing.DrawLine(new Vector2(pos.X - 25, ++col*25 + pos.Y), new Vector2(pos.X + 150, col*25 + pos.Y),
-                        2, Color.SteelBlue);
-                    break;
-                case 1:
-                    Drawing.DrawLine(new Vector2(pos.X - 25, pos.Y + 20), new Vector2(pos.X + 150, pos.Y + 20), 2,
-                        Color.LightBlue);
+            Drawing.DrawText(pos.X, ++col * 25 + pos.Y, _tableColor, "Disable Lane Clear Key:{0}",
+                KeyToString(GlobalManager.Config.Item("disablelane").GetValue<KeyBind>()));
 
-                    var col1 = 0;
-                    Drawing.DrawText(pos.X, pos.Y, Color.LightBlue, "Key Table");
-
-                    Drawing.DrawText(pos.X, ++col1 * 25 + pos.Y, Color.LightBlue, "Stack Tear Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("tearS").GetValue<KeyBind>()));
-
-                    Drawing.DrawText(pos.X, ++col1 * 25 + pos.Y, Color.LightBlue, "Auto Passive Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>()));
-
-                    Drawing.DrawText(pos.X, ++col1 * 25 + pos.Y, Color.LightBlue, "Press Lane Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("presslane").GetValue<KeyBind>()));
-
-                    Drawing.DrawText(pos.X, ++col1 * 25 + pos.Y, Color.LightBlue, "Disable Lane Clear Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("disablelane").GetValue<KeyBind>()));
-
-                    Drawing.DrawLine(new Vector2(pos.X - 25, ++col1*25 + pos.Y), new Vector2(pos.X + 150, col1*25 + pos.Y),
-                        2, Color.LightBlue);
-                    break;
-            }
+            Drawing.DrawLine(new Vector2(pos.X - 25, ++col * 25 + pos.Y), new Vector2(pos.X + 150, col * 25 + pos.Y),
+                2, _tableColor);
         }
 
         /*
@@ -143,6 +130,7 @@ namespace Slutty_ryze
             GlobalManager.EnableDrawingDamage = GlobalManager.Config.Item("RushDrawEDamage").GetValue<bool>();
             GlobalManager.EnableFillDamage = GlobalManager.Config.Item("RushDrawWDamageFill").GetValue<Circle>().Active;
             GlobalManager.DamageFillColor = GlobalManager.Config.Item("RushDrawWDamageFill").GetValue<Circle>().Color;
+
             if (GlobalManager.GetHero.IsDead)
                 return;
             if (!GlobalManager.Config.Item("Draw").GetValue<bool>())
@@ -161,50 +149,28 @@ namespace Slutty_ryze
 
             var heroPosition = Drawing.WorldToScreen(GlobalManager.GetHero.Position);
             var textDimension = Drawing.GetTextExtent("Stunnable!");
+            var colorBlind = GlobalManager.Config.Item("drawoptions").GetValue<StringList>().SelectedIndex == 1;
 
-            switch (GlobalManager.Config.Item("drawoptions").GetValue<StringList>().SelectedIndex)
-            {
-                case 0:
-                    if (GlobalManager.Config.Item("qDraw").GetValue<bool>() && Champion.Q.Level > 0)
-                        Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.Q.Range, Color.Green, 3);
-                    if (GlobalManager.Config.Item("eDraw").GetValue<bool>() && Champion.E.Level > 0)
-                        Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.E.Range, Color.Gold, 3);
-                    if (GlobalManager.Config.Item("wDraw").GetValue<bool>() && Champion.W.Level > 0)
-                        Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.W.Range, Color.Blue, 3);
+            SetColors(colorBlind);
 
-                    if (!GlobalManager.Config.Item("notdraw").GetValue<bool>()) return;
+            if (GlobalManager.Config.Item("qDraw").GetValue<bool>() && Champion.Q.Level > 0)
+                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.Q.Range, _circleColors[0], 3);
+            if (GlobalManager.Config.Item("eDraw").GetValue<bool>() && Champion.E.Level > 0)
+                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.E.Range, _circleColors[1], 3);
+            if (GlobalManager.Config.Item("wDraw").GetValue<bool>() && Champion.W.Level > 0)
+                Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.W.Range, _circleColors[2], 3);
 
-                    Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
-                        GetColor(tears),
-                        "Tear Stack: " + BoolToString(tears));
+            if (!GlobalManager.Config.Item("notdraw").GetValue<bool>()) return;
 
-                    Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30, GetColor(passive),
-                        "Passive Stack: " + BoolToString(passive));
+            Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
+                GetColor(tears, colorBlind),
+                "Tear Stack: " + BoolToString(tears));
 
-                    Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColor(laneclear),
-                        "Lane Clear: " + BoolToString(laneclear));
-                    break;
-                case 1:
-                    if (GlobalManager.Config.Item("qDraw").GetValue<bool>() && Champion.Q.Level > 0)
-                        Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.Q.Range, Color.Teal, 3);
-                    if (GlobalManager.Config.Item("eDraw").GetValue<bool>() && Champion.E.Level > 0)
-                        Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.E.Range, Color.Magenta, 3);
-                    if (GlobalManager.Config.Item("wDraw").GetValue<bool>() && Champion.W.Level > 0)
-                        Render.Circle.DrawCircle(GlobalManager.GetHero.Position, Champion.W.Range, Color.Black, 3);
+            Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30, GetColor(passive, colorBlind),
+                "Passive Stack: " + BoolToString(passive));
 
-                    if (!GlobalManager.Config.Item("notdraw").GetValue<bool>()) return;
-
-                    Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
-                        GetColorblind(tears),
-                        "Tear Stack: " + BoolToStringblind(tears));
-
-                    Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30, GetColorblind(passive),
-                        "Passive Stack: " + BoolToStringblind(passive));
-
-                    Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColorblind(laneclear),
-                        "Lane Clear: " + BoolToStringblind(laneclear));
-                    break;
-            }
+            Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColor(laneclear, colorBlind),
+                "Lane Clear: " + BoolToString(laneclear));
         }
 
         public static void Drawing_OnDrawChamp(EventArgs args)
