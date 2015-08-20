@@ -83,10 +83,10 @@ namespace Slutty_Gnar
             Config.AddSubMenu(new Menu("Drawings", "Drawings"));
             Config.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "w Drawing").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "W Drawing").SetValue(true));
             Config.SubMenu("Drawings").AddItem(new MenuItem("rDraw", "R Drawing").SetValue(true));
             var drawDamageMenu = new MenuItem("RushDrawEDamage", "W Damage").SetValue(true);
-            var drawFill = new MenuItem("RushDrawWDamageFill", "W Damage Fill").SetValue(new Circle(true, Color.SeaGreen));
+            var drawFill = new MenuItem("RushDrawWDamageFill", "W Damage-Fill").SetValue(new Circle(true, Color.SeaGreen));
             Config.SubMenu("Drawings").AddItem(drawDamageMenu);
             Config.SubMenu("Drawings").AddItem(drawFill);
 
@@ -117,60 +117,60 @@ namespace Slutty_Gnar
 
             Config.AddSubMenu(new Menu("Mini Gnar", "mGnar"));
             Config.SubMenu("mGnar").AddItem(new MenuItem("UseQMini", "Use Q").SetValue(true));
-            Config.SubMenu("mGnar").AddItem(new MenuItem("UseQs", "Use Q only when target has 2 W Stacks").SetValue(false));
-            Config.SubMenu("mGnar").AddItem(new MenuItem("eGap", "Use E Gap closer when enemy is killable").SetValue(false));
+            Config.SubMenu("mGnar").AddItem(new MenuItem("UseQs", "Use Q Only When Target has 2 W Stacks").SetValue(false));
+            Config.SubMenu("mGnar").AddItem(new MenuItem("eGap", "Use E Gapcloser When Enemy is Killable").SetValue(false));
             Config.SubMenu("mGnar").AddItem(new MenuItem("focust", "Focus Target with 2 W Stacks").SetValue(false));
 
             Config.AddSubMenu(new Menu("Mega Gnar", "megaGnar"));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseQMega", "Use Q").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseEMega", "Use E").SetValue(true));
-            Config.SubMenu("megaGnar").AddItem(new MenuItem("UseEMini", "Use E Only when about to transform").SetValue(true));
+            Config.SubMenu("megaGnar").AddItem(new MenuItem("UseEMini", "Use E Only When About to Transform").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("UseWMega", "Use W").SetValue(true));
             Config.SubMenu("megaGnar").AddItem(new MenuItem("useRMega", "Use R").SetValue(true));
-            Config.SubMenu("megaGnar").AddItem(new MenuItem("useRSlider", "Min targets R").SetValue(new Slider(3, 1, 5)));
+            Config.SubMenu("megaGnar").AddItem(new MenuItem("useRSlider", "Min Targets for R").SetValue(new Slider(3, 1, 5)));
 
 
-            Config.AddSubMenu(new Menu("Harras", "Harras"));
-            Config.SubMenu("Harras").AddItem(new MenuItem("UseQMi", "Use Q Mini Gnar").SetValue(true));
-            Config.SubMenu("Harras").AddItem(new MenuItem("UseQMe", "Use Q Mega Gnar").SetValue(true));
+            Config.AddSubMenu(new Menu("Harass", "Harras"));
+            Config.SubMenu("Harras").AddItem(new MenuItem("UseQMi", "Use Q as Mini Gnar").SetValue(true));
+            Config.SubMenu("Harras").AddItem(new MenuItem("UseQMe", "Use Q as Mega Gnar").SetValue(true));
 
             Config.AddSubMenu(new Menu("Lane Clear", "Lane Clear"));
-            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2L", "Use Q to lane clear").SetValue(true));
-            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2c", "Use Q to last hit").SetValue(true));
-            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2s", "Use Q Only when minion has 2 W stacks").SetValue(false));
-            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQPL", "Min Minions for Q Mega Gnar").SetValue(new Slider(3, 1, 20)));
-            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useW2L", "Use W to lane clear").SetValue(true));
-            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useWSlider", "Min minions for W").SetValue(new Slider(3, 1, 20)));
-            Config.SubMenu("Lane Clear").AddItem(new MenuItem("abtT", "Don't Use Spells When about to transform").SetValue(true));
+            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2L", "Use Q to Lane Clear").SetValue(true));
+            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2c", "Use Q to Last Hit").SetValue(true));
+            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQ2s", "Use Q Only When Minion has 2 W stacks").SetValue(false));
+            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useQPL", "Min Minions for Q as Mega Gnar").SetValue(new Slider(3, 1, 20)));
+            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useW2L", "Use W to Lane Clear").SetValue(true));
+            Config.SubMenu("Lane Clear").AddItem(new MenuItem("useWSlider", "Min Minions for W").SetValue(new Slider(3, 1, 20)));
+            Config.SubMenu("Lane Clear").AddItem(new MenuItem("abtT", "Don't Use Spells When About to Transform").SetValue(true));
 
-            Config.AddSubMenu(new Menu("JungleClear", "JungleClear"));
+            Config.AddSubMenu(new Menu("Jungle Clear", "JungleClear"));
             Config.SubMenu("JungleClear").AddItem(new MenuItem("juseQ2L", "Use Q").SetValue(true));
             Config.SubMenu("JungleClear")
-                .AddItem(new MenuItem("juseQ2s", "Use Q Only when minion has 2 W stacks").SetValue(true));
+                .AddItem(new MenuItem("juseQ2s", "Use Q Only When Jungle has 2 W Stacks").SetValue(true));
             Config.SubMenu("JungleClear").AddItem(new MenuItem("juseW2L", "Use W").SetValue(true));
             Config.SubMenu("JungleClear")
-                .AddItem(new MenuItem("jabtT", "Don't Use Spells When about to transform").SetValue(true));
+                .AddItem(new MenuItem("jabtT", "Don't Use Spells When About to Transform").SetValue(true));
 
-            Config.AddSubMenu(new Menu("KillSteal", "KillSteal"));
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Kill Steal")).SetValue(true);
-            Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for ks").SetValue(true));
+            Config.AddSubMenu(new Menu("Killsteal", "KillSteal"));
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("KS", "Killsteal")).SetValue(true);
+            Config.SubMenu("KillSteal").AddItem(new MenuItem("useQ2KS", "Use Q for KS").SetValue(true));
 
             Config.AddSubMenu(new Menu("Auto Potions", "Auto Potions"));
             Config.SubMenu("Auto Potions").AddItem(new MenuItem("autoPO", "Auto Health Potion").SetValue(true));
             Config.SubMenu("Auto Potions").AddItem(new MenuItem("HP", "Health Potions")).SetValue(true);
             Config.SubMenu("Auto Potions")
-                .AddItem(new MenuItem("HPSlider", "Minimum %Health for Potion"))
+                .AddItem(new MenuItem("HPSlider", "Minimum % Health for Potion"))
                 .SetValue(new Slider(50));
             Config.SubMenu("Auto Potions").AddItem(new MenuItem("Biscuit", "Auto Biscuit").SetValue(true));
             Config.SubMenu("Auto Potions")
-                .AddItem(new MenuItem("bSlider", "Minimum %Health for Biscuit"))
+                .AddItem(new MenuItem("bSlider", "Minimum % Health for Biscuit"))
                 .SetValue(new Slider(50));
             Config.SubMenu("Auto Potions").AddItem(new MenuItem("flask", "Auto Flask").SetValue(true));
             Config.SubMenu("Auto Potions")
-                .AddItem(new MenuItem("fSlider", "Minimum %Health for flask"))
+                .AddItem(new MenuItem("fSlider", "Minimum % Health for flask"))
                 .SetValue(new Slider(50));
 
-            Config.SubMenu("Auto Level").AddItem(new MenuItem("Level", "Auto level up").SetValue(true));
+            Config.SubMenu("Auto Level").AddItem(new MenuItem("Level", "Auto Level-up").SetValue(true));
 
             Config.AddItem(new MenuItem("fleekey", "Use Flee Mode")).SetValue(new KeyBind(65, KeyBindType.Press));
 
