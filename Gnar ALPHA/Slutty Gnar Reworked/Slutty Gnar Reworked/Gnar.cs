@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -9,10 +10,14 @@ namespace Slutty_Gnar_Reworked
 {
     internal class Gnar : MenuConfig
     {
-        private static Obj_AI_Hero Player = ObjectManager.Player;
+        private static readonly Obj_AI_Hero Player = ObjectManager.Player;
+        public static int rcast { get; set; }
+        public static int lastq { get; set; }
+
         internal static void OnLoad(EventArgs args)
         {
             #region OnLoad
+
             if (Player.ChampionName != "Gnar")
                 return;
             CreateMenu();
@@ -22,12 +27,14 @@ namespace Slutty_Gnar_Reworked
             Drawing.OnDraw += Drawing_OnDraw;
             Interrupter2.OnInterruptableTarget += GnarInterruptableSpell;
             AntiGapcloser.OnEnemyGapcloser += OnGapCloser;
-#endregion
+
+            #endregion
         }
 
         private static void GnarInterruptableSpell(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
             #region Interruptable
+
             if (Player.IsMegaGnar())
             {
                 if (GnarSpells.WMega.IsReady()
@@ -35,12 +42,14 @@ namespace Slutty_Gnar_Reworked
                     && Config.Item("qwi").GetValue<bool>())
                     GnarSpells.WMega.Cast(sender.ServerPosition);
             }
-#endregion
+
+            #endregion
         }
 
         private static void OnGapCloser(ActiveGapcloser gapcloser)
         {
             #region on gap closer
+
             if (gapcloser.Sender.IsAlly
                 || gapcloser.Sender.IsMe)
                 return;
@@ -49,14 +58,16 @@ namespace Slutty_Gnar_Reworked
                 if (GnarSpells.QMini.IsInRange(gapcloser.Start))
                     GnarSpells.QMini.Cast((gapcloser.Sender.Position));
             }
-#endregion
+
+            #endregion
         }
 
         private static void Drawing_OnDraw(EventArgs args)
         {
             #region Drawings
+
             if (!Player.Position.IsOnScreen())
-               return;
+                return;
 
             var qDraw = Config.Item("qDraw").GetValue<bool>();
             var eDraw = Config.Item("eDraw").GetValue<bool>();
@@ -86,28 +97,31 @@ namespace Slutty_Gnar_Reworked
                 if (eDraw && GnarSpells.EMini.Level > 0)
                     Render.Circle.DrawCircle(Player.Position, GnarSpells.EMini.Range, Color.LightBlue, 3);
             }
-#endregion
+
+            #endregion
         }
 
         private static void AfterAttack(AttackableUnit unit, AttackableUnit target)
         {
             #region After attack
+
             if (!Player.IsMiniGnar())
                 return;
 
-            Obj_AI_Hero targets = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Physical);
+            var targets = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Physical);
             if (Player.Distance(target) <= 450)
             {
                 if (GnarSpells.QnMini.IsReady())
                     GnarSpells.QnMini.Cast(targets);
             }
-#endregion
-        }
 
+            #endregion
+        }
 
         private static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
         {
             #region dash
+
             var useQ = Config.Item("UseQMini").GetValue<bool>();
             var useQm = Config.Item("UseQMega").GetValue<bool>();
             var target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Magical);
@@ -120,15 +134,14 @@ namespace Slutty_Gnar_Reworked
             if (sender.NetworkId == target.NetworkId
                 && Player.IsMiniGnar())
             {
-
                 if (useQ
                     && GnarSpells.QMini.IsReady()
                     && args.EndPos.Distance(Player) <= GnarSpells.QMini.Range)
                 {
-                    var delay = (int)(args.EndTick - Game.Time - GnarSpells.QMini.Delay - 0.1f);
+                    var delay = (int) (args.EndTick - Game.Time - GnarSpells.QMini.Delay - 0.1f);
                     if (delay > 0)
                     {
-                        Utility.DelayAction.Add(delay * 1000, () => GnarSpells.QMini.Cast(args.EndPos));
+                        Utility.DelayAction.Add(delay*1000, () => GnarSpells.QMini.Cast(args.EndPos));
                     }
                     else
                     {
@@ -138,15 +151,14 @@ namespace Slutty_Gnar_Reworked
                 if (sender.NetworkId == target.NetworkId
                     && Player.IsMegaGnar())
                 {
-
                     if (useQm
                         && GnarSpells.QMini.IsReady()
                         && args.EndPos.Distance(Player) <= GnarSpells.QMega.Range)
                     {
-                        var delay = (int)(args.EndTick - Game.Time - GnarSpells.QMega.Delay - 0.1f);
+                        var delay = (int) (args.EndTick - Game.Time - GnarSpells.QMega.Delay - 0.1f);
                         if (delay > 0)
                         {
-                            Utility.DelayAction.Add(delay * 1000, () => GnarSpells.QMega.Cast(args.EndPos));
+                            Utility.DelayAction.Add(delay*1000, () => GnarSpells.QMega.Cast(args.EndPos));
                         }
                         else
                         {
@@ -156,11 +168,13 @@ namespace Slutty_Gnar_Reworked
                 }
             }
         }
-#endregion
+
+        #endregion
 
         private static void Game_OnUpdate(EventArgs args)
         {
             #region On Update
+
             KillSteal();
             switch (Orbwalker.ActiveMode)
             {
@@ -183,47 +197,52 @@ namespace Slutty_Gnar_Reworked
             if (Config.Item("fleekey").GetValue<KeyBind>().Active)
                 Flee();
 
+            #region force target
 
-            
-         #region force target
             var qSpell = Config.Item("focust").GetValue<bool>();
             var target = HeroManager.Enemies.Find(en => en.IsValidTarget(ObjectManager.Player.AttackRange)
-    && en.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2));
+                                                        &&
+                                                        en.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2));
             if (qSpell && target != null)
             {
-                    Orbwalker.ForceTarget(target);
-                    Hud.SelectedUnit = target;
+                Orbwalker.ForceTarget(target);
+                Hud.SelectedUnit = target;
             }
-            
-#endregion
+
+            #endregion
 
             #region Auto Q
+
             var autoQ = Config.Item("autoq").GetValue<bool>();
             if (autoQ && target != null)
                 GnarSpells.QMini.Cast(target);
-#endregion
-#endregion
+
+            #endregion
+
+            #endregion
         }
 
         private static void Flee()
         {
             #region flee
+
             ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             if (Player.IsMiniGnar())
-            { 
-            Obj_AI_Hero target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Magical);
-
-            var prediction = GnarSpells.EMini.GetPrediction(target);
-            var ed = Player.ServerPosition.Extend(prediction.CastPosition,
-                Player.ServerPosition.Distance(prediction.CastPosition) + GnarSpells.EMini.Range);
-
-            if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.Team != Player.Team
-                                                                && !type.IsDead
-                                                                && type.Distance(ed, true) < 775 * 775))
             {
-                GnarSpells.EMini.Cast(prediction.CastPosition);
-            }
-            var minionCount = MinionManager.GetMinions(Player.Position, GnarSpells.QMini.Range, MinionTypes.All, MinionTeam.All);
+                var target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Magical);
+
+                var prediction = GnarSpells.EMini.GetPrediction(target);
+                var ed = Player.ServerPosition.Extend(prediction.CastPosition,
+                    Player.ServerPosition.Distance(prediction.CastPosition) + GnarSpells.EMini.Range);
+
+                if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.Team != Player.Team
+                                                                    && !type.IsDead
+                                                                    && type.Distance(ed, true) < 775*775))
+                {
+                    GnarSpells.EMini.Cast(prediction.CastPosition);
+                }
+                var minionCount = MinionManager.GetMinions(Player.Position, GnarSpells.QMini.Range, MinionTypes.All,
+                    MinionTeam.All);
                 foreach (var minion in minionCount)
                 {
                     var minionPrediction = GnarSpells.EMini.GetPrediction(minion);
@@ -245,17 +264,18 @@ namespace Slutty_Gnar_Reworked
                     }
                 }
             }
-
         }
-#endregion
+
+        #endregion
 
         private static void KillSteal()
         {
             #region Kill Steal
-            Obj_AI_Hero target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Physical);
+
+            var target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Physical);
 
             if (target == null)
-               return;
+                return;
 
             var qSpell = Config.Item("qks").GetValue<bool>();
             var rSpell = Config.Item("rks").GetValue<bool>();
@@ -297,13 +317,14 @@ namespace Slutty_Gnar_Reworked
 
                 if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.Team != Player.Team
                                                                     && !type.IsDead
-                                                                    && type.Distance(ed, true) < 775 * 775))
+                                                                    && type.Distance(ed, true) < 775*775))
                 {
                     GnarSpells.EMini.Cast(prediction.CastPosition);
                     lastq = Environment.TickCount;
                 }
 
-                var minionCount = MinionManager.GetMinions(Player.Position, GnarSpells.QMini.Range, MinionTypes.All, MinionTeam.All);
+                var minionCount = MinionManager.GetMinions(Player.Position, GnarSpells.QMini.Range, MinionTypes.All,
+                    MinionTeam.All);
                 foreach (var minion in minionCount)
                 {
                     var minionPrediction = GnarSpells.EMini.GetPrediction(minion);
@@ -318,7 +339,7 @@ namespace Slutty_Gnar_Reworked
                         Player.ServerPosition.Distance(minionPrediction.CastPosition) + GnarSpells.EMini.Range);
                     if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.IsMinion != Player.IsMinion
                                                                         && !type.IsDead
-                                                                        && type.Distance(edm, true) < 775 * 775
+                                                                        && type.Distance(edm, true) < 775*775
                                                                         && k.IsValid))
                     {
                         GnarSpells.EMini.Cast(k);
@@ -331,12 +352,14 @@ namespace Slutty_Gnar_Reworked
                     GnarSpells.QMini.Cast(target);
                 }
             }
-#endregion
+
+            #endregion
         }
 
         private static void JungleClear()
         {
             #region Jungle Clear
+
             var qSpell = Config.Item("UseQj").GetValue<bool>();
             var wSpell = Config.Item("UseWj").GetValue<bool>();
 
@@ -351,7 +374,7 @@ namespace Slutty_Gnar_Reworked
                 if (Player.IsMiniGnar())
                 {
                     if (qSpell && GnarSpells.QMini.IsReady())
-                            GnarSpells.QMini.Cast(jungleminion);
+                        GnarSpells.QMini.Cast(jungleminion);
                 }
                 if (Player.IsMegaGnar())
                 {
@@ -359,12 +382,14 @@ namespace Slutty_Gnar_Reworked
                         GnarSpells.WMega.Cast(jungleminion);
                 }
             }
-#endregion
+
+            #endregion
         }
 
         private static void LaneClear()
         {
             #region laneclear
+
             var qSpell = Config.Item("UseQl").GetValue<bool>();
             var wSpell = Config.Item("UseWl").GetValue<bool>();
             var qlSpell = Config.Item("UseQlslider").GetValue<Slider>().Value;
@@ -375,14 +400,14 @@ namespace Slutty_Gnar_Reworked
             if (minions == null)
                 return;
 
-            MinionManager.FarmLocation QFarmLocation =
+            var QFarmLocation =
                 GnarSpells.QMini.GetLineFarmLocation(
                     MinionManager.GetMinionsPredictedPositions(MinionManager.GetMinions(GnarSpells.QMini.Range),
                         GnarSpells.QMini.Delay, GnarSpells.QMini.Width, GnarSpells.QMini.Speed,
                         Player.Position, GnarSpells.QMini.Range,
                         false, SkillshotType.SkillshotLine), GnarSpells.QMini.Width);
 
-            MinionManager.FarmLocation WFarmLocation =
+            var WFarmLocation =
                 GnarSpells.WMega.GetLineFarmLocation(
                     MinionManager.GetMinionsPredictedPositions(MinionManager.GetMinions(GnarSpells.WMega.Range),
                         GnarSpells.WMega.Delay, GnarSpells.WMega.Width, GnarSpells.WMega.Speed,
@@ -401,13 +426,15 @@ namespace Slutty_Gnar_Reworked
                 if (qSpell && GnarSpells.QMega.IsReady())
                     GnarSpells.QMega.Cast(minions[0]);
             }
-#endregion
+
+            #endregion
         }
 
         private static void Mixed()
         {
             #region mixed
-            Obj_AI_Hero target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Physical);
+
+            var target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Physical);
             var qSpell = Config.Item("qharras").GetValue<bool>();
             var qsSpell = Config.Item("qharras2").GetValue<bool>();
             var wSpell = Config.Item("wharras").GetValue<bool>();
@@ -437,32 +464,55 @@ namespace Slutty_Gnar_Reworked
                     GnarSpells.QMega.Cast(target);
             }
         }
-#endregion
+
+        #endregion
 
         private static void Combo()
         {
             #region Mini Gnar
 
+            IList<Obj_AI_Base> objAiBases;
             if (Player.IsMiniGnar())
             {
-                Obj_AI_Hero target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Physical);
+                var target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Physical);
                 var qSpell = Config.Item("UseQMini").GetValue<bool>();
                 var qsSpell = Config.Item("UseQs").GetValue<bool>();
-               var eSpell = Config.Item("eGap").GetValue<bool>();
+                var eSpell = Config.Item("eGap").GetValue<bool>();
+                var qpred = GnarSpells.QMini.GetPrediction(target);
+                var collision = GnarSpells.QMini.GetCollision(Player.Position.To2D(),
+                    new List<Vector2> {qpred.CastPosition.To2D()});
+                var mincol =
+                    collision.Where(
+                        obj => obj != null && !obj.IsDead && (obj.IsChampion() || obj.IsMinion) && !obj.IsAlly);
+                var minions = MinionManager.GetMinions(GnarSpells.QMini.Range, MinionTypes.All, MinionTeam.Enemy,
+                    MinionOrderTypes.MaxHealth);
+
+                objAiBases = mincol as IList<Obj_AI_Base> ?? mincol.ToList();
+                var count = objAiBases.Count();
 
                 if (qSpell && target.IsValidTarget(GnarSpells.QMini.Range)
                     && Player.Distance(target) > 450)
                 {
+                    if (!objAiBases.Any())
                     {
                         if (!qsSpell)
-                            GnarSpells.QnMini.Cast(target);
+                            GnarSpells.QnMini.Cast(qpred.CastPosition);
 
                         else if (target.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2))
-                            GnarSpells.QnMini.Cast(target);
+                            GnarSpells.QnMini.Cast(qpred.CastPosition);
                     }
-
+                    else
+                    {
+                        foreach (
+                            var minc in
+                                objAiBases.Where(minc => count <= 1).Where(minc => minions[0].Distance(target) <= 300))
+                        {
+                            GnarSpells.QMini.Cast(qpred.CastPosition);
+                        }
+                    }
                 }
-                
+
+
                 if (eSpell
                     && Player.Distance(target) > 500
                     && target.Health <= GnarSpells.QMini.GetDamage(target))
@@ -493,7 +543,6 @@ namespace Slutty_Gnar_Reworked
                         }
                     }
                 }
-                 
             }
 
             #endregion
@@ -502,7 +551,7 @@ namespace Slutty_Gnar_Reworked
 
             if (Player.IsMegaGnar())
             {
-                Obj_AI_Hero target = TargetSelector.GetTarget(GnarSpells.QMega.Range, TargetSelector.DamageType.Physical);
+                var target = TargetSelector.GetTarget(GnarSpells.QMega.Range, TargetSelector.DamageType.Physical);
                 var rSlider = Config.Item("useRSlider").GetValue<Slider>().Value;
                 var emSpell = Config.Item("UseEMega").GetValue<bool>();
                 var qmSpell = Config.Item("UseQMega").GetValue<bool>();
@@ -512,13 +561,6 @@ namespace Slutty_Gnar_Reworked
                 if (GnarSpells.RMega.IsReady()
                     && Config.Item("UseRMega").GetValue<bool>())
                 {
-                    if (target.IsValidTarget(GnarSpells.RMega.Range)
-                        && target.Health <= GnarSpells.RMega.GetDamage(target) + GnarSpells.QMini.GetDamage(target))
-                    {
-                        GnarSpells.RMega.Cast(target.Position.Extend(Player.ServerPosition,
-                            Vector3.Distance(target.ServerPosition, Player.ServerPosition) + 200));
-
-                    }
                     if (Player.CountEnemiesInRange(420) >= rSlider)
                     {
                         var prediction = Prediction.GetPrediction(target, GnarSpells.RMega.Delay);
@@ -531,7 +573,6 @@ namespace Slutty_Gnar_Reworked
                             var currentStep = 0f;
                             while (true)
                             {
-
                                 if (currentStep > maxAngle && currentAngle < 0)
                                     break;
 
@@ -589,11 +630,8 @@ namespace Slutty_Gnar_Reworked
                         GnarSpells.QMega.Cast(target);
                 }
             }
+
             #endregion
         }
-
-        public static int rcast { get; set; }
-
-        public static int lastq { get; set; }
     }
 }
