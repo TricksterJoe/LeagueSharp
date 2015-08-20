@@ -483,12 +483,15 @@ namespace Slutty_Gnar_Reworked
                     new List<Vector2> {qpred.CastPosition.To2D()});
                 var mincol =
                     collision.Where(
-                        obj => obj != null && !obj.IsDead && (obj.IsChampion() || obj.IsMinion) && !obj.IsAlly);
-                var minions = MinionManager.GetMinions(GnarSpells.QMini.Range, MinionTypes.All, MinionTeam.Enemy,
-                    MinionOrderTypes.MaxHealth);
+                        obj => obj != null && obj.IsValidTarget() && !obj.IsDead && (obj.IsChampion() || obj.IsMinion) && !obj.IsAlly);
+             
 
                 objAiBases = mincol as IList<Obj_AI_Base> ?? mincol.ToList();
                 var count = objAiBases.Count();
+
+                var firstcol = objAiBases.OrderBy(m => m.Distance(ObjectManager.Player.ServerPosition, true)).FirstOrDefault();
+
+                var firstcolcalc =(int) (GnarSpells.QMini.Range - firstcol.Distance(Player))/(count - 1);
 
                 if (qSpell && target.IsValidTarget(GnarSpells.QMini.Range)
                     && Player.Distance(target) > 450)
@@ -503,12 +506,8 @@ namespace Slutty_Gnar_Reworked
                     }
                     else
                     {
-                        foreach (
-                            var minc in
-                                objAiBases.Where(minc => count <= 1 && minc.Distance(target) <= 300))
-                        {
+                        if (objAiBases.Any(minc => count <= 1 && firstcol.Distance(target) <= firstcolcalc))
                             GnarSpells.QMini.Cast(qpred.CastPosition);
-                        }
                     }
                 }
 
