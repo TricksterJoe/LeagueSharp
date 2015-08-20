@@ -505,7 +505,7 @@ namespace Slutty_Gnar_Reworked
                     {
                         foreach (
                             var minc in
-                                objAiBases.Where(minc => count <= 1).Where(minc => minions[0].Distance(target) <= 300))
+                                objAiBases.Where(minc => count <= 1 && minc.Distance(target) <= 300))
                         {
                             GnarSpells.QMini.Cast(qpred.CastPosition);
                         }
