@@ -479,6 +479,8 @@ namespace Slutty_Gnar_Reworked
                 var qSpell = Config.Item("UseQMini").GetValue<bool>();
                 var qsSpell = Config.Item("UseQs").GetValue<bool>();
                 var eSpell = Config.Item("eGap").GetValue<bool>();
+                if (target == null)
+                    return;
                 /*
                 var qpred = GnarSpells.QMini.GetPrediction(target);
                 var collision = GnarSpells.QMini.GetCollision(Player.Position.To2D(),
