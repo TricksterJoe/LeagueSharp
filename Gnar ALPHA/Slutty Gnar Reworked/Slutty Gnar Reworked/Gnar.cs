@@ -478,6 +478,7 @@ namespace Slutty_Gnar_Reworked
                 var qSpell = Config.Item("UseQMini").GetValue<bool>();
                 var qsSpell = Config.Item("UseQs").GetValue<bool>();
                 var eSpell = Config.Item("eGap").GetValue<bool>();
+                /*
                 var qpred = GnarSpells.QMini.GetPrediction(target);
                 var collision = GnarSpells.QMini.GetCollision(Player.Position.To2D(),
                     new List<Vector2> {qpred.CastPosition.To2D()});
@@ -520,6 +521,21 @@ namespace Slutty_Gnar_Reworked
                             }
                         }
                     }
+                }
+                 */
+
+
+                if (qSpell && target.IsValidTarget(GnarSpells.QMini.Range)
+                    && Player.Distance(target) > 450)
+                {
+                    {
+                        if (!qsSpell)
+                            GnarSpells.QnMini.Cast(target);
+
+                        else if (target.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2))
+                            GnarSpells.QnMini.Cast(target);
+                    }
+
                 }
 
 
