@@ -270,7 +270,7 @@ namespace OAnnie
             var usee = Config.Item("comboMenu.passivemanagement.e.stack").GetValue<bool>();
             var usew = Config.Item("comboMenu.passivemanagement.w.stack").GetValue<bool>();
 
-            if (Player.HasBuff("puromania_particle"))
+            if (Player.HasBuff("pyromania_particle"))
                 return;
 
             if (usee && E.IsReady())
