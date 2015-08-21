@@ -162,7 +162,7 @@ namespace OAnnie
 
             #region harras
 
-            var harrasMenu = new Menu("Harras Settings", "Harras Settings");
+            var harrasMenu = new Menu("Harrass Settings", "Harrass Settings");
             {
                 harrasMenu.AddItem(new MenuItem("harrasMenu.useq", "Use [Q]")).SetValue(true);
                 harrasMenu.AddItem(new MenuItem("harrasMenu.usew", "Use [W]")).SetValue(true);
