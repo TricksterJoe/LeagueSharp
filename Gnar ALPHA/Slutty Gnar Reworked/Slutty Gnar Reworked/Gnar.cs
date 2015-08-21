@@ -230,23 +230,13 @@ namespace Slutty_Gnar_Reworked
             ObjectManager.Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             if (Player.IsMiniGnar())
             {
-                var target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Magical);
-
-                var prediction = GnarSpells.EMini.GetPrediction(target);
-                var ed = Player.ServerPosition.Extend(prediction.CastPosition,
-                    Player.ServerPosition.Distance(prediction.CastPosition) + GnarSpells.EMini.Range);
-
-                if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.Team != Player.Team
-                                                                    && !type.IsDead
-                                                                    && type.Distance(ed, true) < 775*775))
-                {
-                    GnarSpells.EMini.Cast(prediction.CastPosition);
-                }
+               
                 var minionCount = MinionManager.GetMinions(Player.Position, GnarSpells.QMini.Range, MinionTypes.All,
                     MinionTeam.All);
                 foreach (var minion in minionCount)
                 {
                     var minionPrediction = GnarSpells.EMini.GetPrediction(minion);
+                   
                     var k =
                         ObjectManager.Get<Obj_AI_Minion>().Where(x => Player.IsFacing(x)
                                                                       && x.IsMinion
@@ -254,16 +244,33 @@ namespace Slutty_Gnar_Reworked
                             .OrderByDescending(x => x.Distance(Player))
                             .First();
 
+                    if (k == null)
+                        return;
                     var edm = Player.ServerPosition.Extend(minionPrediction.CastPosition,
                         Player.ServerPosition.Distance(minionPrediction.CastPosition) + GnarSpells.EMini.Range);
-                    if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.IsMinion != Player.IsMinion
+                    if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.IsMinion
                                                                         && !type.IsDead
-                                                                        && type.Distance(edm, true) < 775*775
-                                                                        && k.IsValid))
+                                                                        && type.Distance(edm, true) < 775*775))
                     {
-                        GnarSpells.EMini.Cast(k);
+                        GnarSpells.EMini.Cast(edm.Extend(Game.CursorPos, Player.ServerPosition.Distance(minionPrediction.CastPosition) + GnarSpells.EMini.Range));
                     }
                 }
+                /*
+                var target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Magical);
+                if (target == null)
+                    return;
+                var prediction = GnarSpells.EMini.GetPrediction(target);
+                var ed = Player.ServerPosition.Extend(prediction.CastPosition,
+                    Player.ServerPosition.Distance(prediction.CastPosition) + GnarSpells.EMini.Range);
+
+                if (!ObjectManager.Get<Obj_AI_Turret>().Any(type => type.Team != Player.Team
+                                                                    && !type.IsDead
+                                                                    && type.Distance(ed, true) < 775 * 775))
+                {
+                    GnarSpells.EMini.Cast(prediction.CastPosition);
+                }
+                 */
+                 
             }
         }
 
@@ -467,6 +474,10 @@ namespace Slutty_Gnar_Reworked
         }
 
         #endregion
+
+        /// <summary>
+        /// Combo
+        /// </summary>
         private static void Combo()
         {
             
@@ -481,7 +492,6 @@ namespace Slutty_Gnar_Reworked
                 var eSpell = Config.Item("eGap").GetValue<bool>();
                 if (target == null)
                     return;
-                /*
                 var qpred = GnarSpells.QMini.GetPrediction(target);
                 var collision = GnarSpells.QMini.GetCollision(Player.Position.To2D(),
                     new List<Vector2> {qpred.CastPosition.To2D()});
@@ -489,19 +499,19 @@ namespace Slutty_Gnar_Reworked
                     collision.Where(
                         obj => obj != null && obj.IsValidTarget() && !obj.IsDead && obj.IsMinion);
 
-                var objAiBases = mincol as IList<Obj_AI_Base> ?? mincol.ToList();
+                var aiBases = mincol as Obj_AI_Base[] ?? mincol.ToArray();
+                var objAiBases = mincol as IList<Obj_AI_Base> ?? aiBases.ToList();
                 var count = objAiBases.Count();
 
                 var firstcol = objAiBases.OrderBy(m => m.Distance(Player.ServerPosition, true)).FirstOrDefault();
-                var lastcol = objAiBases.OrderBy(m => m.Distance(Player.ServerPosition, true)).Last();
 
 
-                var firstcolcalc = (int) (GnarSpells.QMini.Range - firstcol.Distance(Player))/(count);
+              //  var firstcolcalc = (int) (GnarSpells.QMini.Range - firstcol.Distance(Player))/(count +0.5);
 
                 if (qSpell && target.IsValidTarget(GnarSpells.QMini.Range)
                     && Player.Distance(target) > 450)
                 {
-                    if (!objAiBases.Any())
+                    if (!aiBases.Any())
                     {
                         if (!qsSpell)
                             GnarSpells.QnMini.Cast(qpred.CastPosition);
@@ -511,7 +521,7 @@ namespace Slutty_Gnar_Reworked
                     }
                     else
                     {
-                        if (objAiBases.Any(minc => count <= 1 && lastcol.Distance(target) <= firstcolcalc))
+                        if (objAiBases.Any(minc => count >= 1 && firstcol.Distance(target) <= 350))
                         {
                             if (!qsSpell)
                             {
@@ -525,9 +535,8 @@ namespace Slutty_Gnar_Reworked
                         }
                     }
                 }
-                 */
 
-
+                /*
                 if (qSpell && target.IsValidTarget(GnarSpells.QMini.Range)
                     && Player.Distance(target) > 450)
                 {
@@ -540,6 +549,7 @@ namespace Slutty_Gnar_Reworked
                     }
 
                 }
+                 */
 
 
                 if (eSpell
