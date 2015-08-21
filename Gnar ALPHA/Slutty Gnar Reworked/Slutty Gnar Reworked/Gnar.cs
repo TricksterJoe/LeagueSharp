@@ -466,14 +466,14 @@ namespace Slutty_Gnar_Reworked
         }
 
         #endregion
-
         private static void Combo()
         {
+            
             #region Mini Gnar
 
-            IList<Obj_AI_Base> objAiBases;
             if (Player.IsMiniGnar())
             {
+                
                 var target = TargetSelector.GetTarget(GnarSpells.QMini.Range, TargetSelector.DamageType.Physical);
                 var qSpell = Config.Item("UseQMini").GetValue<bool>();
                 var qsSpell = Config.Item("UseQs").GetValue<bool>();
@@ -483,15 +483,16 @@ namespace Slutty_Gnar_Reworked
                     new List<Vector2> {qpred.CastPosition.To2D()});
                 var mincol =
                     collision.Where(
-                        obj => obj != null && obj.IsValidTarget() && !obj.IsDead && (obj.IsChampion() || obj.IsMinion) && !obj.IsAlly);
-             
+                        obj => obj != null && obj.IsValidTarget() && !obj.IsDead && obj.IsMinion);
 
-                objAiBases = mincol as IList<Obj_AI_Base> ?? mincol.ToList();
+                var objAiBases = mincol as IList<Obj_AI_Base> ?? mincol.ToList();
                 var count = objAiBases.Count();
 
-                var firstcol = objAiBases.OrderBy(m => m.Distance(ObjectManager.Player.ServerPosition, true)).FirstOrDefault();
+                var firstcol = objAiBases.OrderBy(m => m.Distance(Player.ServerPosition, true)).FirstOrDefault();
+                var lastcol = objAiBases.OrderBy(m => m.Distance(Player.ServerPosition, true)).Last();
 
-                var firstcolcalc =(int) (GnarSpells.QMini.Range - firstcol.Distance(Player))/(count - 1);
+
+                var firstcolcalc = (int) (GnarSpells.QMini.Range - firstcol.Distance(Player))/(count);
 
                 if (qSpell && target.IsValidTarget(GnarSpells.QMini.Range)
                     && Player.Distance(target) > 450)
@@ -506,8 +507,18 @@ namespace Slutty_Gnar_Reworked
                     }
                     else
                     {
-                        if (objAiBases.Any(minc => count <= 1 && firstcol.Distance(target) <= firstcolcalc))
-                            GnarSpells.QMini.Cast(qpred.CastPosition);
+                        if (objAiBases.Any(minc => count <= 1 && lastcol.Distance(target) <= firstcolcalc))
+                        {
+                            if (!qsSpell)
+                            {
+                                GnarSpells.QMini.Cast(qpred.CastPosition);
+                            }
+
+                            else if (target.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2))
+                            {
+                                GnarSpells.QnMini.Cast(qpred.CastPosition);
+                            }
+                        }
                     }
                 }
 
