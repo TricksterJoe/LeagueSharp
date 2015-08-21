@@ -46,10 +46,10 @@ namespace OAnnie
 
             var comboMenu = new Menu("Combo Settings", "Combo Settings");
             {
-                comboMenu.AddItem(new MenuItem("comboMenu.useq", "Use [Q]")).SetValue(false);
-                comboMenu.AddItem(new MenuItem("comboMenu.usew", "Use [W]")).SetValue(false);
-                comboMenu.AddItem(new MenuItem("comboMenu.usee", "Use [E]")).SetValue(false);
-                comboMenu.AddItem(new MenuItem("comboMenu.user", "Use [R]")).SetValue(false);
+                comboMenu.AddItem(new MenuItem("comboMenu.useq", "Use [Q]")).SetValue(true);
+                comboMenu.AddItem(new MenuItem("comboMenu.usew", "Use [W]")).SetValue(true);
+                comboMenu.AddItem(new MenuItem("comboMenu.usee", "Use [E]")).SetValue(true);
+                comboMenu.AddItem(new MenuItem("comboMenu.user", "Use [R]")).SetValue(true);
                 var emenu = new Menu("[E] Settings", "[E] Settings");
                 {
                     emenu.AddItem(new MenuItem("comboMenu.emenu.eaa", "[E] Against AA")).SetValue(true);
@@ -61,7 +61,7 @@ namespace OAnnie
                 var passivemanagement = new Menu("Passive Utillization", "passiveutil");
                 {
                     passivemanagement.AddItem(new MenuItem("comboMenu.passivemanagement.e.before",
-                        "Use E Before Q To Gain Stun")).SetValue(false);
+                        "Use E Before Q To Gain Stun")).SetValue(true);
                     passivemanagement.AddItem(new MenuItem("comboMenu.passivemanagement.e.stack", "Use E To Stack Stun"))
                         .SetValue(false);
                     passivemanagement.AddItem(new MenuItem("comboMenu.passivemanagement.w.stack", "Use W To Stack Stun"))
@@ -122,9 +122,9 @@ namespace OAnnie
                     laneMenu.AddItem(new MenuItem("clearMenu.laneMenu.keepstun", "Keep Stun")).SetValue(true);
                     laneMenu.AddItem(new MenuItem("clearMenu.laneMenu.manaslider", "> % Mana to Lane clear"))
                         .SetValue(new Slider(30));
-                    laneMenu.AddItem(new MenuItem("clearMenu.laneMenu.useq", "Use [Q]")).SetValue(true);
+                    laneMenu.AddItem(new MenuItem("clearMenu.laneMenu.useq", "Use [Q]")).SetValue(false);
                     laneMenu.AddItem(new MenuItem("clearMenu.laneMenu.useqlast", "Use [Q] To Last Hit")).SetValue(true);
-                    laneMenu.AddItem(new MenuItem("clearMenu.laneMenu.usew", "Use [W]")).SetValue(true);
+                    laneMenu.AddItem(new MenuItem("clearMenu.laneMenu.usew", "Use [W]")).SetValue(false);
                     laneMenu.AddItem(new MenuItem("clearMenu.laneMenu.usewslider", "Use [W] If Hits X Enemies"))
                         .SetValue(new Slider(3, 1, 20));
                     clearMenu.AddSubMenu(laneMenu);
