@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -530,10 +531,10 @@ namespace Slutty_Gnar_Reworked
                 {
                     {
                         if (!qsSpell)
-                            GnarSpells.QnMini.Cast(target);
+                            GnarSpells.QMini.Cast(target);
 
                         else if (target.Buffs.Any(buff => buff.Name == "gnarwproc" && buff.Count == 2))
-                            GnarSpells.QnMini.Cast(target);
+                            GnarSpells.QMini.Cast(target);
                     }
 
                 }
