@@ -18,13 +18,13 @@ namespace OAnnie
 
         public static float GetComboDamage(Obj_AI_Base enemy)
         {
-            if (Q.IsReady() || Player.Mana <= Q.Instance.ManaCost)
+            if (Q.IsReady() || Player.Mana >= Q.Instance.ManaCost)
                 return Q.GetDamage(enemy);
 
-            if (E.IsReady() || Player.Mana <= R.Instance.ManaCost)
+            if (R.IsReady() || Player.Mana >= R.Instance.ManaCost)
                 return E.GetDamage(enemy);
 
-            if (W.IsReady() || Player.Mana <= W.Instance.ManaCost )
+            if (W.IsReady() || Player.Mana >= W.Instance.ManaCost )
                 return W.GetDamage(enemy);
 
             return 0;

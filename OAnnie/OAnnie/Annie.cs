@@ -61,7 +61,7 @@ namespace OAnnie
 
         #endregion
 
-        /*
+        
         /// <summary>
         /// Gapcloser
         /// </summary>
@@ -131,7 +131,7 @@ namespace OAnnie
          
 
         #endregion
-         */
+         
 
         /// <summary>
         ///     E On auto attack
@@ -160,6 +160,15 @@ namespace OAnnie
         #region On Update
         private static void OnGameUpdate(EventArgs args)
         {
+            /*
+            foreach (var buff in Player.Buffs)
+            {
+                if (buff.Name.ToLower() != "odinplayerbuff"
+                    || buff.Name.ToLower() != "kalistacoopstrikeally"
+                    || buff.Name != "pyromania_marker")
+                    Game.PrintChat(buff.Name.ToLower());
+            }
+             */
             Orbwalker.SetAttack(true);
             switch (Orbwalker.ActiveMode)
             {
@@ -180,10 +189,10 @@ namespace OAnnie
                     Mixed();
                     break;
             }
-            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(Q.Range + 200, TargetSelector.DamageType.Magical);
             if (target != null)
             {
-                if (target.IsValidTarget(Q.Range + 150) &&
+                if (Player.Distance(target) > Q.Range &&
                     (( Q.IsReady() || W.IsReady() || R.IsReady())) )
                 {
                     Orbwalker.SetAttack(false);
@@ -209,18 +218,8 @@ namespace OAnnie
                 || Config.Item("comboMenu.flashmenu.flasher").GetValue<KeyBind>().Active)
             {
                 TibbersFlash();
-            }
-
-
-            /*
-            foreach (var buff in Player.Buffs)
-            {
-                if (buff.Name.ToLower() != "odinplayerbuff"
-                    || buff.Name.ToLower() != "kalistacoopstrikeally"
-                    || buff.Name.ToLower() != "")
-              Game.PrintChat(buff.Name.ToLower());   
-            }
-             */
+            }        
+             
         }
 
         #endregion
@@ -417,6 +416,11 @@ namespace OAnnie
             if (target == null)
                 return;
 
+            if (!R.IsReady())
+            {
+                Combo();
+            }
+
             var x = target.Position.Extend(Prediction.GetPrediction(target, 1).UnitPosition, FlashRange);
             var predpos = R.GetPrediction(target);
             if (Config.Item("comboMenu.flashmenu.flashr").GetValue<KeyBind>().Active)
@@ -477,6 +481,7 @@ namespace OAnnie
         /// <summary>
         ///     Combo
         /// </summary>
+
         #region Combo
         private static void Combo()
         {
@@ -491,12 +496,17 @@ namespace OAnnie
             var useebefore = Config.Item("comboMenu.passivemanagement.e.before").GetValue<bool>();
             var userslider = Config.Item("comboMenu.user.Slider").GetValue<Slider>().Value;
 
+            if (Ignite.IsReady() && target.Health < Q.GetDamage(target) + Player.GetAutoAttackDamage(target)
+                && Config.Item("comboMenu.useignite").GetValue<bool>())
+            {
+                Player.Spellbook.CastSpell(Ignite, target);
+            }
 
             if (Q.IsReady() && target.IsValidTarget(Q.Range) && useq)
             {
                 if (useebefore)
                 {
-                    if (GetPassiveBuff == 3 && E.IsReady())
+                    if (GetPassiveBuff == 3 && E.IsReady() && !Player.HasBuff("summonerteleport"))
                     {
                         E.Cast();
                     }
@@ -509,7 +519,7 @@ namespace OAnnie
                     Q.Cast(target);
             }
 
-            if (usee && E.IsReady() && !Player.HasBuff("pyromania_particles"))
+            if (usee && E.IsReady() && !Player.HasBuff("pyromania_particles") && !Player.HasBuff("summonerteleport"))
             {
                 switch (Config.Item("comboMenu.emenu.emode").GetValue<StringList>().SelectedIndex)
                 {
@@ -524,7 +534,7 @@ namespace OAnnie
                 }
             }
 
-            if (W.IsReady() && target.IsValidTarget(W.Range) && usew)
+            if (W.IsReady() && target.IsValidTarget(W.Range) && usew && !Player.HasBuff("summonerteleport"))
             {
                 W.Cast(target);
             }
@@ -535,10 +545,17 @@ namespace OAnnie
                     .ToList();
 
             if (R.IsReady()
-                && user && target.IsValidTarget(R.Range)
-                && rhit.Count >= userslider && Player.HasBuff("pyromania_particle"))
+                && user && target.IsValidTarget(R.Range) && !Player.HasBuff("summonerteleport") )
             {
-                R.Cast(target.Position);
+                if(rhit.Count >= userslider && Player.HasBuff("pyromania_particle"))
+                {
+                    R.Cast(target.Position);
+                }
+                if (Player.CountEnemiesInRange(2000) == 1
+                    && (target.Health <= Q.GetDamage(target) + R.GetDamage(target) + W.GetDamage(target) ) && target.Health >= Q.GetDamage(target))
+                {
+                    R.Cast(target.Position);
+                }
             }
         }
 

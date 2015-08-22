@@ -46,6 +46,7 @@ namespace OAnnie
 
             var comboMenu = new Menu("Combo Settings", "Combo Settings");
             {
+                comboMenu.AddItem(new MenuItem("comboMenu.useignite", "Use Ignite")).SetValue(true);
                 comboMenu.AddItem(new MenuItem("comboMenu.useq", "Use [Q]")).SetValue(true);
                 comboMenu.AddItem(new MenuItem("comboMenu.usew", "Use [W]")).SetValue(true);
                 comboMenu.AddItem(new MenuItem("comboMenu.usee", "Use [E]")).SetValue(true);
