@@ -50,12 +50,18 @@ namespace OAnnie
                 comboMenu.AddItem(new MenuItem("comboMenu.useq", "Use [Q]")).SetValue(true);
                 comboMenu.AddItem(new MenuItem("comboMenu.usew", "Use [W]")).SetValue(true);
                 comboMenu.AddItem(new MenuItem("comboMenu.usee", "Use [E]")).SetValue(true);
-                comboMenu.AddItem(new MenuItem("comboMenu.user", "Use [R]")).SetValue(true);
                 var emenu = new Menu("[E] Settings", "[E] Settings");
                 {
                     emenu.AddItem(new MenuItem("comboMenu.emenu.eaa", "[E] Against AA")).SetValue(true);
                     emenu.AddItem(new MenuItem("comboMenu.emenu.emode", "[E] Mode"))
                         .SetValue(new StringList(new[] {"E When Passive 3", "Always E"}, 1));
+                }
+                var rmenu = new Menu("[R] Settings", "[R] Settings");
+                {
+                    rmenu.AddItem(new MenuItem("comboMenu.user", "Use [R]")).SetValue(true);
+                    rmenu.AddItem(new MenuItem("comboMenu.user.smart", "Smart [R] 1v1 Logic")).SetValue(true);
+                    rmenu.AddItem(new MenuItem("comboMenu.user.Slider", "R If Hit X Enemies"))
+                        .SetValue(new Slider(3, 1, 5));                    
                 }
                 comboMenu.AddItem(new MenuItem("comboMenu.user.Slider", "R If Hit X Enemies"))
                     .SetValue(new Slider(3, 1, 5));

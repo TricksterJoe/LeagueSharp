@@ -498,6 +498,7 @@ namespace OAnnie
             var usew = Config.Item("comboMenu.usew").GetValue<bool>();
             var usee = Config.Item("comboMenu.usee").GetValue<bool>();
             var user = Config.Item("comboMenu.user").GetValue<bool>();
+            var usersmart = Config.Item("comboMenu.user.smart").GetValue<bool>();
             var useebefore = Config.Item("comboMenu.passivemanagement.e.before").GetValue<bool>();
             var userslider = Config.Item("comboMenu.user.Slider").GetValue<Slider>().Value;
 
@@ -521,7 +522,7 @@ namespace OAnnie
                     }
                     else
                     {
-                        if (Player.HasBuff("pyromania_particles"))
+                        if (Player.HasBuff("pyromania_particles") && usersmart)
                             return;
                         Q.Cast(target);
                     }
@@ -533,7 +534,7 @@ namespace OAnnie
                 }
                 else
                 {
-                    if ((Player.HasBuff("pyromania_particles")))
+                    if (Player.HasBuff("pyromania_particles") && usersmart)
                         return;
                     Q.Cast(target);
                 }
@@ -556,7 +557,7 @@ namespace OAnnie
 
             if (W.IsReady() && target.IsValidTarget(W.Range) && usew && !Player.HasBuff("summonerteleport"))
             {
-                if (Player.HasBuff("pyromania_particles") && R.IsReady())
+                if (Player.HasBuff("pyromania_particles") && R.IsReady() && usersmart)
                     return;
                     W.Cast(target);
             }
