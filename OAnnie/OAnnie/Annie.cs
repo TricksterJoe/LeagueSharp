@@ -560,15 +560,6 @@ namespace OAnnie
                     return;
                     W.Cast(target);
             }
-            foreach (var rhit in
-                ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(enemy => enemy.IsValidTarget())
-                    .Select(x => R.GetPrediction(x, true))
-                    .Where(pred => pred.AoeTargetsHitCount >= userslider))
-            {
-                    R.Cast(rhit.CastPosition);
-
-            }
 
             if (R.IsReady()
                 && user && target.IsValidTarget(R.Range) && !Player.HasBuff("summonerteleport") && Player.HasBuff("pyromania_particle"))
