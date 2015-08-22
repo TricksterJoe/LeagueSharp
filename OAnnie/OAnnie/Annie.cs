@@ -560,19 +560,29 @@ namespace OAnnie
                     return;
                     W.Cast(target);
             }
-            var rhit =
+            foreach (var rhit in
                 ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(enemy => enemy.IsValidTarget() && R.WillHit(enemy, R.GetPrediction(enemy, true).CastPosition))
-                    .ToList();
+                    .Where(enemy => enemy.IsValidTarget())
+                    .Select(x => R.GetPrediction(x, true))
+                    .Where(pred => pred.AoeTargetsHitCount >= userslider))
+            {
+                    R.Cast(rhit.CastPosition);
+
+            }
 
             if (R.IsReady()
                 && user && target.IsValidTarget(R.Range) && !Player.HasBuff("summonerteleport") && Player.HasBuff("pyromania_particle"))
             {
-                if(rhit.Count >= userslider )
+                foreach (var rhit in
+                    ObjectManager.Get<Obj_AI_Hero>()
+                        .Where(enemy => enemy.IsValidTarget())
+                        .Select(x => R.GetPrediction(x, true))
+                        .Where(pred => pred.AoeTargetsHitCount >= userslider))
                 {
-                    R.Cast(target.Position);
+                    R.Cast(rhit.CastPosition);
+
                 }
-                if (target.Health >= Q.GetDamage(target))
+               if (target.Health >= Q.GetDamage(target))
                 {
                     R.Cast(target.Position);
                 }
