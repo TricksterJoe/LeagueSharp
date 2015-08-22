@@ -16,18 +16,30 @@ namespace OAnnie
         public delegate float DamageToUnitDelegate(Obj_AI_Hero hero);
 
 
-        public static float GetComboDamage(Obj_AI_Base enemy)
+        public static float GetComboDamage(Obj_AI_Hero enemy)
         {
-            if (Q.IsReady() || Player.Mana >= Q.Instance.ManaCost)
-                return Q.GetDamage(enemy);
+            var damage = 0d;
+            if (Q.IsReady())
+                damage += Player.GetSpellDamage(enemy, SpellSlot.Q);
 
-            if (R.IsReady() || Player.Mana >= R.Instance.ManaCost)
-                return E.GetDamage(enemy);
+            if (R.IsReady())
+                damage += Player.GetSpellDamage(enemy, SpellSlot.R);
 
-            if (W.IsReady() || Player.Mana >= W.Instance.ManaCost )
-                return W.GetDamage(enemy);
+            if (W.IsReady())
+                damage += Player.GetSpellDamage(enemy, SpellSlot.W);
+            if (Ignite.IsReady())
+                damage += IgniteDamage(enemy);
 
-            return 0;
+            return (float)damage;
+        }
+
+
+
+        private static float IgniteDamage(Obj_AI_Hero target)
+        {
+            if (Ignite == SpellSlot.Unknown || Player.Spellbook.CanUseSpell(Ignite) != SpellState.Ready)
+                return 0f;
+            return (float)Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
         }
 
         public static DamageToUnitDelegate DamageToUnit

@@ -51,6 +51,7 @@ namespace OAnnie
             R.SetSkillshot(0.2f, 250f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             CreateMenu();
             FlashSlot = Player.GetSpellSlot("SummonerFlash");
+            Ignite = Player.GetSpellSlot("SummonerDot");
             Game.OnUpdate += OnGameUpdate;
             Drawing.OnDraw += DrawManager.OnDraw;
             Obj_AI_Base.OnProcessSpellCast += Game_ProcessSpell;
@@ -197,7 +198,7 @@ namespace OAnnie
             if (target != null)
             {
                 if (Player.Distance(target) > Q.Range &&
-                    (( Q.IsReady() || W.IsReady() || R.IsReady())) )
+                    (( !Q.IsReady() || !W.IsReady() || !R.IsReady())) )
                 {
                     Orbwalker.SetAttack(false);
                 }
@@ -500,8 +501,7 @@ namespace OAnnie
             var useebefore = Config.Item("comboMenu.passivemanagement.e.before").GetValue<bool>();
             var userslider = Config.Item("comboMenu.user.Slider").GetValue<Slider>().Value;
 
-            if (Ignite.IsReady() && target.Health < Q.GetDamage(target) + Player.GetAutoAttackDamage(target)
-                && Config.Item("comboMenu.useignite").GetValue<bool>())
+            if (Ignite.IsReady() && (target.Health <= Q.GetDamage(target) +Player.GetAutoAttackDamage(target)))
             {
                 Player.Spellbook.CastSpell(Ignite, target);
             }
@@ -514,13 +514,29 @@ namespace OAnnie
                     {
                         E.Cast();
                     }
-                    else
+
+                    if (!R.IsReady())
                     {
                         Q.Cast(target);
                     }
+                    else
+                    {
+                        if (Player.HasBuff("pyromania_particles"))
+                            return;
+                        Q.Cast(target);
+                    }
+                }
+
+                if (!R.IsReady())
+                {
+                    Q.Cast(target);
                 }
                 else
+                {
+                    if ((Player.HasBuff("pyromania_particles")))
+                        return;
                     Q.Cast(target);
+                }
             }
 
             if (usee && E.IsReady() && !Player.HasBuff("pyromania_particles") && !Player.HasBuff("summonerteleport"))
@@ -540,23 +556,23 @@ namespace OAnnie
 
             if (W.IsReady() && target.IsValidTarget(W.Range) && usew && !Player.HasBuff("summonerteleport"))
             {
-                W.Cast(target);
+                if (Player.HasBuff("pyromania_particles") && R.IsReady())
+                    return;
+                    W.Cast(target);
             }
-
             var rhit =
                 ObjectManager.Get<Obj_AI_Hero>()
                     .Where(enemy => enemy.IsValidTarget() && R.WillHit(enemy, R.GetPrediction(enemy, true).CastPosition))
                     .ToList();
 
             if (R.IsReady()
-                && user && target.IsValidTarget(R.Range) && !Player.HasBuff("summonerteleport") )
+                && user && target.IsValidTarget(R.Range) && !Player.HasBuff("summonerteleport") && Player.HasBuff("pyromania_particle"))
             {
-                if(rhit.Count >= userslider && Player.HasBuff("pyromania_particle"))
+                if(rhit.Count >= userslider )
                 {
                     R.Cast(target.Position);
                 }
-                if (Player.CountEnemiesInRange(2000) == 1
-                    && (target.Health <= Q.GetDamage(target) + R.GetDamage(target) + W.GetDamage(target) ) && target.Health >= Q.GetDamage(target))
+                if (target.Health >= Q.GetDamage(target))
                 {
                     R.Cast(target.Position);
                 }
