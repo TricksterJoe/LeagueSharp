@@ -64,8 +64,6 @@ namespace OAnnie
                         .SetValue(new Slider(3, 1, 5));
                     comboMenu.AddSubMenu(rmenu);
                 }
-                comboMenu.AddItem(new MenuItem("comboMenu.user.Slider", "R If Hit X Enemies"))
-                    .SetValue(new Slider(3, 1, 5));
                 var passivemanagement = new Menu("Passive Utillization", "passiveutil");
                 {
                     passivemanagement.AddItem(new MenuItem("comboMenu.passivemanagement.e.before",

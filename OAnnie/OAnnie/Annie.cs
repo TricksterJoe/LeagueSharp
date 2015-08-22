@@ -430,14 +430,10 @@ namespace OAnnie
             var predpos = R.GetPrediction(target);
             if (Config.Item("comboMenu.flashmenu.flashr").GetValue<KeyBind>().Active)
             {
-                if (Player.HasBuff("pyromania_particle") && Player.Distance(target) <= Q.Range + R.Range &&
-                    Player.Distance(target) > R.Range)
+                if (Player.HasBuff("pyromania_particle"))
                 {
-                    if (FlashSlot.IsReady() && R.IsReady())
-                    {
                         Player.Spellbook.CastSpell(FlashSlot, x);
                         R.Cast(predpos.CastPosition);
-                    }
                 }
             }
 
@@ -445,12 +441,12 @@ namespace OAnnie
             {
                 if (GetPassiveBuff == 3)
                 {
-                    if (FlashSlot.IsReady() && E.IsReady() && R.IsReady())
-                    {
                         Player.Spellbook.CastSpell(FlashSlot, x);
                         E.Cast();
-                        R.Cast(predpos.CastPosition);
-                    }
+                }
+                if (Player.HasBuff("pyromania_particle"))
+                {
+                    R.Cast(predpos.CastPosition);
                 }
             }
         }
