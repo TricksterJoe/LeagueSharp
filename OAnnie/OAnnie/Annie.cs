@@ -169,7 +169,11 @@ namespace OAnnie
                     Game.PrintChat(buff.Name.ToLower());
             }
              */
+
             Orbwalker.SetAttack(true);
+            if (Player.IsRecalling())
+                return;
+
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -345,7 +349,7 @@ namespace OAnnie
             var minionhp = minionCount.Health;
 
 
-            if (useql && Q.IsReady() && minion.IsValidTarget(Q.Range) && minionhp <= Q.GetDamage(minion))
+            if (useql && Q.IsReady() && minion.IsValidTarget(Q.Range) && minionhp <= Q.GetDamage(minion) && minionhp > Player.GetAutoAttackDamage(minion))
             {
                 Q.Cast(minion);
             }
