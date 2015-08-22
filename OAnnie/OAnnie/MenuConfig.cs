@@ -61,7 +61,8 @@ namespace OAnnie
                     rmenu.AddItem(new MenuItem("comboMenu.user", "Use [R]")).SetValue(true);
                     rmenu.AddItem(new MenuItem("comboMenu.user.smart", "Smart [R] 1v1 Logic")).SetValue(true);
                     rmenu.AddItem(new MenuItem("comboMenu.user.Slider", "R If Hit X Enemies"))
-                        .SetValue(new Slider(3, 1, 5));                    
+                        .SetValue(new Slider(3, 1, 5));
+                    comboMenu.AddSubMenu(rmenu);
                 }
                 comboMenu.AddItem(new MenuItem("comboMenu.user.Slider", "R If Hit X Enemies"))
                     .SetValue(new Slider(3, 1, 5));

@@ -574,7 +574,7 @@ namespace OAnnie
                     R.Cast(rhit.CastPosition);
 
                 }
-               if (target.Health >= Q.GetDamage(target))
+               if (target.Health >= Q.GetDamage(target) +W.GetDamage(target))
                 {
                     R.Cast(target.Position);
                 }
