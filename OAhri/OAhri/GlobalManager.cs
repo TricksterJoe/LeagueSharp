@@ -160,6 +160,7 @@ namespace OAhri
 
        #endregion
 
+       // Thanks to Evade Geomatry! Credits goes to Evade!
        #region Wall Length
 
        /// <summary>
