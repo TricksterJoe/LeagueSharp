@@ -236,7 +236,7 @@ namespace OAhri
         {
             Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             var length = GlobalManager.GetWallLength(Player.ServerPosition, Game.CursorPos) < 500;
-            var overWall = GlobalManager.IsOverWall(Player.ServerPosition, R.Range + Player.ServerPosition);
+            var overWall = GlobalManager.IsOverWall(Player.ServerPosition, Game.CursorPos + R.Range);
             var fleer = Config.Item("flee.user").GetValue<bool>();
 
             if (Config.Item("flee.useq").GetValue<bool>())
