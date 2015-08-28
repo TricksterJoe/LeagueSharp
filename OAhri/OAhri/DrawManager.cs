@@ -26,6 +26,9 @@ namespace OAhri
         {
             if (!Config.Item("FillDamage").GetValue<bool>())
                 return;
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            if (target == null)
+                return;
             foreach (var unit in HeroManager.Enemies.Where(h => h.IsValid && h.IsHPBarRendered))
             {
                  var barPos = unit.HPBarPosition;

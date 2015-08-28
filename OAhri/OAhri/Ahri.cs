@@ -38,6 +38,7 @@ namespace OAhri
             E = new Spell(SpellSlot.E, 810);
             R = new Spell(SpellSlot.R, 800);
 
+            GlobalManager.DamageToUnit = GlobalManager.GetComboDamage;
             Q.SetSkillshot(0.25f, 50, 1600f, false, SkillshotType.SkillshotLine);
             E.SetSkillshot(0.25f, 60, 1550f, true, SkillshotType.SkillshotLine);
             Game.OnUpdate += GameOnUpdate;
