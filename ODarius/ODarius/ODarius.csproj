@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8C183AAA-7912-49FB-9645-1B5F8F4719BB}</ProjectGuid>
+    <ProjectGuid>{828FC83F-4ACD-489F-A230-CE90D295F68B}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Slutty_Darius</RootNamespace>
-    <AssemblyName>Slutty Darius</AssemblyName>
+    <RootNamespace>ODarius</RootNamespace>
+    <AssemblyName>ODarius</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
@@ -54,6 +54,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Darius.cs" />
+    <Compile Include="DrawingManager.cs" />
+    <Compile Include="GlobalManager.cs" />
+    <Compile Include="MenuConfig.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

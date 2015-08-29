@@ -26,6 +26,7 @@ namespace OAhri
         {
             if (!Config.Item("FillDamage").GetValue<bool>())
                 return;
+
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (target == null)
                 return;
@@ -46,6 +47,7 @@ namespace OAhri
                     Text.OnEndScene();
                 }
                 Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + Height, 1, _color);
+
                 if (Config.Item("RushDrawWDamageFill").GetValue<bool>())
                 {
                     var differenceInHp = xPosCurrentHp - xPosDamage;

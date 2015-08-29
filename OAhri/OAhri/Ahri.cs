@@ -30,9 +30,10 @@ namespace OAhri
         {
             if (Player.ChampionName != ChampName)
                 return;
+
             LoadMenu();
 
-            Game.PrintChat("<font color = \"#FFB6C1\"OAhri By 'Hoes' is Loaded!");
+            Game.PrintChat("<font color = \"asasdasdasd\"OAhri By 'Hoes' is Loaded!");
             Q = new Spell(SpellSlot.Q, 780);
             W = new Spell(SpellSlot.W, 400);
             E = new Spell(SpellSlot.E, 810);
