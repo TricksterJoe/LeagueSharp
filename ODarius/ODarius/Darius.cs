@@ -71,6 +71,7 @@ namespace ODarius
 
         private static void Game_OnUpdate(EventArgs args)
         {
+            /*
             foreach (var buffs in Player.Buffs)
             {
                 if (buffs.Name != "odinplayerbuff"
@@ -80,6 +81,7 @@ namespace ODarius
                     Game.PrintChat(buffs.Name);
                 }
             }
+             */
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:

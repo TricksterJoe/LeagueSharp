@@ -92,7 +92,7 @@ namespace ODarius
             }
 
             #endregion
-
+            /*
             #region Harras Settings
 
             var harrasMenu = new Menu("Harras Settings", "Harras Settings");
@@ -104,6 +104,7 @@ namespace ODarius
             }
 
             #endregion
+             */
 
             Config.AddToMainMenu();
         }
