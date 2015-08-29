@@ -48,7 +48,7 @@ namespace ODarius
                 || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear
                 || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
             {
-                //move to before attack
+                
                 if (usew && target.IsValidTarget(Player.AttackRange) && W.IsReady())
                 {
                     W.Cast();
