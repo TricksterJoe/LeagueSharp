@@ -38,7 +38,7 @@ namespace OAhri
                     {
                         if (Q.IsReady() || E.IsReady() || W.IsReady())
                         {
-                            if (target.Health <= GlobalManager.GetComboDamage(target) && turret.IsValidTarget(400))
+                            if (target.Health <= GlobalManager.GetComboDamage(target) && turret == null)
                             {       
                               R.Cast(GlobalManager.Extend(Player.ServerPosition, Game.CursorPos,
                                         R.Range));

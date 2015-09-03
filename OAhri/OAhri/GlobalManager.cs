@@ -137,13 +137,13 @@ namespace OAhri
            if (Q.IsReady())
                damage += Player.GetSpellDamage(enemy, SpellSlot.Q);
 
-           if (E.IsReady() && Player.Mana >= E.Instance.ManaCost)
+           if (E.IsReady())
                damage += Player.GetSpellDamage(enemy, SpellSlot.E);
 
-           if (W.IsReady() && Player.Mana >= W.Instance.ManaCost)
+           if (W.IsReady())
                damage += Player.GetSpellDamage(enemy, SpellSlot.W);
 
-           if (R.IsReady() && Player.Mana >= R.Instance.ManaCost)
+           if (R.IsReady())
                damage += Player.GetSpellDamage(enemy, SpellSlot.R)*RCount();
 
            if (Ignite.IsReady())
