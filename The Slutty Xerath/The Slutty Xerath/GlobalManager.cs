@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using Color = System.Drawing.Color;
-namespace OXerath
+namespace The_Slutty_Xerath
 {
     internal class GlobalManager : Xerath
     {

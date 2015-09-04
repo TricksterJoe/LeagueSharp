@@ -7,7 +7,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using Color = System.Drawing.Color;
 
-namespace OXerath
+namespace The_Slutty_Xerath
 {
     internal class Xerath : MenuConfigs
     {
@@ -208,17 +208,17 @@ namespace OXerath
             if (target == null)
                 return;
             var color = Color.FromArgb(255, 255, 10, 255);
-          //  Drawing.DrawCircle(Drawing.WorldToMinimap(Player.Position).To3D(), R.Range, Color.Black);
+            //  Drawing.DrawCircle(Drawing.WorldToMinimap(Player.Position).To3D(), R.Range, Color.Black);
             Drawing.DrawCircle(R.GetPrediction(target).CastPosition, Q.Width, color);
 
         }
 
         private static void OnUpdate(EventArgs args)
         {
-//            foreach (var buff in Player.Buffs)
-//            {
-//                Game.PrintChat(buff.DisplayName);
-//            }
+            //            foreach (var buff in Player.Buffs)
+            //            {
+            //                Game.PrintChat(buff.DisplayName);
+            //            }
             ScrybingOrb();
             UltLeveler();
             UseR();
@@ -235,7 +235,7 @@ namespace OXerath
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
                     Laneclear();
-                 //   Jungleclear();
+                    //   Jungleclear();
                     break;
                 case Orbwalking.OrbwalkingMode.Mixed:
                     // Harras();
@@ -387,25 +387,25 @@ namespace OXerath
             switch (user)
             {
                 case 1:
-                {
-                    if (R.IsReady() && target.IsValidTarget(R.Range) && userrtap)
-                    {                       
-                        R.Cast(rpred.CastPosition);
-                        // R.Cast(target.ServerPosition);
+                    {
+                        if (R.IsReady() && target.IsValidTarget(R.Range) && userrtap)
+                        {
+                            R.Cast(rpred.CastPosition);
+                            // R.Cast(target.ServerPosition);
+                        }
+                        break;
                     }
-                    break;
-                }
 
                 case 0:
-                {
-                    if (R.IsReady() && target.IsValidTarget(R.Range) && userrtap &&
-                        Environment.TickCount - lastrr > userdelay)
                     {
-                        R.Cast(rpred.CastPosition);
-                        lastrr = Environment.TickCount;
+                        if (R.IsReady() && target.IsValidTarget(R.Range) && userrtap &&
+                            Environment.TickCount - lastrr > userdelay)
+                        {
+                            R.Cast(rpred.CastPosition);
+                            lastrr = Environment.TickCount;
+                        }
+                        break;
                     }
-                    break;
-                }
             }
         }
     }

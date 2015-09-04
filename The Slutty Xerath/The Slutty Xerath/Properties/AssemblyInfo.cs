@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("OXerath")]
+[assembly: AssemblyTitle("The Slutty Xerath")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("OXerath")]
+[assembly: AssemblyProduct("The Slutty Xerath")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("dfe820e5-0761-423f-8488-e11f68840437")]
+[assembly: Guid("8210f956-bbfd-4d8f-936c-d254b748a6e6")]
 
 // Version information for an assembly consists of the following four values:
 //
