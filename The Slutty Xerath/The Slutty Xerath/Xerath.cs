@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
@@ -27,6 +28,7 @@ namespace The_Slutty_Xerath
         private static readonly Color _color = Color.Red;
         private static readonly Color _fillColor = Color.Blue;
         private static bool hasbought;
+        private static int lastbuff;
 
         internal static void OnLoad(EventArgs args)
         {
@@ -276,12 +278,8 @@ namespace The_Slutty_Xerath
             var usew = Config.Item("harassMenu.usew").GetValue<bool>();
             var usee = Config.Item("harassMenu.usee").GetValue<bool>();
             var mana = Config.Item("harassMenu.minmana").GetValue<Slider>().Value;
+            AAMinion();
             var qtarget = TargetSelector.GetTarget(Q.ChargedMaxRange, TargetSelector.DamageType.Magical);
-
-            if (qtarget.Distance(SummonersRift.BottomLane.Blue_Inner_Turret) < 300)
-            {
-               Console.WriteLine("near x turret"); 
-            }
             if (Player.ManaPercent <= mana && !Q.IsCharging)
                 return;
 
@@ -400,6 +398,28 @@ namespace The_Slutty_Xerath
                 }
             }
         }
+
+        public static void AAMinion()
+        {
+            var minion = MinionManager.GetMinions(Player.Position, Player.AttackRange, MinionTypes.All, MinionTeam.Enemy,
+                MinionOrderTypes.None).FirstOrDefault();
+            if (minion == null)
+                return;
+            if (Q.IsCharging)
+                return;
+            if (Player.ManaPercent > 80)
+                return;
+            if (Player.HasBuff("xerathascended2onhit"))
+            {
+                havebuff = true;
+            }
+            if (havebuff)
+            {
+                Player.IssueOrder(GameObjectOrder.AttackUnit, minion);
+                havebuff = false;
+            }
+
+        }
         private static void Combo()
         {
             var useq = Config.Item("comboMenu.useq").GetValue<bool>();
@@ -407,10 +427,11 @@ namespace The_Slutty_Xerath
             var usee = Config.Item("comboMenu.usee").GetValue<bool>();
 
             var qtarget = TargetSelector.GetTarget(Q.ChargedMaxRange, TargetSelector.DamageType.Magical);
-
+            AAMinion();
 
             if (qtarget == null)
                 return;
+
 
 
             if (Ignite.IsReady() && qtarget.Health <= (Q.GetDamage(qtarget) + Player.GetAutoAttackDamage(qtarget)))
@@ -488,5 +509,7 @@ namespace The_Slutty_Xerath
                 }
             }
         }
+
+        public static bool havebuff { get; set; }
     }
 }
