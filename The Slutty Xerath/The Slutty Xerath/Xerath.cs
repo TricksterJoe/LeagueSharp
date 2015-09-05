@@ -252,7 +252,8 @@ namespace The_Slutty_Xerath
             var usee = Config.Item("harassMenu.usee").GetValue<bool>();
             var mana = Config.Item("harassMenu.minmana").GetValue<Slider>().Value;
             var qtarget = TargetSelector.GetTarget(Q.ChargedMaxRange, TargetSelector.DamageType.Magical);
-            if (Player.ManaPercent <= mana)
+
+            if (Player.ManaPercent <= mana && !Q.IsCharging)
                 return;
 
             if (qtarget == null)
