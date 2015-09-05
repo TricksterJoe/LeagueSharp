@@ -47,11 +47,16 @@ namespace The_Slutty_Xerath
                 comboMenu.AddItem(new MenuItem("comboMenu.useq", "Use Q")).SetValue(true);
                 comboMenu.AddItem(new MenuItem("comboMenu.usew", "Use W")).SetValue(true);
                 comboMenu.AddItem(new MenuItem("comboMenu.usee", "Use E")).SetValue(true);
-                comboMenu.AddItem(new MenuItem("comboMenu.usertap", "Use R")).SetValue(new KeyBind(67, KeyBindType.Press));
-                comboMenu.AddItem(new MenuItem("comboMenu.user", "R Mode"))
-                    .SetValue(new StringList(new[] { "Delayed", "Not Delayed" }, 1));
-                comboMenu.AddItem(new MenuItem("comboMenu.userdelay", "R Delay")).SetValue(new Slider(500, 0, 2000));
-                comboMenu.AddItem(new MenuItem("comboMenu.userblock", "Block Movement When R")).SetValue(true);
+                var rmenu = new Menu("R Settings", "R Settings");
+                {
+                    rmenu.AddItem(new MenuItem("comboMenu.usertarget", "Ult Selected Target")).SetValue(true);
+                    rmenu.AddItem(new MenuItem("comboMenu.usertap", "Use R")).SetValue(new KeyBind(67, KeyBindType.Press));
+                    rmenu.AddItem(new MenuItem("comboMenu.user", "R Mode"))
+                        .SetValue(new StringList(new[] { "Delayed", "Not Delayed" }, 1));
+                    rmenu.AddItem(new MenuItem("comboMenu.userdelay", "R Delay")).SetValue(new Slider(500, 0, 2000));
+                    rmenu.AddItem(new MenuItem("comboMenu.userblock", "Block Movement When R")).SetValue(true);
+                    comboMenu.AddSubMenu(rmenu);
+                }
                 Config.AddSubMenu(comboMenu);
             }
 
@@ -82,6 +87,7 @@ namespace The_Slutty_Xerath
                 miscMenu.AddItem(new MenuItem("miscMenu.edash", "E On Dash").SetValue(true));
                 miscMenu.AddItem(new MenuItem("miscMenu.egap", "E On Gap").SetValue(true));
                 miscMenu.AddItem(new MenuItem("miscMenu.eint", "E To Intterupt").SetValue(true));
+                miscMenu.AddItem(new MenuItem("miscMenu.autolevel", "Auto Level Ult").SetValue(true));
                 miscMenu.AddItem(new MenuItem("miscMenu.scrybebuy", "Auto Scrybing Orb Buy").SetValue(true));
                 miscMenu.AddItem(new MenuItem("miscMenu.scrybebuylevel", "Buy At Level").SetValue(new Slider(8, 1, 18)));
 

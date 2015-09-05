@@ -122,7 +122,6 @@ namespace The_Slutty_Xerath
                     Text.OnEndScene();
                 }
                 Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + Height, 1, _color);
-
                 if (Config.Item("RushDrawWDamageFill").GetValue<bool>())
                 {
                     var differenceInHp = xPosCurrentHp - xPosDamage;
@@ -137,6 +136,10 @@ namespace The_Slutty_Xerath
 
         public static void UltLeveler()
         {
+            var level = Config.Item("miscMenu.autolevel").GetValue<bool>();
+            if (!level)
+                return;
+
             switch (Player.Level)
             {
                 case 6:
@@ -222,8 +225,7 @@ namespace The_Slutty_Xerath
             ScrybingOrb();
             UltLeveler();
             UseR();
-            Orbwalker.SetMovement(true);
-
+            Orbwalker.SetMovement(true);            
             if (GlobalManager.RCasted() && Config.Item("comboMenu.userblock").GetValue<bool>())
             {
                 Orbwalker.SetMovement(false);
@@ -285,7 +287,7 @@ namespace The_Slutty_Xerath
         {
             var mana = Config.Item("laneMenu.minmana").GetValue<Slider>().Value;
 
-            if (Player.ManaPercent <= mana)
+            if (Player.ManaPercent <= mana && !Q.IsCharging)
                 return;
 
             var minion = MinionManager.GetMinions(Player.Position, Q.ChargedMaxRange, MinionTypes.All, MinionTeam.Enemy,
@@ -379,6 +381,12 @@ namespace The_Slutty_Xerath
             var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
             if (target == null)
                 return;
+            
+            if (Config.Item("comboMenu.usertarget").GetValue<bool>() && TargetSelector.SelectedTarget.IsValidTarget())
+            {
+                target = TargetSelector.GetSelectedTarget();
+            }
+             
 
             var user = Config.Item("comboMenu.user").GetValue<StringList>().SelectedIndex;
             var userdelay = Config.Item("comboMenu.userdelay").GetValue<Slider>().Value;
@@ -387,25 +395,31 @@ namespace The_Slutty_Xerath
             switch (user)
             {
                 case 1:
+                {
+                    if (R.IsReady() && target.IsValidTarget(R.Range) && userrtap)
                     {
-                        if (R.IsReady() && target.IsValidTarget(R.Range) && userrtap)
+                        if (rpred.Hitchance >= HitChance.High)
                         {
                             R.Cast(rpred.CastPosition);
                             // R.Cast(target.ServerPosition);
                         }
-                        break;
                     }
+                    break;
+                }
 
                 case 0:
+                {
+                    if (R.IsReady() && target.IsValidTarget(R.Range) && userrtap &&
+                        Environment.TickCount - lastrr > userdelay)
                     {
-                        if (R.IsReady() && target.IsValidTarget(R.Range) && userrtap &&
-                            Environment.TickCount - lastrr > userdelay)
+                        if (rpred.Hitchance >= HitChance.High)
                         {
                             R.Cast(rpred.CastPosition);
                             lastrr = Environment.TickCount;
                         }
-                        break;
                     }
+                    break;
+                }
             }
         }
     }
