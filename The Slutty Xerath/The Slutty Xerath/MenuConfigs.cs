@@ -82,6 +82,16 @@ namespace The_Slutty_Xerath
                 Config.AddSubMenu(clearMenu);
             }
 
+
+            var harassMenu = new Menu("harass Settings", "harass Settings");
+            {
+                harassMenu.AddItem(new MenuItem("harassMenu.minmana", "Min Mana")).SetValue(new Slider(30));
+                harassMenu.AddItem(new MenuItem("harassMenu.useq", "Use Q")).SetValue(true);
+                harassMenu.AddItem(new MenuItem("harassMenu.usew", "Use W")).SetValue(true);
+                harassMenu.AddItem(new MenuItem("harassMenu.usee", "Use E")).SetValue(true);
+                Config.AddSubMenu(harassMenu);
+            }
+
             var miscMenu = new Menu("Misc Settings", "Misc Settings");
             {
                 miscMenu.AddItem(new MenuItem("miscMenu.edash", "E On Dash").SetValue(true));

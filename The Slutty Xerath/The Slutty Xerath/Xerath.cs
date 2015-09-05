@@ -240,8 +240,44 @@ namespace The_Slutty_Xerath
                     //   Jungleclear();
                     break;
                 case Orbwalking.OrbwalkingMode.Mixed:
-                    // Harras();
+                     Harras();
                     break;
+            }
+        }
+
+        private static void Harras()
+        {
+            var useq = Config.Item("harassMenu.useq").GetValue<bool>();
+            var usew = Config.Item("harassMenu.usew").GetValue<bool>();
+            var usee = Config.Item("harassMenu.usee").GetValue<bool>();
+            var mana = Config.Item("harassMenu.minmana").GetValue<Slider>().Value;
+            var qtarget = TargetSelector.GetTarget(Q.ChargedMaxRange, TargetSelector.DamageType.Magical);
+            if (Player.ManaPercent <= mana)
+                return;
+
+            if (qtarget == null)
+                return;
+            if (usee && qtarget.IsValidTarget(E.Range) && E.IsReady() && !Q.IsCharging)
+            {
+                E.Cast(qtarget);
+            }
+
+            if (useq)
+            {
+                if (Q.IsReady() && !Q.IsCharging)
+                {
+                    Q.StartCharging();
+                }
+
+                else
+                {
+                    Q.Cast(qtarget);
+                }
+            }
+
+            if (usew && !Q.IsCharging && qtarget.IsValidTarget(Q.ChargedMaxRange))
+            {
+                W.Cast(qtarget);
             }
         }
 
