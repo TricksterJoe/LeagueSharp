@@ -47,7 +47,7 @@ namespace The_Slutty_Xerath
                 damage += Player.GetSpellDamage(enemy, SpellSlot.W);
 
             if (R.IsReady())
-                damage += Player.GetSpellDamage(enemy, SpellSlot.R) * RCount;
+                damage += Player.GetSpellDamage(enemy, SpellSlot.R)*3;
 
             if (Ignite.IsReady())
                 damage += IgniteDamage(enemy);
