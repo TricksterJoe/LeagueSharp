@@ -100,7 +100,8 @@ namespace The_Slutty_Xerath
                 miscMenu.AddItem(new MenuItem("miscMenu.autolevel", "Auto Level Ult").SetValue(true));
                 miscMenu.AddItem(new MenuItem("miscMenu.scrybebuy", "Auto Scrybing Orb Buy").SetValue(true));
                 miscMenu.AddItem(new MenuItem("miscMenu.scrybebuylevel", "Buy At Level").SetValue(new Slider(8, 1, 18)));
-
+                miscMenu.AddItem(new MenuItem("miscMenu.scrybe", "Use Scrybing Orb when Ultying").SetValue(true));
+                miscMenu.AddItem(new MenuItem("miscMenu.aaminion", "AA Minions when have passive - BETA").SetValue(true));
                 Config.AddSubMenu(miscMenu);
             }
 

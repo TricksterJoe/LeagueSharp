@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using Color = System.Drawing.Color;
+using ItemData = LeagueSharp.Common.Data.ItemData;
 
 namespace The_Slutty_Xerath
 {
@@ -248,6 +249,7 @@ namespace The_Slutty_Xerath
             //                Game.PrintChat(buff.DisplayName);
             //            }
           //  RRange();
+            
             R.Range = GlobalManager.RRange;
             ScrybingOrb();
             UltLeveler();
@@ -399,15 +401,41 @@ namespace The_Slutty_Xerath
             }
         }
 
+        public static void scrybeorbuse()
+        {
+            var enable = Config.Item("miscMenu.scrybe").GetValue<bool>();
+            if (!enable)
+                return;
+            var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
+            if (target == null)
+                return;
+            if (Player.Distance(R.GetPrediction(target).CastPosition) > Player.AttackRange)
+            {
+                if (Items.HasItem(3342))
+                {
+                    Items.UseItem(3342, target.Position);
+                }
+                if (Items.HasItem(3363))
+                {
+                    Items.UseItem(3363, target.Position);
+                }
+            }
+        }
         public static void AAMinion()
         {
+            var enable = Config.Item("miscMenu.aaminion").GetValue<bool>();
+            if (!enable)
+                return;
             var minion = MinionManager.GetMinions(Player.Position, Player.AttackRange, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.None).FirstOrDefault();
-            var qtarget = TargetSelector.GetTarget(Player.AttackRange + 100, TargetSelector.DamageType.Magical);
+            var qtarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
             if (qtarget != null)
                 return;
+
             if (minion == null)
                 return;
+
             if (Q.IsCharging)
                 return;
 
@@ -490,6 +518,7 @@ namespace The_Slutty_Xerath
                         if (rpred.Hitchance >= HitChance.High)
                         {
                             R.Cast(rpred.CastPosition);
+                            scrybeorbuse();
                             // R.Cast(target.ServerPosition);
                         }
                     }
@@ -504,7 +533,9 @@ namespace The_Slutty_Xerath
                         if (rpred.Hitchance >= HitChance.High)
                         {
                             R.Cast(rpred.CastPosition);
+
                             lastrr = Environment.TickCount;
+                            scrybeorbuse();
                         }
                     }
                     break;
