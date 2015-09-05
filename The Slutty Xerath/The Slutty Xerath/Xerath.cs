@@ -40,7 +40,8 @@ namespace The_Slutty_Xerath
             Q = new Spell(SpellSlot.Q, 1550);
             W = new Spell(SpellSlot.W, 1000);
             E = new Spell(SpellSlot.E, 1150);
-            R = new Spell(SpellSlot.R, GlobalManager.RRange);
+            R = new Spell(SpellSlot.R);
+
             GlobalManager.DamageToUnit = GlobalManager.GetComboDamage;
             Q.SetSkillshot(0.6f, 100f, float.MaxValue, false, SkillshotType.SkillshotLine);
             Q.SetCharged("XerathArcanopulseChargeUp", "XerathArcanopulseChargeUp", 750, 1550, 1.5f);
@@ -216,18 +217,36 @@ namespace The_Slutty_Xerath
 
             if (target == null)
                 return;
-            var color = Color.FromArgb(255, 255, 10, 255);
-            //  Drawing.DrawCircle(Drawing.WorldToMinimap(Player.Position).To3D(), R.Range, Color.Black);
-            Drawing.DrawCircle(R.GetPrediction(target).CastPosition, Q.Width, color);
+            {
+                var color = Color.FromArgb(255, 255, 10, 255);
+                //  Drawing.DrawCircle(Drawing.WorldToMinimap(Player.Position).To3D(), R.Range, Color.Black);
+                Drawing.DrawCircle(R.GetPrediction(target).CastPosition, Q.Width, color);
+            }
 
         }
+        /*
+        public  static int RRange()
+        {
+            if (Player.GetSpell(SpellSlot.R).Level == 1)
+                return 500;
 
+            if (Player.GetSpell(SpellSlot.R).Level == 2)
+                return 1000;
+
+            if (Player.GetSpell(SpellSlot.R).Level == 3)
+                return 1500;
+
+            return 0;
+        }
+         */
         private static void OnUpdate(EventArgs args)
         {
             //            foreach (var buff in Player.Buffs)
             //            {
             //                Game.PrintChat(buff.DisplayName);
             //            }
+          //  RRange();
+            R.Range = GlobalManager.RRange;
             ScrybingOrb();
             UltLeveler();
             UseR();
