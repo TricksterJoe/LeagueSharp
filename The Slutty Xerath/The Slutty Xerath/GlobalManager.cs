@@ -8,7 +8,7 @@ using LeagueSharp.Common;
 using Color = System.Drawing.Color;
 namespace The_Slutty_Xerath
 {
-    internal class GlobalManager : Xerath
+    class GlobalManager : Xerath
     {
         public static int RRange
         {

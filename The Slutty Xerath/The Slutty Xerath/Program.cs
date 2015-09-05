@@ -7,7 +7,7 @@ using LeagueSharp.Common;
 
 namespace The_Slutty_Xerath
 {
-    class Program
+    internal class Program
     {
         static void Main(string[] args)
         {

@@ -9,7 +9,7 @@ using Color = System.Drawing.Color;
 
 namespace The_Slutty_Xerath
 {
-    internal class Xerath : MenuConfigs
+    class Xerath : MenuConfigs
     {
         public static Orbwalking.Orbwalker Orbwalker;
         public static Obj_AI_Hero Player = ObjectManager.Player;
@@ -32,7 +32,7 @@ namespace The_Slutty_Xerath
         {
             if (Player.ChampionName != ChampName)
                 return;
-
+            
             LoadMenu();
 
             // thanks eskor for values
@@ -259,6 +259,10 @@ namespace The_Slutty_Xerath
             var mana = Config.Item("harassMenu.minmana").GetValue<Slider>().Value;
             var qtarget = TargetSelector.GetTarget(Q.ChargedMaxRange, TargetSelector.DamageType.Magical);
 
+            if (qtarget.Distance(SummonersRift.BottomLane.Blue_Inner_Turret) < 300)
+            {
+               Console.WriteLine("near x turret"); 
+            }
             if (Player.ManaPercent <= mana && !Q.IsCharging)
                 return;
 
