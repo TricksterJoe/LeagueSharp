@@ -403,13 +403,15 @@ namespace The_Slutty_Xerath
         {
             var minion = MinionManager.GetMinions(Player.Position, Player.AttackRange, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.None).FirstOrDefault();
+            var qtarget = TargetSelector.GetTarget(Player.AttackRange + 100, TargetSelector.DamageType.Magical);
+            if (qtarget != null)
+                return;
             if (minion == null)
                 return;
             if (Q.IsCharging)
                 return;
-            if (Player.ManaPercent > 80)
-                return;
-            if (Player.HasBuff("xerathascended2onhit"))
+
+            if (Player.HasBuff("xerathascended2onhit") && Player.ManaPercent < 80)
             {
                 havebuff = true;
             }
