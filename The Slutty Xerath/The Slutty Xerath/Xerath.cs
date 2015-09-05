@@ -26,6 +26,7 @@ namespace The_Slutty_Xerath
         private static readonly Render.Text Text = new Render.Text(0, 0, "", 14, SharpDX.Color.Red, "monospace");
         private static readonly Color _color = Color.Red;
         private static readonly Color _fillColor = Color.Blue;
+        private static bool hasbought;
 
         internal static void OnLoad(EventArgs args)
         {
@@ -58,6 +59,7 @@ namespace The_Slutty_Xerath
         {
             if (Player.HasBuff("xerathascended2onhit"))
                 return;
+
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
                 if (GlobalManager.RCasted()
@@ -171,11 +173,15 @@ namespace The_Slutty_Xerath
             if (!buy)
                 return;
 
+            if (hasbought)
+                return;
+
             if (!(Items.HasItem(ItemId.Scrying_Orb_Trinket.ToString()) ||
                   Items.HasItem(ItemId.Farsight_Orb_Trinket.ToString()))
                 && Player.InShop() && Player.Level >= level)
             {
                 Player.BuyItem(ItemId.Scrying_Orb_Trinket);
+                   hasbought = true;
             }
         }
 
