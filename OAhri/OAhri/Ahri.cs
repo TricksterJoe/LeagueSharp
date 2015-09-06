@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
 
 namespace OAhri
 {
@@ -358,7 +356,8 @@ namespace OAhri
             var usew = Config.Item("harrasMenu.usew").GetValue<bool>();
             var usee = Config.Item("harrasMenu.usee").GetValue<bool>();
             var qpred = Q.GetPrediction(target);
-            var epred = E.GetPrediction(target);
+	        var epred = E.GetPrediction(target, false, E.Range,
+		        new[] {CollisionableObjects.Minions, CollisionableObjects.YasuoWall});
             if (Q.IsReady() && useq && target.IsValidTarget(Q.Range))
             {
                 Q.Cast(qpred.CastPosition);
