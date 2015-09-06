@@ -411,7 +411,7 @@ namespace OAhri
 
                     if (E.IsReady() && usee && target.IsValidTarget(E.Range))
                     {
-                        E.Cast(target);
+                        E.Cast(E.GetPrediction(target, false, E.Range, new []{CollisionableObjects.Minions, CollisionableObjects.YasuoWall}).CastPosition);
                     }
 
                     if (W.IsReady() && target.IsValidTarget(600) && usew
@@ -425,7 +425,10 @@ namespace OAhri
                 {
                     if (E.IsReady() && !Q.IsReady() && target.IsValidTarget() && usee)
                     {
-                        E.Cast(qpred.CastPosition);
+	                    if (qpred.CollisionObjects.Count == 0 || qpred.CollisionObjects == null)
+	                    {
+		                    E.Cast(qpred.CastPosition);
+	                    }
                     }
 
                     if (Q.IsReady() && useq)
