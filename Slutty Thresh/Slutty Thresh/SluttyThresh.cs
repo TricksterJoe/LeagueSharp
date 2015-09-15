@@ -356,11 +356,11 @@ namespace Slutty_Thresh
                 && Config.Item("autolantern").GetValue<bool>()
                 && W.IsReady())
             {
-                foreach (var hero in
+                foreach (var heros in
                     HeroManager.Allies.Where(x => !x.IsMe
                                                   && x.Distance(Player) <= W.Range))
                 {
-                        Utility.DelayAction.Add(400, () => W.Cast(hero.Position));
+                        Utility.DelayAction.Add(400, () => W.Cast(heros.Position));
                 }
             }
         }
