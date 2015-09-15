@@ -12,17 +12,15 @@ namespace Slutty_Thresh
     {
         private static void Main(string[] args)
         {
-            if (args != null)
+            if (args == null) return;
+            try
             {
-                try
-                {
-                    CustomEvents.Game.OnGameLoad += SluttyThresh.OnLoad;
-                }
-                catch (Exception ex)
-                {
+                CustomEvents.Game.OnGameLoad += SluttyThresh.OnLoad;
+            }
+            catch (Exception ex)
+            {
 
-                    Console.WriteLine(ex);
-                }
+                Console.WriteLine(ex);
             }
         }
     }

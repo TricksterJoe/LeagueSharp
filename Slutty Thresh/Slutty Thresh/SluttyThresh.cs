@@ -192,7 +192,7 @@ namespace Slutty_Thresh
                 {
                     if (hero.HealthPercent <= Config.Item("hpsettings" + hero.ChampionName).GetValue<Slider>().Value
                         && hero.Distance(Player) <= W.Range)
-                        W.Cast(hero.Position - 100);
+                        W.Cast(hero.Position);
                 }
             }
 
@@ -228,7 +228,6 @@ namespace Slutty_Thresh
             {
                 lastbuff = Environment.TickCount;
             }
-
             if (Q.IsReady()
                 && (E.IsReady() || ObjectManager.Player.GetSpell(SpellSlot.E).Cooldown <= 3000f)
                 && qSpell
@@ -357,12 +356,11 @@ namespace Slutty_Thresh
                 && Config.Item("autolantern").GetValue<bool>()
                 && W.IsReady())
             {
-                foreach (var heros in
+                foreach (var hero in
                     HeroManager.Allies.Where(x => !x.IsMe
                                                   && x.Distance(Player) <= W.Range))
                 {
-                    if (heros.Distance(Player) <= W.Range)
-                        Utility.DelayAction.Add(400, () => W.Cast(heros.Position - 100));
+                        Utility.DelayAction.Add(400, () => W.Cast(hero.Position));
                 }
             }
         }
