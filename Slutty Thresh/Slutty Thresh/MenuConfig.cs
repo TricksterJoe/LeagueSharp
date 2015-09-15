@@ -27,10 +27,10 @@ namespace Slutty_Thresh
 
             Config.AddSubMenu(new Menu("Drawings", "Drawings"));
             Config.SubMenu("Drawings").AddItem(new MenuItem("Draw", "Display Drawings").SetValue(true));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "W Drawing").SetValue(true));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("qfDraw", "Q->Flash Draw").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Draw Q").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "Draw W").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "Draw E").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("qfDraw", "Draw Flash-Q Range").SetValue(true));
 
             var comboMenu = new Menu("Combo Settings" , "combospells");
             {
@@ -39,19 +39,19 @@ namespace Slutty_Thresh
                     
                     qsettings.AddItem(new MenuItem("useQ", "Use Q (Death Sentence)").SetValue(true));
                     qsettings.AddItem(new MenuItem("smartq", "Smart Q").SetValue(true));
-                    qsettings.AddItem(new MenuItem("useQ1", "Use Second Q").SetValue(true));
+                    qsettings.AddItem(new MenuItem("useQ1", "Use Second-Q").SetValue(true));
                     qsettings.AddItem(
-                        new MenuItem("useQ2", "Use Second Q Delay (Death Leap)").SetValue(new Slider(1000, 0, 1500)));
+                        new MenuItem("useQ2", "Set Second-Q Delay (Death Leap)").SetValue(new Slider(1000, 0, 1500)));
                     qsettings.AddItem(
-                        new MenuItem("qrange", "Q Only When Target Range >=").SetValue(new Slider(500, 0, 1040)));
+                        new MenuItem("qrange", "Q Only if Target Range >=").SetValue(new Slider(500, 0, 1040)));
                     comboMenu.AddSubMenu(qsettings);
 
                 }
                 comboMenu.AddItem(new MenuItem("useE", "Use E (Flay)").SetValue(true));
-                comboMenu.AddItem(new MenuItem("combooptions", "E Mode").SetValue(new StringList(new[] {"Out", "In"}, 1)));
+                comboMenu.AddItem(new MenuItem("combooptions", "Set E Mode").SetValue(new StringList(new[] {"Out", "In"}, 1)));
                 comboMenu.AddItem(new MenuItem("useR", "Use R (The Box)").SetValue(true));
                 comboMenu.AddItem(
-    new MenuItem("rslider", "R Only if X Enemies In Range").SetValue(new Slider(3, 1, 5)));
+    new MenuItem("rslider", "R Only if X Enemies in Range").SetValue(new Slider(3, 1, 5)));
 
             }
             Config.AddSubMenu(comboMenu);
@@ -68,13 +68,13 @@ namespace Slutty_Thresh
                             .SetValue(new StringList(new[] {"Lantern", "No Lantern"}));
 
                         lantMenu.AddItem(
-                            new MenuItem("hpsettings" + hero.ChampionName, "Lantern When %HP <").SetValue(
+                            new MenuItem("hpsettings" + hero.ChampionName, "Lantern When % HP <").SetValue(
                                 new Slider(20)));
                     }
 
                 }
-                lantMenu.AddItem(new MenuItem("manalant", "%Mana for lantern").SetValue(new Slider(50)));
-                lantMenu.AddItem(new MenuItem("autolantern", "Auto Lantern Ally When Q hits").SetValue(false));
+                lantMenu.AddItem(new MenuItem("manalant", "Set % Mana for Lantern").SetValue(new Slider(50)));
+                lantMenu.AddItem(new MenuItem("autolantern", "Auto-Lantern Ally if Q hits").SetValue(false));
             }
 
             var laneMenu = new Menu("Lane Clear", "laneclear");
@@ -85,11 +85,11 @@ namespace Slutty_Thresh
             Config.AddSubMenu(laneMenu);
 
             Config.AddSubMenu(lantMenu);
-            var flashMenu = new Menu("Flash Hook Settings", "flashf");
+            var flashMenu = new Menu("Flash-Hook Settings", "flashf");
             {
                 flashMenu.AddItem(new MenuItem("flashmodes", "Flash Modes")
                     .SetValue(new StringList(new[] {"Flash->E->Q", "Flash->Q"})));
-                flashMenu.AddItem(new MenuItem("qflash", "Flash Hook").SetValue(new KeyBind('T', KeyBindType.Press)));
+                flashMenu.AddItem(new MenuItem("qflash", "Flash-Hook").SetValue(new KeyBind('T', KeyBindType.Press)));
             }
 
             Config.AddSubMenu(flashMenu);
@@ -99,7 +99,7 @@ namespace Slutty_Thresh
             var eventMenu = new Menu("Events", "eventssettings");
             {
                 eventMenu.AddItem(new MenuItem("useW2I", "Interrupt with W").SetValue(true));
-                eventMenu.AddItem(new MenuItem("useQW2D", "W/Q On Dashing").SetValue(true));
+                eventMenu.AddItem(new MenuItem("useQW2D", "Use W/Q on Dashing").SetValue(true));
             }
 
             var itemMenu = new Menu("Item Usage", "items");
@@ -114,10 +114,10 @@ namespace Slutty_Thresh
                     {
                         {
                             mountainmenu.AddItem(new MenuItem("faceop" + hero.ChampionName, hero.ChampionName))
-                                .SetValue(new StringList(new[] {"Use", "No Use"}));
+                                .SetValue(new StringList(new[] {"Use", "Don't Use"}));
 
                             mountainmenu.AddItem(
-                                new MenuItem("facehp" + hero.ChampionName, "Use When %HP <").SetValue(new Slider(20)));
+                                new MenuItem("facehp" + hero.ChampionName, "Use When % HP <").SetValue(new Slider(20)));
                         }
                     }
                 }
@@ -131,10 +131,10 @@ namespace Slutty_Thresh
                     {
                         {
                             locketmenu.AddItem(new MenuItem("locketop" + hero.ChampionName, hero.ChampionName))
-                                .SetValue(new StringList(new[] {"Use", "No Use"}));
+                                .SetValue(new StringList(new[] {"Use", "Don't Use"}));
 
                             locketmenu.AddItem(
-                                new MenuItem("lockethp" + hero.ChampionName, "Use When %HP <").SetValue(
+                                new MenuItem("lockethp" + hero.ChampionName, "Use When % HP <").SetValue(
                                     new Slider(20)));
                         }
                     }
@@ -161,7 +161,7 @@ namespace Slutty_Thresh
                 {
                     {
                         allies.AddItem(new MenuItem("healmikaels" + hero.ChampionName, hero.ChampionName))
-                            .SetValue(new StringList(new[] {"Use Mikaels", "Don't Use Mikaels"}));
+                            .SetValue(new StringList(new[] {"Use Mikaels On", "Don't Use Mikaels On"}));
                     }
                 }
                 mikaelss.AddSubMenu(allies);
