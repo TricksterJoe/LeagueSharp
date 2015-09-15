@@ -196,7 +196,7 @@ namespace Slutty_ryze
             var eventMenu = new Menu("Events", "eventssettings");
             {
                 eventMenu.AddItem(new MenuItem("useW2I", "Interrupt with W").SetValue(true));
-                eventMenu.AddItem(new MenuItem("useQW2D", "W/Q pn Dashing").SetValue(true));
+                eventMenu.AddItem(new MenuItem("useQW2D", "W/Q on Dashing").SetValue(true));
                 eventMenu.AddItem(new MenuItem("level", "Auto Skill Level Up").SetValue(true));
                 eventMenu.AddItem(new MenuItem("autow", "Auto W Enemy Under Turret").SetValue(true));
             }
