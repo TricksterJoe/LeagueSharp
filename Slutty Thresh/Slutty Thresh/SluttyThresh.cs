@@ -33,12 +33,12 @@ namespace Slutty_Thresh
             if (Player.ChampionName != ChampName)
                 return;
 
-            Q = new Spell(SpellSlot.Q, 1040);
+            Q = new Spell(SpellSlot.Q, 1080);
             W = new Spell(SpellSlot.W, 950);
-            E = new Spell(SpellSlot.E, 390);
+            E = new Spell(SpellSlot.E, 500);
             R = new Spell(SpellSlot.R, 400);
 
-            Q.SetSkillshot(0.5f, 60f, 1900f, true, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.4f, 60f, 1400f, true, SkillshotType.SkillshotLine);
             W.SetSkillshot(0.5f, 50f, 2200f, false, SkillshotType.SkillshotCircle);
 
             FlashSlot = Player.GetSpellSlot("SummonerFlash");
@@ -252,7 +252,7 @@ namespace Slutty_Thresh
                     if (target.IsValidTarget(E.Range)
                         && eSpell
                         && !target.IsImmovable
-                        && Environment.TickCount - lastq >= 120f)
+                        && Environment.TickCount - lastq >= 40 + Game.Ping)
                     {
                         E.Cast(target.ServerPosition);
                         elastattempt = Environment.TickCount;
@@ -261,7 +261,7 @@ namespace Slutty_Thresh
 
                 case 1:
                     if (target.IsValidTarget(E.Range)
-                        && Environment.TickCount - lastq >= 120f 
+                        && Environment.TickCount - lastq >= 40 + Game.Ping 
                         && eSpell)
                         E.Cast(target.Position.Extend(Player.ServerPosition,
                             Vector3.Distance(target.Position, Player.Position) + 400));
