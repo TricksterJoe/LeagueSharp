@@ -38,6 +38,11 @@ namespace Slutty_Utility.MenuConfig
                 AddBool(hextech, "Use Hextech", "offensive.hextech", true);
             }
             Config.AddSubMenu(hextech);
+
+            var yom = new Menu("Youmuu's Ghostblade", "Youmuu's Ghostblade");
+            {
+                AddBool(yom, "Use Yoummuu's", "offensive.yom", true);
+            }
         }
     }
 }

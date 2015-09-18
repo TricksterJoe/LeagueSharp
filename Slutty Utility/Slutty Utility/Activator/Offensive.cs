@@ -10,7 +10,7 @@ namespace Slutty_Utility.Activator
 {
     class Offensive : Helper
     {
-        public static int Botrk, Bilge, Hydra, Tiamat, Hextech, Muraman;
+        public static int Botrk, Bilge, Hydra, Tiamat, Hextech, Muraman, Youm;
         public static Orbwalking.Orbwalker Orbwalker;
         static Offensive()
         {
@@ -20,6 +20,7 @@ namespace Slutty_Utility.Activator
             Tiamat = 3077;
             Hextech = 3146;
             Muraman = 3042;
+            Youm = 3142;
         }
 
         public Offensive()
@@ -116,6 +117,9 @@ namespace Slutty_Utility.Activator
             }
 
             #endregion
+
+            if (ItemReady(Youm) && HasItem(Youm) && target.IsValidTarget(1000))
+                SelfCast(Youm);
 
         }
     }
