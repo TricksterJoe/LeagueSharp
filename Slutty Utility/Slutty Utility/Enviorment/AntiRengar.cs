@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -86,14 +88,56 @@ namespace Slutty_Utility.Enviorment
                         }
                             break;
 
-                        case "":
+                        case "Xerath":
                         {
-                            
+                            Player.Spellbook.CastSpell(SpellSlot.E, sender);
                         }
                             break;
+
+                        case "Quinn":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange)
+                                Player.Spellbook.CastSpell(SpellSlot.E, sender);
+                        }
+                            break;
+
+                        case "Thresh":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange - 20)
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.E, sender.Position.Extend(Player.ServerPosition,
+                                    Vector3.Distance(sender.Position, Player.Position) + 100));
+                            }
+                        }
+                            break;
+
+                        case "Jayce":
+                        {
+                            if (Player.IsMelee())
+                            {
+                                if (sender.Position.To2D().Distance(Player) <=
+                                    Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange)
+                                {
+                                    Player.Spellbook.CastSpell(SpellSlot.E, sender);
+                                }
+                            }
+                        }
+                            break;
+
+                        case "Fizz":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                Player.AttackRange)
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.E,
+                                    sender.Position.Extend(Player.ServerPosition,
+                                        -Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange)); //probably wrong i was tired roto
+                            }
+                        }
                     }
                 }
-            }
             }
         }
     }
