@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slutty Utility", "Slutty Utility\Slutty Utility.csproj", "{0E54161B-3E25-4EC6-880B-364A7E37AC5A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E54161B-3E25-4EC6-880B-364A7E37AC5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E54161B-3E25-4EC6-880B-364A7E37AC5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E54161B-3E25-4EC6-880B-364A7E37AC5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E54161B-3E25-4EC6-880B-364A7E37AC5A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
