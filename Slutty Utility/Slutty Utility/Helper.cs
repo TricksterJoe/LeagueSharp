@@ -1,7 +1,5 @@
 ﻿using LeagueSharp;
 using LeagueSharp.Common;
-using System;
-using System.Linq;
 
 namespace Slutty_Utility
 {

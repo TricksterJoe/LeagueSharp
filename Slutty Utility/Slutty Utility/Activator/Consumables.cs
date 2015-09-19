@@ -1,9 +1,4 @@
-﻿using System;
-using LeagueSharp;
-using LeagueSharp.Common;
-using LeagueSharp.Common.Data;
-using ItemData = LeagueSharp.Common.Data.ItemData;
-
+﻿
 namespace Slutty_Utility.Activator
 {
     class Consumables : Helper

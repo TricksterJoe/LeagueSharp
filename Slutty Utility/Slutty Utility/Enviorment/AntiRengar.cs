@@ -1,11 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -43,6 +36,8 @@ namespace Slutty_Utility.Enviorment
                     if (Player.ChampionName != name[i])
                         return;
                 }
+
+                #region E Spell Slot
 
                 string[] spelle =
                 {
@@ -84,7 +79,7 @@ namespace Slutty_Utility.Enviorment
 
                         case "soraka":
                         {
-                            Utility.DelayAction.Add(200, () => Player.Spellbook.CastSpell(SpellSlot.E, Player.Position));
+                            Utility.DelayAction.Add(200, () => Player.Spellbook.CastSpell(SpellSlot.E, sender.Position));
                         }
                             break;
 
@@ -133,11 +128,48 @@ namespace Slutty_Utility.Enviorment
                             {
                                 Player.Spellbook.CastSpell(SpellSlot.E,
                                     sender.Position.Extend(Player.ServerPosition,
-                                        -Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange)); //probably wrong i was tired roto
+                                        -Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange));
+                                    //probably wrong i was tired roto
                             }
                         }
+                            break;
+
+                        case "Karthus":
+                        {
+                            Utility.DelayAction.Add(200, () => Player.Spellbook.CastSpell(SpellSlot.E, sender.Position));
+                        }
+                            break;
+
+                        case "Ezreal":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                Player.AttackRange)
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.E,
+                                    sender.Position.Extend(Player.ServerPosition,
+                                        -Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange));
+                                //probably wrong i was tired roto
+                            }
+                        }
+                            break;
+
+                        case "Draven":
+                        {
+                            Player.Spellbook.CastSpell(SpellSlot.E, sender);
+                        }
+                            break;
+
+                        case "vel'koz":
+                        {
+                            Utility.DelayAction.Add(200, () => Player.Spellbook.CastSpell(SpellSlot.E, sender.Position));
+                        }
+                            break;
                     }
                 }
+
+                #endregion
+               
+
             }
         }
     }
