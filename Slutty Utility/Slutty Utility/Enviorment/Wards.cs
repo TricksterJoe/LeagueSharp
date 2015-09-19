@@ -6,15 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 
 namespace Slutty_Utility.Enviorment
 {
     class Wards
     {
-        public int Timers;
-        public string ObjectName;
-        public int Range;
-        public string SpellName;
+
+        public struct Ward
+        {
+            public Vector2 location;
+            public float lifeSpan;
+            public float range;
+            public int id; //0 = trinket,ect
+        }
 
         public Wards()
         {
@@ -22,7 +27,7 @@ namespace Slutty_Utility.Enviorment
         }
 
 
-        public static readonly List<Wards> WardList = new List<Wards>();
+        public static List<Ward> WardList = new List<Ward>();
         private static void OnLoad(EventArgs args)
         {
             GameObject.OnCreate += OnCreate;
@@ -38,25 +43,12 @@ namespace Slutty_Utility.Enviorment
 
         private static void OnCreate(GameObject sender, EventArgs args)
         {
-            WardList.Add(
-                new Wards
-                {
-                    Timers = 1337,
-                    ObjectName = "a ward",
-                }
-                );
-
-            if (!(sender is Obj_AI_Base))
-                return;
-            foreach (var wards in WardList)
+            var oWard = new Ward
             {
-                switch (sender.Name)
-                {
+                location = new Vector2(1, 1), lifeSpan = Time.TickCount + 60000, range = 1000, id = 1
+            };
+            WardList.Add(oWard);
 
-                }
-            }
-            switch (sender.Name == WardList.ToList().ToString())
-            { }
         }
     }
 }
