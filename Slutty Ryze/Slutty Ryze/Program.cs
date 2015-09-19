@@ -140,11 +140,6 @@ namespace Slutty_ryze
                     if (!GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active)
                         LaneOptions.LaneClear();
 
-
-                    if (GlobalManager.Config.Item("presslane").GetValue<KeyBind>().Active)
-                        LaneOptions.LaneClear();
-
-
                     MenuManager.Orbwalker.SetAttack(true);
                     LaneOptions.JungleClear();
                 }

@@ -65,9 +65,6 @@ namespace Slutty_ryze
                     Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Auto Passive Key:{0}",
                         KeyToString(GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>()));
 
-                    Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Press Lane Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("presslane").GetValue<KeyBind>()));
-
                     Drawing.DrawText(pos.X, ++col * 25 + pos.Y, Color.SteelBlue, "Disable Lane Clear Key:{0}",
                         KeyToString(GlobalManager.Config.Item("disablelane").GetValue<KeyBind>()));
 
@@ -86,9 +83,6 @@ namespace Slutty_ryze
 
                     Drawing.DrawText(pos.X, ++col1 * 25 + pos.Y, Color.LightBlue, "Auto Passive Key:{0}",
                         KeyToString(GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>()));
-
-                    Drawing.DrawText(pos.X, ++col1 * 25 + pos.Y, Color.LightBlue, "Press Lane Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("presslane").GetValue<KeyBind>()));
 
                     Drawing.DrawText(pos.X, ++col1 * 25 + pos.Y, Color.LightBlue, "Disable Lane Clear Key:{0}",
                         KeyToString(GlobalManager.Config.Item("disablelane").GetValue<KeyBind>()));

@@ -843,6 +843,9 @@ namespace Slutty_ryze
                 {
                     case 'Q':
                         if (!bSpells[0]) continue;
+                        if (isMinion &&
+                            !(target.Health*hpOffset < Champion.Q.GetDamage(target) &&
+                              GlobalManager.CheckMinion(target))) continue;
                         if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
                         {
                             if ((GlobalManager.GetPassiveBuff > 2 || GlobalManager.GetHero.HasBuff("RyzePassiveStack")) 
@@ -889,7 +892,7 @@ namespace Slutty_ryze
 
             }
 
-            if (!Champion.R.IsReady() || GlobalManager.GetPassiveBuff != 4 || !bSpells[4]) return;
+            if (!Champion.R.IsReady() || GlobalManager.GetPassiveBuff != 4 || !bSpells[4] || MenuManager.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo) return;
             if (Champion.Q.IsReady() || Champion.W.IsReady() || Champion.E.IsReady()) return;
             if ((bSpells[4] && target.HasBuff("RyzeW")) || !bSpells[4])
                 Champion.R.Cast();
