@@ -6,11 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
 
 namespace Slutty_Utility.Enviorment
 {
-    class Wards : Helper
+    class Wards
     {
         public int Timers;
         public string ObjectName;
@@ -35,55 +34,6 @@ namespace Slutty_Utility.Enviorment
             throw new NotImplementedException();
         }
 
-        private static void WardDataBase()
-        {
-            //Trinkets:
-            WardList.Add(
-            new Wards
-            {
-                Timers = 1 * 60 * 1000,
-                ObjectName = "YellowTrinket",
-                Range = 1100,
-                SpellName = "TrinketTotemLvl1",
-            });
-
-            WardList.Add(
-            new Wards
-            {
-                Timers = 2 * 60 * 1000,
-                ObjectName = "YellowTrinketUpgrade",
-                Range = 1100,
-                SpellName = "TrinketTotemLvl2",
-            });
-
-            WardList.Add(
-            new Wards
-            {
-                Timers = 3 * 60 * 1000,
-                ObjectName = "SightWard",
-                Range = 1100,
-                SpellName = "TrinketTotemLvl3",
-            });
-
-            //Ward items and normal wards:
-            WardList.Add(
-            new Wards
-            {
-                Timers = 3 * 60 * 1000,
-                ObjectName = "SightWard",
-                Range = 1100,
-                SpellName = "SightWard",
-            });
-
-            WardList.Add(
-            new Wards
-            {
-                Timers = 3 * 60 * 1000,
-                ObjectName = "SightWard",
-                Range = 1100,
-                SpellName = "ItemGhostWard",
-            });
-        }
 
 
         private static void OnCreate(GameObject sender, EventArgs args)
