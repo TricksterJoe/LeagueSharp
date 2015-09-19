@@ -329,7 +329,7 @@ namespace Slutty_ryze
             {
                 //No Delay Combo Beta (Test Only)
                 #region No Delay Combo?
-                case 1:
+                case 0:
                     bSpells[0] = GlobalManager.Config.Item("useQ").GetValue<bool>();
                     bSpells[1] = GlobalManager.Config.Item("useE").GetValue<bool>();
                     bSpells[2] = GlobalManager.Config.Item("useW").GetValue<bool>();
@@ -678,7 +678,7 @@ namespace Slutty_ryze
 
                 //Old Combo System
                     #region Wombo Combo
-                case 0:
+                case 1:
                     if (target.IsValidTarget(Champion.Q.Range))
                     {
                         if (GlobalManager.GetPassiveBuff <= 2

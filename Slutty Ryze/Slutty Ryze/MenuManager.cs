@@ -83,7 +83,7 @@ namespace Slutty_ryze
                 combo1Menu
                     .AddItem(
                         new MenuItem("combooptions", "Combo Mode").SetValue(
-                            new StringList(new[] {"Old Combo System","New Combo System"}, 1)));
+                            new StringList(new[] {"New Combo System", "Old Combo System",}, 1)));
                 combo1Menu.AddItem(new MenuItem("useQ", "Use Q (Overload)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useW", "Use W (Rune Prison)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useE", "Use E (Spell Flux)").SetValue(true));
@@ -116,8 +116,6 @@ namespace Slutty_ryze
             {
                 laneMenu.AddItem(
                     new MenuItem("disablelane", "Disable Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
-                laneMenu.AddItem(
-                    new MenuItem("presslane", "Press Lane Clear").SetValue(new KeyBind('H', KeyBindType.Press)));
                 laneMenu.AddItem(new MenuItem("useEPL", "Minimum % Mana For Lane Clear").SetValue(new Slider(50)));
                 laneMenu.AddItem(new MenuItem("passiveproc", "Don't Use Spells If Passive Will Proc").SetValue(true));
                 laneMenu.AddItem(new MenuItem("useQlc", "Use Q Last Hit").SetValue(true));
