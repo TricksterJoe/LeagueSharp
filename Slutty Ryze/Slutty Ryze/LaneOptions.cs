@@ -329,63 +329,63 @@ namespace Slutty_ryze
             {
                 //No Delay Combo Beta (Test Only)
                 #region No Delay Combo?
-                case 0:
-                    bSpells[0] = GlobalManager.Config.Item("useQ").GetValue<bool>();
-                    bSpells[1] = GlobalManager.Config.Item("useE").GetValue<bool>();
-                    bSpells[2] = GlobalManager.Config.Item("useW").GetValue<bool>();
-                    bSpells[3] = GlobalManager.Config.Item("useR").GetValue<bool>();
-                    bSpells[4] = GlobalManager.Config.Item("useRww").GetValue<bool>();
-
-                    if (target.IsValidTarget(Champion.W.Range) &&
-                        (target.Health < Champion.IgniteDamage(target) + Champion.W.GetDamage(target)))
-                        GlobalManager.GetHero.Spellbook.CastSpell(Champion.GetIgniteSlot(), target);
-                    
-
-                    if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
-                    {
-                        StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' , 'Q', 'E', 'Q', 'W' });
-                    }
-                    else if(Champion.R.IsReady())
-                    {
-                        switch (GlobalManager.GetPassiveBuff)
-                        {
-                            case 0:
-                                StartComboSequence(target, bSpells, new[] {'W', 'Q', 'E'});
-                                break;
-                            case 1:
-                                StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E' });
-                                break;
-                            case 2:
-                                StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' ,'Q', 'E', 'Q', 'W' });
-                                break;
-                            case 3:
-                                StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q','W' ,'Q', 'E', 'Q', 'W' });
-                                break;
-                            case 4:
-                                StartComboSequence(target, bSpells, new[] { 'W', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        switch (GlobalManager.GetPassiveBuff)
-                        {
-                            case 2:
-                                StartComboSequence(target, bSpells, new[] { 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
-                                break;
-                            case 3:
-                                StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
-                                break;
-                            case 4:
-                                StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
-                                break;
-
-                            default: // 0 and 1;
-                                StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E' });
-                                break;
-                        }
-                    }
-                    break;
+//                case 0:
+//                    bSpells[0] = GlobalManager.Config.Item("useQ").GetValue<bool>();
+//                    bSpells[1] = GlobalManager.Config.Item("useE").GetValue<bool>();
+//                    bSpells[2] = GlobalManager.Config.Item("useW").GetValue<bool>();
+//                    bSpells[3] = GlobalManager.Config.Item("useR").GetValue<bool>();
+//                    bSpells[4] = GlobalManager.Config.Item("useRww").GetValue<bool>();
+//
+//                    if (target.IsValidTarget(Champion.W.Range) &&
+//                        (target.Health < Champion.IgniteDamage(target) + Champion.W.GetDamage(target)))
+//                        GlobalManager.GetHero.Spellbook.CastSpell(Champion.GetIgniteSlot(), target);
+//                    
+//
+//                    if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
+//                    {
+//                        StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' , 'Q', 'E', 'Q', 'W' });
+//                    }
+//                    else if(Champion.R.IsReady())
+//                    {
+//                        switch (GlobalManager.GetPassiveBuff)
+//                        {
+//                            case 0:
+//                                StartComboSequence(target, bSpells, new[] {'W', 'Q', 'E'});
+//                                break;
+//                            case 1:
+//                                StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E' });
+//                                break;
+//                            case 2:
+//                                StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' ,'Q', 'E', 'Q', 'W' });
+//                                break;
+//                            case 3:
+//                                StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q','W' ,'Q', 'E', 'Q', 'W' });
+//                                break;
+//                            case 4:
+//                                StartComboSequence(target, bSpells, new[] { 'W', 'R', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
+//                                break;
+//                        }
+//                    }
+//                    else
+//                    {
+//                        switch (GlobalManager.GetPassiveBuff)
+//                        {
+//                            case 2:
+//                                StartComboSequence(target, bSpells, new[] { 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
+//                                break;
+//                            case 3:
+//                                StartComboSequence(target, bSpells, new[] { 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
+//                                break;
+//                            case 4:
+//                                StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W', 'Q', 'E', 'Q', 'W' });
+//                                break;
+//
+//                            default: // 0 and 1;
+//                                StartComboSequence(target, bSpells, new[] { 'W', 'Q', 'E' });
+//                                break;
+//                        }
+//                    }
+//                    break;
                 #endregion //
                 //New Combo System
                     #region Beta Combo?
@@ -678,7 +678,7 @@ namespace Slutty_ryze
 
                 //Old Combo System
                     #region Wombo Combo
-                case 1:
+                case 0:
                     if (target.IsValidTarget(Champion.Q.Range))
                     {
                         if (GlobalManager.GetPassiveBuff <= 2

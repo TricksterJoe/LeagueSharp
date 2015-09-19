@@ -83,7 +83,7 @@ namespace Slutty_ryze
                 combo1Menu
                     .AddItem(
                         new MenuItem("combooptions", "Combo Mode").SetValue(
-                            new StringList(new[] {"New Combo System", "Old Combo System",}, 1)));
+                            new StringList(new[] {"Use Combo", "Dont Use Combo"})));
                 combo1Menu.AddItem(new MenuItem("useQ", "Use Q (Overload)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useW", "Use W (Rune Prison)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useE", "Use E (Spell Flux)").SetValue(true));
