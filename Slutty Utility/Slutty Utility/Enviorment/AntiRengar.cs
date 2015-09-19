@@ -131,6 +131,7 @@ namespace Slutty_Utility.Enviorment
                                         -Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange));
                                     //probably wrong i was tired roto
                             }
+                            break;
                         }
                             break;
 

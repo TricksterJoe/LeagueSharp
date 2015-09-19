@@ -85,7 +85,7 @@ namespace Slutty_Utility.Activator
              #region Seraphs
 
              if (ItemReady(Seraphs) && HasItem(Seraphs)
-                 && GetBool("defensive.seraphmenu")
+                 && GetBool("defensive.seraphmenu", typeof(bool))
                  && Player.HealthPercent <= GetValue("defensive.value"))
              {
                  SelfCast(Seraphs);
@@ -135,7 +135,7 @@ namespace Slutty_Utility.Activator
 
              if (ItemReady(QSS) && HasItem(QSS))
              {
-                 if (GetBool("defensive.qss"))
+                 if (GetBool("defensive.qss",typeof(bool)))
                  {
                      if (Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Charm) ||
                          Player.HasBuffOfType(BuffType.Flee) || Player.HasBuffOfType(BuffType.Silence) ||

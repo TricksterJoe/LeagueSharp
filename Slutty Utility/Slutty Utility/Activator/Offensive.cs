@@ -37,7 +37,7 @@ namespace Slutty_Utility.Activator
             var targets = TargetSelector.GetTarget(Player.AttackRange + Player.BoundingRadius,
                 TargetSelector.DamageType.Physical);
             if (targets == null) return;
-            if (!GetBool("offensive.muramana"))
+            if (!GetBool("offensive.muramana",typeof(bool)))
                 return;
 
 
@@ -61,7 +61,7 @@ namespace Slutty_Utility.Activator
             {
                 if (ItemReady(Hydra) || ItemReady(Tiamat))
                 {
-                    if (GetBool("offensive.hydraminions") &&
+                    if (GetBool("offensive.hydraminions", typeof(bool)) &&
                         (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear
                          || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit
                          || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed))
@@ -78,7 +78,7 @@ namespace Slutty_Utility.Activator
             if (targets == null) return;
             if (ItemReady(Hydra) || ItemReady(Tiamat))
             {
-                if (GetBool("offensive.hydracombo") && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                if (GetBool("offensive.hydracombo", typeof(bool)) && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
                     SelfCast(HasItem(Hydra) ? Hydra : Tiamat);
                 }

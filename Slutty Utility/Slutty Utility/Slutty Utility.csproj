@@ -61,6 +61,7 @@
     <Compile Include="Enviorment\UltManager.cs" />
     <Compile Include="Enviorment\Wards.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="Jungle\JungleDisplay.cs" />
     <Compile Include="Jungle\Smite.cs" />
     <Compile Include="Jungle\Timer.cs" />
     <Compile Include="Mains.cs" />
