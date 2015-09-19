@@ -7,154 +7,165 @@ using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using System.Drawing;
+using Color = System.Drawing.Color;
 
 namespace Slutty_Utility.Enviorment
 {
-    class Wards
+    internal class Wards : Helper
     {
-<<<<<<< HEAD
-        public int Timers;
-        public string ObjectName;
-        public int Range;
-        public string SpellName;
-        public int Time;
-
-        /*
-        internal struct Ward
+        public static GameObject greenward;
+        internal enum WardType
         {
-            public Vector2 location;
-            public float lifeSpan;
-            public char type;
+            Green,
+            Pink,
         }
-        public static readonly List<Ward> WardsOnMap = new List<Ward>();
-        // oncreate
-        public void onCreate()
-        {
-            var nWard = new Ward();
-            WardsOnMap.Add(nWard);
-            {
-            nWard.lifeSpan = Environment.TickCount + 60000;
-            nWard.type = 'p';
-            }          
-        }
-         */
-=======
-
         public struct Ward
         {
-            public Vector2 location;
+            public Vector3 location;
             public float lifeSpan;
             public float range;
-            public int id; //0 = trinket,ect
+            public string wardID;
+            public string Name;
+            public WardType id; //0 = trinket,ect
         }
->>>>>>> origin/master
 
         public Wards()
         {
             CustomEvents.Game.OnGameLoad += OnLoad;
-            
         }
 
 
         public static List<Ward> WardList = new List<Ward>();
+
         private static void OnLoad(EventArgs args)
         {
+            Game.OnUpdate += OnUpdate;
             GameObject.OnCreate += OnCreate;
-            GameObject.OnDelete += OnDelete;
         }
 
-        private static void OnDelete(GameObject sender, EventArgs args)
+        private static void OnUpdate(EventArgs args)
         {
-            throw new NotImplementedException();
+            WardList.FindAll(ward => ward.lifeSpan < TickCount).ForEach(ward => WardList.Remove(ward));
         }
-<<<<<<< HEAD
-       public struct Ward
-        {
-            public Vector3 location;
-            public float lifeSpan;
-            public char type;
-        }
-        List<Ward> WardsOnMap = new List<Ward>();
-        // oncreate
-        public void onCreate()
-        {
-            var nWard = new Ward
-            {
-                lifeSpan = Environment.TickCount + 60000,
-                type = 'p'
-                
-            };
-            WardsOnMap.Add(new Ward());
-        }
-        public static void WardDataBase()
-        {
-            //Trinkets:
-            WardList.Add(
-            new Wards
-            {
-                Timers = 1 * 60 * 1000,
-                ObjectName = "YellowTrinket",
-                Range = 1100,
-                SpellName = "TrinketTotemLvl1",
-            });
-
-            WardList.Add(
-            new Wards
-            {
-                Timers = 2 * 60 * 1000,
-                ObjectName = "YellowTrinketUpgrade",
-                Range = 1100,
-                SpellName = "TrinketTotemLvl2",
-            });
-
-            WardList.Add(
-            new Wards
-            {
-                Timers = 3 * 60 * 1000,
-                ObjectName = "SightWard",
-                Range = 1100,
-                SpellName = "TrinketTotemLvl3",
-            });
-
-            //Ward items and normal wards:
-            WardList.Add(
-            new Wards
-            {
-                Timers = 3 * 60 * 1000,
-                ObjectName = "SightWard",
-                Range = 1100,
-                SpellName = "SightWard",
-            });
-
-            WardList.Add(
-            new Wards
-            {
-                Timers = 3 * 60 * 1000,
-                ObjectName = "SightWard",
-                Range = 1100,
-                SpellName = "ItemGhostWard",
-            });
-        }
-=======
-
->>>>>>> origin/master
-
+        
 
         private static void OnCreate(GameObject sender, EventArgs args)
         {
-            var oWard = new Ward
-            {
-                location = new Vector2(1, 1), lifeSpan = Time.TickCount + 60000, range = 1000, id = 1
-            };
-            WardList.Add(oWard);
 
-<<<<<<< HEAD
+
+            #region Ward Types
+
+            var yTrinket = new Ward
+            {
+                location = sender.Position,
+                wardID = "YellowTrinket",
+                Name = "TrinketTotemLvl1",
+                lifeSpan = TickCount + 60000,
+                range = 1100,
+                id = WardType.Green
+            };
+            WardList.Add(yTrinket);
+
+            var yTrinketUpgrade = new Ward
+            {
+                location = sender.Position,
+                wardID = "YellowTrinketUpgrade",
+                Name = "TrinketTotemLvl2",
+                lifeSpan = TickCount + 120000,
+                range = 1100,
+                id = WardType.Green
+            };
+            WardList.Add(yTrinketUpgrade);
+
+            var yTrinketUpgrade2 = new Ward
+            {
+                location = sender.Position,
+                wardID = "SightWard",
+                Name = "TrinketTotemLvl3",
+                lifeSpan = TickCount + 180000,
+                range = 1100,
+                id = WardType.Green
+            };
+            WardList.Add(yTrinketUpgrade2);
+
+            var sightWard = new Ward
+            {
+                location = sender.Position,
+                wardID = "SightWard",
+                Name = "SightWard",
+                lifeSpan = TickCount + 180000,
+                range = 1100,
+                id = WardType.Green
+            };
+            WardList.Add(sightWard);
+
+            var ghostWard = new Ward
+            {
+                location = sender.Position,
+                wardID = "SightWard",
+                Name = "ItemGhostWard",
+                lifeSpan = TickCount + 180000,
+                range = 1100,
+                id = WardType.Green
+            };
+            WardList.Add(ghostWard);
+
+            var wrigglelantern = new Ward
+            {
+                location = sender.Position,
+                wardID = "SightWard",
+                Name = "wrigglelantern",
+                lifeSpan = TickCount + 180000,
+                range = 1100,
+                id = WardType.Green
+            };
+            WardList.Add(wrigglelantern);
+
+            var trinketPink = new Ward
+            {
+                location = sender.Position,
+                wardID = "VisionWard",
+                Name = "TrinketTotemLvl3B",
+                lifeSpan = int.MaxValue,
+                range = 1100,
+                id = WardType.Pink
+            };
+            WardList.Add(trinketPink);
+
+            var VisionWard = new Ward
+            {
+                location = sender.Position,
+                wardID = "VisionWard",
+                Name = "VisionWard",
+                lifeSpan = int.MaxValue,
+                range = 1100,
+                id = WardType.Pink
+            };
+            WardList.Add(VisionWard);
+
+            #endregion
+
+
+            if (!(sender is Obj_AI_Base))
+            {
+                return;
+            }
+
+            if (sender.IsAlly)
+            {
+                return;
+            }
+
+            foreach (var wards in WardList)
+            {
+                var colors = wards.id == WardType.Green ? Color.Green : Color.Pink;
+                if (wards.wardID == sender.Name)
+                {
+                    Drawing.DrawCircle(wards.location, 100, colors);
                 }
             }
-            switch (sender.Name == Ward.)
-            { }
-=======
->>>>>>> origin/master
+
         }
     }
 }
