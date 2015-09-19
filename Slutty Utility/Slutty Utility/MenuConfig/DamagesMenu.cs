@@ -18,33 +18,39 @@ namespace Slutty_Utility.MenuConfig
             SpellSlot.W, 
             SpellSlot.R
         };
-
+        
         public static void LoadDamagesMenu()
         {
-            var DtoP = new Menu("Damage To Player Settings", "Damage To Player Settings");
+                        var Damagesmeny = new Menu("Damage Settingssss", "Damage Settsssings");
             {
-                AddBool(DtoP, "Display Selected Target Damage", "dtop.selectedtarget", true);
-                foreach (var champion in HeroManager.Enemies.Where(x => !x.IsMe && x.IsValidTarget()))
+                var DtoP = new Menu("Damage To Player Settings", "Damage To Player Settings");
                 {
-                    var champions = new Menu(champion.ChampionName, champion.ChampionName);
-                    DtoP.AddSubMenu(champions);
-                    foreach (var spells in Slots) // probably wrong, will be checking.
+                    AddBool(DtoP, "Display Selected Target Damage", "dtop.selectedtarget", true);
+                    foreach (var champion in HeroManager.Enemies.Where(x => !x.IsMe && x.IsValidTarget()))
                     {
-                        AddBool(champions, "Display" + " " + spells + " " + "Damage", "damagesmenu.dtop" + spells, true);
+                        var champions = new Menu(champion.ChampionName, champion.ChampionName);
+                        DtoP.AddSubMenu(champions);
+                        foreach (var spells in Slots) // probably wrong, will be checking.
+                        {
+                            AddBool(champions, "Display" + " " + spells + " " + "Damage", "damagesmenu.dtop" + spells,
+                                true);
+                        }
                     }
                 }
-            }
-            Config.AddSubMenu(DtoP);
+                Damagesmeny.AddSubMenu(DtoP);
 
-            var DtoT = new Menu("Damage To Player Settings", "Damage To Player Settings");
-            {
-                AddBool(DtoT, "Display Combo Damage On Targets", "dtot.damage", true);
-                foreach (var spells in Slots) // probably wrong, will be checking.
+                var DtoT = new Menu("Damage To Target Settings", "Damage To Target Settings");
                 {
-                    AddBool(DtoT, "Display" + " " + spells + " " + "Damage", "damagesmenu.dtop" + spells, true);
+                    AddBool(DtoT, "Display Combo Damage On Targets", "dtot.damage", true);
+                    foreach (var spells in Slots) // probably wrong, will be checking.
+                    {
+                        AddBool(DtoT, "Display" + " " + spells + " " + "Damage", "damagesmenu.dtop" + spells, true);
+                    }
                 }
+                Damagesmeny.AddSubMenu(DtoT);
             }
-            Config.AddSubMenu(DtoT);
+            Config.AddSubMenu(Damagesmeny);
         }
+         
     }
 }

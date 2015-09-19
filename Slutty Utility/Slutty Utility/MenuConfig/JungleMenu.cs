@@ -20,16 +20,14 @@ namespace Slutty_Utility.MenuConfig
                 AddBool(oMenu, "Smite Raptors", "jungle.options.smiteRaptors", false);
                 AddBool(oMenu, "Smite Enemies For KS", "jungle.options.smiteChampions", false);
             }
-
+            Config.AddSubMenu(oMenu);
 
             var oMenu2 = new Menu("Jungle Drawing Options", "jungle.options.drawing");
             {
-                AddBool(oMenu, "Display Smite Range", "jungle.options.drawing.damage", true);
-                AddBool(oMenu, "Display Smite Damage", "jungle.options.drawing.damage", true);
-                AddBool(oMenu, "Fill Smite Damage", "jungle.options.drawing.damage.fill", true);
+                AddBool(oMenu2, "Display Smite Range", "jungle.options.drawing.range", true);
+                AddBool(oMenu2, "Display Smite Damage", "jungle.options.drawing.damage", true);
+                AddBool(oMenu2, "Fill Smite Damage", "jungle.options.drawing.damage.fill", true);
             }
-
-            Config.AddSubMenu(oMenu);
             Config.AddSubMenu(oMenu2);
         }
     }

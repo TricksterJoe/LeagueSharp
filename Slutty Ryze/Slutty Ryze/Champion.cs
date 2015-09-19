@@ -8,7 +8,7 @@ namespace Slutty_ryze
     {
         #region Variable Declaration
         private static SpellSlot _ignite;
-        private static readonly Obj_AI_Hero Player = ObjectManager.Player;
+        public static readonly Obj_AI_Hero Player = ObjectManager.Player;
         private const string _champName = "Ryze";
         //private static Spell _q, _w, _e, _r, _qn;
         // Does not work as a property o-o
@@ -169,7 +169,6 @@ namespace Slutty_ryze
             var qSpell = GlobalManager.Config.Item("useQ2KS").GetValue<bool>();
             var wSpell = GlobalManager.Config.Item("useW2KS").GetValue<bool>();
             var eSpell = GlobalManager.Config.Item("useE2KS").GetValue<bool>();
-            Console.WriteLine("KS that shit");
             if (qSpell
                 && Champion.Q.GetDamage(target) > target.Health
                 && target.IsValidTarget(Champion.Q.Range))

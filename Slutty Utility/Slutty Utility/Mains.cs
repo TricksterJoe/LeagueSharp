@@ -1,27 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
+using LeagueSharp.Common;
 using Slutty_Utility.MenuConfig;
 
 namespace Slutty_Utility
 {
-    class Mains
+    class Mains : Helper
     {
         internal static void OnLoad(EventArgs args)
         {
-            ConsumablesMenu.LoadConsumablesMenu();
-            DefensiveMenu.LoadDefensiveMenu();
-            OffensiveMenu.LoadOffensiveMenu();
-            Game.OnUpdate += OnUpdate;
-        }
-
-        private static void OnUpdate(EventArgs args)
-        {
-            Activator.Consumables.Consumable();
-            Activator.Defensive.Defensives();
+            Config = new Menu(Menuname, Menuname, true);
+            MenuConfig.Activator.LoadActivator();
+            DamagesMenu.LoadDamagesMenu();
+            EnviormentMenu.LoadEnviormentMenu();
+            JungleMenu.LeadJungleMenu();
+            Config.AddToMainMenu();
         }
     }
 }

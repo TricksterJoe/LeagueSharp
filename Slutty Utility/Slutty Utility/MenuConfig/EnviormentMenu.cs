@@ -15,12 +15,14 @@ namespace Slutty_Utility.MenuConfig
             {
                 AddBool(antirengar, "Use Anti Rengar", "enviorment.antirengar", true);
             }
+            Config.AddSubMenu(antirengar);
 
             var ultmanager = new Menu("Important Spells Manager", "Important Spells Manager");
             {
                 AddBool(ultmanager, "Block Movemenet", "enviorment.blockmove", true);
                 AddBool(ultmanager, "Smart Block", "enviorment.smartblockmove", true);
             }
+            Config.AddSubMenu(ultmanager);
 
             var wardtrack = new Menu("Ward Tracker", "Ward Tracker");
             {
@@ -29,6 +31,7 @@ namespace Slutty_Utility.MenuConfig
                 AddBool(wardtrack, "Ping On Ward Expire", "enviorment.wardsexpire", true);
                 AddBool(wardtrack, "Notify Teamates On Ward Placement", "enviorment.wardsteam", true);
             }
+            Config.AddSubMenu(wardtrack);
 
         }
     }

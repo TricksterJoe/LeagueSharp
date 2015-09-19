@@ -5,14 +5,42 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
-using Slutty_Utility;
 
-namespace Slutty_Utility
+namespace Slutty_Utility.MenuConfig
 {
-    class DefensiveMenu : Helper
+    internal class Activator : Helper
     {
-        public static void LoadDefensiveMenu()
+        public static void LoadActivator()
         {
+            var activator = new Menu("Activator", "Activator");
+
+            #region consumables
+
+            var consumables = new Menu("Consumables", "Consumables");
+            {
+                var potions = new Menu("Potions", "Potions");
+                {
+                    AddValue(potions, "Hp Potion", "consumables.potions.hppotion", 30);
+                    AddValue(potions, "Mana Potion", "consumables.potions.manapotion", 30);
+                    AddValue(potions, "Biscuit", "consumables.potions.biscuit", 30);
+                    AddValue(potions, "Flask", "consumables.potions.flask", 30);
+                }
+                consumables.AddSubMenu(potions);
+
+                var elixers = new Menu("Elixers", "Elixers"); // fi
+                {
+                    AddValue(elixers, "Elixir of Iron", "consumables.elixers.iron", 30);
+                    AddValue(elixers, "Elixir of Ruin", "consumables.elixers.ruin", 30);
+                    AddValue(elixers, "Elixir of Sorcery", "consumables.elixers.sorcery", 30);
+                    AddValue(elixers, "Elixir of Wrath", "consumables.elixers.wrath", 30);
+                }
+                consumables.AddSubMenu(elixers);
+            }
+
+            #endregion
+
+            #region defensive
+
             var defensive = new Menu("Defensive", "Defensive");
             {
                 AddBool(defensive, "Zhonya", "defensive.zhonya", true);
@@ -90,7 +118,44 @@ namespace Slutty_Utility
                 }
                 defensive.AddSubMenu(seraphmenu);
             }
-            Config.AddSubMenu(defensive);
+
+            #endregion
+
+            #region offensive
+
+            var offensive = new Menu("Offensive", "Offensive");
+            {
+                var botrk = new Menu("Blade Of The Ruined King/Bilge", "Blade Of The Ruined King/Bilge");
+                {
+                    AddBool(botrk, "Use Botrk/Bilge", "offensive.botrk", true);
+                    AddValue(botrk, "Use When HP <=", "offensive.botrkvalue", 70);
+                    AddBool(botrk, "Smart Botrk Usage", "offensive.smartbotrk", true);
+                }
+                offensive.AddSubMenu(botrk);
+
+                var hydra = new Menu("Hydra/Tiamat", "Hydra/Tiamat");
+                {
+                    AddBool(hydra, "Use Hydra/Tiamat Minions", "offensive.hydraminions", true);
+                    AddValue(hydra, "Use When > Enemies", "offensive.hydraminonss", 3, 1, 10);
+                    AddBool(hydra, "Use Hydra/Tiamat Combo", "offensive.hydracombo", true);
+                }
+                offensive.AddSubMenu(hydra);
+
+                AddBool(offensive, "Use Muramana", "offensive.muramana", true);
+
+                AddBool(offensive, "Use Hextech", "offensive.hextech", true);
+
+                AddBool(offensive, "Use Yoummuu's", "offensive.yom", true);
+            }
+
+            #endregion
+
+            activator.AddSubMenu(consumables);
+            activator.AddSubMenu(defensive);
+            activator.AddSubMenu(offensive);
+            Config.AddSubMenu(activator);
+
         }
     }
 }
+

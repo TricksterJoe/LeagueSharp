@@ -10,6 +10,7 @@ namespace Slutty_Utility
        public static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
        public static Menu Config;
        private static readonly DateTime AssemblyLoadTime = DateTime.Now;
+       public const string Menuname = "Slutty Utility";
 
        public static void AddBool(Menu menu, string displayName, string name, bool value)
        {
@@ -46,6 +47,10 @@ namespace Slutty_Utility
            return Config.Item(name).GetValue<StringList>().SelectedIndex;
        }
 
+        public static Menu Activator()
+        {
+            return new Menu("Activator", "Activator");
+        }
 
        public static bool ManaCheck(string name)
        {

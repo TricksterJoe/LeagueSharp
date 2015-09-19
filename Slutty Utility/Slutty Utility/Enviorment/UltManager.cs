@@ -9,6 +9,7 @@ namespace Slutty_Utility.Enviorment
         public static Orbwalking.Orbwalker Orbwalker;
         private static int lastr;
         private static bool _defaultonbutton;
+
         public UltManager()
         {
             CustomEvents.Game.OnGameLoad += OnLoad;
@@ -28,9 +29,9 @@ namespace Slutty_Utility.Enviorment
                 "Nunu"
             };
 
-            var ezevade = Menu.GetMenu("EzEvade", "ezEvade");
+          //  var ezevade = Menu.GetMenu("EzEvade", "ezEvade");
 
-            _defaultonbutton = ezevade.Item("DodgeSkillShots").GetValue<bool>();
+         //   _defaultonbutton = ezevade.Item("DodgeSkillShots").GetValue<bool>();
 
             for (var i = 0; i >= 6; i++)
             {
@@ -41,10 +42,12 @@ namespace Slutty_Utility.Enviorment
                     lastr = Environment.TickCount;
                     Orbwalker.SetAttack(false);
                     Orbwalker.SetMovement(false);
+                    /*
                     if (_defaultonbutton)
                     {
                         ezevade.Item("DodgeSkillShots").SetValue(false);
                     }
+                     */
 
                 }
 
@@ -52,10 +55,12 @@ namespace Slutty_Utility.Enviorment
                 {
                     Orbwalker.SetAttack(true);
                     Orbwalker.SetMovement(true);
+                    /*
                     if (_defaultonbutton)
                     {
                         ezevade.Item("DodgeSkillShots").SetValue(true);
                     }
+                     */
                 }
             }
         }

@@ -2,7 +2,7 @@
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0E54161B-3E25-4EC6-880B-364A7E37AC5A}</ProjectGuid>
     <OutputType>Exe</OutputType>
@@ -12,22 +12,25 @@
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <PreBuildEvent />
+    <PostBuildEvent />
+    <OutputPath>bin\Release</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Release</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -64,17 +67,15 @@
     <Compile Include="Enviorment\TurnAround.cs" />
     <Compile Include="Enviorment\Turrets.cs" />
     <Compile Include="Enviorment\UltManager.cs" />
+    <Compile Include="MenuConfig\Activator.cs" />
     <Compile Include="Tracker\Wards.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Jungle\Smite.cs" />
     <Compile Include="Jungle\Timer.cs" />
     <Compile Include="Mains.cs" />
-    <Compile Include="MenuConfig\ConsumablesMenu.cs" />
     <Compile Include="MenuConfig\DamagesMenu.cs" />
-    <Compile Include="MenuConfig\DefensiveMenu.cs" />
     <Compile Include="MenuConfig\EnviormentMenu.cs" />
     <Compile Include="MenuConfig\JungleMenu.cs" />
-    <Compile Include="MenuConfig\OffensiveMenu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Summoners\Exhaust.cs" />

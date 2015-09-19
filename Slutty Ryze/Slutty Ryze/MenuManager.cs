@@ -1,4 +1,4 @@
-﻿using Color = System.Drawing.Color;
+﻿    using Color = System.Drawing.Color;
 using LeagueSharp.Common;
 
 namespace Slutty_ryze
@@ -83,7 +83,7 @@ namespace Slutty_ryze
                 combo1Menu
                     .AddItem(
                         new MenuItem("combooptions", "Combo Mode").SetValue(
-                            new StringList(new[] {"Old Combo System","New Combo System","No Delay Combo Beta (Test Only)"})));
+                            new StringList(new[] {"Old Combo System","New Combo System"}, 1)));
                 combo1Menu.AddItem(new MenuItem("useQ", "Use Q (Overload)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useW", "Use W (Rune Prison)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useE", "Use E (Spell Flux)").SetValue(true));
