@@ -14,10 +14,12 @@ namespace Slutty_Utility
        {
            menu.AddItem(new MenuItem(name, displayName).SetValue(value));
        }
+
        public static float TickCount
        {
            get { return (int)DateTime.Now.Subtract(AssemblyLoadTime).TotalMilliseconds; }
        }
+
        public static void AddValue(Menu menu, string displayName, string name, int startVal, int minVal = 0, int maxVal = 100)
        {
            menu.AddItem(new MenuItem(name, displayName).SetValue(new Slider(startVal, minVal, maxVal)));

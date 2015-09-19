@@ -43,6 +43,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,12 +54,12 @@
     <Compile Include="Activator\Consumables.cs" />
     <Compile Include="Activator\Defensive.cs" />
     <Compile Include="Activator\Offensive.cs" />
-    <Compile Include="Damages\DToP.cs" />
+    <Compile Include="Damages\DtoP.cs" />
     <Compile Include="Damages\DToT.cs" />
     <Compile Include="Drawings\Spells.cs" />
     <Compile Include="Drawings\Waypoints.cs" />
     <Compile Include="Enviorment\AntiRengar.cs" />
-    <Compile Include="Enviorment\Time.cs" />
+    <Compile Include="Enviorment\TurnAround.cs" />
     <Compile Include="Enviorment\UltManager.cs" />
     <Compile Include="Enviorment\Wards.cs" />
     <Compile Include="Helper.cs" />
@@ -66,7 +67,9 @@
     <Compile Include="Jungle\Timer.cs" />
     <Compile Include="Mains.cs" />
     <Compile Include="MenuConfig\ConsumablesMenu.cs" />
+    <Compile Include="MenuConfig\DamagesMenu.cs" />
     <Compile Include="MenuConfig\DefensiveMenu.cs" />
+    <Compile Include="MenuConfig\EnviormentMenu.cs" />
     <Compile Include="MenuConfig\JungleMenu.cs" />
     <Compile Include="MenuConfig\OffensiveMenu.cs" />
     <Compile Include="Program.cs" />
