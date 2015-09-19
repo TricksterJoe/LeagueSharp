@@ -1,4 +1,5 @@
-﻿using LeagueSharp;
+﻿using System;
+using LeagueSharp;
 using LeagueSharp.Common;
 
 namespace Slutty_Utility
@@ -22,7 +23,7 @@ namespace Slutty_Utility
             menu.AddItem(new MenuItem(name, displayName).SetValue(new KeyBind(key,type)));
         }
 
-       public static bool GetBool(string name, Type oType = typeof(bool))
+       public static bool GetBool(string name, Type oType)
        {
            return oType == typeof(KeyBind) ? Config.Item(name).GetValue<KeyBind>().Active : Config.Item(name).GetValue<bool>();
        }
@@ -89,7 +90,7 @@ namespace Slutty_Utility
             if (Player.IsDead && Player.InShop()
                 && Player.Gold >= 400 && !PlayerBuff(buff)
                 && HasItem(id)
-                && GetBool(menuname))
+                && GetBool(menuname, typeof(bool)))
             {
                 SelfCast(id);
             }

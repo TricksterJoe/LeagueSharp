@@ -28,9 +28,9 @@ namespace Slutty_Utility.Enviorment
                 "Nunu"
             };
 
-            var ezevade = Menu.GetMenu("EzEvade", "evadeonbutton");
+            var ezevade = Menu.GetMenu("EzEvade", "ezEvade");
 
-            _defaultonbutton = ezevade.Item("evadeonbutton").GetValue<bool>();
+            _defaultonbutton = ezevade.Item("DodgeSkillShots").GetValue<bool>();
 
             for (var i = 0; i >= 6; i++)
             {
@@ -43,7 +43,7 @@ namespace Slutty_Utility.Enviorment
                     Orbwalker.SetMovement(false);
                     if (_defaultonbutton)
                     {
-                        ezevade.Item("lol").SetValue(false);
+                        ezevade.Item("DodgeSkillShots").SetValue(false);
                     }
 
                 }
@@ -54,7 +54,7 @@ namespace Slutty_Utility.Enviorment
                     Orbwalker.SetMovement(true);
                     if (_defaultonbutton)
                     {
-                        ezevade.Item("lol").SetValue(true);
+                        ezevade.Item("DodgeSkillShots").SetValue(true);
                     }
                 }
             }
