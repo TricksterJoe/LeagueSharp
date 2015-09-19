@@ -8,7 +8,7 @@ namespace Slutty_Utility
     internal class Helper
     {       
        public static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
-        public static Menu Config;
+       public static Menu Config;
        public static void AddBool(Menu menu, string displayName, string name, bool value)
        {
            menu.AddItem(new MenuItem(name, displayName).SetValue(value));
@@ -19,12 +19,17 @@ namespace Slutty_Utility
            menu.AddItem(new MenuItem(name, displayName).SetValue(new Slider(startVal, minVal, maxVal)));
        }
 
-       public static bool GetBool(string name)
+        public static void AddKeyBind(Menu menu, string displayName, string name, char key, KeyBindType type)
+        {
+            menu.AddItem(new MenuItem(name, displayName).SetValue(new KeyBind(key,type)));
+        }
+
+       public static bool GetBool(string name, Type oType = typeof(bool))
        {
-           return Config.Item(name).GetValue<bool>();
+           return oType == typeof(KeyBind) ? Config.Item(name).GetValue<KeyBind>().Active : Config.Item(name).GetValue<bool>();
        }
 
-       public static int GetValue(string name)
+        public static int GetValue(string name)
        {
            return Config.Item(name).GetValue<Slider>().Value;
        }
