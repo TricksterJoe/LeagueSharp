@@ -675,6 +675,7 @@ namespace Slutty_ryze
 //                    break;
 
                     #endregion
+
                 //Old Combo System
                     #region Wombo Combo
                 case 0:
@@ -844,7 +845,8 @@ namespace Slutty_ryze
                         if (!bSpells[0]) continue;
                         if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() && !target.IsInvulnerable)
                         {
-                            if (GlobalManager.GetPassiveBuff > 2 || GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
+                            if ((GlobalManager.GetPassiveBuff > 2 || GlobalManager.GetHero.HasBuff("RyzePassiveStack")) 
+                                && MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                             {
                                 if (Champion.Qn.IsReady())
                                     Champion.Qn.Cast(target);
@@ -887,8 +889,10 @@ namespace Slutty_ryze
 
             }
 
-
-            Champion.R.Cast();
+            if (!Champion.R.IsReady() || GlobalManager.GetPassiveBuff != 4 || !bSpells[4]) return;
+            if (Champion.Q.IsReady() || Champion.W.IsReady() || Champion.E.IsReady()) return;
+            if ((bSpells[4] && target.HasBuff("RyzeW")) || !bSpells[4])
+                Champion.R.Cast();
         }
     }
 }
