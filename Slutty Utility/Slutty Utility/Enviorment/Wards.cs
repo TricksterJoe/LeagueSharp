@@ -16,10 +16,32 @@ namespace Slutty_Utility.Enviorment
         public string ObjectName;
         public int Range;
         public string SpellName;
+        public int Time;
+
+        /*
+        internal struct Ward
+        {
+            public Vector2 location;
+            public float lifeSpan;
+            public char type;
+        }
+        public static readonly List<Ward> WardsOnMap = new List<Ward>();
+        // oncreate
+        public void onCreate()
+        {
+            var nWard = new Ward();
+            WardsOnMap.Add(nWard);
+            {
+            nWard.lifeSpan = Environment.TickCount + 60000;
+            nWard.type = 'p';
+            }          
+        }
+         */
 
         public Wards()
         {
             CustomEvents.Game.OnGameLoad += OnLoad;
+            
         }
 
 
@@ -34,8 +56,25 @@ namespace Slutty_Utility.Enviorment
         {
             throw new NotImplementedException();
         }
-
-        private static void WardDataBase()
+       public struct Ward
+        {
+            public Vector3 location;
+            public float lifeSpan;
+            public char type;
+        }
+        List<Ward> WardsOnMap = new List<Ward>();
+        // oncreate
+        public void onCreate()
+        {
+            var nWard = new Ward
+            {
+                lifeSpan = Environment.TickCount + 60000,
+                type = 'p'
+                
+            };
+            WardsOnMap.Add(new Ward());
+        }
+        public static void WardDataBase()
         {
             //Trinkets:
             WardList.Add(
@@ -105,7 +144,7 @@ namespace Slutty_Utility.Enviorment
 
                 }
             }
-            switch (sender.Name == WardList.ToList().ToString())
+            switch (sender.Name == Ward.)
             { }
         }
     }
