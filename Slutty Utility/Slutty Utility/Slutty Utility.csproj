@@ -43,6 +43,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -58,10 +59,11 @@
     <Compile Include="Drawings\Spells.cs" />
     <Compile Include="Drawings\Waypoints.cs" />
     <Compile Include="Enviorment\AntiRengar.cs" />
+    <Compile Include="Enviorment\Time.cs" />
     <Compile Include="Enviorment\UltManager.cs" />
     <Compile Include="Enviorment\Wards.cs" />
-    <Compile Include="Enviorment\WardsData.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="Jungle\JungleDisplay.cs" />
     <Compile Include="Jungle\Smite.cs" />
     <Compile Include="Jungle\Timer.cs" />
     <Compile Include="Mains.cs" />
