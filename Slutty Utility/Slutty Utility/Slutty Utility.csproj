@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Slutty_Utility</RootNamespace>
     <AssemblyName>Slutty Utility</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -59,9 +60,11 @@
     <Compile Include="Drawings\Spells.cs" />
     <Compile Include="Drawings\Waypoints.cs" />
     <Compile Include="Enviorment\AntiRengar.cs" />
+    <Compile Include="Enviorment\Inhibitors.cs" />
     <Compile Include="Enviorment\TurnAround.cs" />
+    <Compile Include="Enviorment\Turrets.cs" />
     <Compile Include="Enviorment\UltManager.cs" />
-    <Compile Include="Enviorment\Wards.cs" />
+    <Compile Include="Tracker\Wards.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Jungle\Smite.cs" />
     <Compile Include="Jungle\Timer.cs" />

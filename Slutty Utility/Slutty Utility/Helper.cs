@@ -2,6 +2,7 @@
 using LeagueSharp;
 using LeagueSharp.Common;
 
+
 namespace Slutty_Utility
 {
     internal class Helper
