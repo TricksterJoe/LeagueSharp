@@ -102,5 +102,10 @@ namespace Slutty_Utility
                 SelfCast(id);
             }
         }
+
+        public static float SpellRange(SpellSlot spellSlot)
+        {
+            return Player.Spellbook.GetSpell(spellSlot).SData.CastRange;
+        }
     }
 }

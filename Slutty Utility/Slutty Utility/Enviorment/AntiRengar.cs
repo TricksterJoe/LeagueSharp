@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
@@ -22,9 +23,12 @@ namespace Slutty_Utility.Enviorment
         {
             string[] name =
             {
-                "Tristana", "Vayne", "Ahri", "Alistar", "Anivia", "Azir", "Diana", "Draven", "Ezreal", "Fizz",
-                "Janna", "Jayce", "Jinx", "Karthus", "Kassadin", "Lee Sin", "Lux", "Morgana", "Nami", "Quinn",
-                "Riven", "Shaco", "Soraka", "Thresh", "Trundle", "Vel'Koz", "Xerath", "Zed", "Ziggs"
+                "Tristana", "Vayne", "Ahri", "Alistar", "Anivia",
+                "Azir", "Diana", "Draven", "Ezreal", "Fizz",
+                "Janna", "Jayce", "Jinx", "Karthus", "Kassadin",
+                "Lee Sin", "Lux", "Morgana", "Nami", "Quinn",
+                "Riven", "Shaco", "Soraka", "Thresh", "Trundle", 
+                "Vel'Koz", "Xerath", "Zed", "Ziggs"
             };
 
             if (!sender.IsEnemy && sender.Name != "Rengar")
@@ -44,7 +48,7 @@ namespace Slutty_Utility.Enviorment
                     "Vayne", "Ahri", "Diana", "Draven", "Ezreal", "Fizz", "Jayce", "Jinx",
                     "Karthus", "Quinn", "Soraka", "Thresh", "Vel'Koz", "Xerath"
                 };
-                for (var i = 0; i <= 15; i++)
+                for (var i = 0; i <= spelle.Count(); i++)
                 {
                     if (Player.ChampionName != spelle[i])
                         return;
@@ -129,9 +133,8 @@ namespace Slutty_Utility.Enviorment
                                 Player.Spellbook.CastSpell(SpellSlot.E,
                                     sender.Position.Extend(Player.ServerPosition,
                                         -Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange));
-                                    //probably wrong i was tired roto
+                                //probably wrong i was tired roto
                             }
-                            break;
                         }
                             break;
 
@@ -169,8 +172,163 @@ namespace Slutty_Utility.Enviorment
                 }
 
                 #endregion
-               
 
+                #region R Spell Slot
+
+                string[] spellr =
+                {
+                    "Tristana", "Azir",
+                    "Janna", "Kassadin",
+                    "Lee Sin", "Nami"
+                };
+
+                for (var i = 0; i >= spellr.Count(); i++)
+                {
+                    if (Player.ChampionName != spellr[i])
+                        return;
+
+                    switch (Player.ChampionName)
+                    {
+                        case "Tristana":
+                        {
+                            Player.Spellbook.CastSpell(SpellSlot.R, sender);
+                            break;
+                        }
+
+                        case "Azir":
+                        {
+                            if (sender.Position.Distance(Player.Position) <=
+                                SpellRange(SpellSlot.R))
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.R, sender);
+                            }
+                            break;
+                        }
+
+                        case "Janna":
+                        {
+                            if (sender.Position.Distance(Player.Position) <=
+                                SpellRange(SpellSlot.R))
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.R);
+                            }
+                            break;
+                        }
+
+                        case "Kassadin":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <= 100)
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.R,
+                                    sender.Position.Extend(Player.ServerPosition,
+                                        -Player.Spellbook.GetSpell(SpellSlot.R).SData.CastRange));
+                                //probably wrong i was tired roto
+                            }
+                            break;
+                        }
+
+                        case "LeeSin":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <= SpellRange(SpellSlot.R))
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.R, sender);
+                            }
+                            break;
+                        }
+
+                        case "Nami":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <= SpellRange(SpellSlot.R))
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.R, sender);
+                            }
+                            break;
+                        }
+                    }
+                }
+
+                #endregion
+
+                #region Q Spell Slot
+
+                string[] qspell =
+                {
+                    "Vayne", "Alistar", "Lux",
+                    "Morgana", "Quinn", "Shaco",
+
+                };
+
+                for (var i = 0; i >= qspell.Count(); i++)
+                {
+                    if (Player.ChampionName != qspell[i])
+                        return;
+
+                    switch (Player.ChampionName)
+                    {
+                        case "Vayne":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                SpellRange(SpellSlot.E))
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.Q, sender.Position.Extend(Player.ServerPosition,
+                                    Vector3.Distance(sender.Position, Player.Position) + 100));
+                            }
+                            break;
+                        }
+                        case "Shaco":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                SpellRange(SpellSlot.Q))
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.Q, sender.Position.Extend(Player.ServerPosition,
+                                    Vector3.Distance(sender.Position, Player.Position) + 100));
+                            }
+                            break;
+                        }
+                        case "Alistar":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                SpellRange(SpellSlot.Q))
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.Q);
+                            }
+                            break;
+                        }
+                        case "Lux":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                SpellRange(SpellSlot.Q))
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.Q);
+                            }
+                            break;
+                        }
+
+                        case "Morgana":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                SpellRange(SpellSlot.Q))
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.Q);
+                            }
+                            break;
+                        }
+
+                        case "Quinn":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                SpellRange(SpellSlot.Q))
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.Q);
+                            }
+                            break;
+                        }
+
+
+
+                    }
+                }
+                #endregion
             }
         }
     }
