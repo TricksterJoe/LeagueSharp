@@ -18,8 +18,9 @@ namespace Slutty_Utility.Enviorment
         internal enum WardType
         {
             Green,
-            Pink,
+            Pink
         }
+
         public struct Ward
         {
             public Vector3 location;
@@ -46,14 +47,12 @@ namespace Slutty_Utility.Enviorment
 
         private static void OnUpdate(EventArgs args)
         {
-            WardList.FindAll(ward => ward.lifeSpan < TickCount).ForEach(ward => WardList.Remove(ward));
+            WardList.FindAll(ward => ward.lifeSpan < TickCount).ForEach(ward => WardList.Remove(ward)); //change to ondelete
         }
         
 
         private static void OnCreate(GameObject sender, EventArgs args)
         {
-
-
             #region Ward Types
 
             var yTrinket = new Ward
@@ -147,15 +146,10 @@ namespace Slutty_Utility.Enviorment
             #endregion
 
 
-            if (!(sender is Obj_AI_Base))
-            {
+            if (!sender.IsValid<Obj_AI_Base>())
                 return;
-            }
-
             if (sender.IsAlly)
-            {
                 return;
-            }
 
             foreach (var wards in WardList)
             {
