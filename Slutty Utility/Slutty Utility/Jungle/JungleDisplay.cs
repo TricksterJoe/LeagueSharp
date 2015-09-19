@@ -1,21 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
-
+//using Color = System.Drawing.Color;
 namespace Slutty_Utility.Jungle
 {
-    class JungleDisplay
+    class JungleDisplay : Helper
     {
+        public delegate float DamageToUnitDelegate(Obj_AI_Hero hero);
+        private static DamageToUnitDelegate  _damageToMonster;
+
+        public static DamageToUnitDelegate DamageToMonster
+        {
+            get { return _damageToMonster; }
+
+            set
+            {
+                if (_damageToMonster == null)
+                {
+                    LeagueSharp.Drawing.OnDraw += Drawing_OnDrawMonster;
+                }
+                _damageToMonster = value;
+            }
+        }
+
         public static void Drawing_OnDrawMonster(EventArgs args)
         {
             try
             {
-                if (!Properties.MainMenu.Item("cDrawOnMonsters").GetValue<Circle>().Active ||
-                    Properties.Drawing.DamageToMonster == null)
+                if (!Config.Item("cDrawOnMonsters").GetValue<Circle>().Active ||
+                   DamageToMonster == null)
                     return;
 
                 foreach (var minion in ObjectManager.Get<Obj_AI_Minion>())
@@ -23,7 +36,7 @@ namespace Slutty_Utility.Jungle
                     if (minion.Team != GameObjectTeam.Neutral || !minion.IsValidTarget() || !minion.IsHPBarRendered)
                         continue;
 
-                    var rendDamage = Smite.smiteSpell.GetDamage(minion);
+                    var smiteDamage = Smite.smiteSpell.GetDamage(minion);
 
                     // Monster bar widths and offsets from ElSmite
                     var barWidth = 0;
@@ -90,12 +103,12 @@ namespace Slutty_Utility.Jungle
                     }
                     if (!display) continue;
                     var barPos = minion.HPBarPosition;
-                    var percentHealthAfterDamage = Math.Max(0, minion.Health - rendDamage) / minion.MaxHealth;
+                    var percentHealthAfterDamage = Math.Max(0, minion.Health - smiteDamage) / minion.MaxHealth;
                     var yPos = barPos.Y + yOffset;
                     var xPosDamage = barPos.X + xOffset + barWidth * percentHealthAfterDamage;
                     var xPosCurrentHp = barPos.X + xOffset + barWidth * minion.Health / minion.MaxHealth;
 
-                    if (Properties.MainMenu.Item("cFillMonster").GetValue<Circle>().Active)
+                    if (Config.Item("cFillMonster").GetValue<Circle>().Active)
                     {
                         var differenceInHp = xPosCurrentHp - xPosDamage;
                         var pos1 = barPos.X + xOffset;
@@ -103,18 +116,18 @@ namespace Slutty_Utility.Jungle
                         for (var i = 0; i < differenceInHp; i++)
                         {
                             Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + yOffset2, 1,
-                                Properties.MainMenu.Item("cFillMonster").GetValue<Circle>().Color);
+                                Config.Item("cFillMonster").GetValue<Circle>().Color);
                         }
                     }
                     else
                         Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + yOffset2, 1,
-                            Properties.MainMenu.Item("cDrawOnMonsters").GetValue<Circle>().Color);
+                            Config.Item("cDrawOnMonsters").GetValue<Circle>().Color);
 
-                    if (!(rendDamage > minion.Health)) continue;
-                    if (!Properties.MainMenu.Item("cKillableText").GetValue<Circle>().Active) return;
+                    if (!(smiteDamage > minion.Health)) continue;
+                    if (!Config.Item("cKillableText").GetValue<Circle>().Active) return;
 
                     Drawing.DrawText(minion.HPBarPosition.X + xOffset, minion.HPBarPosition.Y,
-                        Properties.MainMenu.Item("cKillableText").GetValue<Circle>().Color, "Killable");
+                        Config.Item("cKillableText").GetValue<Circle>().Color, "Killable");
                 }
             }
             catch
