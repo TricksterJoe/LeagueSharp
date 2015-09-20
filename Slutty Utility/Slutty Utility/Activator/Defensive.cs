@@ -21,39 +21,13 @@ namespace Slutty_Utility.Activator
         }
 
 
-         public Defensive()
-         {
-             CustomEvents.Game.OnGameLoad += OnLoad;
-         }
-
-         private static void OnLoad(EventArgs args)
+         public static void OnLoad()
          {
              Obj_AI_Base.OnProcessSpellCast += Processspell;
-         }
-         private static void Processspell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
-         {
-             if (sender.IsAlly || sender.IsMe)
-                 return;
-
-             string[] spells =
-                {
-                    "Add Dangerous Spells"
-                };
-
-             for (var i = 0; i <= 1; i++)
-             {
-                 if (args.Target.IsMe
-                     && (args.SData.TargettingType == SpellDataTargetType.Unit
-                         || args.SData.TargettingType == SpellDataTargetType.SelfAndUnit)
-                     && args.SData.Name == spells[i])
-                 {
-                     SelfCast(ZhonyaId);
-                 }
-             }
-
+             Game.OnUpdate += OnUpdate;
          }
 
-         public static void Defensives()
+         private static void OnUpdate(EventArgs args)
          {
              #region Omen
 
@@ -64,7 +38,7 @@ namespace Slutty_Utility.Activator
                      SelfCast(Omen);
                  }
              }
-                      #endregion
+             #endregion
 
              #region Locket
 
@@ -135,7 +109,7 @@ namespace Slutty_Utility.Activator
 
              if (ItemReady(QSS) && HasItem(QSS))
              {
-                 if (GetBool("defensive.qss",typeof(bool)))
+                 if (GetBool("defensive.qss", typeof(bool)))
                  {
                      if (Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Charm) ||
                          Player.HasBuffOfType(BuffType.Flee) || Player.HasBuffOfType(BuffType.Silence) ||
@@ -148,6 +122,28 @@ namespace Slutty_Utility.Activator
              }
 
              #endregion
+         }
+
+         private static void Processspell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+         {
+             if (sender.IsAlly || sender.IsMe)
+                 return;
+
+             string[] spells =
+                {
+                    "Add Dangerous Spells"
+                };
+
+             for (var i = 0; i <= 1; i++)
+             {
+                 if (args.Target.IsMe
+                     && (args.SData.TargettingType == SpellDataTargetType.Unit
+                         || args.SData.TargettingType == SpellDataTargetType.SelfAndUnit)
+                     && args.SData.Name == spells[i])
+                 {
+                     SelfCast(ZhonyaId);
+                 }
+             }
 
          }
     }

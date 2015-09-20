@@ -13,12 +13,8 @@ namespace Slutty_Utility.Damages
 {
     class DtoT : Helper
     {
-                public DtoT()
-        {
-            CustomEvents.Game.OnGameLoad += OnLoad;
-        }
 
-        private static void OnLoad(EventArgs args)
+        public static void OnLoad()
         {
             Drawing.OnDraw += OnDraw;
         }

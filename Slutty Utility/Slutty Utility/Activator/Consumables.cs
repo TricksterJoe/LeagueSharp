@@ -1,4 +1,6 @@
-﻿
+﻿using System;
+using LeagueSharp;
+
 namespace Slutty_Utility.Activator
 {
     class Consumables : Helper
@@ -28,10 +30,14 @@ namespace Slutty_Utility.Activator
             IronElixer = "ironbuff";
         }
 
-
-        public static void Consumable()
+        public static void OnEnable()
         {
-            #region Potions
+            Game.OnUpdate += OnUpdate;
+        }
+
+        private static void OnUpdate(EventArgs args)
+        {            
+           #region Potions
             if (HealthCheck("consumables.potions.hppotion"))
             {
                 PotionCast(HpPotion, HpBuff);
@@ -53,13 +59,12 @@ namespace Slutty_Utility.Activator
             }
 #endregion
 
-            #region Elixers
+           #region Elixers
             ElixerCast(SorcPotion, SorcElixer, "consumables.elixers.sorcery");
             ElixerCast(WarthPotion, WarthElixer, "consumables.elixers.wrath");
             ElixerCast(RuinPotion, RuinElixer, "consumables.elixers.ruin");
             ElixerCast(IronPotion, IronElixer, "consumables.elixers.iron");
 #endregion
-
 
         }
     }

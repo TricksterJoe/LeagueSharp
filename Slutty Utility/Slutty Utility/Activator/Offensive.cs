@@ -19,15 +19,43 @@ namespace Slutty_Utility.Activator
             Youm = 3142;
         }
 
-        public Offensive()
-        {
-            CustomEvents.Game.OnGameLoad += OnLoad;
-        }
 
-        private static void OnLoad(EventArgs args)
+        public static void OnLoad()
         {
             Orbwalking.AfterAttack += After_Attack;
             Orbwalking.BeforeAttack += Before_Attack;
+            Game.OnUpdate += OnUpdate;
+        }
+
+        private static void OnUpdate(EventArgs args)
+        {
+            #region Bilge/Botrk
+
+            var target = TargetSelector.GetTarget(550, TargetSelector.DamageType.Physical);
+            if (target == null) return;
+
+            if (ItemReady(Botrk) || ItemReady(Bilge))
+            {
+                if (HealthCheck("offensive.botrkvalue") && target.Distance(Player) <= 550)
+                {
+                    UseUnitItem(HasItem(Botrk) ? Botrk : Bilge, target);
+                }
+            }
+
+            #endregion
+
+            #region Hextech
+
+            if (ItemReady(Hextech) && target.IsValidTarget(700))
+            {
+                UseUnitItem(Hextech, target);
+            }
+
+            #endregion
+
+            if (ItemReady(Youm) && HasItem(Youm) && target.IsValidTarget(1000))
+                SelfCast(Youm);
+
         }
 
         private static void Before_Attack(Orbwalking.BeforeAttackEventArgs args)
@@ -85,37 +113,6 @@ namespace Slutty_Utility.Activator
             }
 
             #endregion
-
-        }
-
-        public static void Offensives()
-        {
-            #region Bilge/Botrk
-
-            var target = TargetSelector.GetTarget(550, TargetSelector.DamageType.Physical);
-            if (target == null) return;
-
-            if (ItemReady(Botrk) || ItemReady(Bilge))
-            {
-                if (HealthCheck("offensive.botrkvalue") && target.Distance(Player) <= 550)
-                {
-                    UseUnitItem(HasItem(Botrk) ? Botrk : Bilge, target);
-                }
-            }
-
-            #endregion
-
-            #region Hextech
-
-            if (ItemReady(Hextech) && target.IsValidTarget(700))
-            {
-                UseUnitItem(Hextech, target);
-            }
-
-            #endregion
-
-            if (ItemReady(Youm) && HasItem(Youm) && target.IsValidTarget(1000))
-                SelfCast(Youm);
 
         }
     }

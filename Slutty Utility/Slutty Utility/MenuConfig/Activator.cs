@@ -27,12 +27,13 @@ namespace Slutty_Utility.MenuConfig
                 }
                 consumables.AddSubMenu(potions);
 
-                var elixers = new Menu("Elixers", "Elixers"); // fi
+                var elixers = new Menu("Elixers", "Elixers"); // 
                 {
-                    AddValue(elixers, "Elixir of Iron", "consumables.elixers.iron", 30);
-                    AddValue(elixers, "Elixir of Ruin", "consumables.elixers.ruin", 30);
-                    AddValue(elixers, "Elixir of Sorcery", "consumables.elixers.sorcery", 30);
-                    AddValue(elixers, "Elixir of Wrath", "consumables.elixers.wrath", 30);
+                    AddValue(elixers, "Buy Elixers At Level", "consumables.buy", 13, 1, 18);
+                    AddBool(elixers, "Elixir of Iron", "consumables.elixers.iron", true);
+                    AddBool(elixers, "Elixir of Ruin", "consumables.elixers.ruin", true);
+                    AddBool(elixers, "Elixir of Sorcery", "consumables.elixers.sorcery", true);
+                    AddBool(elixers, "Elixir of Wrath", "consumables.elixers.wrath", true);
                 }
                 consumables.AddSubMenu(elixers);
             }

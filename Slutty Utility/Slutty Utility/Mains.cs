@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Slutty_Utility.Activator;
+using Slutty_Utility.Damages;
+using Slutty_Utility.Enviorment;
 using Slutty_Utility.MenuConfig;
 
 namespace Slutty_Utility
@@ -20,6 +23,14 @@ namespace Slutty_Utility
             EnviormentMenu.LoadEnviormentMenu();
             JungleMenu.LeadJungleMenu();
             Config.AddToMainMenu();
+//            Defensive.OnLoad();
+//            Offensive.OnLoad();
+//            AntiRengar.OnLoad();
+//            UltManager.OnLoad();
+
+            DtoP.OnLoad();
+            DtoT.OnLoad();
+            Consumables.OnEnable();
         }
     }
 }

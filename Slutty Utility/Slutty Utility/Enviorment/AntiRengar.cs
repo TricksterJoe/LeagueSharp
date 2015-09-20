@@ -8,12 +8,7 @@ namespace Slutty_Utility.Enviorment
 {
     class AntiRengar : Helper
     {
-        public AntiRengar()
-        {
-            CustomEvents.Game.OnGameLoad += OnLoad;
-        }
-
-        private static void OnLoad(EventArgs args)
+        public static void OnLoad()
         {
             GameObject.OnCreate += OnCreateObject;
         }

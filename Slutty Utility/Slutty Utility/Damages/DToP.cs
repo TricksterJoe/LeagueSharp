@@ -7,13 +7,8 @@ using Slutty_Utility.MenuConfig;
 
 namespace Slutty_Utility.Damages
 {
-    class DtoP : Helper
+    internal class DtoP : Helper
     {
-        public DtoP()
-        {
-            CustomEvents.Game.OnGameLoad += OnLoad;
-        }
-
         private const int XOffset = 10;
         private const int YOffset = 20;
         private const int Width = 103;
@@ -24,7 +19,11 @@ namespace Slutty_Utility.Damages
         private static Utility.HpBarDamageIndicator.DamageToUnitDelegate _damageToUnit;
         public static bool EnableDrawingDamage { get; set; }
         public static Color DamageFillColor { get; set; }
-
+        
+       public static void OnLoad()
+        {
+            Drawing.OnDraw += OnDraw;
+        }
 
         public static Utility.HpBarDamageIndicator.DamageToUnitDelegate DamageToUnit
         {
@@ -69,11 +68,6 @@ namespace Slutty_Utility.Damages
                     return (float) damage;
             }
             return 0;
-        }
-
-        private static void OnLoad(EventArgs args)
-        {
-            Drawing.OnDraw += OnDraw;
         }
 
         private static void OnDraw(EventArgs args)

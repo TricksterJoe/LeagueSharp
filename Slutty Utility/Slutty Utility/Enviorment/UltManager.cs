@@ -10,12 +10,7 @@ namespace Slutty_Utility.Enviorment
         private static int lastr;
         private static bool _defaultonbutton;
 
-        public UltManager()
-        {
-            CustomEvents.Game.OnGameLoad += OnLoad;
-        }
-
-        private static void OnLoad(EventArgs args)
+        public static void OnLoad()
         {
             Spellbook.OnCastSpell += OnCastspell;
         }
