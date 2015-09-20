@@ -23,8 +23,6 @@ namespace Slutty_Utility
             EnviormentMenu.LoadEnviormentMenu();
             JungleMenu.LeadJungleMenu();
             Config.AddToMainMenu();
-            var targetSelectorMenu = new Menu("Target Selector", "Target Selector");
-            TargetSelector.AddToMenu(targetSelectorMenu);
            Defensive.OnLoad();
             Offensive.OnLoad();
 //            AntiRengar.OnLoad();

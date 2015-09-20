@@ -14,7 +14,6 @@ namespace Slutty_Utility
             try
             {
                 CustomEvents.Game.OnGameLoad += Mains.OnLoad;
-                Console.WriteLine("hi");
             }
             catch (Exception ex)
             {

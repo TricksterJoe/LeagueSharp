@@ -8,7 +8,8 @@ namespace Slutty_ryze
     internal class Program
     {
         readonly static Random Seeder = new Random();
-
+        private static bool _casted;
+        private static int _lastw;
         #region onload
         private static void Main(string[] args)
         {
@@ -51,7 +52,7 @@ namespace Slutty_ryze
             Interrupter.OnPossibleToInterrupt += Champion.RyzeInterruptableSpell;
 #pragma warning restore 618
             Orbwalking.BeforeAttack += Champion.Orbwalking_BeforeAttack;
-            CustomEvents.Unit.OnDash += Champion.Unit_OnDash;
+            //CustomEvents.Unit.OnDash += Champion;
             ShowDisplayMessage();
 
         }
@@ -97,7 +98,37 @@ namespace Slutty_ryze
         {
             try // lazy
             {
+                if (GlobalManager.Config.Item("test").GetValue<KeyBind>().Active)
+                {
+                    GlobalManager.GetHero.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                    var targets = TargetSelector.GetTarget(Champion.W.Range, TargetSelector.DamageType.Magical);
+                    if (targets == null)
+                        return;
+                    if (Champion.W.IsReady())
+                    {
+                        LaneOptions.CastW(targets);
+                        {
+                            _lastw = Environment.TickCount;
+                        }
+                    }
 
+                    if (Environment.TickCount - _lastw >= 700 - Game.Ping)
+                    {
+                        if (Champion.Q.IsReady())
+                        {
+                            LaneOptions.CastQn(targets);
+                            _casted = true;
+                        }
+                    }
+
+                    if (_casted)
+                    {
+                        LaneOptions.CastE(targets);
+                        LaneOptions.CastQn(targets);
+                        _casted = false;
+                    }
+                }
+           
                 if (GlobalManager.GetHero.IsDead)
                     return;
                 if (GlobalManager.GetHero.IsRecalling())
@@ -121,10 +152,20 @@ namespace Slutty_ryze
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
-                    MenuManager.Orbwalker.SetAttack((target.IsValidTarget() &&
-                                                     (GlobalManager.GetHero.Distance(target) > 440) ||
-                                                     (Champion.Q.IsReady() || Champion.E.IsReady() ||
-                                                      Champion.W.IsReady())));
+                    if (target.IsValidTarget() 
+                        &&  GlobalManager.GetHero.Distance(target) > 400 && (Champion.Q.IsReady() && Champion.W.IsReady() && Champion.E.IsReady()))
+                    {
+                        MenuManager.Orbwalker.SetAttack(false);
+                    }
+                    if (target.IsValidTarget() && GlobalManager.GetHero.Distance(target) > 400
+                        && (GlobalManager.GetPassiveBuff == 4 || GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
+                        &&
+                        ((!Champion.Q.IsReady() && !Champion.W.IsReady() && !Champion.E.IsReady()) ||
+                         (Champion.Q.IsReady() && Champion.W.IsReady() && Champion.E.IsReady())))
+                    {
+                        MenuManager.Orbwalker.SetAttack(false);
+                    }
+
                     Champion.AABlock();
                     LaneOptions.ImprovedCombo();
                 }

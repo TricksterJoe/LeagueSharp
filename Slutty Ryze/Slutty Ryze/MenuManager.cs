@@ -22,6 +22,7 @@ namespace Slutty_ryze
             _config.AddSubMenu(FarmMenu());
             _config.AddSubMenu(MiscMenu());
             _config.AddSubMenu(OrbWalkingMenu());
+            _config.AddItem(new MenuItem("test", "Level 3-5 Oriented Combo").SetValue(new KeyBind('Z', KeyBindType.Press)));
             Orbwalker = new Orbwalking.Orbwalker(_config.SubMenu("Orbwalking"));
             return _config;
         }
@@ -83,7 +84,7 @@ namespace Slutty_ryze
                 combo1Menu
                     .AddItem(
                         new MenuItem("combooptions", "Combo Mode").SetValue(
-                            new StringList(new[] {"Use Combo", "Dont Use Combo"})));
+                            new StringList(new[] {"Improved Old Combo", "Old Combo"})));
                 combo1Menu.AddItem(new MenuItem("useQ", "Use Q (Overload)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useW", "Use W (Rune Prison)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useE", "Use E (Spell Flux)").SetValue(true));

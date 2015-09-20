@@ -127,33 +127,32 @@ namespace Slutty_ryze
             var wSpell = GlobalManager.Config.Item("useW2I").GetValue<bool>();
             if (!wSpell) return;
             Champion.W.CastOnUnit(target);
-            Console.WriteLine("Plz no Senpai");
         }
 
-        public static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
-        {
-            if (!sender.IsEnemy) return;
-
-            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
-            var qSpell = GlobalManager.Config.Item("useQW2D").GetValue<bool>();
-
-            if (sender.NetworkId != target.NetworkId) return;
-            if (!qSpell) return;
-            if (!Champion.Q.IsReady() || !(args.EndPos.Distance(GlobalManager.GetHero) < Champion.Q.Range)) return;
-            var delay = (int)(args.EndTick - Game.Time - Champion.Q.Delay - 0.1f);
-
-            if (delay > 0)
-                Utility.DelayAction.Add(delay * 1000, () => Champion.Q.Cast(args.EndPos));
-            else
-                Champion.Q.Cast(args.EndPos);
-
-            if (!Champion.Q.IsReady() || !(args.EndPos.Distance(GlobalManager.GetHero) < Champion.Q.Range)) return;
-
-            if (delay > 0)
-                Utility.DelayAction.Add(delay * 1000, () => Champion.Q.Cast(args.EndPos));
-            else
-                Champion.W.CastOnUnit(target);
-        }
+//        public static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
+//        {
+//            if (!sender.IsEnemy) return;
+//
+//            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
+//            var qSpell = GlobalManager.Config.Item("useQW2D").GetValue<bool>();
+//
+//            if (sender.NetworkId != target.NetworkId) return;
+//            if (!qSpell) return;
+//            if (!Champion.Q.IsReady() || !(args.EndPos.Distance(GlobalManager.GetHero) < Champion.Q.Range)) return;
+//            var delay = (int)(args.EndTick - Game.Time - Champion.Q.Delay - 0.1f);
+//
+//            if (delay > 0)
+//                Utility.DelayAction.Add(delay * 1000, () => Champion.Q.Cast(args.EndPos));
+//            else
+//                Champion.Q.Cast(args.EndPos);
+//
+//            if (!Champion.Q.IsReady() || !(args.EndPos.Distance(GlobalManager.GetHero) < Champion.Q.Range)) return;
+//
+//            if (delay > 0)
+//                Utility.DelayAction.Add(delay * 1000, () => Champion.Q.Cast(args.EndPos));
+//            else
+//                Champion.W.CastOnUnit(target);
+//        }
 
         public static void AABlock()
         {

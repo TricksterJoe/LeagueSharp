@@ -10,8 +10,14 @@ namespace Slutty_ryze
     internal class LaneOptions
     {
         #region Public Functions
-
+        
+        private static bool QSpell  { get { return GlobalManager.Config.Item("useQ").GetValue<bool>(); } }
+        private static bool ESpell { get { return GlobalManager.Config.Item("useE").GetValue<bool>(); } }
+        private static bool WSpell { get { return GlobalManager.Config.Item("useW").GetValue<bool>(); } }
+        private static bool RSpell { get { return GlobalManager.Config.Item("useR").GetValue<bool>(); } }
+        private static bool RwwSpell { get { return GlobalManager.Config.Item("useRww").GetValue<bool>(); } }
         private static readonly Random Seeder = new Random();
+        private static bool _casted =false;
 
         //struct MinionHealthPerSecond
         //{
@@ -126,7 +132,7 @@ namespace Slutty_ryze
             }
         }
 
-
+        //get assembly version
         public static void JungleClear()
         {
             //Convert to use new system later
@@ -307,14 +313,55 @@ namespace Slutty_ryze
 
         }
 
+        public static void CastQ(Obj_AI_Hero target)
+        {
+            if (target.IsValidTarget(Champion.Q.Range)
+                && QSpell
+                && Champion.Q.IsReady())
+                Champion.Q.Cast(target);
+        }
+
+        public static void CastQn(Obj_AI_Hero target)
+        {
+            if (target.IsValidTarget(Champion.Qn.Range)
+                && QSpell
+                && Champion.Qn.IsReady())
+                Champion.Qn.Cast(target);
+        }
+
+        public static void CastW(Obj_AI_Hero target)
+        {
+            if (target.IsValidTarget(Champion.W.Range)
+                && WSpell
+                && Champion.W.IsReady())
+                Champion.W.Cast(target);
+        }
+
+        public static void CastE(Obj_AI_Hero target)
+        {
+            if (target.IsValidTarget(Champion.E.Range)
+                && ESpell
+                && Champion.E.IsReady())
+                Champion.E.Cast(target);
+        }
+
+        public static void CastR(Obj_AI_Hero target)
+        {
+            if (!RSpell || !Champion.R.IsReady())
+                return;
+            if (target.IsValidTarget(Champion.W.Range)
+                && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
+            {
+                if (RwwSpell && target.HasBuff("RyzeW"))
+                    Champion.R.Cast();
+                if (!RwwSpell)
+                    Champion.R.Cast();
+            }
+        }
+
         // ReSharper disable once FunctionComplexityOverflow
         public static void ImprovedCombo()
-        {
-            var qSpell = GlobalManager.Config.Item("useQ").GetValue<bool>();
-            var eSpell = GlobalManager.Config.Item("useE").GetValue<bool>();
-            var wSpell = GlobalManager.Config.Item("useW").GetValue<bool>();
-            var rSpell = GlobalManager.Config.Item("useR").GetValue<bool>();
-            var rwwSpell = GlobalManager.Config.Item("useRww").GetValue<bool>();
+        {   
             Champion.SetIgniteSlot(GlobalManager.GetHero.GetSpellSlot("summonerdot"));
             var target = TargetSelector.GetTarget(Champion.W.Range, TargetSelector.DamageType.Magical);
 
@@ -387,447 +434,180 @@ namespace Slutty_ryze
 //                    }
 //                    break;
                 #endregion //
-                //New Combo System
-                    #region Beta Combo?
 
-//                    case 1:
-//                    if (Champion.R.IsReady())
-//                    {
-//                        if (GlobalManager.GetPassiveBuff == 1 || !GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
-//                        {
-//                            if (target.IsValidTarget(Champion.Q.Range)
-//                                && qSpell
-//                                && Champion.Q.IsReady())
-//                                Champion.Q.Cast(target);
-//
-//                            if (target.IsValidTarget(Champion.W.Range)
-//                                && wSpell
-//                                && Champion.W.IsReady())
-//                                Champion.W.CastOnUnit(target);
-//
-//                            if (target.IsValidTarget(Champion.E.Range)
-//                                && eSpell
-//                                && Champion.E.IsReady())
-//                                Champion.E.CastOnUnit(target);
-//
-//                            if (rSpell)
-//                            {
-//                                if (target.IsValidTarget(Champion.W.Range)
-//                                    && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
-//                                {
-//                                    if (rwwSpell && target.HasBuff("RyzeW"))
-//                                        Champion.R.Cast();
-//
-//                                    if (!rwwSpell)
-//                                        Champion.R.Cast();
-//                                }
-//                            }
-//                        }
-//
-//                        if (GlobalManager.GetPassiveBuff == 2)
-//                        {
-//                            if (target.IsValidTarget(Champion.Q.Range)
-//                                && qSpell
-//                                && Champion.Q.IsReady())
-//                                Champion.Q.Cast(target);
-//
-//                            if (target.IsValidTarget(Champion.W.Range)
-//                                && wSpell
-//                                && Champion.W.IsReady())
-//                                Champion.W.CastOnUnit(target);
-//
-//                            if (target.IsValidTarget(Champion.E.Range)
-//                                && eSpell
-//                                && Champion.E.IsReady())
-//                                Champion.E.CastOnUnit(target);
-//
-//                            if (rSpell)
-//                            {
-//                                if (target.IsValidTarget(Champion.W.Range)
-//                                    && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
-//                                    if (target.HasBuff("RyzeW"))
-//                                        Champion.R.Cast();
-//                            }
-//                        }
-//
-//                        if (GlobalManager.GetPassiveBuff == 3)
-//                        {
-//                            if (Champion.Q.IsReady()
-//                                && target.IsValidTarget(Champion.Q.Range))
-//                                Champion.Qn.Cast(target);
-//
-//                            if (Champion.E.IsReady()
-//                                && target.IsValidTarget(Champion.E.Range))
-//                                Champion.E.CastOnUnit(target);
-//
-//                            if (Champion.W.IsReady()
-//                                && target.IsValidTarget(Champion.W.Range))
-//                                Champion.W.CastOnUnit(target);
-//
-//                            if (Champion.R.IsReady()
-//                                && rSpell)
-//                            {
-//                                if (target.IsValidTarget(Champion.W.Range)
-//                                    && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
-//                                {
-//                                    if (rwwSpell && target.HasBuff("RyzeW")
-//                                        && (Champion.Q.IsReady() || Champion.W.IsReady() || Champion.E.IsReady()))
-//                                        Champion.R.Cast();
-//
-//                                    if (!rwwSpell
-//                                        && (Champion.Q.IsReady() || Champion.W.IsReady() || Champion.E.IsReady()))
-//                                        Champion.R.Cast();
-//                                }
-//                            }
-//                        }
-//
-//                        if (GlobalManager.GetPassiveBuff == 4)
-//                        {
-//                            if (target.IsValidTarget(Champion.W.Range)
-//                                && wSpell
-//                                && Champion.W.IsReady())
-//                                Champion.W.CastOnUnit(target);
-//
-//                            if (target.IsValidTarget(Champion.Qn.Range)
-//                                && Champion.Q.IsReady()
-//                                && qSpell)
-//                                Champion.Qn.Cast(target);
-//
-//                            if (target.IsValidTarget(Champion.E.Range)
-//                                && Champion.E.IsReady()
-//                                && eSpell)
-//                                Champion.E.CastOnUnit(target);
-//
-//                            if (Champion.R.IsReady()
-//                                && rSpell)
-//                            {
-//                                if (target.IsValidTarget(Champion.W.Range)
-//                                    && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
-//                                {
-//                                    if (rwwSpell && target.HasBuff("RyzeW"))
-//                                        Champion.R.Cast();
-//
-//                                    if (!rwwSpell)
-//                                        Champion.R.Cast();
-//
-//                                    if (!Champion.Q.IsReady() && !Champion.W.IsReady() && !Champion.E.IsReady())
-//                                        Champion.R.Cast();
-//                                }
-//                            }
-//                        }
-//
-//                        if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
-//                        {
-//                            if (qSpell
-//                                && Champion.Qn.IsReady()
-//                                && target.IsValidTarget(Champion.Qn.Range))
-//                                Champion.Qn.Cast(target);
-//
-//                            if (wSpell
-//                                && Champion.W.IsReady()
-//                                && target.IsValidTarget(Champion.W.Range))
-//                                Champion.W.CastOnUnit(target);
-//
-//                            if (qSpell
-//                                && Champion.Qn.IsReady()
-//                                && target.IsValidTarget(Champion.Qn.Range))
-//                                Champion.Qn.Cast(target);
-//
-//                            if (eSpell
-//                                && Champion.E.IsReady()
-//                                && target.IsValidTarget(Champion.E.Range))
-//                                Champion.E.CastOnUnit(target);
-//
-//                            if (qSpell
-//                                && Champion.Qn.IsReady()
-//                                && target.IsValidTarget(Champion.Qn.Range))
-//                                Champion.Qn.Cast(target);
-//
-//                            if (Champion.R.IsReady()
-//                                && rSpell)
-//                            {
-//                                if (target.IsValidTarget(Champion.W.Range)
-//                                    && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
-//                                {
-//                                    if (rwwSpell && target.HasBuff("RyzeW"))
-//                                        Champion.R.Cast();
-//                                    if (!rwwSpell)
-//                                        Champion.R.Cast();
-//                                    if (!Champion.E.IsReady() && !Champion.Q.IsReady() && !Champion.W.IsReady())
-//                                        Champion.R.Cast();
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                    if (!Champion.R.IsReady())
-//                    {
-//                        if (GlobalManager.GetPassiveBuff == 1
-//                            || !GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
-//                        {
-//                            if (target.IsValidTarget(Champion.W.Range)
-//                                && wSpell
-//                                && Champion.W.IsReady())
-//                                Champion.W.CastOnUnit(target);
-//
-//                            if (target.IsValidTarget(Champion.W.Range)
-//                                && wSpell
-//                                && Champion.W.IsReady())
-//                                Champion.W.CastOnUnit(target);
-//
-//                            if (target.IsValidTarget(Champion.E.Range)
-//                                && eSpell
-//                                && Champion.E.IsReady())
-//                                Champion.E.CastOnUnit(target);
-//                        }
-//
-//                        if (GlobalManager.GetPassiveBuff == 2)
-//                        {
-//                            if (target.IsValidTarget(Champion.Q.Range)
-//                                && qSpell
-//                                && Champion.Q.IsReady())
-//                                Champion.Q.Cast(target);
-//
-//                            if (target.IsValidTarget(Champion.E.Range)
-//                                && eSpell
-//                                && Champion.E.IsReady())
-//                                Champion.E.CastOnUnit(target);
-//
-//                            if (target.IsValidTarget(Champion.W.Range)
-//                                && wSpell
-//                                && Champion.W.IsReady())
-//                                Champion.W.CastOnUnit(target);
-//
-//                            if (rSpell)
-//                            {
-//                                if (target.IsValidTarget(Champion.W.Range)
-//                                    && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
-//                                {
-//                                    if (rwwSpell && target.HasBuff("RyzeW"))
-//                                        Champion.R.Cast();
-//                                    if (!rwwSpell)
-//                                        Champion.R.Cast();
-//                                }
-//                            }
-//                        }
-//
-//                        if (GlobalManager.GetPassiveBuff == 3)
-//                        {
-//                            if (Champion.Q.IsReady()
-//                                && target.IsValidTarget(Champion.Q.Range))
-//                                Champion.Qn.Cast(target);
-//
-//                            if (Champion.E.IsReady()
-//                                && target.IsValidTarget(Champion.E.Range))
-//                                Champion.E.CastOnUnit(target);
-//
-//                            if (Champion.W.IsReady()
-//                                && target.IsValidTarget(Champion.W.Range))
-//                                Champion.W.CastOnUnit(target);
-//                        }
-//
-//                        if (GlobalManager.GetPassiveBuff == 4)
-//                        {
-//                            if (target.IsValidTarget(Champion.E.Range)
-//                                && Champion.E.IsReady()
-//                                && eSpell)
-//                                Champion.E.CastOnUnit(target);
-//
-//                            if (target.IsValidTarget(Champion.W.Range)
-//                                && wSpell
-//                                && Champion.W.IsReady())
-//                                Champion.W.CastOnUnit(target);
-//
-//                            if (target.IsValidTarget(Champion.Qn.Range)
-//                                && Champion.Q.IsReady()
-//                                && qSpell)
-//                                Champion.Qn.Cast(target);
-//                        }
-//
-//                        if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
-//                        {
-//                            if (qSpell
-//                                && Champion.Qn.IsReady()
-//                                && target.IsValidTarget(Champion.Qn.Range))
-//                                Champion.Qn.Cast(target);
-//
-//                            if (wSpell
-//                                && Champion.W.IsReady()
-//                                && target.IsValidTarget(Champion.W.Range))
-//                                Champion.W.CastOnUnit(target);
-//
-//                            if (qSpell
-//                                && Champion.Qn.IsReady()
-//                                && target.IsValidTarget(Champion.Qn.Range))
-//                                Champion.Qn.Cast(target);
-//
-//                            if (eSpell
-//                                && Champion.E.IsReady()
-//                                && target.IsValidTarget(Champion.E.Range))
-//                                Champion.E.CastOnUnit(target);
-//
-//                            if (qSpell
-//                                && Champion.Qn.IsReady()
-//                                && target.IsValidTarget(Champion.Qn.Range))
-//                                Champion.Qn.Cast(target);
-//                        }
-//                    }
-//                    break;
+                    // Old Combo
+                    #region Old Combo
 
-                    #endregion
-
-                //Old Combo System
-                    #region Wombo Combo
-                case 0:
+                case 1:
                     if (target.IsValidTarget(Champion.Q.Range))
                     {
                         if (GlobalManager.GetPassiveBuff <= 2
                             || !GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
                         {
-                            if (target.IsValidTarget(Champion.Q.Range)
-                                && qSpell
-                                && Champion.Q.IsReady())
-                                Champion.Q.Cast(target);
-
-                            if (target.IsValidTarget(Champion.W.Range)
-                                && wSpell
-                                && Champion.W.IsReady())
-                                Champion.W.CastOnUnit(target);
-
-                            if (target.IsValidTarget(Champion.E.Range)
-                                && eSpell
-                                && Champion.E.IsReady())
-                                Champion.E.CastOnUnit(target);
-
-                            if (Champion.R.IsReady()
-                                && rSpell)
-                            {
-                                if (target.IsValidTarget(Champion.W.Range)
-                                    && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
-                                {
-                                    if (rwwSpell && target.HasBuff("RyzeW"))
-                                        Champion.R.Cast();
-                                    if (!rwwSpell)
-                                        Champion.R.Cast();
-                                }
-                            }
+                            CastQ(target);
+                            CastW(target);
+                            CastE(target);
+                            CastR(target);
                         }
 
 
                         if (GlobalManager.GetPassiveBuff == 3)
                         {
-                            if (Champion.Q.IsReady()
-                                && target.IsValidTarget(Champion.Q.Range))
-                                Champion.Qn.Cast(target);
-
-                            if (Champion.E.IsReady()
-                                && target.IsValidTarget(Champion.E.Range))
-                                Champion.E.CastOnUnit(target);
-
-                            if (Champion.W.IsReady()
-                                && target.IsValidTarget(Champion.W.Range))
-                                Champion.W.CastOnUnit(target);
-
-                            if (Champion.R.IsReady()
-                                && rSpell)
-                            {
-                                if (target.IsValidTarget(Champion.W.Range)
-                                    && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
-                                {
-                                    if (rwwSpell && target.HasBuff("RyzeW"))
-                                        Champion.R.Cast();
-                                    if (!rwwSpell)
-                                        Champion.R.Cast();
-                                }
-                            }
+                            CastQn(target);
+                            CastE(target);
+                            CastW(target);
+                            CastR(target);
                         }
 
-                        if (GlobalManager.GetPassiveBuff == 4)
+                        if (GlobalManager.GetPassiveBuff == 4 || GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
                         {
-                            if (target.IsValidTarget(Champion.W.Range)
-                                && wSpell
-                                && Champion.W.IsReady())
-                                Champion.W.CastOnUnit(target);
-
-                            if (target.IsValidTarget(Champion.Qn.Range)
-                                && Champion.Q.IsReady()
-                                && qSpell)
-                                Champion.Qn.Cast(target);
-
-                            if (target.IsValidTarget(Champion.E.Range)
-                                && Champion.E.IsReady()
-                                && eSpell)
-                                Champion.E.CastOnUnit(target);
-
-                            if (Champion.R.IsReady()
-                                && rSpell)
-                            {
-                                if (target.IsValidTarget(Champion.W.Range)
-                                    && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
-                                {
-                                    if (rwwSpell && target.HasBuff("RyzeW"))
-                                        Champion.R.Cast();
-                                    if (!rwwSpell)
-                                        Champion.R.Cast();
-                                }
-                            }
-                        }
-
-                        if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
-                        {
-                            if (wSpell
-                                && Champion.W.IsReady()
-                                && target.IsValidTarget(Champion.W.Range))
-                                Champion.W.CastOnUnit(target);
-
-                            if (qSpell
-                                && Champion.Qn.IsReady()
-                                && target.IsValidTarget(Champion.Qn.Range))
-                                Champion.Qn.Cast(target);
-
-                            if (eSpell
-                                && Champion.E.IsReady()
-                                && target.IsValidTarget(Champion.E.Range))
-                                Champion.E.CastOnUnit(target);
-
-                            if (Champion.R.IsReady()
-                                && rSpell)
-                            {
-                                if (target.IsValidTarget(Champion.W.Range)
-                                    && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
-                                {
-                                    if (rwwSpell && target.HasBuff("RyzeW"))
-                                        Champion.R.Cast();
-                                    if (!rwwSpell)
-                                        Champion.R.Cast();
-                                    if (!Champion.E.IsReady() && !Champion.Q.IsReady() && !Champion.W.IsReady())
-                                        Champion.R.Cast();
-                                }
-                            }
+                            CastW(target);
+                            CastQn(target);
+                            CastE(target);
+                            CastR(target);
                         }
                     }
                     else
                     {
-                        if (wSpell
-                            && Champion.W.IsReady()
-                            && target.IsValidTarget(Champion.W.Range))
-                            Champion.W.CastOnUnit(target);
-
-                        if (qSpell
-                            && Champion.Qn.IsReady()
-                            && target.IsValidTarget(Champion.Qn.Range))
-                            Champion.Qn.Cast(target);
-
-                        if (eSpell
-                            && Champion.E.IsReady()
-                            && target.IsValidTarget(Champion.E.Range))
-                            Champion.E.CastOnUnit(target);
+                        CastW(target);
+                        CastQn(target);
+                        CastE(target);
                     }
-                    if (!Champion.R.IsReady() || GlobalManager.GetPassiveBuff != 4 || !rSpell) return;
+                    if (!Champion.R.IsReady() || GlobalManager.GetPassiveBuff != 4 || !RSpell) return;
 
                     if (Champion.Q.IsReady() || Champion.W.IsReady() || Champion.E.IsReady()) return;
 
                     Champion.R.Cast();
+                    break;
+
+                    #endregion
+
+                //New Combo System
+                    #region Wombo Combo
+                case 0:
+                    if (target.IsValidTarget(Champion.Q.Range))
+                    {
+                        #region Passive Buff 1/0
+
+                        if (GlobalManager.GetPassiveBuff <= 1)
+                        {
+                            if (Champion.R.IsReady())
+                            {
+                                CastQ(target);
+                                CastW(target);
+                                CastE(target);
+                                CastR(target);
+                            }
+                            else
+                            {
+                                CastW(target);
+                                CastQ(target);
+                                CastE(target);
+                            }
+                        }
+
+                        #endregion
+
+                        #region Passive Buff 2
+
+
+                        if (GlobalManager.GetPassiveBuff == 2)
+                        {
+                            if (Champion.R.IsReady())
+                            {
+                                CastW(target);
+                                CastQn(target);
+                                CastE(target);
+                                CastR(target);
+                            }
+                            else
+                            {
+                                CastQn(target);
+                                CastW(target);
+                                CastE(target);
+
+                            }
+                        }
+
+                        #endregion
+
+                        #region Passive Buff 3
+
+                        if (GlobalManager.GetPassiveBuff == 3)
+                        {
+                            if (Champion.R.IsReady())
+                            {
+                                CastQn(target);
+                                CastE(target);
+                                CastW(target);
+                                CastR(target);
+                            }
+                            else
+                            {
+                                CastE(target);
+                                CastQn(target);
+                                CastW(target);
+                            }
+                        }
+
+
+                        #endregion
+
+                        #region Passive Buff 4
+
+                        if (GlobalManager.GetPassiveBuff == 4)
+                        {
+                            if (Champion.R.IsReady())
+                            {
+                                CastW(target);
+                                CastQn(target);
+                                CastE(target);
+                                CastR(target);
+                            }
+                            else
+                            {
+                                CastE(target);
+                                CastW(target);
+                                CastQn(target);
+                            }
+                        }
+
+                        #endregion
+
+
+                        #region Passive buff Charged
+
+                        if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
+                        {
+                            CastW(target);
+                            CastQn(target);
+                            CastE(target);
+                            CastR(target);
+                        }
+
+                        #endregion
+                    }
+
+                    #region Extra R Settings
+
+                    if (!Champion.R.IsReady() ||
+                        !GlobalManager.GetHero.HasBuff("ryzepassivecharged") ||
+                        GlobalManager.GetPassiveBuff != 4 || !bSpells[4] ||
+                        MenuManager.Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo) return;
+
+                    if (Champion.Q.IsReady() || Champion.W.IsReady() || Champion.E.IsReady()) return;
+                    if ((bSpells[4] && target.HasBuff("RyzeW")) || !bSpells[4])
+                        Champion.R.Cast();
+
+                    if (!Champion.R.IsReady()
+                        && (!GlobalManager.GetHero.HasBuff("ryzepassivecharged") || GlobalManager.GetPassiveBuff != 4)
+                        && !RSpell) return;
+                    if (Champion.Q.IsReady() || Champion.W.IsReady() || Champion.E.IsReady()) return;
+
+                    Champion.R.Cast();
+
+                    #endregion
+
                     break;
                     #endregion
 
