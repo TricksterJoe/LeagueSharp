@@ -67,6 +67,7 @@
     <Compile Include="Enviorment\TurnAround.cs" />
     <Compile Include="Enviorment\Turrets.cs" />
     <Compile Include="Enviorment\UltManager.cs" />
+    <Compile Include="Jungle\JungleMonsters.cs" />
     <Compile Include="MenuConfig\Activator.cs" />
     <Compile Include="Tracker\Wards.cs" />
     <Compile Include="Helper.cs" />
