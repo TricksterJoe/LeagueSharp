@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Globalization;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using Slutty_Utility.MenuConfig;
@@ -22,6 +23,7 @@ namespace Slutty_Utility.Damages
         
        public static void OnLoad()
         {
+            _damageToUnit = ComboCalc;
             Drawing.OnDraw += OnDraw;
         }
 
@@ -39,69 +41,73 @@ namespace Slutty_Utility.Damages
             }
         }
 
-        public static float ComboCalc()
+        public static float ComboCalc(Obj_AI_Hero targets)
         {
             var damage = 0d;
-            var target = TargetSelector.GetSelectedTarget();
-            if (target != null)
+            if (targets.Spellbook.GetSpell(SpellSlot.Q).IsReady())
             {
-                    if (target.Spellbook.GetSpell(SpellSlot.Q).IsReady() &&
-                        GetBool("damagesmenu.dtop" + DamagesMenu.Slots[0], typeof(bool)) &&
-                        target.Spellbook.GetSpell(SpellSlot.Q).ManaCost <= Player.Mana)
-                        damage += target.GetSpellDamage(Player, SpellSlot.E);
-
-                    if (target.Spellbook.GetSpell(SpellSlot.E).IsReady() &&
-                        GetBool("damagesmenu.dtop" + DamagesMenu.Slots[1], typeof(bool)) &&
-                        target.Spellbook.GetSpell(SpellSlot.E).ManaCost <= Player.Mana)
-                        damage += target.GetSpellDamage(Player, SpellSlot.E);
-
-                    if (target.Spellbook.GetSpell(SpellSlot.W).IsReady() &&
-                        GetBool("damagesmenu.dtop" + DamagesMenu.Slots[2], typeof(bool)) &&
-                        target.Spellbook.GetSpell(SpellSlot.W).ManaCost <= Player.Mana)
-                        damage += target.GetSpellDamage(Player, SpellSlot.W);
-
-                    if (target.Spellbook.GetSpell(SpellSlot.R).IsReady() &&
-                        GetBool("damagesmenu.dtop" + DamagesMenu.Slots[3], typeof(bool)) &&
-                        target.Spellbook.GetSpell(SpellSlot.R).ManaCost <= Player.Mana)
-                        damage += target.GetSpellDamage(Player, SpellSlot.R);
-
-                    return (float) damage;
+//&&
+                // GetBool("damagesmenu.dtop" + DamagesMenu.Slots[0], typeof(bool)))
+                damage += Player.GetSpellDamage(targets, SpellSlot.Q);
+                
             }
-            return 0;
+
+            if (targets.Spellbook.GetSpell(SpellSlot.E).IsReady())
+            {
+//&&
+                // GetBool("damagesmenu.dtop" + DamagesMenu.Slots[1], typeof(bool)))
+                damage += Player.GetSpellDamage(targets, SpellSlot.E);
+            }
+
+            if (targets.Spellbook.GetSpell(SpellSlot.W).IsReady())
+            {
+            // &&
+                // GetBool("damagesmenu.dtop" + DamagesMenu.Slots[2], typeof(bool)))
+                damage += Player.GetSpellDamage(targets, SpellSlot.W);
+            }
+
+            if (targets.Spellbook.GetSpell(SpellSlot.R).IsReady()) // &&
+            {
+                //GetBool("damagesmenu.dtop" + DamagesMenu.Slots[3], typeof(bool)))
+                damage += Player.GetSpellDamage(targets, SpellSlot.R);
+            }
+
+            return (float) damage;
         }
 
         private static void OnDraw(EventArgs args)
         {
-            var target = TargetSelector.GetSelectedTarget();
-            if (target == null)
-                return;
-            if (!GetBool("dtop.selectedtarget", typeof (bool)))
-            {
-                return;
-            }
-            var barPos = Player.HPBarPosition;
-            var damage = DamageToUnit(Player);
-            var percentHealthAfterDamage = Math.Max(0, Player.Health - damage) / Player.MaxHealth;
-            var yPos = barPos.Y + YOffset;
-            var xPosDamage = barPos.X + XOffset + Width * percentHealthAfterDamage;
-            var xPosCurrentHp = barPos.X + XOffset + Width * Player.Health / Player.MaxHealth;
-
-
-                Text.X = (int)barPos.X + XOffset;
-                Text.Y = (int)barPos.Y + YOffset - 13;
-                Text.text = damage > Player.Health
-                    ? "Killable With Combo Rotation " + (Player.Health - damage)
-                    : (Player.Health - damage).ToString(CultureInfo.CurrentCulture);               
-                Text.OnEndScene();
-
-            Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + Height, 1, _color);
-
-                var differenceInHp = xPosCurrentHp - xPosDamage;
-                var pos1 = barPos.X + 9 + (107 * percentHealthAfterDamage);
-                for (var i = 0; i < differenceInHp; i++)
+//            if (!GetBool("dtop.selectedtarget", typeof (bool)))
+//            {
+//                return;
+//            }
+                var target = TargetSelector.SelectedTarget;
+                if (target != null)
                 {
-                    Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + Height, 1, _fillColor);
-                }
+                    var barPos = Player.HPBarPosition;
+                    var damage = DamageToUnit(Player);
+                    var percentHealthAfterDamage = Math.Max(0, Player.Health - damage)/Player.MaxHealth;
+                    var yPos = barPos.Y + YOffset;
+                    var xPosDamage = barPos.X + XOffset + Width*percentHealthAfterDamage;
+                    var xPosCurrentHp = barPos.X + XOffset + Width*Player.Health/Player.MaxHealth;
+
+                    if (damage > Player.Health)
+                    {
+                        Text.X = (int) barPos.X + XOffset;
+                        Text.Y = (int) barPos.Y + YOffset - 13;
+                        Text.text = "Killable With Combo Rotation " + (Player.Health - damage);
+                        Text.OnEndScene();
+                    }
+                    Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + Height, 1, _color);
+
+                    var differenceInHp = xPosCurrentHp - xPosDamage;
+                    var pos1 = barPos.X + 9 + (107 * percentHealthAfterDamage);
+                    for (var i = 0; i < differenceInHp; i++)
+                    {
+                        Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + Height, 1, _fillColor);
+                    }
+                
+            }
         }
     }
 }
