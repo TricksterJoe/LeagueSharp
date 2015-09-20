@@ -58,8 +58,7 @@ namespace Slutty_Utility.MenuConfig
                     AddBool(mikaels, "Use Mikaels", "defensive.mikaels", true);
                     foreach (var hero in
                         ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(x => x.IsAlly
-                                        && !x.IsMe))
+                            .Where(x => x.IsAlly))
                     {
                         {
                             mikaels.AddItem(new MenuItem("mikaels" + hero.ChampionName, hero.ChampionName))
@@ -79,8 +78,7 @@ namespace Slutty_Utility.MenuConfig
                 {
                     foreach (var hero in
                         ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(x => x.IsAlly
-                                        && !x.IsMe))
+                            .Where(x => x.IsAlly))
                     {
                         {
                             mountainmenu.AddItem(new MenuItem("Mountain" + hero.ChampionName, hero.ChampionName))
@@ -97,8 +95,7 @@ namespace Slutty_Utility.MenuConfig
                 {
                     foreach (var hero in
                         ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(x => x.IsAlly
-                                        && !x.IsMe))
+                            .Where(x => x.IsAlly))
                     {
                         {
                             locketmenu.AddItem(new MenuItem("locketop" + hero.ChampionName, hero.ChampionName))
@@ -128,6 +125,7 @@ namespace Slutty_Utility.MenuConfig
             {
                 var botrk = new Menu("Blade Of The Ruined King/Bilge", "Blade Of The Ruined King/Bilge");
                 {
+                    AddBool(botrk, "Only Use In Combo Mode", "offensive.botrk.combo", true);
                     AddBool(botrk, "Use Botrk/Bilge", "offensive.botrk", true);
                     AddValue(botrk, "Use When HP <=", "offensive.botrkvalue", 70);
                     AddBool(botrk, "Smart Botrk Usage", "offensive.smartbotrk", true);

@@ -6,7 +6,8 @@ using LeagueSharp.Common;
 namespace Slutty_Utility
 {
     internal class Helper
-    {       
+    {
+       public static Orbwalking.Orbwalker Orbwalker;
        public static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
        public static Menu Config;
        private static readonly DateTime AssemblyLoadTime = DateTime.Now;

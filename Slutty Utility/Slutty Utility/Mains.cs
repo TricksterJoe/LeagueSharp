@@ -25,12 +25,13 @@ namespace Slutty_Utility
             Config.AddToMainMenu();
             var targetSelectorMenu = new Menu("Target Selector", "Target Selector");
             TargetSelector.AddToMenu(targetSelectorMenu);
-//            Defensive.OnLoad();
-//            Offensive.OnLoad();
+           Defensive.OnLoad();
+            Offensive.OnLoad();
 //            AntiRengar.OnLoad();
 //            UltManager.OnLoad();
 
-            DtoP.OnLoad();
+            // plzkallen
+          //  DtoP.OnLoad();
            // DtoT.OnLoad();
             Consumables.OnEnable();
         }

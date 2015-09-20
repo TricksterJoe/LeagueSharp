@@ -7,7 +7,6 @@ namespace Slutty_Utility.Activator
     class Offensive : Helper
     {
         public static int Botrk, Bilge, Hydra, Tiamat, Hextech, Muraman, Youm;
-        public static Orbwalking.Orbwalker Orbwalker;
         static Offensive()
         {
             Botrk = 3153;
@@ -29,43 +28,53 @@ namespace Slutty_Utility.Activator
 
         private static void OnUpdate(EventArgs args)
         {
-            #region Bilge/Botrk
-
-            var target = TargetSelector.GetTarget(550, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(1500, TargetSelector.DamageType.Physical);
             if (target == null) return;
 
-            if (ItemReady(Botrk) || ItemReady(Bilge))
+            #region Botrk
+
+            if (GetBool("offensive.botrk", typeof (bool)))
             {
-                if (HealthCheck("offensive.botrkvalue") && target.Distance(Player) <= 550)
+                if ((GetBool("offensive.botrk.combo", typeof (bool))
+                     && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                    || !GetBool("offensive.botrk.combo", typeof (bool)))
                 {
-                    UseUnitItem(HasItem(Botrk) ? Botrk : Bilge, target);
+                    if (HealthCheck("offensive.botrkvalue") && target.Distance(Player) <= 550)
+                    {
+                        UseUnitItem(HasItem(Botrk) ? Botrk : Bilge, target);
+                    }
                 }
             }
 
             #endregion
 
-            #region Hextech
 
-            if (ItemReady(Hextech) && target.IsValidTarget(700))
+            #region Hextech/Youm
+
+            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
             {
-                UseUnitItem(Hextech, target);
+                if (ItemReady(Hextech) && target.IsValidTarget(700))
+                {
+                    UseUnitItem(Hextech, target);
+                }
+
+                if (ItemReady(Youm) && HasItem(Youm) && target.IsValidTarget(1000))
+                    SelfCast(Youm);
             }
 
             #endregion
 
-            if (ItemReady(Youm) && HasItem(Youm) && target.IsValidTarget(1000))
-                SelfCast(Youm);
-
         }
 
-        private static void Before_Attack(Orbwalking.BeforeAttackEventArgs args)
+        private static
+            void Before_Attack(Orbwalking.BeforeAttackEventArgs args)
         {
             #region Muramana
 
             var targets = TargetSelector.GetTarget(Player.AttackRange + Player.BoundingRadius,
                 TargetSelector.DamageType.Physical);
             if (targets == null) return;
-            if (!GetBool("offensive.muramana",typeof(bool)))
+            if (!GetBool("offensive.muramana", typeof(bool)))
                 return;
 
 
@@ -81,7 +90,7 @@ namespace Slutty_Utility.Activator
 
         private static void After_Attack(AttackableUnit unit, AttackableUnit target)
         {
-            #region Botrk/Bilge
+            #region Hydra/Tiamat
 
             var minion = MinionManager.GetMinions(Player.Position, 800, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.MaxHealth);

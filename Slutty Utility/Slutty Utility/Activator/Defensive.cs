@@ -23,7 +23,7 @@ namespace Slutty_Utility.Activator
 
          public static void OnLoad()
          {
-             Obj_AI_Base.OnProcessSpellCast += Processspell;
+            // Obj_AI_Base.OnProcessSpellCast += Processspell;
              Game.OnUpdate += OnUpdate;
          }
 
@@ -45,9 +45,10 @@ namespace Slutty_Utility.Activator
              if (ItemReady(Locket) && HasItem(Locket))
              {
                  foreach (var hero in
-                     HeroManager.Allies.Where(x => !x.IsMe))
+                     HeroManager.Allies)
                  {
-                     if (GetStringValue("locketop") == 0
+                     if (GetStringValue("locketop" + hero.ChampionName) == 0
+                         && hero.Distance(Player) <= 1000
                          && hero.HealthPercent <= Config.Item("lockethp" + hero.ChampionName).GetValue<Slider>().Value
                          && Player.CountEnemiesInRange(1500) >= 2)
                          SelfCast(Locket);
@@ -71,14 +72,15 @@ namespace Slutty_Utility.Activator
 
              if (ItemReady(Mikaels) && HasItem(Mikaels))
              {
-                 foreach (var hero in HeroManager.Allies.Where(x => !x.IsMe && x.Distance(Player) <= 800))
+                 foreach (var hero in HeroManager.Allies.Where(x =>x.Distance(Player) <= 800))
                  {
                      if (Config.Item("mikaels" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
                      {
-                         if (hero.HasBuffOfType(BuffType.Blind) || hero.HasBuffOfType(BuffType.Charm) ||
-                             hero.HasBuffOfType(BuffType.Flee) || hero.HasBuffOfType(BuffType.Silence) ||
-                             hero.HasBuffOfType(BuffType.Stun) || hero.HasBuffOfType(BuffType.Taunt) ||
-                             hero.HasBuffOfType(BuffType.Suppression) || hero.HasBuffOfType(BuffType.Sleep))
+                         if (hero.HasBuffOfType(BuffType.Charm) ||
+                             hero.HasBuffOfType(BuffType.Silence) ||
+                             hero.HasBuffOfType(BuffType.Stun) ||
+                             hero.HasBuffOfType(BuffType.Taunt) ||
+                             hero.HasBuffOfType(BuffType.Suppression))
                          {
                              UseUnitItem(Mikaels, hero);
                          }
@@ -92,7 +94,7 @@ namespace Slutty_Utility.Activator
 
              if (ItemReady(Mountain) && HasItem(Mountain))
              {
-                 foreach (var hero in HeroManager.Allies.Where(x => !x.IsMe && x.Distance(Player) <= 700))
+                 foreach (var hero in HeroManager.Allies.Where(x => x.Distance(Player) <= 700))
                  {
                      if (GetStringValue("Mountain") == 0
                          && hero.HealthPercent <= Config.Item("facehp" + hero.ChampionName).GetValue<Slider>().Value
@@ -111,10 +113,11 @@ namespace Slutty_Utility.Activator
              {
                  if (GetBool("defensive.qss", typeof(bool)))
                  {
-                     if (Player.HasBuffOfType(BuffType.Blind) || Player.HasBuffOfType(BuffType.Charm) ||
-                         Player.HasBuffOfType(BuffType.Flee) || Player.HasBuffOfType(BuffType.Silence) ||
-                         Player.HasBuffOfType(BuffType.Stun) || Player.HasBuffOfType(BuffType.Taunt) ||
-                         Player.HasBuffOfType(BuffType.Suppression) || Player.HasBuffOfType(BuffType.Sleep))
+                     if (Player.HasBuffOfType(BuffType.Charm) ||
+                         Player.HasBuffOfType(BuffType.Silence) ||
+                         Player.HasBuffOfType(BuffType.Stun) ||
+                         Player.HasBuffOfType(BuffType.Taunt) ||
+                         Player.HasBuffOfType(BuffType.Suppression))
                      {
                          SelfCast(QSS);
                      }
@@ -123,7 +126,7 @@ namespace Slutty_Utility.Activator
 
              #endregion
          }
-
+         /*
          private static void Processspell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
          {
              if (sender.IsAlly || sender.IsMe)
@@ -146,5 +149,6 @@ namespace Slutty_Utility.Activator
              }
 
          }
+          */
     }
 }

@@ -38,22 +38,22 @@ namespace Slutty_Utility.Activator
         private static void OnUpdate(EventArgs args)
         {            
            #region Potions
-            if (HealthCheck("consumables.potions.hppotion"))
+            if (HealthCheck("consumables.potions.hppotion") && !PlayerBuff(HpBuff))
             {
                 PotionCast(HpPotion, HpBuff);
             }
 
-            if (ManaCheck("consumables.potions.manapotion"))
+            if (ManaCheck("consumables.potions.manapotion") && !PlayerBuff(ManaBuff))
             {
                 PotionCast(ManaPotion , ManaBuff);
             }
 
-            if (HealthCheck("consumables.potions.flask"))
+            if (HealthCheck("consumables.potions.flask")&& !PlayerBuff(HpBuff) && !PlayerBuff(FlaskBuff))
             {
                 PotionCast(Flask, FlaskBuff);
             }
 
-            if (HealthCheck("consumables.potions.biscuit"))
+            if (HealthCheck("consumables.potions.biscuit")&& !PlayerBuff(ManaBuff) && !PlayerBuff(FlaskBuff))
             {
                 PotionCast(Biscuit, BiscuitBuff);
             }
