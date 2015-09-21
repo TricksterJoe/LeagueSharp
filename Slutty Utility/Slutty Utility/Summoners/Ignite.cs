@@ -37,17 +37,20 @@ namespace Slutty_Utility.Summoners
 
             foreach (var hero in HeroManager.Enemies.Where(x => x.IsValid))
             {
-                if (Ignite1.IsReady() 
-                    && (hero.Health <=
-                    Player.GetSpellDamage(hero, SpellSlot.Q)
-                    + Player.GetSpellDamage(hero, SpellSlot.W) 
-                    + Player.GetSpellDamage(hero, SpellSlot.E)
-                    + Player.GetAutoAttackDamage(hero) + IgniteDamage(hero))
-                    && (Player.Spellbook.GetSpell(SpellSlot.W).IsReady() &&
-                    Player.Spellbook.GetSpell(SpellSlot.E).IsReady() &&
-                    Player.Spellbook.GetSpell(SpellSlot.Q).IsReady()))
+                if (GetBool("useignite" + hero.ChampionName, typeof (bool)))
                 {
-                    Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerdot"), hero);
+                    if (Ignite1.IsReady()
+                        && (hero.Health <=
+                            Player.GetSpellDamage(hero, SpellSlot.Q)
+                            + Player.GetSpellDamage(hero, SpellSlot.W)
+                            + Player.GetSpellDamage(hero, SpellSlot.E)
+                            + Player.GetAutoAttackDamage(hero) + IgniteDamage(hero))
+                        && (Player.Spellbook.GetSpell(SpellSlot.W).IsReady() &&
+                            Player.Spellbook.GetSpell(SpellSlot.E).IsReady() &&
+                            Player.Spellbook.GetSpell(SpellSlot.Q).IsReady()))
+                    {
+                        Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerdot"), hero);
+                    }
                 }
             }
         }

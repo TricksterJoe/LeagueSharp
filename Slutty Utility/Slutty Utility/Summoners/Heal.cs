@@ -18,14 +18,13 @@ namespace Slutty_Utility.Summoners
 
         private static void OnUpdate(EventArgs args)
         {
-            if (Player.GetSpellSlot("summonerheal").IsReady() && Player.CountEnemiesInRange(1400) >= 1)
+            if (!Player.GetSpellSlot("summonerheal").IsReady() || Player.CountEnemiesInRange(1400) < 1) return;
+
+            foreach (var hero in HeroManager.AllHeroes.Where(x => x.Distance(Player) < 500 && !x.IsDead && !x.IsRecalling() && (x.IsAlly || x.IsMe)))
             {
-                foreach (var hero in HeroManager.Allies.Where(x => x.Distance(Player) < 500 && !x.IsDead && !x.IsRecalling()))
+                if (HealthCheck("percenthealth" + hero.ChampionName) && GetBool("useheal" + hero.ChampionName, typeof(bool)))
                 {
-                    if (HealthCheck("w/e" + hero.ChampionName) && GetBool("healmate" + hero.ChampionName, typeof(bool)))
-                    {
-                        Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerheal"));
-                    }
+                    Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerheal"));
                 }
             }
         }

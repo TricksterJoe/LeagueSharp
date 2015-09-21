@@ -19,7 +19,7 @@ namespace Slutty_Utility.Summoners
         {
             if (Player.GetSpellSlot("summonerbarrier").IsReady() && Player.CountEnemiesInRange(1400) >= 1)
             {
-                if (!HealthCheck("BarrierHealthCheck")) return;
+                if (!HealthCheck("percenthealth")) return;
                 Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerbarrier"));
             }
         }
