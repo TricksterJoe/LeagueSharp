@@ -8,6 +8,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using Slutty_Utility.Activator;
 using Slutty_Utility.Damages;
+using Slutty_Utility.Drawings;
 using Slutty_Utility.Enviorment;
 using Slutty_Utility.MenuConfig;
 
@@ -24,7 +25,8 @@ namespace Slutty_Utility
             JungleMenu.LeadJungleMenu();
             Config.AddToMainMenu();
            Defensive.OnLoad();
-            Offensive.OnLoad();
+            Spells.Spell();
+           // Offensive.OnLoad();
 //            AntiRengar.OnLoad();
 //            UltManager.OnLoad();
 

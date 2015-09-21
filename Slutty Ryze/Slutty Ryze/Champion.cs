@@ -1,6 +1,6 @@
-﻿using LeagueSharp;
+﻿using System;
+using LeagueSharp;
 using LeagueSharp.Common;
-using System;
 
 namespace Slutty_ryze
 {
@@ -13,6 +13,8 @@ namespace Slutty_ryze
         //private static Spell _q, _w, _e, _r, _qn;
         // Does not work as a property o-o
         public static Spell Q, W, E, R, Qn;
+        public static bool casted;
+        private static int lastprocess;
         #endregion
         #region Public Properties
         //public static Spell Q
@@ -85,7 +87,7 @@ namespace Slutty_ryze
         public static void AutoPassive()
         {
             var minions = MinionManager.GetMinions(
-                GlobalManager.GetHero.ServerPosition, Champion.Q.Range, MinionTypes.All, MinionTeam.Enemy,
+                GlobalManager.GetHero.ServerPosition, Q.Range, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.MaxHealth);
 
             if (GlobalManager.GetHero.Mana < GlobalManager.Config.Item("ManapSlider").GetValue<Slider>().Value) return;
@@ -99,7 +101,7 @@ namespace Slutty_ryze
 
            if (minions.Count >= 1) return;
 
-            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (target != null) return;
 
             var stackSliders = GlobalManager.Config.Item("stackSlider").GetValue<Slider>().Value;
@@ -108,14 +110,14 @@ namespace Slutty_ryze
             if (GlobalManager.GetPassiveBuff >= stackSliders)
                 return;
 
-            if (Utils.TickCount - Champion.Q.LastCastAttemptT >=
+            if (Utils.TickCount - Q.LastCastAttemptT >=
                 GlobalManager.Config.Item("autoPassiveTimer").GetValue<Slider>().Value * 1000 - (100 + (Game.Ping/2)) &&
-                Champion.Q.IsReady())
+                Q.IsReady())
             {
                 if (!Game.CursorPos.IsZero)
-                    Champion.Q.Cast(Game.CursorPos);
+                    Q.Cast(Game.CursorPos);
                 else
-                    Champion.Q.Cast();
+                    Q.Cast();
             }
             Console.WriteLine(Game.Ping);
 
@@ -123,10 +125,10 @@ namespace Slutty_ryze
 
         public static void RyzeInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
         {
-            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             var wSpell = GlobalManager.Config.Item("useW2I").GetValue<bool>();
             if (!wSpell) return;
-            Champion.W.CastOnUnit(target);
+            W.CastOnUnit(target);
         }
 
 //        public static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
@@ -153,7 +155,6 @@ namespace Slutty_ryze
 //            else
 //                Champion.W.CastOnUnit(target);
 //        }
-
         public static void AABlock()
         {
                 MenuManager.Orbwalker.SetAttack(!GlobalManager.Config.Item("AAblock").GetValue<bool>());
@@ -161,7 +162,7 @@ namespace Slutty_ryze
 
         public static void KillSteal()
         {
-            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (target == null || !target.IsValidTarget() || target.IsInvulnerable)
                 return;
 
@@ -169,19 +170,19 @@ namespace Slutty_ryze
             var wSpell = GlobalManager.Config.Item("useW2KS").GetValue<bool>();
             var eSpell = GlobalManager.Config.Item("useE2KS").GetValue<bool>();
             if (qSpell
-                && Champion.Q.GetDamage(target) > target.Health
-                && target.IsValidTarget(Champion.Q.Range))
-                Champion.Q.Cast(target);
+                && Q.GetDamage(target) > target.Health
+                && target.IsValidTarget(Q.Range))
+                Q.Cast(target);
 
             if (wSpell
-                && Champion.W.GetDamage(target) > target.Health
-                && target.IsValidTarget(Champion.W.Range))
-                Champion.W.CastOnUnit(target);
+                && W.GetDamage(target) > target.Health
+                && target.IsValidTarget(W.Range))
+                W.CastOnUnit(target);
 
             if (eSpell
-                && Champion.E.GetDamage(target) > target.Health
-                && target.IsValidTarget(Champion.E.Range))
-                Champion.E.CastOnUnit(target);
+                && E.GetDamage(target) > target.Health
+                && target.IsValidTarget(E.Range))
+                E.CastOnUnit(target);
         }
 
         public static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
@@ -201,5 +202,41 @@ namespace Slutty_ryze
         }
 
         #endregion
+
+
+        internal static void OnProcess(Spellbook sender, SpellbookCastSpellEventArgs args)
+        {
+          //  if (sender.SpellWasCast)
+            {
+                if (args.Slot == SpellSlot.W
+                    || args.Slot == SpellSlot.Q
+                    || args.Slot == SpellSlot.E)
+                {
+                    casted = true;
+                    MenuManager.Orbwalker.SetMovement(false);
+                    MenuManager.Orbwalker.SetAttack(false);
+                }
+                if (casted)
+                {
+                    Utility.DelayAction.Add(10000, () => MenuManager.Orbwalker.SetMovement(true));
+                    Utility.DelayAction.Add(400, () => MenuManager.Orbwalker.SetMovement(true));
+                    casted = false;
+                }
+            }
+        }
+        /*
+        internal static void OnOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
+        {
+            if (casted)
+            {
+                if (args.Order == GameObjectOrder.AttackUnit
+                    && Environment.TickCount - lastprocess >= 1000 + Game.Ping)
+                {
+                    args.Process = false;
+                    lastprocess = Environment.TickCount;
+                }
+            }
+        }
+         */
     }
 }

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-using SharpDX;
 
 namespace Slutty_ryze
 {
@@ -494,8 +493,8 @@ namespace Slutty_ryze
                             if (Champion.R.IsReady())
                             {
                                 CastQ(target);
-                                CastW(target);
                                 CastE(target);
+                                CastW(target);
                                 CastR(target);
                             }
                             else

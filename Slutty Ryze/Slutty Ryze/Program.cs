@@ -2,6 +2,7 @@
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Slutty_ryze.Properties;
 
 namespace Slutty_ryze
 {
@@ -50,6 +51,7 @@ namespace Slutty_ryze
             Game.OnUpdate += Game_OnUpdate;
 #pragma warning disable 618
             Interrupter.OnPossibleToInterrupt += Champion.RyzeInterruptableSpell;
+            Spellbook.OnCastSpell += Champion.OnProcess;
 #pragma warning restore 618
             Orbwalking.BeforeAttack += Champion.Orbwalking_BeforeAttack;
             //CustomEvents.Unit.OnDash += Champion;
@@ -64,14 +66,14 @@ namespace Slutty_ryze
         {
             var r = new Random();
       
-            var txt = Properties.Resources.display.Split('\n');
+            var txt = Resources.display.Split('\n');
             switch (r.Next(1, 3))
             {
                 case 2:
-                    txt = Properties.Resources.display2.Split('\n');
+                    txt = Resources.display2.Split('\n');
                     break;
                 case 3:
-                    txt = Properties.Resources.display3.Split('\n');
+                    txt = Resources.display3.Split('\n');
                     break;
             }
 
@@ -134,7 +136,10 @@ namespace Slutty_ryze
                 if (GlobalManager.GetHero.IsRecalling())
                     return;
 
-                MenuManager.Orbwalker.SetAttack(true);
+                if (Champion.casted == false)
+                {
+                    MenuManager.Orbwalker.SetAttack(true);
+                }
 
                 var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
 
@@ -157,6 +162,7 @@ namespace Slutty_ryze
                     {
                         MenuManager.Orbwalker.SetAttack(false);
                     }
+
                     if (target.IsValidTarget() && GlobalManager.GetHero.Distance(target) > 400
                         && (GlobalManager.GetPassiveBuff == 4 || GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
                         &&
@@ -181,7 +187,6 @@ namespace Slutty_ryze
                     if (!GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active)
                         LaneOptions.LaneClear();
 
-                    MenuManager.Orbwalker.SetAttack(true);
                     LaneOptions.JungleClear();
                 }
 

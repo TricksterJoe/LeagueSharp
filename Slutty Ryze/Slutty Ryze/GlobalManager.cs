@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Drawing;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -19,7 +20,7 @@ namespace Slutty_ryze
         public static Menu Config { get; set; }
         public static bool EnableFillDamage { get; set; }
         public static bool EnableDrawingDamage { get; set; }
-        public static System.Drawing.Color DamageFillColor { get; set; }
+        public static Color DamageFillColor { get; set; }
         #endregion
         public static string MenuNAme
         {

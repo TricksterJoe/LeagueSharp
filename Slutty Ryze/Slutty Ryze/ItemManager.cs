@@ -1,5 +1,5 @@
-﻿using LeagueSharp.Common;
-using LeagueSharp;
+﻿using LeagueSharp;
+using LeagueSharp.Common;
 using ItemData = LeagueSharp.Common.Data.ItemData;
 
 namespace Slutty_ryze
@@ -7,19 +7,19 @@ namespace Slutty_ryze
     class ItemManager
     {
         #region Variable Declaration
-        private static Items.Item _tearoftheGoddess = new Items.Item(id: 3070, range: 0);
-        private static Items.Item _tearoftheGoddesss = new Items.Item(id: 3072, range: 0);
-        private static Items.Item _tearoftheGoddessCrystalScar = new Items.Item(id: 3073, range: 0);
-        private static Items.Item _archangelsStaff = new Items.Item(id: 3003, range: 0);
-        private static Items.Item _archangelsStaffCrystalScar = new Items.Item(id: 3007, range: 0);
+        private static Items.Item _tearoftheGoddess = new Items.Item(3070, 0);
+        private static Items.Item _tearoftheGoddesss = new Items.Item(3072, 0);
+        private static Items.Item _tearoftheGoddessCrystalScar = new Items.Item(3073, 0);
+        private static Items.Item _archangelsStaff = new Items.Item(3003, 0);
+        private static Items.Item _archangelsStaffCrystalScar = new Items.Item(3007, 0);
         private static int _pMuramana = 3042;
-        private static Items.Item _healthPotion = new Items.Item(id: 2003, range: 0);
-        private static Items.Item _crystallineFlask = new Items.Item(id: 2041,range: 0);
-        private static Items.Item _manaPotion = new Items.Item(id: 2004);
-        private static Items.Item _biscuitofRejuvenation = new Items.Item(id: 2010,range: 0);
-        private static Items.Item _seraphsEmbrace = new Items.Item(id: 3040, range: 0);
-        private static Items.Item _manamune = new Items.Item(id: 3004, range: 0);
-        private static Items.Item _manamuneCrystalScar = new Items.Item(id: 3008, range: 0);
+        private static Items.Item _healthPotion = new Items.Item(2003, 0);
+        private static Items.Item _crystallineFlask = new Items.Item(2041, 0);
+        private static Items.Item _manaPotion = new Items.Item(2004);
+        private static Items.Item _biscuitofRejuvenation = new Items.Item(2010, 0);
+        private static Items.Item _seraphsEmbrace = new Items.Item(3040, 0);
+        private static Items.Item _manamune = new Items.Item(3004, 0);
+        private static Items.Item _manamuneCrystalScar = new Items.Item(3008, 0);
         #endregion
         #region Public Properties
         // public static int Muramana() => pMuramana;
@@ -34,9 +34,9 @@ namespace Slutty_ryze
             var staff = GlobalManager.Config.Item("staff").GetValue<bool>();
             var staffhp = GlobalManager.Config.Item("staffhp").GetValue<Slider>().Value;
 
-            if (!staff || !Items.HasItem(id: ItemData.Seraphs_Embrace.Id) || !(GlobalManager.GetHero.HealthPercent <= staffhp)) return;
+            if (!staff || !Items.HasItem(ItemData.Seraphs_Embrace.Id) || !(GlobalManager.GetHero.HealthPercent <= staffhp)) return;
 
-            Items.UseItem(id: ItemData.Seraphs_Embrace.Id);
+            Items.UseItem(ItemData.Seraphs_Embrace.Id);
         }
         public static void Potion()
         {

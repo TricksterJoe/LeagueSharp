@@ -1,5 +1,5 @@
-﻿    using Color = System.Drawing.Color;
-using LeagueSharp.Common;
+﻿    using System.Drawing;
+    using LeagueSharp.Common;
 
 namespace Slutty_ryze
 {
