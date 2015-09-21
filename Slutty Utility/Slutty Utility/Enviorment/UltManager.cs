@@ -28,10 +28,6 @@ namespace Slutty_Utility.Enviorment
 
          //   _defaultonbutton = ezevade.Item("DodgeSkillShots").GetValue<bool>();
 
-            for (var i = 0; i >= 6; i++)
-            {
-                if (sender.Owner.Name == champions[i]) continue;
-
                 if (args.Slot == SpellSlot.R)
                 {
                     lastr = Environment.TickCount;
@@ -60,4 +56,3 @@ namespace Slutty_Utility.Enviorment
             }
         }
     }
-}

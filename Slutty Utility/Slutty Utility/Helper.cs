@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -55,7 +56,7 @@ namespace Slutty_Utility
 
        public static bool ManaCheck(string name)
        {
-           return Player.ManaPercent >= Config.Item(name).GetValue<Slider>().Value;
+           return Player.ManaPercent <= Config.Item(name).GetValue<Slider>().Value;
        }
 
         public static bool ItemReady(int id)
@@ -67,11 +68,16 @@ namespace Slutty_Utility
         {
             return Items.HasItem(id);
         }
-        
+        /* // add 
+        public bool BookCast(SpellSlot spell, GameObject name)           
+        {
+           
+        }
+         */
 
         public static bool HealthCheck(string name)
         {
-            return Player.HealthPercent >= Config.Item(name).GetValue<Slider>().Value;
+            return Player.HealthPercent <= Config.Item(name).GetValue<Slider>().Value;
         }
 
         public static bool UseUnitItem(int item, Obj_AI_Hero target)
@@ -99,12 +105,10 @@ namespace Slutty_Utility
             }
         }
 
-        public static void ElixerCast(int id, string buff, string menuname)
+        public static void ElixerCast(int id, string buff)
         {
-            if (Player.IsDead && Player.InShop()
-                && Player.Gold >= 400 && !PlayerBuff(buff)
-                && HasItem(id)
-                && GetBool(menuname, typeof(bool)))
+            if (!PlayerBuff(buff)
+                && HasItem(id))
             {
                 SelfCast(id);
             }

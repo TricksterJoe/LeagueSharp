@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Slutty_Utility.Summoners
+namespace Slutty_Utility.MenuConfig
 {
-    class ScrybeOrb
+    class SummonersMenu
     {
     }
 }

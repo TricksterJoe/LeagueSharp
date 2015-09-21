@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Slutty_Utility.Drawings
+namespace Slutty_Utility.Summoners
 {
-    class Waypoints
+    class Cleanse
     {
     }
 }

@@ -19,7 +19,7 @@ namespace Slutty_Utility.Activator
             Locket = 3190;
             Mountain = 3401;
         }
-
+         
 
          public static void OnLoad()
          {

@@ -1,14 +1,18 @@
 ﻿using System;
+using System.Linq;
 using LeagueSharp;
+using LeagueSharp.Common;
+using ItemData = LeagueSharp.Common.Data.ItemData;
 
 namespace Slutty_Utility.Activator
 {
-    class Consumables : Helper
+     class Consumables : Helper
     {
       //  private static readonly Obj_AI_Hero Player = ObjectManager.Player;
         public static int HpPotion, ManaPotion, Biscuit, Flask, SorcPotion, WarthPotion, RuinPotion, IronPotion;
         public static string HpBuff, ManaBuff, FlaskBuff, BiscuitBuff;
         public static string SorcElixer, WarthElixer, RuinElixer, IronElixer;
+        private static bool bought;
 
         static Consumables()
         {
@@ -16,27 +20,29 @@ namespace Slutty_Utility.Activator
             ManaPotion = 2004;
             Biscuit = 2010;
             Flask = 2041;
-            SorcPotion = 1337;
-            WarthPotion = 1337;
-            RuinPotion = 1337;
-            IronPotion = 1337;
+            SorcPotion = 2139;
+            WarthPotion = 2140;
+            RuinPotion = 2137;
+            IronPotion = 2138;
             HpBuff = "RegenerationPotion";
             ManaBuff = "RegenerationPotion";
             FlaskBuff = "FlaskOfCrystalWater";
             BiscuitBuff = "ItemMiniRegenPotion";
-            SorcElixer = "sorcbuff";
-            WarthElixer = "warthbuff";
-            RuinElixer = "ruinbuff";
-            IronElixer = "ironbuff";
+            SorcElixer = "ElixirOfSorcery";
+            WarthElixer = "ElixirOfWrath";
+            RuinElixer = "ElixirOfRuin";
+            IronElixer = "ElixirOfIron";
         }
 
-        public static void OnEnable()
+        public static void OnLoad()
         {
             Game.OnUpdate += OnUpdate;
         }
 
         private static void OnUpdate(EventArgs args)
-        {            
+        {
+            
+               // Console.WriteLine(ItemData.Elixir_of_Ruin.Id);
            #region Potions
             if (HealthCheck("consumables.potions.hppotion") && !PlayerBuff(HpBuff))
             {
@@ -60,12 +66,72 @@ namespace Slutty_Utility.Activator
 #endregion
 
            #region Elixers
-            ElixerCast(SorcPotion, SorcElixer, "consumables.elixers.sorcery");
-            ElixerCast(WarthPotion, WarthElixer, "consumables.elixers.wrath");
-            ElixerCast(RuinPotion, RuinElixer, "consumables.elixers.ruin");
-            ElixerCast(IronPotion, IronElixer, "consumables.elixers.iron");
+            /*
+            int[] id =
+            {
+                SorcPotion,
+                WarthPotion,
+                RuinPotion,
+                IronPotion
+            };
+
+            string[] buffname =
+            {
+                SorcElixer,
+                WarthElixer, 
+                RuinElixer,
+                IronElixer
+            };
+            
+            for (var i = 0; i >= buffname.Count(); i++)
+            {
+                hasbuff = PlayerBuff(buffname[i]);
+            }
+              /*          
+            for (var i = 0; i >= id.Count(); i++)
+            {
+                
+                    bought = HasItem(i);
+            }
+            */
+             
+            if (Player.InShop() && Player.Gold >= 400
+                && (!HasItem(SorcPotion) && !HasItem(WarthPotion) && !HasItem(RuinPotion) && !HasItem(RuinPotion))
+                && (!PlayerBuff(SorcElixer) && !PlayerBuff(IronElixer) && !PlayerBuff(WarthElixer) && !PlayerBuff(RuinElixer)))
+            {
+                if (GetBool("consumables.elixers.sorcery", typeof(bool)))
+                {
+                    Player.BuyItem(ItemId.Elixir_of_Sorcery);
+                    ElixerCast(SorcPotion, SorcElixer);
+                }
+
+                if (GetBool("consumables.elixers.wrath", typeof(bool)))
+                {
+                    Player.BuyItem(ItemId.Elixir_of_Wrath);
+                    ElixerCast(WarthPotion, WarthElixer);
+                }
+
+                if (GetBool("consumables.elixers.ruin", typeof(bool)))
+                {
+                    Player.BuyItem(ItemId.Elixir_of_Ruin);
+                    ElixerCast(RuinPotion, RuinElixer);
+                }
+
+                if (GetBool("consumables.elixers.iron", typeof(bool)))
+                {
+                    Player.BuyItem(ItemId.Elixir_of_Iron);
+                    ElixerCast(IronPotion, IronElixer);
+                }
+            }
+
+            
+           
+            
+             
 #endregion
 
         }
+
+        public static bool hasbuff { get; set; }
     }
 }

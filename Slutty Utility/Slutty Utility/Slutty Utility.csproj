@@ -60,8 +60,8 @@
     <Compile Include="Activator\Offensive.cs" />
     <Compile Include="Damages\DtoP.cs" />
     <Compile Include="Damages\DToT.cs" />
-    <Compile Include="Drawings\Spells.cs" />
-    <Compile Include="Drawings\Waypoints.cs" />
+    <Compile Include="Drawings\AllyRanges.cs" />
+    <Compile Include="Drawings\EnemyRanges.cs" />
     <Compile Include="Enviorment\AntiRengar.cs" />
     <Compile Include="Enviorment\Inhibitors.cs" />
     <Compile Include="Enviorment\TurnAround.cs" />
@@ -69,6 +69,10 @@
     <Compile Include="Enviorment\UltManager.cs" />
     <Compile Include="Jungle\JungleMonsters.cs" />
     <Compile Include="MenuConfig\Activator.cs" />
+    <Compile Include="MenuConfig\DrawingsMenu.cs" />
+    <Compile Include="Summoners\Barrier.cs" />
+    <Compile Include="Summoners\Cleanse.cs" />
+    <Compile Include="Summoners\Heal.cs" />
     <Compile Include="Tracker\Wards.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Jungle\Smite.cs" />
@@ -82,7 +86,6 @@
     <Compile Include="Summoners\Exhaust.cs" />
     <Compile Include="Summoners\Flash.cs" />
     <Compile Include="Summoners\Ignite.cs" />
-    <Compile Include="Summoners\ScrybeOrb.cs" />
     <Compile Include="Tracker\EnemyTeam.cs" />
     <Compile Include="Tracker\JungleTracker.cs" />
     <Compile Include="Tracker\TeamTracker.cs" />
