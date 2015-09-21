@@ -22,7 +22,7 @@ namespace Slutty_Utility.Summoners
             BuffType.Suppression
         };
 
-        public Cleanse()
+        public static void OnLoad()
         {
             Game.OnUpdate += OnUpdate;
         }

@@ -8,7 +8,7 @@ using LeagueSharp.Common;
 
 namespace Slutty_Utility.MenuConfig
 {
-    internal class Activator : Helper
+     class ActivatorMenu : Helper
     {
         public static void LoadActivator()
         {

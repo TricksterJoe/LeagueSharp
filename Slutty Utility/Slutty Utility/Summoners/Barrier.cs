@@ -10,7 +10,7 @@ namespace Slutty_Utility.Summoners
 {
     class Barrier : Helper
     {
-        public Barrier()
+        public static void OnLoad()
         {
             Game.OnUpdate += OnUpdate;
         }

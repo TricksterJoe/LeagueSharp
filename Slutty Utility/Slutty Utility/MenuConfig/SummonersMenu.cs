@@ -31,7 +31,7 @@ namespace Slutty_Utility.MenuConfig
             BuffType.Suppression
         };
 
-        public SummonersMenu()
+        public static void  LoadSummonersMenu()
         {
             var summonersmenu = new Menu("Summoners Settings", "Summoners Settings");
             {

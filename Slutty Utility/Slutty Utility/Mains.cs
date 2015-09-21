@@ -5,6 +5,7 @@ using Slutty_Utility.Drawings;
 using Slutty_Utility.Enviorment;
 using Slutty_Utility.MenuConfig;
 using Slutty_Utility.Summoners;
+using Slutty_Utility.Tracker;
 
 namespace Slutty_Utility
 {
@@ -14,33 +15,29 @@ namespace Slutty_Utility
         {
             Config = new Menu(Menuname, Menuname, true);
             Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
-            MenuConfig.Activator.LoadActivator();
+            ActivatorMenu.LoadActivator();
             DamagesMenu.LoadDamagesMenu();
             EnviormentMenu.LoadEnviormentMenu();
-            JungleMenu.LeadJungleMenu();
+            JungleMenu.LoadJungleMenu();
             DrawingsMenu.DrawingsMenus();
+            SummonersMenu.LoadSummonersMenu();
             Config.AddToMainMenu();
-            JungleMenu = new JungleMenu();
-            Consumables = new Consumables();
-            Heal = new Heal();
-            
+         
             Consumables.OnLoad(); 
             AntiRengar.OnLoad();
             Defensive.OnLoad();
             EnemyRanges.OnLoad();
             AllyRanges.OnLoad();
             Offensive.OnLoad();
-            AntiRengar.OnLoad();
+            Ignite.OnLoad();
+            Heal.OnLoad();
+            Cleanse.OnLoad();
+            Barrier.OnLoad();
+            Wards.OnLoad();
             // UltManager.OnLoad();
             // plzkallen
-          //  DtoP.OnLoad();
-           // DtoT.OnLoad();
+            //  DtoP.OnLoad();
+            // DtoT.OnLoad();
         }
-
-        public static Heal Heal { get; set; }
-
-        public static JungleMenu JungleMenu { get; set; }
-
-        public static Consumables Consumables { get; set; }
     }
 }

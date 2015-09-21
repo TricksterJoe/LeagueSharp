@@ -26,7 +26,7 @@ namespace Slutty_Utility.Tracker
             public WardType id; //0 = trinket,ect
         }
 
-        public Wards()
+        public static void OnLoad()
         {
             CustomEvents.Game.OnGameLoad += OnLoad;
         }
@@ -143,8 +143,8 @@ namespace Slutty_Utility.Tracker
 
             if (!sender.IsValid<Obj_AI_Base>())
                 return;
-            if (sender.IsAlly)
-                return;
+          //  if (sender.IsAlly)
+           //     return;
 
             foreach (var wards in WardList)
             {

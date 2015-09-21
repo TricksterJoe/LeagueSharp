@@ -4,7 +4,7 @@ namespace Slutty_Utility.MenuConfig
 {
     internal class JungleMenu : Helper
     {
-        public static void LeadJungleMenu()
+        public static void LoadJungleMenu()
         {
             var oMenu = new Menu("Jungle Smite Options", "jungle.options.smite");
             {

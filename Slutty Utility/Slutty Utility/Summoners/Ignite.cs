@@ -20,7 +20,7 @@ namespace Slutty_Utility.Summoners
         };
 
 
-        public Ignite()
+        public static void OnLoad()
         {
             Game.OnUpdate += OnUpdate;
         }

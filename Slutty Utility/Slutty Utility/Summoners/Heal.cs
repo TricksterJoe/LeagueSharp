@@ -11,7 +11,7 @@ namespace Slutty_Utility.Summoners
 {
     class Heal : Helper
     {
-        public Heal()
+        public static void OnLoad()
         {
             Game.OnUpdate += OnUpdate;
         }
