@@ -73,6 +73,7 @@ namespace Slutty_Utility.Jungle
             foreach (var monster in MinionManager.GetMinions(Player.ServerPosition,SpellRange(SmiteSlot), MinionTypes.All,MinionTeam.Neutral, MinionOrderTypes.MaxHealth))
             {
                 if (!monster.Name.Contains("Baron") && !monster.Name.Contains("Dragon")) continue;
+                if (!(SmiteDamage(monster) > monster.Health)) return false;
                 JustDoIt(monster);
                 return true;
             }
