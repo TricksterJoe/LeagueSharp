@@ -69,5 +69,14 @@ namespace Slutty_Utility.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Damage From Champ + Smite{0}.
+        /// </summary>
+        internal static string Smite_SmiteDamage_Damage_From_Champ___Smite_0_ {
+            get {
+                return ResourceManager.GetString("Smite_SmiteDamage_Damage_From_Champ___Smite_0_", resourceCulture);
+            }
+        }
     }
 }

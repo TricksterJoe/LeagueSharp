@@ -67,7 +67,6 @@
     <Compile Include="Enviorment\TurnAround.cs" />
     <Compile Include="Enviorment\Turrets.cs" />
     <Compile Include="Enviorment\UltManager.cs" />
-    <Compile Include="Jungle\JungleDraw.cs" />
     <Compile Include="Jungle\JungleMonsters.cs" />
     <Compile Include="MenuConfig\ActivatorMenu.cs" />
     <Compile Include="MenuConfig\DrawingsMenu.cs" />
@@ -93,9 +92,8 @@
     <Compile Include="Summoners\Exhaust.cs" />
     <Compile Include="Summoners\Flash.cs" />
     <Compile Include="Summoners\Ignite.cs" />
-    <Compile Include="Tracker\EnemyTeam.cs" />
+    <Compile Include="Tracker\TrackerSpell.cs" />
     <Compile Include="Tracker\JungleTracker.cs" />
-    <Compile Include="Tracker\TeamTracker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
