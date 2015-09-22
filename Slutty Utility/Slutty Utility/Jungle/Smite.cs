@@ -113,6 +113,18 @@ namespace Slutty_Utility.Jungle
             Player.Spellbook.CastSpell(NumNumChamps[Player.ChampionName]._SpellSlot);
         }
 
+        private static float GetFuckingSmiteDamage()
+        {
+            var level = Player.Level;
+            var index = Player.Level / 5;
+            float[] dmgs = 
+                {   370 + 20 * level,
+                     330 + 30 * level,
+                      240 + 40 * level,
+                        100 + 50 * level };
+            return dmgs[index];
+        }
+    
         public static float SmiteDamage(Obj_AI_Base target)
         {
             float damage = 0;
@@ -120,7 +132,7 @@ namespace Slutty_Utility.Jungle
                 damage += (float) (Player.GetSpellDamage(target, NumNumChamps[Player.ChampionName]._SpellSlot));
 
             if (_smiteSlot.IsReady())
-            damage += (float)ObjectManager.Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Smite);
+                damage += GetFuckingSmiteDamage();
 
             Console.WriteLine("Damage From Champ + Smite{0}",damage);
             return damage;
