@@ -151,7 +151,7 @@ namespace Slutty_Utility.Tracker
                 var colors = wards.id == WardType.Green ? Color.Green : Color.Pink;
                 if (wards.wardID == sender.Name)
                 {
-                    Drawing.DrawCircle(wards.location, 100, colors);
+                    Drawing.DrawCircle(wards.location, 100, colors); // drawing in an object
                 }
             }
 

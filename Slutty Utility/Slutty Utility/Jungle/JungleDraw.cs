@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.Remoting.Channels;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -159,5 +160,13 @@ namespace Slutty_Utility.Jungle
         }
 
 
+
+        internal static void OnCreat(GameObject sender, EventArgs args)
+        {
+            if (sender.Position.Distance(Player.Position) < 200)
+            {
+                Game.PrintChat(sender.Name);
+            }
+        }
     }
 }
