@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -10,7 +7,7 @@ namespace Slutty_Utility.Jungle
 {
     class Smite : Helper
     {
-        private static SpellSlot SmiteSlot;
+        private static SpellSlot _smiteSlot;
         private static float SmiteTick { get; set; }
 
         private static Dictionary<String, ExternalSpell> NumNumChamps = new Dictionary<String, ExternalSpell>();
@@ -18,6 +15,9 @@ namespace Slutty_Utility.Jungle
         public static void OnLoad()
         {
             Drawing.OnDraw += OnUpdate;
+            JungleDraw.DamageToMonster = SmiteDamage;
+            Drawing.OnDraw += JungleDraw.Drawing_OnDrawMonster;
+            Drawing.OnDraw += JungleDraw.Drawing_OnDraw;
         }
 
         struct ExternalSpell
@@ -43,7 +43,7 @@ namespace Slutty_Utility.Jungle
                 
                 if (!Helper.GetBool("jungle.options.autoSmite", typeof(bool))) return;
                 if (SmiteTick > TickCount) return;
-                if (!GetSmiteSlot(ref SmiteSlot)) return;
+                if (!GetSmiteSlot(ref _smiteSlot)) return;
 
                 if (Helper.GetBool("jungle.options.smiteEpics", typeof (bool)))
                     if (CheckEpics()) return;
@@ -70,7 +70,7 @@ namespace Slutty_Utility.Jungle
         private static bool CheckEpics()
         {
 
-            foreach (var monster in MinionManager.GetMinions(Player.ServerPosition,SpellRange(SmiteSlot), MinionTypes.All,MinionTeam.Neutral, MinionOrderTypes.MaxHealth))
+            foreach (var monster in MinionManager.GetMinions(Player.ServerPosition,SpellRange(_smiteSlot), MinionTypes.All,MinionTeam.Neutral, MinionOrderTypes.MaxHealth))
             {
                 if (!monster.Name.Contains("Baron") && !monster.Name.Contains("Dragon")) continue;
                 if (!(SmiteDamage(monster) > monster.Health)) return false;
@@ -83,7 +83,7 @@ namespace Slutty_Utility.Jungle
         private static bool CheckBuffs()
         {
             foreach (var monster in MinionManager.GetMinions(Player.ServerPosition,
-                SpellRange(SmiteSlot),
+                SpellRange(_smiteSlot),
                 MinionTypes.All,
                 MinionTeam.Neutral,
                 MinionOrderTypes.MaxHealth))
@@ -108,7 +108,7 @@ namespace Slutty_Utility.Jungle
                 target.IsValidTarget(NumNumChamps[Player.ChampionName].Range))
                 Player.Spellbook.CastSpell(NumNumChamps[Player.ChampionName]._SpellSlot);
 
-            if (SmiteSlot.IsReady() && target.IsValidTarget(550))
+            if (_smiteSlot.IsReady() && target.IsValidTarget(550))
             Player.Spellbook.CastSpell(NumNumChamps[Player.ChampionName]._SpellSlot);
         }
 
@@ -118,7 +118,7 @@ namespace Slutty_Utility.Jungle
             if (NumNumChamps.ContainsKey(Player.ChampionName) && NumNumChamps[Player.ChampionName]._SpellSlot.IsReady() && target.IsValidTarget(NumNumChamps[Player.ChampionName].Range))
                 damage += (float) (Player.GetSpellDamage(target, NumNumChamps[Player.ChampionName]._SpellSlot));
 
-            if (SmiteSlot.IsReady())
+            if (_smiteSlot.IsReady())
             damage += (float)ObjectManager.Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Smite);
 
             Console.WriteLine("Damage From Champ + Smite{0}",damage);
@@ -127,10 +127,10 @@ namespace Slutty_Utility.Jungle
 
         private static bool GetSmiteSlot(ref SpellSlot smiteSlot)
         {
-            foreach (var Spell in Player.Spellbook.Spells)
+            foreach (var spell in Player.Spellbook.Spells)
             {
-                if (!Spell.Name.ToLower().Contains("smite")) continue;
-                smiteSlot = Spell.Slot;
+                if (!spell.Name.ToLower().Contains("smite")) continue;
+                smiteSlot = spell.Slot;
                 return true;
             }
             return false;
