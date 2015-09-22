@@ -36,7 +36,7 @@ namespace Slutty_Utility.Jungle
                     if (minion.Team != GameObjectTeam.Neutral || !minion.IsValidTarget() || !minion.IsHPBarRendered)
                         continue;
 
-                    var smiteDamage = Smite.smiteSpell.GetDamage(minion);
+                    var smiteDamage = Smite.SmiteDamage(minion);
 
                     // Monster bar widths and offsets from ElSmite
                     var barWidth = 0;
