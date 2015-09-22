@@ -10,7 +10,7 @@ namespace Slutty_Utility.Jungle
         private static SpellSlot _smiteSlot;
         private static float SmiteTick { get; set; }
 
-        private static Dictionary<String, ExternalSpell> NumNumChamps = new Dictionary<String, ExternalSpell>();
+        private static readonly Dictionary<String, ExternalSpell> NumNumChamps = new Dictionary<String, ExternalSpell>();
 
         public static void OnLoad()
         {
@@ -22,8 +22,8 @@ namespace Slutty_Utility.Jungle
 
         struct ExternalSpell
         {
-            public SpellSlot _SpellSlot;
-            public float Range;
+            public readonly SpellSlot _SpellSlot;
+            public readonly float Range;
 
             public ExternalSpell(SpellSlot spellSlot,float range)
             {
@@ -41,14 +41,15 @@ namespace Slutty_Utility.Jungle
                     LoadNumNum();
 
                 
-                if (!Helper.GetBool("jungle.options.autoSmite", typeof(bool))) return;
+                if (!GetBool("jungle.options.autoSmite", typeof(bool))) return;
                 if (SmiteTick > TickCount) return;
                 if (!GetSmiteSlot(ref _smiteSlot)) return;
 
-                if (Helper.GetBool("jungle.options.smiteEpics", typeof (bool)))
+                if (GetBool("jungle.options.smiteEpics", typeof (bool)))
                     if (CheckEpics()) return;
-                if (Helper.GetBool("jungle.options.smiteBuffs", typeof(bool)))
+                if (GetBool("jungle.options.smiteBuffs", typeof(bool)))
                     if (CheckBuffs()) return;
+                
 
             }
             catch 

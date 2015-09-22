@@ -30,28 +30,27 @@ namespace Slutty_Utility.Tracker
 
         private static void OnUpdate(EventArgs args)
         {
-            foreach (var buffs in _spellslot)
+            foreach (var hero in HeroManager.AllHeroes.Where(x => x.Distance(Player) < 3000))
             {
-                foreach (var hero in HeroManager.AllHeroes.Where(x => x.Distance(Player) < 3000))
+                for (var i = 0; i <= _spellslot.Count(); i++)
                 {
-                    for (var i = 0; i <= _spellslot.Count(); i++)
-                    {
-                        X = (int) hero.HPBarPosition.X + (i*23) + 35;
+                    X = (int) hero.HPBarPosition.X + (i*30) + 35;
 
-                        Y = (int) hero.HPBarPosition.Y - 5;
-                        var CD = (int) (hero.GetSpell(buffs).CooldownExpires - Game.Time);
-                        if (CD > 0)
-                        {
-                            Drawing.DrawText(X, Y, Color.AliceBlue,
-                                CD.ToString());
-                        }
-                        if (CD == 0)
-                        {
-                            //here goes the sprite
-                        }
+                    Y = (int) hero.HPBarPosition.Y - 5;
+
+                    var CD = (int) ((hero.Spellbook.GetSpell(_spellslot[i]).CooldownExpires - Game.Time));
+                    if (CD > 0)
+                    {
+                        Drawing.DrawText(X, Y, Color.AliceBlue,
+                            CD.ToString());
+                    }
+                    if (CD == 0)
+                    {
+                        //here goes the sprite
                     }
                 }
             }
+
         }
     }
 }
