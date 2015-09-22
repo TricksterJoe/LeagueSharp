@@ -39,9 +39,7 @@ namespace Slutty_Utility.Jungle
             try
             {
                 if (!NumNumChamps.ContainsKey("Nunu"))
-                    LoadNumNum();
-
-                
+                    LoadNumNum();                     
                 if (!GetBool("jungle.options.autoSmite", typeof(bool))) return;
                 if (SmiteTick > TickCount) return;
                 if (!GetSmiteSlot(ref _smiteSlot)) return;
@@ -108,10 +106,10 @@ namespace Slutty_Utility.Jungle
         {
             if (NumNumChamps.ContainsKey(Player.ChampionName) && NumNumChamps[Player.ChampionName]._SpellSlot.IsReady() &&
                 target.IsValidTarget(NumNumChamps[Player.ChampionName].Range))
-                Player.Spellbook.CastSpell(NumNumChamps[Player.ChampionName]._SpellSlot);
+                Player.Spellbook.CastSpell(NumNumChamps[Player.ChampionName]._SpellSlot,target);
 
             if (_smiteSlot.IsReady() && target.IsValidTarget(550))
-            Player.Spellbook.CastSpell(NumNumChamps[Player.ChampionName]._SpellSlot);
+            Player.Spellbook.CastSpell(NumNumChamps[Player.ChampionName]._SpellSlot,target);
         }
 
         private static float GetFuckingSmiteDamage()
@@ -125,17 +123,20 @@ namespace Slutty_Utility.Jungle
                         100 + 50 * level };
             return dmgs[index];
         }
-    
+
         public static float SmiteDamage(Obj_AI_Base target)
         {
             float damage = 0;
-            if (NumNumChamps.ContainsKey(Player.ChampionName) && NumNumChamps[Player.ChampionName]._SpellSlot.IsReady() && target.IsValidTarget(NumNumChamps[Player.ChampionName].Range))
-                damage += (float) (Player.GetSpellDamage(target, NumNumChamps[Player.ChampionName]._SpellSlot));
 
             if (_smiteSlot.IsReady())
                 damage += GetFuckingSmiteDamage();
 
-            Console.WriteLine("Damage From Champ + Smite{0}",damage);
+            if (NumNumChamps.ContainsKey(Player.ChampionName))
+                if (NumNumChamps[Player.ChampionName]._SpellSlot.IsReady())
+                    if (target.IsValidTarget(NumNumChamps[Player.ChampionName].Range))
+                        damage += (float) (Player.GetSpellDamage(target, NumNumChamps[Player.ChampionName]._SpellSlot));
+
+        Console.WriteLine("Damage From Champ + Smite{0}",damage);
             return damage;
         }
 
