@@ -6,6 +6,7 @@ namespace Slutty_Utility.MenuConfig
     {
         public static void LoadJungleMenu()
         {
+            var junglemenu = new Menu("Jungle Settings", "Jungle Settings");
             var oMenu = new Menu("Jungle Smite Options", "jungle.options.smite");
             {
                 AddKeyBind(oMenu, "Auto Smite", "jungle.options.autoSmite", 'G', KeyBindType.Toggle);
@@ -19,7 +20,7 @@ namespace Slutty_Utility.MenuConfig
               //  AddBool(oMenu, "Smite Raptors", "jungle.options.smiteRaptors", false);
                // AddBool(oMenu, "Smite Enemies For KS", "jungle.options.smiteChampions", false);
             }
-            Config.AddSubMenu(oMenu);
+            junglemenu.AddSubMenu(oMenu);
 
             var oMenu2 = new Menu("Jungle Drawing Options", "jungle.options.drawing");
             {
@@ -28,7 +29,13 @@ namespace Slutty_Utility.MenuConfig
                 AddBool(oMenu2, "Fill Smite Damage", "jungle.options.drawing.damage.fill", true);
                 AddBool(oMenu2, "Display Killable Text", "jungle.options.drawing.killable.text", true);
             }
-            Config.AddSubMenu(oMenu2);
+            var oMenu3 = new Menu("Spell + Smite", "Spell + Smite");
+            {
+                AddBool(oMenu3, "Nunu Q", "usenunuq", true);
+            }
+            junglemenu.AddSubMenu(oMenu2);
+            junglemenu.AddSubMenu(oMenu3);
+            Config.AddSubMenu(junglemenu);
         }
     }
 }

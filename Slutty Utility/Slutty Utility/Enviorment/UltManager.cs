@@ -4,8 +4,9 @@ using LeagueSharp.Common;
 
 namespace Slutty_Utility.Enviorment
 {
-    class UltManager : Helper
+    internal class UltManager : Helper
     {
+        /*
         public static Orbwalking.Orbwalker Orbwalker;
         private static int lastr;
         private static bool _defaultonbutton;
@@ -38,7 +39,6 @@ namespace Slutty_Utility.Enviorment
                     {
                         ezevade.Item("DodgeSkillShots").SetValue(false);
                     }
-                     */
 
                 }
 
@@ -51,8 +51,10 @@ namespace Slutty_Utility.Enviorment
                     {
                         ezevade.Item("DodgeSkillShots").SetValue(true);
                     }
-                     */
                 }
             }
         }
+                     */
+
     }
+}

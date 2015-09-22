@@ -128,7 +128,7 @@ namespace Slutty_Utility.Jungle
                             display = false;
                             break;
                     }
-                    if (!display) continue;
+                   if (!display) continue;
                     var barPos = minion.HPBarPosition;
                     var percentHealthAfterDamage = Math.Max(0, minion.Health - damage) /minion.MaxHealth;
                     var yPos = barPos.Y + yOffset;
