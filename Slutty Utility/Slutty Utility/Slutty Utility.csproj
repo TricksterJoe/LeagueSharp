@@ -71,6 +71,11 @@
     <Compile Include="MenuConfig\ActivatorMenu.cs" />
     <Compile Include="MenuConfig\DrawingsMenu.cs" />
     <Compile Include="MenuConfig\SummonersMenu.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Summoners\Barrier.cs" />
     <Compile Include="Summoners\Cleanse.cs" />
     <Compile Include="Summoners\Heal.cs" />
@@ -97,6 +102,15 @@
   <ItemGroup>
     <Folder Include="Auto Level Manager\" />
     <Folder Include="Notifications\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\bXCtC.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

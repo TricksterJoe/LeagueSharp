@@ -34,14 +34,18 @@ namespace Slutty_Utility.Tracker
             {
                 for (var i = 0; i <= _spellslot.Count(); i++)
                 {
-                    X = (int) Player.HPBarPosition.X + 5 + (i*23) + 30;
+                    X = (int) Player.HPBarPosition.X  + (i*23) + 35;
 
                     Y = (int) Player.HPBarPosition.Y - 5;
                     var CD = (int) (Player.GetSpell(buffs).CooldownExpires - Game.Time);
-                    if (CD >= 0)
+                    if (CD > 0)
                     {
                         Drawing.DrawText(X, Y, Color.AliceBlue,
                             CD.ToString());
+                    }
+                    if (CD == 0)
+                    {
+                        //here goes the sprite
                     }
                 }
             }
