@@ -161,7 +161,7 @@ namespace Slutty_Utility.Jungle
 
 
 
-        internal static void OnCreat(GameObject sender, EventArgs args)
+        internal static void OnCreate(GameObject sender, EventArgs args)
         {
             if (sender.Position.Distance(Player.Position) < 200)
             {

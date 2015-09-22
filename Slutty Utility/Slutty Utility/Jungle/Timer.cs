@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -12,27 +8,72 @@ namespace Slutty_Utility.Jungle
 {
     internal class Timer : Helper
     {
-        protected float _jungleTick = 0;
+        private static float JungleTick = 0;
 
-        private void OnCreate(GameObject sender, EventArgs args)
+        public static void OnCreate(GameObject sender, EventArgs args)
         {
             if (!sender.IsValid) return;
             if(sender.Type != GameObjectType.obj_AI_Minion)return;
             if (sender.Team != GameObjectTeam.Neutral) return;
-            foreach (var camp in JungleMonsters.JungleCamps)
+            if (!GetBool("jungle.options.drawing.timers", typeof(bool))) return;
+            for (var index = 0; index < JungleMonsters.JungleCamps.Count; index++)
             {
-                var mob = JungleMonsters.JungleCamps.FirstOrDefault(m => m.Key.ToLower().Contains(sender.Name.ToLower()));
-                if(mob.Key == null)continue;
-
+                var camp = JungleMonsters.JungleCamps[index];
+                for (var index2 = 0; index2 < JungleMonsters.JungleCamps[index].Monsters.Count; index2++)
+                {
+                    var mob = JungleMonsters.JungleCamps[index].Monsters[index2];
+                    if (!String.Equals(mob.Name, sender.Name, StringComparison.CurrentCultureIgnoreCase)) continue;
+                    mob.IsDead = false;
+                    camp.IsDead = false;
+                    JungleMonsters.JungleCamps[index] = camp;
+                    JungleMonsters.JungleCamps[index].Monsters[index2] = mob;
+                }
             }
         }
-        private void Game_OnUpdate()
+
+        public static void OnDelete(GameObject sender, EventArgs args)
         {
-            if (_jungleTick > TickCount) return;
-            _jungleTick = TickCount + 1000;
+            if (!sender.IsValid) return;
+            if (sender.Type != GameObjectType.obj_AI_Minion) return;
+            if (sender.Team != GameObjectTeam.Neutral) return;
+            if (!GetBool("jungle.options.drawing.timers", typeof(bool))) return;
+            for (var index = 0; index < JungleMonsters.JungleCamps.Count; index++)
+            {
+                var camp = JungleMonsters.JungleCamps[index];
+                for (var index2 = 0; index2 < JungleMonsters.JungleCamps[index].Monsters.Count; index2++)
+                {
+                    var mob = JungleMonsters.JungleCamps[index].Monsters[index2];
+                    if (!String.Equals(mob.Name, sender.Name, StringComparison.CurrentCultureIgnoreCase)) continue;
+                    mob.IsDead = true;
+                    camp.IsDead = camp.Monsters.All(m => m.IsDead);
+                    JungleMonsters.JungleCamps[index] = camp;
+                    JungleMonsters.JungleCamps[index].Monsters[index2] = mob;
+                    if(!camp.IsDead)continue;
+                    camp.RespawnTime = Game.Time + camp.RespawnTime;
+
+                }
+            }
+
+        }
+        public static void OnUpdate(EventArgs args)
+        {
+            if (JungleTick > TickCount) return;
+            JungleTick = TickCount + 1000;
             if(JungleMonsters.JungleCamps == null) JungleMonsters.LoadCamps();
+            if (!GetBool("jungle.options.drawing.timers", typeof(bool))) return;
 
-
+            for (var index = 0; index < JungleMonsters.JungleCamps.Count; index++)
+            {
+                var camp = JungleMonsters.JungleCamps[index];
+                if (camp.IsDead)
+                    if (camp.RespawnTime - Game.Time <= 0)
+                    {
+                        camp.IsDead = false;
+                        continue;
+                    }
+                var loc = Drawing.WorldToMinimap(camp.Location.To3D());
+                Drawing.DrawText(loc.X,loc.Y, Color.LightGray, string.Format("{mm:ss}", (camp.RespawnTime - Game.Time)));
+            }
 
         }
     }

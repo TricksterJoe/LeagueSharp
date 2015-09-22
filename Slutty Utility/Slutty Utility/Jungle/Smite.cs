@@ -23,7 +23,10 @@ namespace Slutty_Utility.Jungle
             JungleDraw.DamageToMonster = SmiteDamage;
             Drawing.OnDraw += JungleDraw.Drawing_OnDrawMonster;
             Drawing.OnDraw += JungleDraw.Drawing_OnDraw;
-            GameObject.OnCreate += JungleDraw.OnCreat;
+            GameObject.OnCreate += JungleDraw.OnCreate;
+            GameObject.OnCreate += Timer.OnCreate;
+            GameObject.OnDelete += Timer.OnDelete;
+            Game.OnUpdate += Timer.OnUpdate;
         }
 
         private struct ExternalSpell

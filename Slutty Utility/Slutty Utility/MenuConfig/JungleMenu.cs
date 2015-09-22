@@ -28,6 +28,7 @@ namespace Slutty_Utility.MenuConfig
                 AddBool(oMenu2, "Display Smite Damage", "jungle.options.drawing.damage", true);
                 AddBool(oMenu2, "Fill Smite Damage", "jungle.options.drawing.damage.fill", true);
                 AddBool(oMenu2, "Display Killable Text", "jungle.options.drawing.killable.text", true);
+                AddBool(oMenu2, "Display Jungle Timers", "jungle.options.drawing.timers", true);
             }
             var oMenu3 = new Menu("Spell + Smite", "Spell + Smite");
             {
