@@ -32,6 +32,7 @@ namespace Slutty_Utility.MenuConfig
             var oMenu3 = new Menu("Spell + Smite", "Spell + Smite");
             {
                 AddBool(oMenu3, "Nunu Q", "usenunuq", true);
+                AddBool(oMenu3, "Activate", "Nunu", true);
             }
             junglemenu.AddSubMenu(oMenu2);
             junglemenu.AddSubMenu(oMenu3);

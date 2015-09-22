@@ -12,7 +12,7 @@ namespace Slutty_Utility.Jungle
 {
     internal class Timer : Helper
     {
-        protected float _jungleTick = 0f;
+        protected float _jungleTick = 0;
 
         private void OnCreate(GameObject sender, EventArgs args)
         {

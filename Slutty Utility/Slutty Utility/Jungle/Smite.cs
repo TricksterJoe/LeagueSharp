@@ -43,18 +43,18 @@ namespace Slutty_Utility.Jungle
         {
             try
             {
-              //  if (!GetBool("jungle.options.autoSmite", typeof(bool))) return;
+                if (!GetBool("jungle.options.autoSmite", typeof(bool))) return;
 
 
-               // if (GetBool("jungle.options.smiteBuffs", typeof(bool)))
+                if (GetBool("jungle.options.smiteBuffs", typeof(bool)))
                 CheckBuffs();
 
 
-               // if (GetBool("jungle.options.smiteEpic", typeof(bool)))
+                if (GetBool("jungle.options.smiteEpic", typeof(bool)))
                     CheckEpics();
                 
                 
-               // if (!NumNumChamps.ContainsKey("Nunu"))
+                if (!NumNumChamps.ContainsKey("Nunu"))
                     LoadNumNum();
                     
                 
