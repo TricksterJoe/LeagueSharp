@@ -6,6 +6,7 @@ using Slutty_Utility.Enviorment;
 using Slutty_Utility.MenuConfig;
 using Slutty_Utility.Summoners;
 using Slutty_Utility.Tracker;
+using Slutty_Utility.Jungle;
 
 namespace Slutty_Utility
 {

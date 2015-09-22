@@ -9,10 +9,9 @@ namespace Slutty_Utility.MenuConfig
             var oMenu = new Menu("Jungle Smite Options", "jungle.options.smite");
             {
                 AddKeyBind(oMenu, "Auto Smite", "jungle.options.autoSmite", 'G', KeyBindType.Toggle);
-                AddBool(oMenu, "Smite Blue", "jungle.options.smiteBlue", true);
-                AddBool(oMenu, "Smite Red", "jungle.options.smiteRed", true);
-                AddBool(oMenu, "Smite Dragon", "jungle.options.smiteDragon", true);
-                AddBool(oMenu, "Smite Baron", "jungle.options.smiteBaron", true);
+                AddBool(oMenu, "Smite Buffs", "jungle.options.smiteBuffs", true);
+                AddBool(oMenu, "Smite Epics", "jungle.options.smiteEpics", true);
+
                 AddBool(oMenu, "Smite Scuttle", "jungle.options.smiteScuttle", false);
                 AddBool(oMenu, "Smite Krug", "jungle.options.smiteKrug", false);
                 AddBool(oMenu, "Smite Wolf", "jungle.options.smiteWolf", false);
