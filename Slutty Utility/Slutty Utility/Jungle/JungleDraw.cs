@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
 using LeagueSharp;
 using LeagueSharp.Common;
-using Color = System.Drawing.Color;
 
 namespace Slutty_Utility.Jungle
 {
@@ -22,10 +18,10 @@ namespace Slutty_Utility.Jungle
             try
             {
                 //If User does not want drawing
-                if (Helper.GetBool("jungle.options.drawing.range", typeof (bool)))
+                if (GetBool("jungle.options.drawing.range", typeof (bool)))
                     Render.Circle.DrawCircle(Player.Position, 550,Color.Red,5);
 
-                if (Helper.GetBool("jungle.options.drawing.damage", typeof (bool)))
+                if (GetBool("jungle.options.drawing.damage", typeof (bool)))
                 {
                    
 
@@ -47,7 +43,7 @@ namespace Slutty_Utility.Jungle
             {
                 if (_damageToMonster == null)
                 {
-                    LeagueSharp.Drawing.OnDraw += Drawing_OnDrawMonster;
+                    Drawing.OnDraw += Drawing_OnDrawMonster;
                 }
                 _damageToMonster = value;
             }
@@ -57,7 +53,7 @@ namespace Slutty_Utility.Jungle
         {
             try
             {
-                if (!Helper.GetBool("jungle.options.drawing.damage", typeof(bool)) ||
+                if (!GetBool("jungle.options.drawing.damage", typeof(bool)) ||
                     DamageToMonster == null)
                     return;
 
@@ -138,22 +134,22 @@ namespace Slutty_Utility.Jungle
                     var xPosDamage = barPos.X + xOffset + barWidth*percentHealthAfterDamage;
                     var xPosCurrentHp = barPos.X + xOffset + barWidth*minion.Health/minion.MaxHealth;
 
-                    if (Helper.GetBool("jungle.options.drawing.damage.fill", typeof(bool)))
+                    if (GetBool("jungle.options.drawing.damage.fill", typeof(bool)))
                     {
                         var differenceInHp = xPosCurrentHp - xPosDamage;
                         var pos1 = barPos.X + xOffset;
 
                         for (var i = 0; i < differenceInHp; i++)
                         {
-                            LeagueSharp.Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + yOffset2, 1,Color.White);
+                            Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + yOffset2, 1,Color.White);
                         }
                     }
                     else
-                        LeagueSharp.Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + yOffset2, 1,Color.White);
+                        Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + yOffset2, 1,Color.White);
 
                     if (!(damage > minion.Health)) continue;
-                    if (!Helper.GetBool("jungle.options.drawing.killable.text", typeof (bool))) return;
-                        LeagueSharp.Drawing.DrawText(minion.HPBarPosition.X + xOffset, minion.HPBarPosition.Y,Color.Red, "Killable");
+                    if (!GetBool("jungle.options.drawing.killable.text", typeof (bool))) return;
+                        Drawing.DrawText(minion.HPBarPosition.X + xOffset, minion.HPBarPosition.Y,Color.Red, "Killable");
                 }
             }
             catch
