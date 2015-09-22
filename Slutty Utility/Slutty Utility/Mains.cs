@@ -35,7 +35,7 @@ namespace Slutty_Utility
             Cleanse.OnLoad();
             Barrier.OnLoad();
             Wards.OnLoad();
-            EnemyTeam.OnLoad();
+            Tracker.OnLoad();
             // UltManager.OnLoad();
             // plzkallen
             //  DtoP.OnLoad();
