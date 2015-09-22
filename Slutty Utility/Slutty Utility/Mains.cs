@@ -34,10 +34,12 @@ namespace Slutty_Utility
             Cleanse.OnLoad();
             Barrier.OnLoad();
             Wards.OnLoad();
+            EnemyTeam.OnLoad();
             // UltManager.OnLoad();
             // plzkallen
             //  DtoP.OnLoad();
             // DtoT.OnLoad();
+
         }
     }
 }

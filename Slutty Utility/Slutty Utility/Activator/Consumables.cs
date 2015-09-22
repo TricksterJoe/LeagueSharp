@@ -94,41 +94,45 @@ namespace Slutty_Utility.Activator
                     bought = HasItem(i);
             }
             */
-             
-            if (Player.InShop() && Player.Gold >= 400
-                && (!HasItem(SorcPotion) && !HasItem(WarthPotion) && !HasItem(RuinPotion) && !HasItem(RuinPotion))
-                && (!PlayerBuff(SorcElixer) && !PlayerBuff(IronElixer) && !PlayerBuff(WarthElixer) && !PlayerBuff(RuinElixer)))
+            if (Player.Level >= GetValue("consumables.buy"))
             {
-                if (GetBool("consumables.elixers.sorcery", typeof(bool)))
+                if (Player.InShop() && Player.Gold >= 400
+                    && (!HasItem(SorcPotion) && !HasItem(WarthPotion) && !HasItem(RuinPotion) && !HasItem(RuinPotion))
+                    &&
+                    (!PlayerBuff(SorcElixer) && !PlayerBuff(IronElixer) && !PlayerBuff(WarthElixer) &&
+                     !PlayerBuff(RuinElixer)))
                 {
-                    Player.BuyItem(ItemId.Elixir_of_Sorcery);
-                    ElixerCast(SorcPotion, SorcElixer);
-                }
+                    if (GetBool("consumables.elixers.sorcery", typeof (bool)))
+                    {
+                        Player.BuyItem(ItemId.Elixir_of_Sorcery);
+                        ElixerCast(SorcPotion, SorcElixer);
+                    }
 
-                if (GetBool("consumables.elixers.wrath", typeof(bool)))
-                {
-                    Player.BuyItem(ItemId.Elixir_of_Wrath);
-                    ElixerCast(WarthPotion, WarthElixer);
-                }
+                    if (GetBool("consumables.elixers.wrath", typeof (bool)))
+                    {
+                        Player.BuyItem(ItemId.Elixir_of_Wrath);
+                        ElixerCast(WarthPotion, WarthElixer);
+                    }
 
-                if (GetBool("consumables.elixers.ruin", typeof(bool)))
-                {
-                    Player.BuyItem(ItemId.Elixir_of_Ruin);
-                    ElixerCast(RuinPotion, RuinElixer);
-                }
+                    if (GetBool("consumables.elixers.ruin", typeof (bool)))
+                    {
+                        Player.BuyItem(ItemId.Elixir_of_Ruin);
+                        ElixerCast(RuinPotion, RuinElixer);
+                    }
 
-                if (GetBool("consumables.elixers.iron", typeof(bool)))
-                {
-                    Player.BuyItem(ItemId.Elixir_of_Iron);
-                    ElixerCast(IronPotion, IronElixer);
+                    if (GetBool("consumables.elixers.iron", typeof (bool)))
+                    {
+                        Player.BuyItem(ItemId.Elixir_of_Iron);
+                        ElixerCast(IronPotion, IronElixer);
+                    }
                 }
             }
 
-            
-           
-            
-             
-#endregion
+
+
+
+
+            #endregion
 
         }
 

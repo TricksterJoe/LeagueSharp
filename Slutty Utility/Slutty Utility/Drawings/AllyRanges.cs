@@ -28,8 +28,8 @@ namespace Slutty_Utility.Drawings
         {
             foreach (
                 var hero in
-                    HeroManager.Allies.Where(
-                        x =>
+                    HeroManager.AllHeroes.Where(
+                        x => (x.IsAlly || x.IsMe) &&
                             !x.IsDead && x.IsValid && x.Position.Distance(Helper.Player.Position) < 2000 &&
                             x.IsChampion()))
             {
@@ -45,7 +45,7 @@ namespace Slutty_Utility.Drawings
                 {
                     foreach (var herospell in Slots)
                     {
-                        if (spell.Slot == herospell &&
+                        if (spell.Slot == herospell && herospell.IsReady() &&
                             Helper.GetBool(
                                 "spellrange.spellrangeenemy.spellrangeallyname" + herospell + hero.ChampionName,
                                 typeof (bool)))

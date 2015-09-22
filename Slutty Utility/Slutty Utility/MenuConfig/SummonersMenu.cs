@@ -38,7 +38,7 @@ namespace Slutty_Utility.MenuConfig
                 var ignitemenu = new Menu("Ignite Settings", "Ignite Settings");
                 {
                     var championslist = new Menu("Champion Black List", "Champion Black List");
-                    foreach (var hero in HeroManager.Allies)
+                    foreach (var hero in HeroManager.Enemies)
                     {
                         AddBool(championslist, "Ignite " + hero.ChampionName, "useignite" + hero.ChampionName, true);
                     }

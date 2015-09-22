@@ -11,22 +11,25 @@ namespace Slutty_Utility.Enviorment
 
     internal class AntiRengar : Helper
     {
-        private static GameObject leap;
         private static Obj_AI_Hero _rengo;
         private static bool ecasted;
         private static bool qcasted;
         private static bool casted;
+        private static bool qscasted;
+
         public static void OnLoad()
         {
             GameObject.OnCreate += OnCreateObject;
-        
+
         }
+
         public static void backwardscast(SpellSlot name, GameObject sender)
         {
             Player.Spellbook.CastSpell(name,
-            sender.Position.Extend(Player.ServerPosition,
-                Player.Spellbook.GetSpell(name).SData.CastRange));
+                sender.Position.Extend(Player.ServerPosition,
+                    Player.Spellbook.GetSpell(name).SData.CastRange));
         }
+
         private static void OnCreateObject(GameObject sender, EventArgs args)
         {
             string[] name =
@@ -38,21 +41,25 @@ namespace Slutty_Utility.Enviorment
                 "Riven", "Shaco", "Soraka", "Thresh", "Trundle",
                 "Vel'Koz", "Xerath", "Zed", "Ziggs"
             };
+            if (!sender.IsAlly)
+                return;
+            if (name.Any(hero => Player.ChampionName != hero))
+            {
+                return;
+            }
 
             if (sender.Name == "Rengar_LeapSound.troy")
             {
+
                 foreach (var enemy in
-                    HeroManager.Enemies.Where( hero => hero.IsValidTarget(1500) && hero.ChampionName == "Rengar"))
+                    HeroManager.Enemies.Where(hero => hero.IsValidTarget(1500) && hero.ChampionName == "Rengar"))
                 {
                     _rengo = enemy;
                 }
-                Console.WriteLine("is this shit bugged"); //cant really show chat
 
+                    #region E Spell Slot
 
-                leap = sender;
-                #region E Spell Slot
-
-                /*
+                    /*
                 string[] spelle =
                 {
                     "Vayne", "Ahri", "Diana", "Draven", "Ezreal", "Fizz", "Jayce", "Jinx",
@@ -60,122 +67,122 @@ namespace Slutty_Utility.Enviorment
                 };
                  */
 
-                switch (Player.ChampionName)
-                {
-                    case "Vayne":
+                    switch (Player.ChampionName)
                     {
-                        Player.Spellbook.CastSpell(SpellSlot.E, _rengo);
-                    }
-                        break;
-
-                    case "Ahri":
-                    {
-                        Player.Spellbook.CastSpell(SpellSlot.E, sender);
-                    }
-                        break;
-
-                    case "Diana":
-                    {
-                        if (sender.Position.To2D().Distance(Player) <=
-                            Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange)
-                            Player.Spellbook.CastSpell(SpellSlot.E);
-                    }
-                        break;
-
-                    case "Jinx":
-                    {
-                        if (sender.Position.To2D().Distance(Player) <=
-                            Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange)
-                            Player.Spellbook.CastSpell(SpellSlot.E);
-                    }
-                        break;
-
-                    case "soraka":
-                    {
-                        Utility.DelayAction.Add(200, () => Player.Spellbook.CastSpell(SpellSlot.E, sender.Position));
-                    }
-                        break;
-
-                    case "Xerath":
-                    {
-                        Player.Spellbook.CastSpell(SpellSlot.E, sender);
-                    }
-                        break;
-
-                    case "Quinn":
-                    {
-                        if (sender.Position.To2D().Distance(Player) <=
-                            Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange)
-                            Player.Spellbook.CastSpell(SpellSlot.E, sender);
-                    }
-                        break;
-
-                    case "Thresh":
-                    {
-                        if (sender.Position.To2D().Distance(Player) <=
-                            Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange - 20)
+                        case "Vayne":
                         {
-                            Player.Spellbook.CastSpell(SpellSlot.E, sender.Position.Extend(Player.ServerPosition,
-                                Vector3.Distance(sender.Position, Player.Position) + 100));
+                            Player.Spellbook.CastSpell(SpellSlot.E, _rengo);
                         }
-                    }
-                        break;
+                            break;
 
-                    case "Jayce":
-                    {
-                        if (Player.IsMelee())
+                        case "Ahri":
+                        {
+                            Player.Spellbook.CastSpell(SpellSlot.E, sender);
+                        }
+                            break;
+
+                        case "Diana":
                         {
                             if (sender.Position.To2D().Distance(Player) <=
                                 Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange)
-                            {
+                                Player.Spellbook.CastSpell(SpellSlot.E);
+                        }
+                            break;
+
+                        case "Jinx":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange)
+                                Player.Spellbook.CastSpell(SpellSlot.E);
+                        }
+                            break;
+
+                        case "soraka":
+                        {
+                            Utility.DelayAction.Add(200, () => Player.Spellbook.CastSpell(SpellSlot.E, sender.Position));
+                        }
+                            break;
+
+                        case "Xerath":
+                        {
+                            Player.Spellbook.CastSpell(SpellSlot.E, sender);
+                        }
+                            break;
+
+                        case "Quinn":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange)
                                 Player.Spellbook.CastSpell(SpellSlot.E, sender);
+                        }
+                            break;
+
+                        case "Thresh":
+                        {
+                            if (sender.Position.To2D().Distance(Player) <=
+                                Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange - 20)
+                            {
+                                Player.Spellbook.CastSpell(SpellSlot.E, sender.Position.Extend(Player.ServerPosition,
+                                    Vector3.Distance(sender.Position, Player.Position) + 100));
                             }
                         }
-                    }
-                        break;
+                            break;
 
-                    case "Fizz":
-                    {
-                       Player.Spellbook.CastSpell(SpellSlot.R, sender.Position);
-                       
+                        case "Jayce":
+                        {
+                            if (Player.IsMelee())
+                            {
+                                if (sender.Position.To2D().Distance(Player) <=
+                                    Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange)
+                                {
+                                    Player.Spellbook.CastSpell(SpellSlot.E, sender);
+                                }
+                            }
+                        }
+                            break;
+
+                        case "Fizz":
+                        {
+                            Player.Spellbook.CastSpell(SpellSlot.R, sender.Position);
+
                             Player.Spellbook.CastSpell(SpellSlot.E,
                                 sender.Position.Extend(Player.ServerPosition,
                                     Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange));
-                        
-                    }
-                        break;
 
-                    case "Karthus":
-                    {
-                        Utility.DelayAction.Add(200, () => Player.Spellbook.CastSpell(SpellSlot.E, sender.Position));
-                    }
-                        break;
+                        }
+                            break;
 
-                    case "Ezreal":
-                    {
-                        Player.Spellbook.CastSpell(SpellSlot.E,
-                            Player.Position.Extend(sender.Position,
-                                Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange));
-                    }
-                        break;
+                        case "Karthus":
+                        {
+                            Utility.DelayAction.Add(200, () => Player.Spellbook.CastSpell(SpellSlot.E, sender.Position));
+                        }
+                            break;
 
-                    case "Draven":
-                    {
-                        Player.Spellbook.CastSpell(SpellSlot.E, sender);
-                    }
-                        break;
+                        case "Ezreal":
+                        {
+                            Player.Spellbook.CastSpell(SpellSlot.E,
+                                Player.Position.Extend(sender.Position,
+                                    Player.Spellbook.GetSpell(SpellSlot.E).SData.CastRange));
+                        }
+                            break;
 
-                    case "vel'koz":
-                    {
-                        Player.Spellbook.CastSpell(SpellSlot.E, sender.Position);
+                        case "Draven":
+                        {
+                            Player.Spellbook.CastSpell(SpellSlot.E, sender);
+                        }
+                            break;
+
+                        case "vel'koz":
+                        {
+                            Player.Spellbook.CastSpell(SpellSlot.E, sender.Position);
+                        }
+                            break;
                     }
-                        break;
                 }
-            }
 
-            #endregion
+                #endregion
 
-            #region R Spell Slot
+                #region R Spell Slot
 
 
             switch (Player.ChampionName)
@@ -187,7 +194,7 @@ namespace Slutty_Utility.Enviorment
                         sender.Position.Extend(Player.ServerPosition,
                             Player.Spellbook.GetSpell(SpellSlot.W).SData.CastRange));
                      */ // figure out proper trist logic
-                  Player.Spellbook.CastSpell(SpellSlot.R, _rengo);
+                    Player.Spellbook.CastSpell(SpellSlot.R, _rengo);
                     break;
                 }
 
@@ -211,7 +218,7 @@ namespace Slutty_Utility.Enviorment
                     }
 
                     if (sender.Position.Distance(Player.Position) <=
-                        SpellRange(SpellSlot.R) 
+                        SpellRange(SpellSlot.R)
                         && Environment.TickCount - lastq >= 1000
                         && !Player.Spellbook.GetSpell(SpellSlot.Q).IsReady())
                     {
@@ -231,7 +238,7 @@ namespace Slutty_Utility.Enviorment
 
                 case "LeeSin":
                 {
-                        Player.Spellbook.CastSpell(SpellSlot.R, _rengo);
+                    Player.Spellbook.CastSpell(SpellSlot.R, _rengo);
                     break;
                 }
 
@@ -246,6 +253,7 @@ namespace Slutty_Utility.Enviorment
             }
 
 
+
             #endregion
 
             #region Q Spell Slot
@@ -256,19 +264,14 @@ namespace Slutty_Utility.Enviorment
             {
                 case "Vayne":
                 {
-                    /*
-                    if (sender.Position.To2D().Distance(Player) <=
-                        SpellRange(SpellSlot.E))
+                    if (GetBool("userantirengar", typeof(bool)))
                     {
-                        Player.Spellbook.CastSpell(SpellSlot.Q, sender.Position.Extend(Player.ServerPosition,
-                            Vector3.Distance(sender.Position, Player.Position) + 100)); // might aswell use the other method, will check both to see which works best :)
-
+                        Player.Spellbook.CastSpell(SpellSlot.R);
                     }
-                     */
                     if (_rengo.Distance(Player) < 300)
                     {
-                        ecasted = true;
-                       Utility.DelayAction.Add(150 + Game.Ping, () =>  backwardscast(SpellSlot.Q, sender)); // yay
+                        qscasted = true;
+                        Utility.DelayAction.Add(150 + Game.Ping, () => backwardscast(SpellSlot.Q, sender)); // yay
                     }
                     break;
                 }

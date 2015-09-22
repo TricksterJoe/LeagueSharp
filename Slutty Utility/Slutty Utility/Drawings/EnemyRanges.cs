@@ -49,7 +49,7 @@ namespace Slutty_Utility.Drawings
                 {
                     foreach (var herospell in Slots)
                     {
-                        if (spell.Slot == herospell && !hero.IsDead &&
+                        if (spell.Slot == herospell && herospell.IsReady() && !hero.IsDead &&
                             Helper.GetBool(
                                 "spellrange.spellrangeenemy.spellrangeenemyname" + herospell + hero.ChampionName,
                                 typeof (bool)))

@@ -99,7 +99,6 @@ namespace Slutty_Utility.Activator
             {
                 if (ItemReady(Hydra) || ItemReady(Tiamat))
                 {
-
                     if (GetBool("offensive.hydraminions", typeof (bool)) &&
                         Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear
                         || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit
@@ -109,6 +108,11 @@ namespace Slutty_Utility.Activator
                         {
                             SelfCast(HasItem(Hydra) ? Hydra : Tiamat);
                         }
+                    }
+                    else if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                    {
+                        SelfCast(HasItem(Hydra) ? Hydra : Tiamat);
+                        
                     }
                 }
             }

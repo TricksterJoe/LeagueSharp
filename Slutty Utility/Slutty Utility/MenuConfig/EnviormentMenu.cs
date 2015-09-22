@@ -14,6 +14,10 @@ namespace Slutty_Utility.MenuConfig
             var antirengar = new Menu("Anti Rengar", "Anti Rengar");
             {
                 AddBool(antirengar, "Use Anti Rengar", "enviorment.antirengar", true);
+                if (Player.ChampionName == "Vayne")
+                {
+                    AddBool(antirengar, "Use R In Anti Rengar", "userantirengar", true);
+                }
             }
             Config.AddSubMenu(antirengar);
 

@@ -50,7 +50,7 @@ namespace Slutty_Utility.Activator
                      if (GetStringValue("locketop" + hero.ChampionName) == 0
                          && hero.Distance(Player) <= 1000
                          && hero.HealthPercent <= Config.Item("lockethp" + hero.ChampionName).GetValue<Slider>().Value
-                         && Player.CountEnemiesInRange(1500) >= 2)
+                         && Player.CountEnemiesInRange(1500) >= 1)
                          SelfCast(Locket);
                  }
              }
