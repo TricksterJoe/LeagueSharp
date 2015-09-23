@@ -41,8 +41,9 @@ namespace Slutty_Utility.MenuConfig
             {
                 AddBool(spelltracker, "Track Spells", "spelltracker", true);
             }
-       
+            Config.AddSubMenu(spelltracker);
 
-    }
+
+        }
     }
 }
