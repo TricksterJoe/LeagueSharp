@@ -113,7 +113,7 @@ namespace Slutty_Utility.Jungle
                     continue;
                 if (SmiteDamage(monster) > monster.Health)
                 {
-                    if (GetBool("usenunuq", typeof (bool)))
+                    if (GetBool("usenunuq", typeof (bool)) && Player.ChampionName == "nunu")
                     {
                         Player.Spellbook.CastSpell(NumNumChamps[Player.ChampionName]._SpellSlot, monster);
                     }
@@ -158,7 +158,7 @@ namespace Slutty_Utility.Jungle
                         case "Nunu":
                         {
                             if (Player.Spellbook.GetSpell(SpellSlot.Q).IsReady() && Player.Distance(target) < 500
-                                && GetBool("usenunuq", typeof(bool)))
+                                && GetBool("usenunuq", typeof(bool)) && Player.ChampionName == "nunu")
                             {
                                 damage += (float)(Player.GetSpellDamage(target, SpellSlot.Q));
                             }

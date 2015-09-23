@@ -12,10 +12,12 @@ namespace Slutty_Utility
 {
     class Mains : Helper
     {
+        public static Menu menu;
         internal static void OnLoad(EventArgs args)
         {
             Config = new Menu(Menuname, Menuname, true);
-            Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
+          //  menu = new Menu(Menuname, Menuname, true);
+          //  Orbwalker = new Orbwalking.Orbwalker(menu.SubMenu("Orbwalking"));
             ActivatorMenu.LoadActivator();
             DamagesMenu.LoadDamagesMenu();
             EnviormentMenu.LoadEnviormentMenu();
@@ -36,7 +38,7 @@ namespace Slutty_Utility
             Smite.OnLoad();
             Barrier.OnLoad();
           //  Wards.OnLoad();
-          //  TrackerSpell.OnLoad();
+            TrackerSpell.OnLoad();
             // UltManager.OnLoad();
             // plzkallen
             //  DtoP.OnLoad();
