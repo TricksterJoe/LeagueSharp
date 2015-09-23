@@ -25,12 +25,13 @@ namespace Slutty_Utility.Tracker
 
         public static void OnLoad()
         {
-            if (!GetBool("spelltracker", typeof(bool))) return;
             Drawing.OnDraw += OnDraw;
         }
 
         private static void OnDraw(EventArgs args)
         {
+
+            if (!GetBool("spelltracker", typeof(bool))) return;
             foreach (var hero in HeroManager.AllHeroes.Where(x => x.IsValid && x.IsVisible))
             {
                 for (var i = 0; i < _spellslot.Count(); i++)
