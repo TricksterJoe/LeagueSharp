@@ -55,13 +55,15 @@ namespace Slutty_Utility.Jungle
             }
 
         }
-        public static void OnUpdate(EventArgs args)
-        {
-            if (JungleTick > TickCount) return;
-            JungleTick = TickCount + 1000;
-            if(JungleMonsters.JungleCamps == null) JungleMonsters.LoadCamps();
-            if (!GetBool("jungle.options.drawing.timers", typeof(bool))) return;
 
+        public static void OnDraw(EventArgs args)
+        {
+            if (JungleMonsters.JungleCamps == null && JungleTick > TickCount)
+            {
+                JungleTick = TickCount + 1000;
+                JungleMonsters.LoadCamps();
+            }
+            if (!GetBool("jungle.options.drawing.timers", typeof(bool))) return;
             for (var index = 0; index < JungleMonsters.JungleCamps.Count; index++)
             {
                 var camp = JungleMonsters.JungleCamps[index];
@@ -72,9 +74,8 @@ namespace Slutty_Utility.Jungle
                         continue;
                     }
                 var loc = Drawing.WorldToMinimap(camp.Location.To3D());
-                Drawing.DrawText(loc.X,loc.Y, Color.LightGray, string.Format("{mm:ss}", (camp.RespawnTime - Game.Time)));
+                Drawing.DrawText(loc.X, loc.Y, Color.LightGray, string.Format("{mm:ss}", (camp.RespawnTime - Game.Time)));
             }
-
         }
     }
 }
