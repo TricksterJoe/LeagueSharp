@@ -52,11 +52,11 @@ namespace Slutty_Utility.Tracker
                     //    var CDPercent = expiress * 100 / CD;
                         if (CD > 0)
                         {
-                            Drawing.DrawText(X, Y, Color.Blue, CD.ToString());
+                            Drawing.DrawText(X, Y, Color.White, CD.ToString());
                         }
                         else
                         {
-                            Drawing.DrawText(X, Y, Color.Black, "0");
+                            Drawing.DrawText(X, Y, Color.SlateGray, "0");
                         }
                     }
                 }

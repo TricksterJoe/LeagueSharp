@@ -15,7 +15,7 @@ namespace Slutty_Utility
         internal static void OnLoad(EventArgs args)
         {
             Config = new Menu(Menuname, Menuname, true);
-            Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
+            Orbwalker = new Orbwalking.Orbwalker(new Menu("w/e", "w/e"));
             ActivatorMenu.LoadActivator();
             DamagesMenu.LoadDamagesMenu();
             EnviormentMenu.LoadEnviormentMenu();
