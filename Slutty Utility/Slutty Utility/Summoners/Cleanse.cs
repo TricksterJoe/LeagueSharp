@@ -33,7 +33,8 @@ namespace Slutty_Utility.Summoners
             {
                 if (Player.HasBuffOfType(buff) && GetBool("cleanse" + buff, typeof (bool)))
                 {
-                    Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerboost"));
+                    Utility.DelayAction.Add(GetValue("cleansedelay"),
+                        () => Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerboost")));
                 }
             }
         }
