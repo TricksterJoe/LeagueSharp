@@ -76,6 +76,7 @@ namespace Slutty_Utility.MenuConfig
                         AddBool(cleansemenu, "Cleanse On " + buff, "cleanse" + buff, true);
                     }
                     AddBool(cleansemenu, "Use Cleanse", "usecleanse", true);
+                    AddValue(cleansemenu, "Cleanse Delay", "cleansedelay", 0, 0, 1500);
                 }
                 summonersmenu.AddSubMenu(cleansemenu);
             }
