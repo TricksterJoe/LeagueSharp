@@ -37,12 +37,6 @@ namespace Slutty_Utility.MenuConfig
             }
             Config.AddSubMenu(wardtrack);
 
-            var spelltracker = new Menu("Spell Tracker", "Spell Tracker");
-            {
-                AddBool(spelltracker, "Track Spells", "spelltracker", true);
-            }
-       
-
-    }
+        }
     }
 }

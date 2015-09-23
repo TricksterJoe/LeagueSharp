@@ -25,7 +25,6 @@ namespace Slutty_Utility.Tracker
 
         public static void OnLoad()
         {
-            if (!GetBool("spelltracker", typeof(bool))) return;
             Drawing.OnDraw += OnDraw;
         }
 
