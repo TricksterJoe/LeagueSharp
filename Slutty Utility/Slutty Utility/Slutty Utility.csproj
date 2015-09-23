@@ -94,6 +94,7 @@
     <Compile Include="Summoners\Flash.cs" />
     <Compile Include="Summoners\Ignite.cs" />
     <Compile Include="Tracker\TrackerSpell.cs" />
+    <Compile Include="Tracker\JungleTracker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

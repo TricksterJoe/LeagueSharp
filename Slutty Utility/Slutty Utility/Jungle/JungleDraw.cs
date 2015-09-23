@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Runtime.Remoting.Channels;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -19,7 +20,13 @@ namespace Slutty_Utility.Jungle
             {
                 //If User does not want drawing
                 if (GetBool("jungle.options.drawing.range", typeof (bool)))
-                    Render.Circle.DrawCircle(Player.Position, 550,Color.Red);
+                    Render.Circle.DrawCircle(Player.Position, 550,Color.Red,5);
+
+                if (GetBool("jungle.options.drawing.damage", typeof (bool)))
+                {
+                   
+
+                }
             }
             catch
             {

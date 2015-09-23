@@ -9,7 +9,7 @@ namespace Slutty_Utility.Tracker
 {
     internal class Wards : Helper
     {
-        //public static GameObject greenward;
+        public static GameObject greenward;
         internal enum WardType
         {
             Green,
@@ -43,18 +43,8 @@ namespace Slutty_Utility.Tracker
         private static void OnUpdate(EventArgs args)
         {
             WardList.FindAll(ward => ward.lifeSpan < TickCount).ForEach(ward => WardList.Remove(ward)); //change to ondelete
-
-            foreach (var wards in WardList)
-            {
-                var colors = wards.id == WardType.Green ? Color.Green : Color.Pink;
-                if (wards.lifeSpan > TickCount)
-                    Drawing.DrawCircle(wards.location, 100, colors); // drawing in an object
-                
-            }
-
-
         }
-
+        
 
         private static void OnCreate(GameObject sender, EventArgs args)
         {
@@ -155,6 +145,15 @@ namespace Slutty_Utility.Tracker
                 return;
           //  if (sender.IsAlly)
            //     return;
+
+            foreach (var wards in WardList)
+            {
+                var colors = wards.id == WardType.Green ? Color.Green : Color.Pink;
+                if (wards.wardID == sender.Name)
+                {
+                    Drawing.DrawCircle(wards.location, 100, colors); // drawing in an object
+                }
+            }
 
         }
     }
