@@ -8,6 +8,17 @@ namespace Slutty_Utility.Activator
      class Defensive : Helper
     {
         public static int ZhonyaId, Omen, Seraphs, QSS, Mikaels, Locket, Mountain;
+        public static readonly BuffType[] Bufftype =
+        {
+            BuffType.Snare, 
+            BuffType.Blind, 
+            BuffType.Charm, 
+            BuffType.Stun,
+            BuffType.Fear, 
+            BuffType.Slow,
+            BuffType.Taunt, 
+            BuffType.Suppression
+        };
 
         static Defensive()
         {
@@ -38,6 +49,7 @@ namespace Slutty_Utility.Activator
                      SelfCast(Omen);
                  }
              }
+
              #endregion
 
              #region Locket
@@ -60,7 +72,7 @@ namespace Slutty_Utility.Activator
              #region Seraphs
 
              if (ItemReady(Seraphs) && HasItem(Seraphs)
-                 && GetBool("defensive.seraphmenu", typeof(bool))
+                 && GetBool("defensive.seraphmenu", typeof (bool))
                  && Player.HealthPercent <= GetValue("defensive.value"))
              {
                  SelfCast(Seraphs);
@@ -72,23 +84,27 @@ namespace Slutty_Utility.Activator
 
              if (ItemReady(Mikaels) && HasItem(Mikaels))
              {
-                 foreach (var hero in HeroManager.Allies.Where(x =>x.Distance(Player) <= 800))
+                 foreach (
+                     var hero in HeroManager.AllHeroes.Where(x => x.Distance(Player) <= 800 && (x.IsMe || x.IsAlly)))
                  {
-                     if (Config.Item("mikaels" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
+                     foreach (var buff in Bufftype)
                      {
-                         if (hero.HasBuffOfType(BuffType.Charm) ||
-                             hero.HasBuffOfType(BuffType.Silence) ||
-                             hero.HasBuffOfType(BuffType.Stun) ||
-                             hero.HasBuffOfType(BuffType.Taunt) ||
-                             hero.HasBuffOfType(BuffType.Suppression))
+                         if (!GetBool("defensive.mikaels", typeof (bool)) ||
+                             !GetBool("usemikaels" + hero.ChampionName, typeof (bool)))
+                             return;
+                         if (hero.HasBuffOfType(buff))
                          {
-                             UseUnitItem(Mikaels, hero);
+                             if (GetBool("mikalesuse" + buff, typeof (bool)))
+                             {
+                                 UseUnitItem(Mikaels, hero);
+                             }
                          }
                      }
                  }
              }
+         
 
-             #endregion
+         #endregion
 
              #region Mountain
 
@@ -111,15 +127,14 @@ namespace Slutty_Utility.Activator
 
              if (ItemReady(QSS) && HasItem(QSS))
              {
-                 if (GetBool("defensive.qss", typeof(bool)))
+                 foreach (var buff in Bufftype)
                  {
-                     if (Player.HasBuffOfType(BuffType.Charm) ||
-                         Player.HasBuffOfType(BuffType.Silence) ||
-                         Player.HasBuffOfType(BuffType.Stun) ||
-                         Player.HasBuffOfType(BuffType.Taunt) ||
-                         Player.HasBuffOfType(BuffType.Suppression))
+                     if (GetBool("defensive.qss" + buff, typeof (bool)))
                      {
-                         SelfCast(QSS);
+                         if (Player.HasBuffOfType(buff))
+                         {
+                             Utility.DelayAction.Add(GetValue("qssdelay"), () =>  SelfCast(QSS));
+                         }
                      }
                  }
              }

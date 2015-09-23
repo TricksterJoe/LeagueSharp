@@ -10,6 +10,18 @@ namespace Slutty_Utility.MenuConfig
 {
      class ActivatorMenu : Helper
     {
+         public static readonly BuffType[] Bufftype =
+        {
+            BuffType.Snare, 
+            BuffType.Blind, 
+            BuffType.Charm, 
+            BuffType.Stun,
+            BuffType.Fear, 
+            BuffType.Slow,
+            BuffType.Taunt, 
+            BuffType.Suppression
+        };
+
         public static void LoadActivator()
         {
             var activator = new Menu("Activator", "Activator");
@@ -56,21 +68,28 @@ namespace Slutty_Utility.MenuConfig
                 var mikaels = new Menu("Mikaels", "Mikaels");
                 {
                     AddBool(mikaels, "Use Mikaels", "defensive.mikaels", true);
-                    foreach (var hero in
-                        ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(x => x.IsAlly))
+                    AddValue(mikaels, "Mikaels Delay", "mikaelsdelay", 0, 0, 1000);
+                    foreach (var hero in HeroManager.Allies.Where(x => x.IsAlly || x.IsMe))
                     {
+                        var heros = new Menu(hero.ChampionName, hero.ChampionName);
+                        foreach (var buff in Bufftype)
                         {
-                            mikaels.AddItem(new MenuItem("mikaels" + hero.ChampionName, hero.ChampionName))
-                                .SetValue(new StringList(new[] {"Use", "Don't Use"}));
+                            AddBool(heros, "Use On " + buff, "mikalesuse" + buff, true);
                         }
+                        AddBool(heros, "Use Mikaels", "usemikaels" + hero.ChampionName, true);
+                        mikaels.AddSubMenu(heros);
                     }
                 }
                 defensive.AddSubMenu(mikaels);
 
-                var qss = new Menu("QSS/Mercurial", "QSS/Mercurial");
+
+            var qss = new Menu("QSS/Mercurial", "QSS/Mercurial");
                 {
-                    AddBool(qss, "Use QSS/Mercurial", "defensive.qss", true);
+                    foreach (var buff in Bufftype)
+                    {
+                        AddBool(qss, "Use QSS/Mercurial On " + buff , "defensive.qss" + buff, true);
+                    }
+                    AddValue(qss, "QSS/Mercurial Delay", "qssdelay", 0, 0, 1000);
                 }
                 defensive.AddSubMenu(qss);
 
