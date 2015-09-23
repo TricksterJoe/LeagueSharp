@@ -35,19 +35,19 @@ namespace Slutty_Utility.Summoners
         private static void OnUpdate(EventArgs args)
         {
 
-            foreach (var hero in HeroManager.Enemies.Where(x => x.IsValid))
+            foreach (var hero in HeroManager.Enemies.Where(x => x.IsValid && x.Distance(Player) <= 600))
             {
                 if (GetBool("useignite" + hero.ChampionName, typeof (bool)))
                 {
-                    if (Ignite1.IsReady()
-                        && (hero.Health <=
+                    if (Ignite1.IsReady() &&
+                            (hero.Health <=
                             Player.GetSpellDamage(hero, SpellSlot.Q)
                             + Player.GetSpellDamage(hero, SpellSlot.W)
                             + Player.GetSpellDamage(hero, SpellSlot.E)
-                            + Player.GetAutoAttackDamage(hero) + IgniteDamage(hero))
-                        && (Player.Spellbook.GetSpell(SpellSlot.W).IsReady() &&
-                            Player.Spellbook.GetSpell(SpellSlot.E).IsReady() &&
-                            Player.Spellbook.GetSpell(SpellSlot.Q).IsReady()))
+                            + Player.GetAutoAttackDamage(hero) + IgniteDamage(hero)))
+//                        && (Player.Spellbook.GetSpell(SpellSlot.W).IsReady() &&
+//                            Player.Spellbook.GetSpell(SpellSlot.E).IsReady() &&
+//                            Player.Spellbook.GetSpell(SpellSlot.Q).IsReady()))
                     {
                         Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerdot"), hero);
                     }
