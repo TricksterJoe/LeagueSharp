@@ -58,7 +58,7 @@ namespace Slutty_Utility
             //  DtoP.OnLoad(); 
 
             //Jungle (yes smite contains everything in jungle) //todo Jungle timers
-          //  Smite.OnLoad();
+             Smite.OnLoad();
 
             //Enviormenet //todo Ult Manager, Inhibs, Turn Around, Turrets
             AntiRengar.OnLoad();

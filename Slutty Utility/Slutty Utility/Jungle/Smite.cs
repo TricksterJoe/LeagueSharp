@@ -23,10 +23,10 @@ namespace Slutty_Utility.Jungle
 //            Drawing.OnDraw += JungleDraw.Drawing_OnDrawMonster;
 //            Drawing.OnDraw += JungleDraw.Drawing_OnDraw;
             
-
-            Drawing.OnDraw += Timer.OnDraw;
-            GameObject.OnCreate += Timer.OnCreate;
-            GameObject.OnDelete += Timer.OnDelete;
+//
+//            Drawing.OnDraw += Timer.OnDraw;
+//            GameObject.OnCreate += Timer.OnCreate;
+//            GameObject.OnDelete += Timer.OnDelete;
 
         }
 
