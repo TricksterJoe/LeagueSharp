@@ -36,7 +36,7 @@ namespace Slutty_Utility.MenuConfig
                                , true);
                        }
                        AddBool(spellrangeenemyname, "Draw Auto Attack Range", "showdrawingsaa" + hero.ChampionName, true);
-                       AddBool(spellrangeenemyname, "Show Drawings", "showdrawings" + hero.ChampionName, true);
+                       AddBool(spellrangeenemyname, "Show Drawings", "showdrawings" + hero.ChampionName, false);
                    }
                    AddBool(spellrangeenemy, "Display Enemy Ranges", "displayenemyrange", true);
                }
@@ -56,7 +56,7 @@ namespace Slutty_Utility.MenuConfig
                        }
                        AddBool(spellrangeenemynames, "Draw Auto Attack Range", "showdrawingsaaa" + hero.ChampionName,
                            true);
-                       AddBool(spellrangeenemynames, "Show Drawings", "showdrawingss" + hero.ChampionName, true);
+                       AddBool(spellrangeenemynames, "Show Drawings", "showdrawingss" + hero.ChampionName, false);
                        AddBool(spellrangeally, "Display Ally Ranges", "displayallyrange", true);
                    }
                }
