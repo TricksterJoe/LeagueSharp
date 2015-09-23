@@ -24,9 +24,11 @@ namespace Slutty_Utility.Jungle
             Drawing.OnDraw += JungleDraw.Drawing_OnDrawMonster;
             Drawing.OnDraw += JungleDraw.Drawing_OnDraw;
             GameObject.OnCreate += JungleDraw.OnCreate;
+
             GameObject.OnCreate += Timer.OnCreate;
             GameObject.OnDelete += Timer.OnDelete;
           //  Game.OnUpdate += Timer.OnUpdate;
+            Drawing.OnDraw += Timer.OnDraw;
         }
 
         private struct ExternalSpell
@@ -46,28 +48,28 @@ namespace Slutty_Utility.Jungle
         {
             try
             {
-                if (!GetBool("jungle.options.autoSmite", typeof(bool))) return;
+                //  if (!GetBool("jungle.options.autoSmite", typeof(bool))) return;
 
 
-                if (GetBool("jungle.options.smiteBuffs", typeof(bool)))
+                // if (GetBool("jungle.options.smiteBuffs", typeof(bool)))
                 CheckBuffs();
 
 
-                if (GetBool("jungle.options.smiteEpic", typeof(bool)))
-                    CheckEpics();
-                
-                
-                if (!NumNumChamps.ContainsKey("Nunu"))
-                    LoadNumNum();
-                    
-                
+                // if (GetBool("jungle.options.smiteEpic", typeof(bool)))
+                CheckEpics();
+
+
+                // if (!NumNumChamps.ContainsKey("Nunu"))
+                LoadNumNum();
+
+
 
             }
             catch
             {
                 // Just used so we dont have to use goto LOL
             }
-                //After try block
+            //After try block
             finally
             {
                 SmiteCheck();
@@ -94,7 +96,7 @@ namespace Slutty_Utility.Jungle
                     if (SmiteDamage(monster) > monster.Health)
                     {
                         Player.Spellbook.CastSpell(_smiteSlot, monster);
-                   }
+                    }
 
                 }
             }
@@ -113,7 +115,7 @@ namespace Slutty_Utility.Jungle
                     continue;
                 if (SmiteDamage(monster) > monster.Health)
                 {
-                    if (GetBool("usenunuq", typeof (bool)))
+                    if (GetBool("usenunuq", typeof(bool)))
                     {
                         Player.Spellbook.CastSpell(NumNumChamps[Player.ChampionName]._SpellSlot, monster);
                     }
@@ -130,7 +132,7 @@ namespace Slutty_Utility.Jungle
         private static float GetFuckingSmiteDamage()
         {
             var level = Player.Level;
-            var index = Player.Level/5;
+            var index = Player.Level / 5;
             float[] dmgs =
             {
                 370 + 20*level,
@@ -144,7 +146,7 @@ namespace Slutty_Utility.Jungle
         public static float SmiteDamage(Obj_AI_Base target)
         {
             float damage = 0;
-            
+
             string[] champlist =
             {
                 "Cho'Gath", "Nunu"
@@ -156,18 +158,18 @@ namespace Slutty_Utility.Jungle
                     switch (champs)
                     {
                         case "Nunu":
-                        {
-                            if (Player.Spellbook.GetSpell(SpellSlot.Q).IsReady() && Player.Distance(target) < 500
-                                && GetBool("usenunuq", typeof(bool)))
                             {
-                                damage += (float)(Player.GetSpellDamage(target, SpellSlot.Q));
+                                if (Player.Spellbook.GetSpell(SpellSlot.Q).IsReady() && Player.Distance(target) < 500
+                                    && GetBool("usenunuq", typeof(bool)))
+                                {
+                                    damage += (float)(Player.GetSpellDamage(target, SpellSlot.Q));
+                                }
+                                break;
                             }
-                            break;
-                        }
                     }
                 }
             }
-             
+
 
 
             if (_smiteSlot.IsReady())
