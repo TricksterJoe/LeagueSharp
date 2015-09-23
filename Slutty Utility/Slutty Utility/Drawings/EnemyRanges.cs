@@ -33,9 +33,10 @@ namespace Slutty_Utility.Drawings
 
         private static void OnDraw(EventArgs args)
         {
+            if (!Helper.GetBool("displayenemyrange", typeof(bool))) return;
             foreach (
                 var hero in
-                    HeroManager.Enemies.Where(x => !x.IsDead && x.IsValid && x.Position.Distance(Helper.Player.Position) < 2000 && x.IsChampion()))
+                    HeroManager.Enemies.Where(x => !x.IsDead && x.IsVisible && x.IsValid && x.Position.Distance(Helper.Player.Position) < 2000 && x.IsChampion()))
             {
                 if (!Helper.GetBool("showdrawings" + hero.ChampionName, typeof (bool)))
                     return;
@@ -49,7 +50,7 @@ namespace Slutty_Utility.Drawings
                 {
                     foreach (var herospell in Slots)
                     {
-                        if (spell.Slot == herospell && herospell.IsReady() && !hero.IsDead &&
+                        if (spell.Slot == herospell && hero.GetSpell(herospell).IsReady() && !hero.IsDead &&
                             Helper.GetBool(
                                 "spellrange.spellrangeenemy.spellrangeenemyname" + herospell + hero.ChampionName,
                                 typeof (bool)))

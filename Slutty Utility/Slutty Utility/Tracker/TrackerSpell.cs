@@ -30,7 +30,7 @@ namespace Slutty_Utility.Tracker
 
         private static void OnDraw(EventArgs args)
         {
-            foreach (var hero in HeroManager.AllHeroes)
+            foreach (var hero in HeroManager.AllHeroes.Where(x => x.IsValid && x.IsVisible))
             {
                 for (var i = 0; i < _spellslot.Count(); i++)
                 {

@@ -1,6 +1,8 @@
 ﻿using System;
+using LeagueSharp;
 using LeagueSharp.Common;
 using Slutty_Utility.Activator;
+using Slutty_Utility.Damages;
 using Slutty_Utility.Drawings;
 using Slutty_Utility.Enviorment;
 using Slutty_Utility.MenuConfig;
@@ -8,6 +10,16 @@ using Slutty_Utility.Summoners;
 using Slutty_Utility.Tracker;
 using Slutty_Utility.Jungle;
 
+/*
+ *    _____ _______    _______ _____ _____   ____   ______     _______  
+  / ____|__   __|/\|__   __|_   _/ ____| |  _ \ / __ \ \   / / ____| 
+ | (___    | |  /  \  | |    | || |      | |_) | |  | \ \_/ / (___   
+  \___ \   | | / /\ \ | |    | || |      |  _ <| |  | |\   / \___ \  
+  ____) |  | |/ ____ \| |   _| || |____  | |_) | |__| | | |  ____) | 
+ |_____/   |_/_/    \_\_|  |_____\_____| |____/ \____/  |_| |_____/  
+                                                                     
+                                                                     
+ */
 namespace Slutty_Utility
 {
     class Mains : Helper
@@ -22,26 +34,39 @@ namespace Slutty_Utility
             JungleMenu.LoadJungleMenu();
             DrawingsMenu.DrawingsMenus();
             SummonersMenu.LoadSummonersMenu();
+            AutoLevelMenu.OnLoad();
+            Config.Item("useautolevel").SetValue(false);
             Config.AddToMainMenu();
-         
-            Consumables.OnLoad(); 
-            AntiRengar.OnLoad();
+
+            // Activator
             Defensive.OnLoad();
-            EnemyRanges.OnLoad();
-            AllyRanges.OnLoad();
             Offensive.OnLoad();
+            Consumables.OnLoad();
+
+            // Summoners
             Ignite.OnLoad();
             Heal.OnLoad();
             Cleanse.OnLoad();
-            Smite.OnLoad();
             Barrier.OnLoad();
-          //  Wards.OnLoad();
-            TrackerSpell.OnLoad();
-            // UltManager.OnLoad();
-            // plzkallen
-            //  DtoP.OnLoad();
-            // DtoT.OnLoad();
 
+            //Drawings //todo DtoP
+            EnemyRanges.OnLoad();
+            AllyRanges.OnLoad();
+            Wards.OnLoad();
+            TrackerSpell.OnLoad();
+            //DtoT.OnLoad();
+            //  DtoP.OnLoad(); 
+
+            //Jungle (yes smite contains everything in jungle) //todo Jungle timers
+          //  Smite.OnLoad();
+
+            //Enviormenet //todo Ult Manager, Inhibs, Turn Around, Turrets
+            AntiRengar.OnLoad();
+            Auto_Level_Manager.AutoLevel.OnLoad();
+            //UltManager.OnLoad();
+            //Inhibitors.OnLoad();
+            //TurnAround.OnLoad();
+            //Turrets.OnLoad();
         }
     }
 }

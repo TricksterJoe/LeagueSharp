@@ -38,7 +38,9 @@ namespace Slutty_Utility.MenuConfig
                        AddBool(spellrangeenemyname, "Draw Auto Attack Range", "showdrawingsaa" + hero.ChampionName, true);
                        AddBool(spellrangeenemyname, "Show Drawings", "showdrawings" + hero.ChampionName, true);
                    }
+                   AddBool(spellrangeenemy, "Display Enemy Ranges", "displayenemyrange", true);
                }
+              
 
                var spellrangeally = new Menu("Ally Spell Ranges Draw", "Ally Spell Ranges Draw");
                {
@@ -55,6 +57,7 @@ namespace Slutty_Utility.MenuConfig
                        AddBool(spellrangeenemynames, "Draw Auto Attack Range", "showdrawingsaaa" + hero.ChampionName,
                            true);
                        AddBool(spellrangeenemynames, "Show Drawings", "showdrawingss" + hero.ChampionName, true);
+                       AddBool(spellrangeally, "Display Ally Ranges", "displayallyrange", true);
                    }
                }
                spellrange.AddSubMenu(spellrangeenemy);

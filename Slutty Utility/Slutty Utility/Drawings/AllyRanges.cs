@@ -26,15 +26,16 @@ namespace Slutty_Utility.Drawings
 
         private static void OnDraw(EventArgs args)
         {
+            if (!Helper.GetBool("displayallyrange", typeof(bool))) return;
             foreach (
                 var hero in
-                    HeroManager.AllHeroes.Where(
-                        x => (x.IsAlly || x.IsMe) &&
-                            !x.IsDead && x.IsValid && x.Position.Distance(Helper.Player.Position) < 2000 &&
-                            x.IsChampion()))
+                    HeroManager.Allies)
             {
                 if (!Helper.GetBool("showdrawingss" + hero.ChampionName, typeof(bool)))
                     return;
+
+                if (!hero.IsVisible && hero.Distance(Helper.Player) > 2000) return;
+
 
                 if (Helper.GetBool("showdrawingsaaa" + hero.ChampionName, typeof(bool)))
                 {
@@ -45,7 +46,7 @@ namespace Slutty_Utility.Drawings
                 {
                     foreach (var herospell in Slots)
                     {
-                        if (spell.Slot == herospell && herospell.IsReady() &&
+                        if (spell.Slot == herospell && hero.GetSpell(herospell).IsReady() && !hero.IsDead &&
                             Helper.GetBool(
                                 "spellrange.spellrangeenemy.spellrangeallyname" + herospell + hero.ChampionName,
                                 typeof (bool)))

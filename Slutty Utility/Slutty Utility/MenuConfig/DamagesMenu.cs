@@ -18,19 +18,19 @@ namespace Slutty_Utility.MenuConfig
             SpellSlot.W, 
             SpellSlot.R
         };
-        
+
         public static void LoadDamagesMenu()
         {
-                        var Damagesmeny = new Menu("Damage Settingssss", "Damage Settsssings");
+            var Damagesmeny = new Menu("Damage Settings", "Damage Settings");
             {
                 var DtoP = new Menu("Damage To Player Settings", "Damage To Player Settings");
                 {
                     AddBool(DtoP, "Display Selected Target Damage", "dtop.selectedtarget", true);
-                    foreach (var champion in HeroManager.Enemies.Where(x => !x.IsMe && x.IsValidTarget()))
+                    foreach (var champion in HeroManager.Enemies)
                     {
                         var champions = new Menu(champion.ChampionName, champion.ChampionName);
                         DtoP.AddSubMenu(champions);
-                        foreach (var spells in Slots) // probably wrong, will be checking.
+                        foreach (var spells in Slots)
                         {
                             AddBool(champions, "Display" + " " + spells + " " + "Damage", "damagesmenu.dtop" + spells,
                                 true);
@@ -44,13 +44,13 @@ namespace Slutty_Utility.MenuConfig
                     AddBool(DtoT, "Display Combo Damage On Targets", "dtot.damage", true);
                     foreach (var spells in Slots) // probably wrong, will be checking.
                     {
-                        AddBool(DtoT, "Display" + " " + spells + " " + "Damage", "damagesmenu.dtop" + spells, true);
+                        AddBool(DtoT, "Display" + " " + spells + " " + "Damage", "damagesmenu.dtot" + spells, true);
                     }
                 }
                 Damagesmeny.AddSubMenu(DtoT);
             }
             Config.AddSubMenu(Damagesmeny);
         }
-         
+
     }
 }

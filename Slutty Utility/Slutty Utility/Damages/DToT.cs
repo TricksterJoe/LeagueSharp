@@ -33,20 +33,22 @@ namespace Slutty_Utility.Damages
         public static float GetComboDamage(Obj_AI_Hero enemy)
         {
             var damage = 0d;
-            if (Player.Spellbook.GetSpell(SpellSlot.Q).IsReady() &&
-            GetBool("damagesmenu.dtop" + DamagesMenu.Slots[0], typeof (bool)))
+
+            
+//            if (Player.Spellbook.GetSpell(SpellSlot.Q).IsReady() &&
+//            GetBool("damagesmenu.dtop" + DamagesMenu.Slots[0], typeof (bool)))
                 damage += Player.GetSpellDamage(enemy, SpellSlot.Q);
 
-            if (Player.Spellbook.GetSpell(SpellSlot.E).IsReady() &&
-                GetBool("damagesmenu.dtop" + DamagesMenu.Slots[1], typeof (bool))) 
+//            if (Player.Spellbook.GetSpell(SpellSlot.E).IsReady() &&
+//                GetBool("damagesmenu.dtop" + DamagesMenu.Slots[1], typeof (bool))) 
                 damage += Player.GetSpellDamage(enemy, SpellSlot.E);
 
-            if (Player.Spellbook.GetSpell(SpellSlot.W).IsReady() &&
-                GetBool("damagesmenu.dtop" + DamagesMenu.Slots[2], typeof (bool))) 
+//            if (Player.Spellbook.GetSpell(SpellSlot.W).IsReady() &&
+//                GetBool("damagesmenu.dtop" + DamagesMenu.Slots[2], typeof (bool))) 
                 damage += Player.GetSpellDamage(enemy, SpellSlot.W);
-
-            if (Player.Spellbook.GetSpell(SpellSlot.R).IsReady() &&
-                GetBool("damagesmenu.dtop" + DamagesMenu.Slots[3], typeof (bool))) 
+//
+//            if (Player.Spellbook.GetSpell(SpellSlot.R).IsReady() &&
+//                GetBool("damagesmenu.dtop" + DamagesMenu.Slots[3], typeof (bool))) 
                 damage += Player.GetSpellDamage(enemy, SpellSlot.R);
 
             return (float)damage;
@@ -68,38 +70,38 @@ namespace Slutty_Utility.Damages
 
         private static void OnDraw(EventArgs args)
         {
-
-            var target = TargetSelector.GetSelectedTarget();
-            if (target == null)
-                return;
-            if (!GetBool("dtot.damage", typeof(bool)))
+            if (!GetBool("dtot.damage", typeof (bool)))
             {
                 return;
             }
-            var barPos = target.HPBarPosition;
-            var damage = DamageToUnit(target);
-            var percentHealthAfterDamage = Math.Max(0, target.Health - damage) / target.MaxHealth;
-            var yPos = barPos.Y + YOffset;
-            var xPosDamage = barPos.X + XOffset + Width * percentHealthAfterDamage;
-            var xPosCurrentHp = barPos.X + XOffset + Width * target.Health / target.MaxHealth;
-
-
-            Text.X = (int)barPos.X + XOffset;
-            Text.Y = (int)barPos.Y + YOffset - 13;
-            Text.text = damage > target.Health
-                ? "Killable With Combo Rotation " + (target.Health - damage)
-                : (target.Health - damage).ToString(CultureInfo.CurrentCulture);
-            Text.OnEndScene();
-
-            Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + Height, 1, _color);
-
-            var differenceInHp = xPosCurrentHp - xPosDamage;
-            var pos1 = barPos.X + 9 + (107 * percentHealthAfterDamage);
-            for (var i = 0; i < differenceInHp; i++)
+            foreach (var target in HeroManager.Enemies.Where(h => h.IsValid && h.IsHPBarRendered))
             {
-                Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + Height, 1, _fillColor);
+                var barPos = target.HPBarPosition;
+                var damage = DamageToUnit(target);
+                var percentHealthAfterDamage = Math.Max(0, target.Health - damage)/target.MaxHealth;
+                var yPos = barPos.Y + YOffset;
+                var xPosDamage = barPos.X + XOffset + Width*percentHealthAfterDamage;
+                var xPosCurrentHp = barPos.X + XOffset + Width*target.Health/target.MaxHealth;
+
+                if (damage > Player.Health)
+                {
+                    Text.X = (int) barPos.X + XOffset;
+                    Text.Y = (int) barPos.Y + YOffset - 13;
+                    Text.text = damage > target.Health
+                        ? "Killable With Combo Rotation " + (target.Health - damage)
+                        : (target.Health - damage).ToString(CultureInfo.CurrentCulture);
+                    Text.OnEndScene();
+                }
+                Drawing.DrawLine(xPosDamage, yPos, xPosDamage, yPos + Height, 1, _color);
+
+                var differenceInHp = xPosCurrentHp - xPosDamage;
+                var pos1 = barPos.X + 9 + (107*percentHealthAfterDamage);
+                for (var i = 0; i < differenceInHp; i++)
+                {
+                    Drawing.DrawLine(pos1 + i, yPos, pos1 + i, yPos + Height, 1, _fillColor);
+                }
+
             }
         }
-
     }
 }

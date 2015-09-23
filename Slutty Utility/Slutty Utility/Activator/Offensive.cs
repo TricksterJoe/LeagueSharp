@@ -67,8 +67,7 @@ namespace Slutty_Utility.Activator
 
         }
 
-        private static
-            void Before_Attack(Orbwalking.BeforeAttackEventArgs args)
+        private static void Before_Attack(Orbwalking.BeforeAttackEventArgs args)
         {
             #region Muramana
 

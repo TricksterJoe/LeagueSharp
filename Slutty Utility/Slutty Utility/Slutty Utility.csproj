@@ -61,6 +61,7 @@
     <Compile Include="Activator\Consumables.cs" />
     <Compile Include="Activator\Defensive.cs" />
     <Compile Include="Activator\Offensive.cs" />
+    <Compile Include="Auto Level Manager\AutoLevel.cs" />
     <Compile Include="Damages\DtoP.cs" />
     <Compile Include="Damages\DToT.cs" />
     <Compile Include="Drawings\AllyRanges.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Jungle\JungleDraw.cs" />
     <Compile Include="Jungle\JungleMonsters.cs" />
     <Compile Include="MenuConfig\ActivatorMenu.cs" />
+    <Compile Include="MenuConfig\AutoLevelMenu.cs" />
     <Compile Include="MenuConfig\DrawingsMenu.cs" />
     <Compile Include="MenuConfig\SummonersMenu.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -86,7 +88,7 @@
     <Compile Include="Tracker\Wards.cs" />
     <Compile Include="Helper.cs" />
     <Compile Include="Jungle\Smite.cs" />
-    <Compile Include="Jungle\Timer.cs" />
+    <Compile Include="Tracker\Timer.cs" />
     <Compile Include="Mains.cs" />
     <Compile Include="MenuConfig\DamagesMenu.cs" />
     <Compile Include="MenuConfig\EnviormentMenu.cs" />
@@ -103,7 +105,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Auto Level Manager\" />
     <Folder Include="Notifications\" />
   </ItemGroup>
   <ItemGroup>

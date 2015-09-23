@@ -183,22 +183,22 @@ namespace Slutty_Thresh
             if (Player.ManaPercent < Config.Item("manalant").GetValue<Slider>().Value)
                 return;
            // Obj_AI_Hero target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-
-            foreach (var hero in
-                HeroManager.Allies.Where(x => !x.IsMe
-                                              && !x.IsDead))
-            {
+            if (!W.IsReady()) return;
+            foreach (var hero in Player.GetAlliesInRange(950).Where(hero => !hero.IsDead &&
+                                                                            hero.HealthPercent <=
+                                                                            Config.Item("hpsettings" +
+                                                                                        hero.ChampionName)
+                                                                                .GetValue<Slider>()
+                                                                                .Value
+                                                                            && hero.Distance(Player) <= 900))
                 if (Config.Item("healop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
                 {
-                    if (hero.HealthPercent <= Config.Item("hpsettings" + hero.ChampionName).GetValue<Slider>().Value
-                        && hero.Distance(Player) <= W.Range)
+                    if (hero.Distance(Player) <= 900)
+                    {
                         W.Cast(hero.Position);
+                    }
                 }
-            }
-
         }
-
-
 
 
         private static void Combo()
@@ -360,7 +360,7 @@ namespace Slutty_Thresh
                     HeroManager.Allies.Where(x => !x.IsMe
                                                   && x.Distance(Player) <= W.Range))
                 {
-                        Utility.DelayAction.Add(400, () => W.Cast(heros.Position));
+                        W.Cast(heros.Position);
                 }
             }
         }
