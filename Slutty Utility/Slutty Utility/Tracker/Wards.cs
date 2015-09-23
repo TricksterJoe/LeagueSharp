@@ -33,13 +33,6 @@ namespace Slutty_Utility.Tracker
             public float LifeSpan;
             public float Range;
             public bool IsPink;
-//            public Ward(float life, float range, Obj_AI_Base wardObject, bool isPink = false) : this()
-//            {
-//                LifeSpan = life;
-//                Range = range;
-//                IsPink = isPink;
-//                WardObject = wardObject;
-//            }
 
             public Ward(float life, float range, bool isPink = false)
             {
@@ -69,7 +62,7 @@ namespace Slutty_Utility.Tracker
             GameObject.OnCreate += OnCsreate;  //thanks wardtracker by anderluis
             GameObject.OnCreate += OnCreate;
             GameObject.OnDelete += OnDeletes;
-            Obj_AI_Base.OnProcessSpellCast += OnSpell; // thanks ward tracker by anderluis
+          //  Obj_AI_Base.OnProcessSpellCast += OnSpell; // thanks ward tracker by anderluis
             Drawing.OnDraw += OnDraws;
         }
 
@@ -119,21 +112,21 @@ namespace Slutty_Utility.Tracker
             }
         }
 
-        private static void OnSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
-        {
-            if (sender.IsAlly)
-            {
-                return;
-            }
-
-                if (WardStructure.ContainsKey(args.SData.Name))
-                {
-                    var endPosition = ObjectManager.Player.GetPath(args.End).ToList().Last();
-                    ActiveWards.Add(new PlacedWard(WardStructure[args.SData.Name], endPosition,
-                        Game.Time + WardStructure[sender.Name].LifeSpan));
-               }
-            
-        }
+//        private static void OnSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+//        {
+//            if (sender.IsAlly)
+//            {
+//                return;
+//            }
+//
+//                if (WardStructure.ContainsKey(args.SData.Name))
+//                {
+//                    var endPosition = ObjectManager.Player.GetPath(args.End).ToList().Last();
+//                    ActiveWards.Add(new PlacedWard(WardStructure[args.SData.Name], endPosition,
+//                        Game.Time + WardStructure[sender.Name].LifeSpan));
+//               }
+//            
+//        }
 
         private static void OnDeletes(GameObject sender, EventArgs args)
         {
