@@ -100,8 +100,8 @@ namespace Slutty_Utility.Tracker
             foreach (var ward in ActiveWards)
             {
                 var rangecolor = ward.BaseWard.IsPink ? Color.Magenta : Color.Green;
-                var timercolors = ward.BaseWard.LifeSpan > Game.Time + 180 ? Color.Red : Color.Black;
-                var time = ward.BaseWard.LifeSpan > Game.Time + 180 ? "Pink" : (ward.DeathTime - Game.Time).ToString();
+                var timercolors = ward.BaseWard.LifeSpan > Game.Time + 181 ? Color.Red : Color.Black;
+                var time = ward.BaseWard.LifeSpan > Game.Time + 181 ? "Pink" : (ward.DeathTime - Game.Time).ToString();
 
                 Render.Circle.DrawCircle(ward.Location, ward.BaseWard.Range, rangecolor);
 
