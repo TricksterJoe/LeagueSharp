@@ -25,6 +25,7 @@ namespace Slutty_Utility.Tracker
 
         public static void OnLoad()
         {
+            if (!GetBool("spelltracker", typeof(bool))) return;
             Drawing.OnDraw += OnDraw;
         }
 
@@ -35,7 +36,7 @@ namespace Slutty_Utility.Tracker
                 for (var i = 0; i < _spellslot.Count(); i++)
                 {
                     X = (int)hero.HPBarPosition.X + (i * 30) + 35;
-
+                    
                     Y = (int)hero.HPBarPosition.Y - 10;
 
                     Drawing.DrawText(X - 1, Y - 13, Color.AliceBlue,

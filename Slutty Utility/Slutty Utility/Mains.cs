@@ -54,7 +54,7 @@ namespace Slutty_Utility
             AllyRanges.OnLoad();
             Wards.OnLoad();
             TrackerSpell.OnLoad();
-            //DtoT.OnLoad();
+            //DtoT.OnLoad();s
             //  DtoP.OnLoad(); 
 
             //Jungle (yes smite contains everything in jungle) //todo Jungle timers
