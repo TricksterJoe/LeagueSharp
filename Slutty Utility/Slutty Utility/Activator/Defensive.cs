@@ -85,7 +85,7 @@ namespace Slutty_Utility.Activator
              if (ItemReady(Mikaels) && HasItem(Mikaels))
              {
                  foreach (
-                     var hero in HeroManager.AllHeroes.Where(x => x.Distance(Player) <= 800 && (x.IsMe || x.IsAlly)))
+                     var hero in HeroManager.Allies)
                  {
                      foreach (var buff in Bufftype)
                      {

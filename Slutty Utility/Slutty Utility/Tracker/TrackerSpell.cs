@@ -25,32 +25,43 @@ namespace Slutty_Utility.Tracker
 
         public static void OnLoad()
         {
-            Drawing.OnDraw += OnUpdate;
+            Drawing.OnDraw += OnDraw;
         }
 
-        private static void OnUpdate(EventArgs args)
+        private static void OnDraw(EventArgs args)
         {
-            foreach (var hero in HeroManager.AllHeroes.Where(x => x.Distance(Player) < 3000))
+            foreach (var hero in HeroManager.AllHeroes)
             {
-                for (var i = 0; i <= _spellslot.Count(); i++)
+                for (var i = 0; i < _spellslot.Count(); i++)
                 {
-                    X = (int) hero.HPBarPosition.X + (i*30) + 35;
+                    X = (int)hero.HPBarPosition.X + (i * 30) + 35;
 
-                    Y = (int) hero.HPBarPosition.Y - 5;
+                    Y = (int)hero.HPBarPosition.Y - 10;
 
-                    var CD = (int) ((hero.Spellbook.GetSpell(_spellslot[i]).CooldownExpires - Game.Time));
-                    if (CD > 0)
+                    Drawing.DrawText(X - 1, Y - 13, Color.AliceBlue,
+                        _spellslot[i].ToString());
+                    foreach (var spell in _spellslot)
                     {
-                        Drawing.DrawText(X, Y, Color.AliceBlue,
-                            CD.ToString());
-                    }
-                    if (CD == 0)
-                    {
-                        //here goes the sprite
+                        var expires = (hero.Spellbook.GetSpell(_spellslot[i]).CooldownExpires);
+                        var CD =
+                            (int)
+                                (expires -
+                                 (Game.Time - 1));
+
+                     //   var expiress = expires - (Game.Time + 0.3);
+                    //    var CDPercent = expiress * 100 / CD;
+                        if (CD > 0)
+                        {
+                            Drawing.DrawText(X, Y, Color.Blue, CD.ToString());
+                        }
+                        else
+                        {
+                            Drawing.DrawText(X, Y, Color.Black, "0");
+                        }
                     }
                 }
             }
-
         }
+
     }
 }

@@ -36,7 +36,7 @@ namespace Slutty_Utility
             Smite.OnLoad();
             Barrier.OnLoad();
           //  Wards.OnLoad();
-          //  TrackerSpell.OnLoad();
+            TrackerSpell.OnLoad();
             // UltManager.OnLoad();
             // plzkallen
             //  DtoP.OnLoad();

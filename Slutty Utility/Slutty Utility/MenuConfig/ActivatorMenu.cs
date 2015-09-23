@@ -69,7 +69,7 @@ namespace Slutty_Utility.MenuConfig
                 {
                     AddBool(mikaels, "Use Mikaels", "defensive.mikaels", true);
                     AddValue(mikaels, "Mikaels Delay", "mikaelsdelay", 0, 0, 1000);
-                    foreach (var hero in HeroManager.Allies.Where(x => x.IsAlly || x.IsMe))
+                    foreach (var hero in HeroManager.Allies)
                     {
                         var heros = new Menu(hero.ChampionName, hero.ChampionName);
                         foreach (var buff in Bufftype)
