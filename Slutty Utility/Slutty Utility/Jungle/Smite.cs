@@ -24,9 +24,10 @@ namespace Slutty_Utility.Jungle
             Drawing.OnDraw += JungleDraw.Drawing_OnDrawMonster;
             Drawing.OnDraw += JungleDraw.Drawing_OnDraw;
             GameObject.OnCreate += JungleDraw.OnCreate;
+
             GameObject.OnCreate += Timer.OnCreate;
             GameObject.OnDelete += Timer.OnDelete;
-            Game.OnUpdate += Timer.OnUpdate;
+            Drawing.OnDraw += Timer.OnDraw;
         }
 
         private struct ExternalSpell
