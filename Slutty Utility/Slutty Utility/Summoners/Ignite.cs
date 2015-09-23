@@ -35,7 +35,7 @@ namespace Slutty_Utility.Summoners
         private static void OnUpdate(EventArgs args)
         {
 
-            foreach (var hero in HeroManager.Enemies.Where(x => x.IsValid && x.Distance(Player) < 700))
+            foreach (var hero in HeroManager.Enemies.Where(x => x.IsValid))
             {
                 if (GetBool("useignite" + hero.ChampionName, typeof (bool)))
                 {

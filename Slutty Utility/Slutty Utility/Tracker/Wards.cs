@@ -48,7 +48,6 @@ namespace Slutty_Utility.Tracker
 
         private static void LoadWardData()
         {
-            
             if (WardStructure.Count > 1) return;
             WardStructure.Add("YellowTrinket", new Ward(60, 100));
             WardStructure.Add("YellowTrinketUpgrade", new Ward(120, 100));
