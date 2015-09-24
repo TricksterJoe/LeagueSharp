@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 
@@ -80,17 +81,14 @@ namespace Slutty_Utility.Jungle
 
         private static bool CheckEpics()
         {
-            foreach (
-                var monster in
-                    MinionManager.GetMinions(Player.ServerPosition, 500, MinionTypes.All,
-                        MinionTeam.Neutral, MinionOrderTypes.MaxHealth))
+            foreach (var mob in MinionManager.GetMinions(Player.ServerPosition, 1000, MinionTypes.All, MinionTeam.Neutral, MinionOrderTypes.MaxHealth))
             {
-                if (monster == null) continue;
-                if (!monster.Name.Contains("Baron") && !monster.Name.Contains("Dragon")) continue;
-                if (SmiteDamage(monster) < monster.Health) continue;
-                PreformSmite(monster);
+                if (!mob.Name.Contains("Baron") && !mob.Name.Contains("Dragon")) continue;
+                if (!(SmiteDamage(mob) > mob.Health)) continue;
+                PreformSmite(mob);
                 return true;
             }
+
             return false;
         }
 
