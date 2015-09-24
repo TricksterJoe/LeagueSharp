@@ -23,7 +23,7 @@ namespace Slutty_Utility.MenuConfig
            var drawing = new Menu("Drawing Settings", "Drawing Settings");
            var spellrange = new Menu("Spell Ranges", "Spell Range");
            {
-               var spellrangeenemy = new Menu("Enemy Spell Ranges Draw", "Enemy Spell Ranges Draw");
+               var spellrangeenemy = new Menu("Draw Enemy Spell Ranges", "Enemy Spell Ranges Draw");
                {
                    foreach (var hero in HeroManager.Enemies)
                    {
@@ -42,7 +42,7 @@ namespace Slutty_Utility.MenuConfig
                }
               
 
-               var spellrangeally = new Menu("Ally Spell Ranges Draw", "Ally Spell Ranges Draw");
+               var spellrangeally = new Menu("Draw Ally Spell Ranges", "Ally Spell Ranges Draw");
                {
                    foreach (var hero in HeroManager.Allies)
                    {
