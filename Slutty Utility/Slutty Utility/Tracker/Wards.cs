@@ -130,7 +130,7 @@ namespace Slutty_Utility.Tracker
 
         private static void OnSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsAlly)
+            if (sender.IsAlly || sender.IsMe)
                 return;
 
             if (!SpellWards.ContainsKey(args.SData.Name)) return;
