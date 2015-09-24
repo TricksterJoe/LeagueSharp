@@ -72,7 +72,7 @@ namespace Slutty_Utility.Activator
              #region Seraphs
 
              if (ItemReady(Seraphs) && HasItem(Seraphs)
-                 && GetBool("defensive.seraphmenu", typeof (bool))
+                 && GetBool("defensive.seraphmenu", typeof(bool))
                  && Player.HealthPercent <= GetValue("defensive.value"))
              {
                  SelfCast(Seraphs);
@@ -89,8 +89,8 @@ namespace Slutty_Utility.Activator
                  {
                      foreach (var buff in Bufftype)
                      {
-                         if (!GetBool("defensive.mikaels", typeof (bool)) ||
-                             !GetBool("usemikaels" + hero.ChampionName, typeof (bool)))
+                         if (!GetBool("defensive.mikaels", typeof(bool)) ||
+                             !GetBool("usemikaels" + hero.ChampionName, typeof(bool)))
                              return;
                          if (hero.HasBuffOfType(buff))
                          {
@@ -112,7 +112,7 @@ namespace Slutty_Utility.Activator
              {
                  foreach (var hero in HeroManager.Allies.Where(x => x.Distance(Player) <= 700))
                  {
-                     if (GetStringValue("Mountain") == 0
+                     if (GetStringValue("Mountain" + hero.ChampionName) == 0
                          && hero.HealthPercent <= Config.Item("facehp" + hero.ChampionName).GetValue<Slider>().Value
                          && Player.CountEnemiesInRange(1500) >= 2)
                      {
@@ -129,7 +129,7 @@ namespace Slutty_Utility.Activator
              {
                  foreach (var buff in Bufftype)
                  {
-                     if (GetBool("defensive.qss" + buff, typeof (bool)))
+                     if (GetBool("defensive.qss" + buff, typeof(bool)))
                      {
                          if (Player.HasBuffOfType(buff))
                          {

@@ -18,7 +18,7 @@ namespace Slutty_Utility.Activator
         {
             HpPotion = 2003;
             ManaPotion = 2004;
-            Biscuit = 2010;
+            Biscuit = 2009;
             Flask = 2041;
             SorcPotion = 2139;
             WarthPotion = 2140;
@@ -42,7 +42,7 @@ namespace Slutty_Utility.Activator
         private static void OnUpdate(EventArgs args)
         {
             
-               // Console.WriteLine(ItemData.Elixir_of_Ruin.Id);
+              Console.WriteLine(ItemData.Mikaels_Crucible.Id);
            #region Potions
             if (HealthCheck("consumables.potions.hppotion") && !PlayerBuff(HpBuff))
             {
