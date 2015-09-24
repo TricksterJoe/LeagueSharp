@@ -148,22 +148,22 @@ namespace Slutty_Utility.Jungle
            {
                     new Monster("SRU_Baron12.1.1", true)
            })));
-
-            JungleCamps.Add("Blue_BlueBuff", new Monster(115, 300, SummonersRift.Jungle.Blue_BlueBuff));
-            JungleCamps.Add("Blue_Gromp", new Monster(115, 100, SummonersRift.Jungle.Blue_Gromp));
-            JungleCamps.Add("Blue_Krug", new Monster(115, 100, SummonersRift.Jungle.Blue_Krug));
-            JungleCamps.Add("Blue_RazorBeak", new Monster(115, 100, SummonersRift.Jungle.Blue_RazorBeak));
-            JungleCamps.Add("Blue_Murkwolf", new Monster(115, 100, SummonersRift.Jungle.Blue_Wolf));
-
-            JungleCamps.Add("Red_RedBuff", new Monster(115, 300, SummonersRift.Jungle.Red_RedBuff));
-            JungleCamps.Add("Red_RedBuff", new Monster(115, 300, SummonersRift.Jungle.Red_RedBuff));
-            JungleCamps.Add("Red_Gromp", new Monster(115, 100, SummonersRift.Jungle.Red_Gromp));
-            JungleCamps.Add("Red_Krug", new Monster(115, 100, SummonersRift.Jungle.Red_Krug));
-            JungleCamps.Add("Red_RazorBeak", new Monster(115, 100, SummonersRift.Jungle.Red_RazorBeak));
-            JungleCamps.Add("Red_Murkwolf", new Monster(115, 100, SummonersRift.Jungle.Red_Wolf));
-
-            JungleCamps.Add("Neutral_Baron", new Monster(115, 420, SummonersRift.River.Baron));
-            JungleCamps.Add("Neutral_Dragon", new Monster(115, 360, SummonersRift.River.Dragon));
+//
+//            JungleCamps.Add("Blue_BlueBuff", new Monster(115, 300, SummonersRift.Jungle.Blue_BlueBuff));
+//            JungleCamps.Add("Blue_Gromp", new Monster(115, 100, SummonersRift.Jungle.Blue_Gromp));
+//            JungleCamps.Add("Blue_Krug", new Monster(115, 100, SummonersRift.Jungle.Blue_Krug));
+//            JungleCamps.Add("Blue_RazorBeak", new Monster(115, 100, SummonersRift.Jungle.Blue_RazorBeak));
+//            JungleCamps.Add("Blue_Murkwolf", new Monster(115, 100, SummonersRift.Jungle.Blue_Wolf));
+//
+//            JungleCamps.Add("Red_RedBuff", new Monster(115, 300, SummonersRift.Jungle.Red_RedBuff));
+//            JungleCamps.Add("Red_RedBuff", new Monster(115, 300, SummonersRift.Jungle.Red_RedBuff));
+//            JungleCamps.Add("Red_Gromp", new Monster(115, 100, SummonersRift.Jungle.Red_Gromp));
+//            JungleCamps.Add("Red_Krug", new Monster(115, 100, SummonersRift.Jungle.Red_Krug));
+//            JungleCamps.Add("Red_RazorBeak", new Monster(115, 100, SummonersRift.Jungle.Red_RazorBeak));
+//            JungleCamps.Add("Red_Murkwolf", new Monster(115, 100, SummonersRift.Jungle.Red_Wolf));
+//
+//            JungleCamps.Add("Neutral_Baron", new Monster(115, 420, SummonersRift.River.Baron));
+//            JungleCamps.Add("Neutral_Dragon", new Monster(115, 360, SummonersRift.River.Dragon));
         }
     }
 }
