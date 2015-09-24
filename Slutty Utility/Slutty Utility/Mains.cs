@@ -50,8 +50,8 @@ namespace Slutty_Utility
             Barrier.OnLoad();
 
             //Drawings //todo DtoP
-            EnemyRanges.OnLoad();
-            AllyRanges.OnLoad();
+           // EnemyRanges.OnLoad();
+           // AllyRanges.OnLoad();
             Wards.OnLoad();
             TrackerSpell.OnLoad();
             //DtoT.OnLoad();s
