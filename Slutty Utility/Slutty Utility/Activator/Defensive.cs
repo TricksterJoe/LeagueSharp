@@ -2,12 +2,13 @@
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using ItemData = LeagueSharp.Common.Data.ItemData;
 
 namespace Slutty_Utility.Activator
 {
      class Defensive : Helper
     {
-        public static int ZhonyaId, Omen, Seraphs, QSS, Mikaels, Locket, Mountain;
+        public static int ZhonyaId, Omen, Seraphs, QSS, Mikaels, Locket, Mountain, Merc;
         public static readonly BuffType[] Bufftype =
         {
             BuffType.Snare, 
@@ -26,6 +27,7 @@ namespace Slutty_Utility.Activator
             Omen = 3143;
             Seraphs = 3040;
             QSS = 3140;
+            Merc = 3139;
             Mikaels = 3222;
             Locket = 3190;
             Mountain = 3401;
@@ -40,6 +42,8 @@ namespace Slutty_Utility.Activator
 
          private static void OnUpdate(EventArgs args)
          {
+             Console.WriteLine(ItemData.Total_Biscuit_of_Rejuvenation2.Id);
+            // Console.WriteLine("seraphs" + ItemData.Seraphs_Embrace.Id + " " + "QSS" + ItemData.Quicksilver_Sash.Id + ItemData.Mercurial_Scimitar.Id);
              #region Omen
 
              if (ItemReady(Omen) && HasItem(Omen))
@@ -125,15 +129,19 @@ namespace Slutty_Utility.Activator
 
              #region QSS
 
-             if (ItemReady(QSS) && HasItem(QSS))
+             if ((ItemReady(Merc) && HasItem(Merc))|| (ItemReady(QSS) && HasItem(QSS)))
              {
                  foreach (var buff in Bufftype)
                  {
                      if (GetBool("defensive.qss" + buff, typeof(bool)))
                      {
-                         if (Player.HasBuffOfType(buff))
+                         if (Player.HasBuffOfType(buff) && HasItem(QSS))
                          {
                              Utility.DelayAction.Add(GetValue("qssdelay"), () =>  SelfCast(QSS));
+                         }
+                         else if (Player.HasBuffOfType(buff))
+                         {
+                             Utility.DelayAction.Add(GetValue("qssdelay"), () => SelfCast(Merc));
                          }
                      }
                  }

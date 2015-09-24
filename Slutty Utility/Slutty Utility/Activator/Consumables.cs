@@ -18,7 +18,7 @@ namespace Slutty_Utility.Activator
         {
             HpPotion = 2003;
             ManaPotion = 2004;
-            Biscuit = 2009;
+            Biscuit = 20;
             Flask = 2041;
             SorcPotion = 2139;
             WarthPotion = 2140;
@@ -40,9 +40,8 @@ namespace Slutty_Utility.Activator
         }
 
         private static void OnUpdate(EventArgs args)
-        {
-            
-              Console.WriteLine(ItemData.Mikaels_Crucible.Id);
+        {        
+                
            #region Potions
             if (HealthCheck("consumables.potions.hppotion") && !PlayerBuff(HpBuff))
             {
@@ -59,9 +58,9 @@ namespace Slutty_Utility.Activator
                 PotionCast(Flask, FlaskBuff);
             }
 
-            if (HealthCheck("consumables.potions.biscuit")&& !PlayerBuff(ManaBuff) && !PlayerBuff(FlaskBuff))
+            if (HealthCheck("consumables.potions.biscuit") && !PlayerBuff(BiscuitBuff) && !PlayerBuff(FlaskBuff))
             {
-                PotionCast(Biscuit, BiscuitBuff);
+                Items.UseItem(ItemData.Total_Biscuit_of_Rejuvenation2.Id);
             }
 #endregion
 
