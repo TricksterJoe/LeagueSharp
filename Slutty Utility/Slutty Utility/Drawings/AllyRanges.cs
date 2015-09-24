@@ -22,55 +22,51 @@ namespace Slutty_Utility.Drawings
         public static void OnLoad()
         {
             Drawing.OnDraw += OnDraw;
-            Game.OnUpdate += OnUpdate;
         }
 
-        private static void OnUpdate(EventArgs args)
-        {
-            Console.WriteLine(ObjectManager.Player.GetSpell(SpellSlot.E).SData.CastRange);
-        }
 
         private static void OnDraw(EventArgs args)
         {
-            if (!Helper.GetBool("displayallyrange", typeof(bool))) return;
+            if (!Helper.GetBool("displayallyrange", typeof (bool))) return;
             foreach (
                 var hero in
-                    HeroManager.AllHeroes.Where(x => x.IsMe || x.IsAlly))
+                    HeroManager.AllHeroes.Where(
+                        x =>
+                            (x.IsMe || x.IsAlly) && !x.IsDead && x.IsVisible && x.IsValid &&
+                            x.Position.Distance(Helper.Player.Position) < 2000 && x.IsChampion())) 
+            
             {
                 if (!Helper.GetBool("showdrawingss" + hero.ChampionName, typeof (bool)))
                     return;
 
                 if (!hero.IsVisible || hero.Distance(Helper.Player) > 2000) return;
 
-
                 if (Helper.GetBool("showdrawingsaaa" + hero.ChampionName, typeof (bool)))
                 {
                     Render.Circle.DrawCircle(hero.Position, hero.AttackRange, Color.DeepPink, 3);
                 }
-                foreach (var spell in hero.Spellbook.Spells)
-                {
-                    foreach (var herospell in Slots)
-                    {
-                        
-                        if (!hero.IsDead && 
-                            Helper.GetBool(
-                                "spellrange.spellrangeenemy.spellrangeallyname" + herospell + hero.ChampionName,
-                                typeof (bool)))
-                        {
-                            Render.Circle.DrawCircle(hero.Position, hero.GetSpell(herospell).SData.CastRange,
-                                hero.GetSpell(herospell).Slot == SpellSlot.Q
-                                    ? Color.Blue
-                                    : hero.GetSpell(herospell).Slot == SpellSlot.E
-                                        ? Color.Red
-                                        : hero.GetSpell(herospell).Slot == SpellSlot.W
-                                            ? Color.Chocolate
-                                            : Color.Aqua, 0);
-                        }
 
-                    }
-                }
+//                foreach (var spell in hero.Spellbook.Spells)
+//                {
+//                    foreach (var herospell in Slots)
+//                    {
+//                        if (spell.Slot == herospell && hero.GetSpell(herospell).IsReady() && !hero.IsDead &&
+//                            Helper.GetBool(
+//                                "spellrange.spellrangeenemy.spellrangeallyname" + herospell + hero.ChampionName,
+//                                typeof (bool)))
+//                        {
+//                            Render.Circle.DrawCircle(hero.Position, hero.GetSpell(herospell).SData.CastRange, spell.Slot == SpellSlot.Q
+//                                ? Color.Blue
+//                                : spell.Slot == SpellSlot.E
+//                                    ? Color.Red
+//                                    : spell.Slot == SpellSlot.W
+//                                        ? Color.Chocolate
+//                                        : Color.Aqua, 0);
+//                        }
+//                    }
+//                }
+
             }
-
         }
     }
 }

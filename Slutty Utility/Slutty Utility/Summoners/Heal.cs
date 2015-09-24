@@ -18,7 +18,7 @@ namespace Slutty_Utility.Summoners
 
         private static void OnUpdate(EventArgs args)
         {
-            foreach (var hero in HeroManager.Allies.Where(x => x.Distance(Player) < 850 && !x.IsDead && !x.IsRecalling()))
+            foreach (var hero in HeroManager.Allies.Where(x => (x.IsMe || x.IsAlly) && x.Distance(Player) < 850 && !x.IsDead && !x.IsRecalling()))
             {
                 if (!Player.GetSpellSlot("summonerheal").IsReady() || hero.CountEnemiesInRange(2000) == 0) return;
                 if (HealthCheck("percenthealth" + hero.ChampionName) && GetBool("useheal" + hero.ChampionName, typeof(bool)))

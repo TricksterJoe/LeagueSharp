@@ -38,7 +38,7 @@ namespace Slutty_Utility.Tracker
                 {
                     X = (int)hero.HPBarPosition.X + (i * 30) + 35;
                     
-                    Y = (int)hero.HPBarPosition.Y - 10;
+                    Y = (int)hero.HPBarPosition.Y + 40;
 
                     Drawing.DrawText(X - 1, Y - 13, Color.AliceBlue,
                         _spellslot[i].ToString());

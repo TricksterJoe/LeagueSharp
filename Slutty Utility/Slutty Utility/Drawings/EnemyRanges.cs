@@ -46,24 +46,24 @@ namespace Slutty_Utility.Drawings
                     Render.Circle.DrawCircle(hero.Position, hero.AttackRange, Color.DeepPink, 3);
                 }
 
-                foreach (var spell in hero.Spellbook.Spells)
-                {
-                    foreach (var herospell in Slots)
-                    {
-                        if (spell.Slot == herospell && !hero.IsDead &&
-                            Helper.GetBool(
-                                "spellrange.spellrangeenemy.spellrangeenemyname" + herospell + hero.ChampionName,
-                                typeof (bool)))
-                        {
-                            Render.Circle.DrawCircle(hero.Position, spell.SData.CastRange, spell.Slot == SpellSlot.Q
-                                ? Color.Blue
-                                : spell.Slot == SpellSlot.E
-                                    ? Color.Red
-                                    : spell.Slot == SpellSlot.W 
-                                    ? Color.Chocolate : Color.Aqua, 0);
-                        }
-                    }
-                }
+//                foreach (var spell in hero.Spellbook.Spells)
+//                {
+//                    foreach (var herospell in Slots)
+//                    {
+//                        if (spell.Slot == herospell && !hero.IsDead &&
+//                            Helper.GetBool(
+//                                "spellrange.spellrangeenemy.spellrangeenemyname" + herospell + hero.ChampionName,
+//                                typeof (bool)))
+//                        {
+//                            Render.Circle.DrawCircle(hero.Position, spell.SData.CastRange, spell.Slot == SpellSlot.Q
+//                                ? Color.Blue
+//                                : spell.Slot == SpellSlot.E
+//                                    ? Color.Red
+//                                    : spell.Slot == SpellSlot.W 
+//                                    ? Color.Chocolate : Color.Aqua, 0);
+//                        }
+//                    }
+//                }
 
             }
         }

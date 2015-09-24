@@ -29,12 +29,12 @@ namespace Slutty_Utility.MenuConfig
                    {
                        var spellrangeenemyname = new Menu(hero.ChampionName, hero.ChampionName);
                        spellrangeenemy.AddSubMenu(spellrangeenemyname);
-                       foreach (var herospell in Slots)
-                       {
-                           AddBool(spellrangeenemyname, "Display Range For " + herospell,
-                               "spellrange.spellrangeenemy.spellrangeenemyname" + herospell + hero.ChampionName
-                               , true);
-                       }
+//                       foreach (var herospell in Slots)
+//                       {
+//                           AddBool(spellrangeenemyname, "Display Range For " + herospell,
+//                               "spellrange.spellrangeenemy.spellrangeenemyname" + herospell + hero.ChampionName
+//                               , true);
+//                       }
                        AddBool(spellrangeenemyname, "Draw Auto Attack Range", "showdrawingsaa" + hero.ChampionName, true);
                        AddBool(spellrangeenemyname, "Show Drawings", "showdrawings" + hero.ChampionName, false);
                    }
@@ -48,12 +48,12 @@ namespace Slutty_Utility.MenuConfig
                    {
                        var spellrangeenemynames = new Menu(hero.ChampionName, hero.ChampionName);
                        spellrangeally.AddSubMenu(spellrangeenemynames);
-                       foreach (var herospell in Slots)
-                       {
-                           AddBool(spellrangeenemynames, "Display Range For " + herospell,
-                               "spellrange.spellrangeenemy.spellrangeallyname" + herospell + hero.ChampionName
-                               , true);
-                       }
+//                       foreach (var herospell in Slots)
+//                       {
+//                           AddBool(spellrangeenemynames, "Display Range For " + herospell,
+//                               "spellrange.spellrangeenemy.spellrangeallyname" + herospell + hero.ChampionName
+//                               , true);
+//                       }
                        AddBool(spellrangeenemynames, "Draw Auto Attack Range", "showdrawingsaaa" + hero.ChampionName,
                            true);
                        AddBool(spellrangeenemynames, "Show Drawings", "showdrawingss" + hero.ChampionName, false);

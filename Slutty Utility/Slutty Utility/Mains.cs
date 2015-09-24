@@ -32,7 +32,7 @@ namespace Slutty_Utility
             DamagesMenu.LoadDamagesMenu();
             EnviormentMenu.LoadEnviormentMenu();
             JungleMenu.LoadJungleMenu();
-           // DrawingsMenu.DrawingsMenus();
+           DrawingsMenu.DrawingsMenus();
             SummonersMenu.LoadSummonersMenu();
             AutoLevelMenu.OnLoad();
             Config.Item("useautolevel").SetValue(false);
@@ -50,8 +50,8 @@ namespace Slutty_Utility
             Barrier.OnLoad();
 
             //Drawings //todo DtoP
-           // EnemyRanges.OnLoad();
-           // AllyRanges.OnLoad();
+           EnemyRanges.OnLoad();
+            AllyRanges.OnLoad();
             Wards.OnLoad();
             TrackerSpell.OnLoad();
             //DtoT.OnLoad();s
