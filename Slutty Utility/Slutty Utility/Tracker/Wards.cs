@@ -14,6 +14,8 @@ namespace Slutty_Utility.Tracker
         //TY Kallen for coding 90% of this
         // I love you <3
         //Please no coperino
+
+        //Ward Spell names by Anderluis from Tracker# thank you
         public struct PlacedWard
         {
             public Ward BaseWard;
@@ -48,13 +50,15 @@ namespace Slutty_Utility.Tracker
 
         private static void LoadWardData()
         {
+            if (SpellWards.Count < 1)
+                LoadSpellData();
+
             if (WardStructure.Count > 1) return;
             WardStructure.Add("YellowTrinket", new Ward(60, 100));
             WardStructure.Add("YellowTrinketUpgrade", new Ward(120, 100));
             WardStructure.Add("VisionWard", new Ward(float.MaxValue, 100, true));
             WardStructure.Add("SightWard", new Ward(180, 100));
             WardStructure.Add("itemplacementmissile", new Ward(180, 100));
-            LoadSpellData();
         }
 
         private static void LoadSpellData()
@@ -78,10 +82,10 @@ namespace Slutty_Utility.Tracker
         public static void OnLoad()
         {
             Game.OnUpdate += OnUpdate;
-            GameObject.OnCreate += OnCsreate;  //thanks wardtracker by anderluis
+            GameObject.OnCreate += OnCsreate;
             GameObject.OnCreate += OnCreate;
             GameObject.OnDelete += OnDeletes;
-            Obj_AI_Base.OnProcessSpellCast += OnSpell; // thanks ward tracker by anderluis
+            Obj_AI_Base.OnProcessSpellCast += OnSpell;
             Drawing.OnDraw += OnDraws;
         }
 
