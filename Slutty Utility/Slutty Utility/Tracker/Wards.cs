@@ -100,8 +100,8 @@ namespace Slutty_Utility.Tracker
 
             if (missile.SpellCaster.IsAlly) return;
             if (missile.SData.Name != "itemplacementmissile" || missile.SpellCaster.IsVisible) return;
-            var sPos = missile.StartPosition;
 
+            var sPos = missile.StartPosition;
             if (!WardStructure.ContainsKey(missile.SData.Name)) return;
             ActiveWards.Add(new PlacedWard(WardStructure[missile.SData.Name], new Vector3(sPos.X, sPos.Y, NavMesh.GetHeightForPosition(sPos.X, sPos.Y)),
                 Game.Time + WardStructure[missile.SData.Name].LifeSpan));
@@ -117,7 +117,7 @@ namespace Slutty_Utility.Tracker
             {
                 var rangecolor = ward.BaseWard.IsPink ? Color.Magenta : Color.Green;
                 var timercolors = ward.BaseWard.LifeSpan > Game.Time + 181 ? Color.Red : Color.Black;
-                var time = ward.BaseWard.LifeSpan > Game.Time + 181 ? "Pink" : (ward.DeathTime - Game.Time).ToString(CultureInfo.InvariantCulture);
+                var time = ward.BaseWard.LifeSpan > Game.Time + 181 ? "Pink" : ((int) ward.DeathTime - (int)Game.Time).ToString(CultureInfo.InvariantCulture);
 
                 Render.Circle.DrawCircle(ward.Location, ward.BaseWard.Range, rangecolor);
 
@@ -135,8 +135,7 @@ namespace Slutty_Utility.Tracker
 
             if (!SpellWards.ContainsKey(args.SData.Name)) return;
 
-            var endPosition = ObjectManager.Player.GetPath(args.End).ToList().Last();
-
+              var endPosition = ObjectManager.Player.GetPath(args.End).ToList().Last();
             ActiveWards.Add(new PlacedWard(SpellWards[args.SData.Name], endPosition,
                 Game.Time + SpellWards[args.SData.Name].LifeSpan));
         }
@@ -151,9 +150,18 @@ namespace Slutty_Utility.Tracker
             {
                 if (WardStructure.ContainsKey(sender.Name) && ward.Location == sender.Position)
                 {
+                    ActiveWards.Remove(ward);                  
+                }
+            }
+
+            foreach (var ward in ActiveWards)
+            {
+                if (SpellWards.ContainsKey(sender.Name) && ward.Location == sender.Position)
+                {
                     ActiveWards.Remove(ward);
                 }
             }
+
         }
 
         private static void OnCsreate(GameObject sender, EventArgs args)

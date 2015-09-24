@@ -102,74 +102,74 @@ namespace Slutty_Thresh
                 eventMenu.AddItem(new MenuItem("useQW2D", "Use W/Q on Dashing").SetValue(true));
             }
 
-            var itemMenu = new Menu("Item Usage", "items");
-            var shieldMenu = new Menu("Shield Usage", "shield");
-            {
-                var mountainmenu = new Menu("Face Of The Mountain", "faceof");
-                {
-                    foreach (var hero in
-                        ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(x => x.IsAlly
-                                        && !x.IsMe))
-                    {
-                        {
-                            mountainmenu.AddItem(new MenuItem("faceop" + hero.ChampionName, hero.ChampionName))
-                                .SetValue(new StringList(new[] {"Use", "Don't Use"}));
-
-                            mountainmenu.AddItem(
-                                new MenuItem("facehp" + hero.ChampionName, "Use When % HP <").SetValue(new Slider(20)));
-                        }
-                    }
-                }
-
-                var locketmenu = new Menu("Locket Of Solari", "locksol");
-                {
-                    foreach (var hero in
-                        ObjectManager.Get<Obj_AI_Hero>()
-                            .Where(x => x.IsAlly
-                                        && !x.IsMe))
-                    {
-                        {
-                            locketmenu.AddItem(new MenuItem("locketop" + hero.ChampionName, hero.ChampionName))
-                                .SetValue(new StringList(new[] {"Use", "Don't Use"}));
-
-                            locketmenu.AddItem(
-                                new MenuItem("lockethp" + hero.ChampionName, "Use When % HP <").SetValue(
-                                    new Slider(20)));
-                        }
-                    }
-
-                }
-                shieldMenu.AddSubMenu(locketmenu);
-                shieldMenu.AddSubMenu(mountainmenu);
-            }
-
-            var healMenu = new Menu("Healing Items", "heals");
-            {
-                var mikaelss = new Menu("Mikael's Crucibile", "mikaels");
-                mikaelss.AddItem(new MenuItem("charm", "Charm").SetValue(true));
-                mikaelss.AddItem(new MenuItem("snare", "Snare").SetValue(true));
-                mikaelss.AddItem(new MenuItem("taunt", "Taunt").SetValue(true));
-                mikaelss.AddItem(new MenuItem("suppression", "Suppression").SetValue(true));
-                mikaelss.AddItem(new MenuItem("stun", "Stun").SetValue(true));
-                //  mikaelss.AddItem(new MenuItem("mikaelshp", "Use On %HP", true).SetValue(new Slider(20, 40)));
-                var allies = new Menu("Ally Config", "AllysConfig");
-                foreach (var hero in
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(x => x.IsAlly
-                                    && !x.IsMe))
-                {
-                    {
-                        allies.AddItem(new MenuItem("healmikaels" + hero.ChampionName, hero.ChampionName))
-                            .SetValue(new StringList(new[] {"Use Mikaels On", "Don't Use Mikaels On"}));
-                    }
-                }
-                mikaelss.AddSubMenu(allies);
-                healMenu.AddSubMenu(mikaelss);
-            }
-            itemMenu.AddSubMenu(shieldMenu);
-            itemMenu.AddSubMenu(healMenu);
-            Config.AddSubMenu(itemMenu);
+//            var itemMenu = new Menu("Item Usage", "items");
+//            var shieldMenu = new Menu("Shield Usage", "shield");
+//            {
+//                var mountainmenu = new Menu("Face Of The Mountain", "faceof");
+//                {
+//                    foreach (var hero in
+//                        ObjectManager.Get<Obj_AI_Hero>()
+//                            .Where(x => x.IsAlly
+//                                        && !x.IsMe))
+//                    {
+//                        {
+//                            mountainmenu.AddItem(new MenuItem("faceop" + hero.ChampionName, hero.ChampionName))
+//                                .SetValue(new StringList(new[] {"Use", "Don't Use"}));
+//
+//                            mountainmenu.AddItem(
+//                                new MenuItem("facehp" + hero.ChampionName, "Use When % HP <").SetValue(new Slider(20)));
+//                        }
+//                    }
+//                }
+//
+//                var locketmenu = new Menu("Locket Of Solari", "locksol");
+//                {
+//                    foreach (var hero in
+//                        ObjectManager.Get<Obj_AI_Hero>()
+//                            .Where(x => x.IsAlly
+//                                        && !x.IsMe))
+//                    {
+//                        {
+//                            locketmenu.AddItem(new MenuItem("locketop" + hero.ChampionName, hero.ChampionName))
+//                                .SetValue(new StringList(new[] {"Use", "Don't Use"}));
+//
+//                            locketmenu.AddItem(
+//                                new MenuItem("lockethp" + hero.ChampionName, "Use When % HP <").SetValue(
+//                                    new Slider(20)));
+//                        }
+//                    }
+//
+//                }
+//                shieldMenu.AddSubMenu(locketmenu);
+//                shieldMenu.AddSubMenu(mountainmenu);
+//            }
+//
+//            var healMenu = new Menu("Healing Items", "heals");
+//            {
+//                var mikaelss = new Menu("Mikael's Crucibile", "mikaels");
+//                mikaelss.AddItem(new MenuItem("charm", "Charm").SetValue(true));
+//                mikaelss.AddItem(new MenuItem("snare", "Snare").SetValue(true));
+//                mikaelss.AddItem(new MenuItem("taunt", "Taunt").SetValue(true));
+//                mikaelss.AddItem(new MenuItem("suppression", "Suppression").SetValue(true));
+//                mikaelss.AddItem(new MenuItem("stun", "Stun").SetValue(true));
+//                //  mikaelss.AddItem(new MenuItem("mikaelshp", "Use On %HP", true).SetValue(new Slider(20, 40)));
+//                var allies = new Menu("Ally Config", "AllysConfig");
+//                foreach (var hero in
+//                    ObjectManager.Get<Obj_AI_Hero>()
+//                        .Where(x => x.IsAlly
+//                                    && !x.IsMe))
+//                {
+//                    {
+//                        allies.AddItem(new MenuItem("healmikaels" + hero.ChampionName, hero.ChampionName))
+//                            .SetValue(new StringList(new[] {"Use Mikaels On", "Don't Use Mikaels On"}));
+//                    }
+//                }
+//                mikaelss.AddSubMenu(allies);
+//                healMenu.AddSubMenu(mikaelss);
+//            }
+//            itemMenu.AddSubMenu(shieldMenu);
+//            itemMenu.AddSubMenu(healMenu);
+          //  Config.AddSubMenu(itemMenu);
 
             miscMenu.AddSubMenu(eventMenu);
             Config.AddSubMenu(miscMenu);

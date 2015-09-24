@@ -105,77 +105,77 @@ namespace Slutty_Thresh
                 flashq();
 
             wcast();
-            Itemusage();
+          //  Itemusage();
 
         }
 
-        private static void Itemusage()
-        {
-            var charm = Config.Item("charm").GetValue<bool>();
-            var stun = Config.Item("stun").GetValue<bool>();
-            var snare = Config.Item("snare").GetValue<bool>();
-            var suppresion = Config.Item("suppression").GetValue<bool>();
-            var taunt = Config.Item("taunt").GetValue<bool>();
-
-
-            // var mikaelshp = Config.Item("mikaelshp").GetValue<Slider>().Value;
-
-            var mikael = ItemData.Mikaels_Crucible.GetItem();
-            var locket = ItemData.Locket_of_the_Iron_Solari.GetItem();
-            var mountain = ItemData.Face_of_the_Mountain.GetItem();
-
-            foreach (var hero in
-                HeroManager.Allies.Where(x => !x.IsMe))
-            {
-                if (Config.Item("faceop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                {
-                    if (hero.HealthPercent <= Config.Item("facehp" + hero.ChampionName).GetValue<Slider>().Value)
-                    {
-                        if (hero.Distance(Player) >= 750f)
-                            mountain.Cast(hero);
-                    }
-                }
-            }
-            foreach (var hero in
-                HeroManager.Allies.Where(x => !x.IsMe))
-            {
-                if (Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                {
-                    if (hero.HealthPercent <= Config.Item("lockethp" + hero.ChampionName).GetValue<Slider>().Value)
-                    {
-                        if (hero.Distance(Player) >= 600)
-                            locket.Cast();
-                    }
-                }
-            }
-
-
-
+//        private static void Itemusage()
+//        {
+//            var charm = Config.Item("charm").GetValue<bool>();
+//            var stun = Config.Item("stun").GetValue<bool>();
+//            var snare = Config.Item("snare").GetValue<bool>();
+//            var suppresion = Config.Item("suppression").GetValue<bool>();
+//            var taunt = Config.Item("taunt").GetValue<bool>();
+//
+//
+//            // var mikaelshp = Config.Item("mikaelshp").GetValue<Slider>().Value;
+//
+//            var mikael = ItemData.Mikaels_Crucible.GetItem();
+//            var locket = ItemData.Locket_of_the_Iron_Solari.GetItem();
+//            var mountain = ItemData.Face_of_the_Mountain.GetItem();
+//
+//            foreach (var hero in
+//                HeroManager.Allies.Where(x => !x.IsMe))
+//            {
+//                if (Config.Item("faceop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
+//                {
+//                    if (hero.HealthPercent <= Config.Item("facehp" + hero.ChampionName).GetValue<Slider>().Value)
+//                    {
+//                        if (hero.Distance(Player) >= 750f)
+//                            mountain.Cast(hero);
+//                    }
+//                }
+//            }
+//            foreach (var hero in
+//                HeroManager.Allies.Where(x => !x.IsMe))
+//            {
+//                if (Config.Item("locketop" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
+//                {
+//                    if (hero.HealthPercent <= Config.Item("lockethp" + hero.ChampionName).GetValue<Slider>().Value)
+//                    {
+//                        if (hero.Distance(Player) >= 600)
+//                            locket.Cast();
+//                    }
+//                }
+//     }
 
 
 
-            foreach (var hero in HeroManager.Allies.Where(x => !x.IsMe))
-            {
-                if (Config.Item("healmikaels" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
-                {
-                    if (hero.HasBuffOfType(BuffType.Stun)
-                        && stun ||
-                        hero.HasBuffOfType(BuffType.Suppression)
-                        && suppresion ||
-                        hero.HasBuffOfType(BuffType.Taunt)
-                        && taunt ||
-                        hero.HasBuffOfType(BuffType.Charm)
-                        && charm ||
-                        hero.HasBuffOfType(BuffType.Snare)
-                        && snare
-                        || hero.HasBuffOfType(BuffType.CombatDehancer))
-                    {
-                        if (hero.Distance(Player) <= 750f)
-                            mikael.Cast(hero);
-                    }
-                }
-            }
-        }
+//
+//
+//
+//            foreach (var hero in HeroManager.Allies.Where(x => !x.IsMe))
+//            {
+//                if (Config.Item("healmikaels" + hero.ChampionName).GetValue<StringList>().SelectedIndex == 0)
+//                {
+//                    if (hero.HasBuffOfType(BuffType.Stun)
+//                        && stun ||
+//                        hero.HasBuffOfType(BuffType.Suppression)
+//                        && suppresion ||
+//                        hero.HasBuffOfType(BuffType.Taunt)
+//                        && taunt ||
+//                        hero.HasBuffOfType(BuffType.Charm)
+//                        && charm ||
+//                        hero.HasBuffOfType(BuffType.Snare)
+//                        && snare
+//                        || hero.HasBuffOfType(BuffType.CombatDehancer))
+//                    {
+//                        if (hero.Distance(Player) <= 750f)
+//                            mikael.Cast(hero);
+//                    }
+//                }
+//            }
+//        }
 
 
         private static void wcast()
@@ -349,20 +349,20 @@ namespace Slutty_Thresh
 
         public static void Game_ProcessSpell(Obj_AI_Base hero, GameObjectProcessSpellCastEventArgs args)
         {
-            if (!hero.IsMe)
-                return;
-           // var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            if ((args.SData.Name == "threshqinternal" || args.SData.Name == "ThreshQ")
-                && Config.Item("autolantern").GetValue<bool>()
-                && W.IsReady())
-            {
-                foreach (var heros in
-                    HeroManager.Allies.Where(x => !x.IsMe
-                                                  && x.Distance(Player) <= W.Range))
-                {
-                        W.Cast(heros.Position);
-                }
-            }
+//            if (!hero.IsMe)
+//                return;
+//           // var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+//            if ((args.SData.Name == "threshqinternal" || args.SData.Name == "ThreshQ")
+//                && Config.Item("autolantern").GetValue<bool>()
+//                && W.IsReady())
+//            {
+//                foreach (var heros in
+//                    HeroManager.Allies.Where(x => !x.IsMe
+//                                                  && x.Distance(Player) <= W.Range))
+//                {
+//                        W.Cast(heros.Position);
+//                }
+//            }
         }
 
         

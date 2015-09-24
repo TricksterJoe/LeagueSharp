@@ -42,7 +42,7 @@ namespace Slutty_Utility.Activator
 
          private static void OnUpdate(EventArgs args)
          {
-             Console.WriteLine(ItemData.Total_Biscuit_of_Rejuvenation2.Id);
+            // Console.WriteLine(ItemData.Total_Biscuit_of_Rejuvenation2.Id);
             // Console.WriteLine("seraphs" + ItemData.Seraphs_Embrace.Id + " " + "QSS" + ItemData.Quicksilver_Sash.Id + ItemData.Mercurial_Scimitar.Id);
              #region Omen
 
