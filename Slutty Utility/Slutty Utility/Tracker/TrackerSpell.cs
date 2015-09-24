@@ -32,7 +32,7 @@ namespace Slutty_Utility.Tracker
         {
 
             if (!GetBool("spelltracker", typeof(bool))) return;
-            foreach (var hero in HeroManager.AllHeroes.Where(x => x.IsValid && x.IsVisible))
+            foreach (var hero in HeroManager.AllHeroes.Where(x => x.IsValid && x.IsVisible && !x.IsDead))
             {
                 for (var i = 0; i < _spellslot.Count(); i++)
                 {

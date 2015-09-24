@@ -40,7 +40,7 @@ namespace Slutty_Utility.Drawings
             {
                 if (!Helper.GetBool("showdrawings" + hero.ChampionName, typeof (bool)))
                     return;
-
+                if (!hero.IsVisible || hero.Distance(Helper.Player) > 2000) return;
                 if (Helper.GetBool("showdrawingsaa" + hero.ChampionName, typeof (bool)))
                 {
                     Render.Circle.DrawCircle(hero.Position, hero.AttackRange, Color.DeepPink, 3);
@@ -50,7 +50,7 @@ namespace Slutty_Utility.Drawings
                 {
                     foreach (var herospell in Slots)
                     {
-                        if (spell.Slot == herospell && hero.GetSpell(herospell).IsReady() && !hero.IsDead &&
+                        if (spell.Slot == herospell && !hero.IsDead &&
                             Helper.GetBool(
                                 "spellrange.spellrangeenemy.spellrangeenemyname" + herospell + hero.ChampionName,
                                 typeof (bool)))

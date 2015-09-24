@@ -34,7 +34,7 @@ namespace Slutty_Utility.Drawings
                 if (!Helper.GetBool("showdrawingss" + hero.ChampionName, typeof(bool)))
                     return;
 
-                if (!hero.IsVisible && hero.Distance(Helper.Player) > 2000) return;
+                if (!hero.IsVisible || hero.Distance(Helper.Player) > 2000) return;
 
 
                 if (Helper.GetBool("showdrawingsaaa" + hero.ChampionName, typeof(bool)))
