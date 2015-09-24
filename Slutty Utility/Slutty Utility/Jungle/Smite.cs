@@ -49,22 +49,16 @@ namespace Slutty_Utility.Jungle
 
             try
             {
-
-
                 if (!NumNumChamps.ContainsKey("Nunu"))
                     LoadNumNum();
 
                 if (!GetBool("jungle.options.autoSmite", typeof(KeyBind))) return;
-             //   Game.PrintChat("Jungle Auto Smite ON");
-
-                if (GetBool("jungle.options.smiteBuffs", typeof(bool)))
-                {
-                   // Game.PrintChat("Check Buffs ON");
-                    CheckBuffs();
-                }
 
                 if (GetBool("jungle.options.smiteEpic", typeof(bool)))
-                    CheckEpics();
+                    if (CheckEpics()) return;
+
+                if (GetBool("jungle.options.smiteBuffs", typeof(bool)))
+                    if (CheckBuffs()) return;
 
             }
             catch
@@ -84,36 +78,38 @@ namespace Slutty_Utility.Jungle
             NumNumChamps.Add("Cho'Gath", new ExternalSpell(SpellSlot.R, 175));
         }
 
-        private static void CheckEpics()
+        private static bool CheckEpics()
         {
             foreach (
                 var monster in
                     MinionManager.GetMinions(Player.ServerPosition, 500, MinionTypes.All,
                         MinionTeam.Neutral, MinionOrderTypes.MaxHealth))
             {
-                if (monster == null) return;
+                if (monster == null) continue;
                 if (!monster.Name.Contains("Baron") && !monster.Name.Contains("Dragon")) continue;
                 if (SmiteDamage(monster) < monster.Health) continue;
                 PreformSmite(monster);
-
+                return true;
             }
-
+            return false;
         }
 
-        private static void CheckBuffs()
+        private static bool CheckBuffs()
         {
-            foreach (var monster in MinionManager.GetMinions(Player.ServerPosition, 500,
+            foreach (var monster in MinionManager.GetMinions(Player.ServerPosition, 1000,
                 MinionTypes.All,
                 MinionTeam.Neutral,
                 MinionOrderTypes.MaxHealth))
             {
-                if (!monster.CharData.BaseSkinName.Equals("SRU_Red") 
-                    && !monster.CharData.BaseSkinName.Equals("SRU_Blue")) continue;
+                if (!monster.CharData.BaseSkinName.Equals("SRU_Red") &&
+                    !monster.CharData.BaseSkinName.Equals("SRU_Blue"))
+                    continue;
 
-                if (SmiteDamage(monster) < monster.Health) continue;
+                if (!(SmiteDamage(monster) > monster.Health)) continue;
                 PreformSmite(monster);
-
+                return true;
             }
+            return false;
         }
 
         public static void SmiteCheck()
@@ -144,9 +140,8 @@ namespace Slutty_Utility.Jungle
                 //Game.PrintChat("{0}:{1}",champs,Player.ChampionName);
                 if (!String.Equals(Player.ChampionName, champs, StringComparison.CurrentCultureIgnoreCase)) continue;
                 if (!Player.Spellbook.GetSpell(NumNumChamps[champs].SpellSlot).IsReady()) continue;
-                if (!(Player.Distance(target) < NumNumChamps[champs].Range)) continue;
-                // Game.PrintChat(@"Check 3", damage);
-                damage += (float)(Player.GetSpellDamage(target, NumNumChamps[champs].SpellSlot));
+                if (target.IsValidTarget(NumNumChamps[champs].Range))
+                    damage += (float)(Player.GetSpellDamage(target, NumNumChamps[champs].SpellSlot));
 
                 break;
             }
@@ -154,6 +149,7 @@ namespace Slutty_Utility.Jungle
 
             if (SmiteSlot.IsReady())
             {
+                if(target.IsValidTarget(500))
                 damage += GetFuckingSmiteDamage();
             }
 
@@ -171,7 +167,7 @@ namespace Slutty_Utility.Jungle
             }
 
             if (!SmiteSlot.IsReady()) return;
-            if (!target.IsValidTarget(550)) return;
+            if (!target.IsValidTarget(500)) return;
             Player.Spellbook.CastSpell(SmiteSlot, target);
         }
 
