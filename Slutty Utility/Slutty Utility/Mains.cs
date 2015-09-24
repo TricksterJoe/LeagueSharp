@@ -32,7 +32,7 @@ namespace Slutty_Utility
             DamagesMenu.LoadDamagesMenu();
             EnviormentMenu.LoadEnviormentMenu();
             JungleMenu.LoadJungleMenu();
-            DrawingsMenu.DrawingsMenus();
+           // DrawingsMenu.DrawingsMenus();
             SummonersMenu.LoadSummonersMenu();
             AutoLevelMenu.OnLoad();
             Config.Item("useautolevel").SetValue(false);
