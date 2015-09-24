@@ -23,7 +23,7 @@ namespace Slutty_Utility.MenuConfig
         {
             var Damagesmeny = new Menu("Damage Settings", "Damage Settings");
             {
-                var DtoP = new Menu("Damage To Player Settings", "Damage To Player Settings");
+                var DtoP = new Menu("Damage to Player Settings", "Damage To Player Settings");
                 {
                     AddBool(DtoP, "Display Selected Target Damage", "dtop.selectedtarget", false);
                     foreach (var champion in HeroManager.Enemies)
@@ -39,9 +39,9 @@ namespace Slutty_Utility.MenuConfig
                 }
                 Damagesmeny.AddSubMenu(DtoP);
 
-                var DtoT = new Menu("Damage To Target Settings", "Damage To Target Settings");
+                var DtoT = new Menu("Damage to Target Settings", "Damage To Target Settings");
                 {
-                    AddBool(DtoT, "Display Combo Damage On Targets", "dtot.damage", false);
+                    AddBool(DtoT, "Display Combo Damage on Targets", "dtot.damage", false);
                     foreach (var spells in Slots) // probably wrong, will be checking.
                     {
                         AddBool(DtoT, "Display" + " " + spells + " " + "Damage", "damagesmenu.dtot" + spells, true);
