@@ -19,9 +19,9 @@ namespace Slutty_Utility.Jungle
             GetSmiteSlot(ref SmiteSlot);
 
             Drawing.OnDraw += OnUpdate;
-//            JungleDraw.DamageToMonster = SmiteDamage;
-//            Drawing.OnDraw += JungleDraw.Drawing_OnDrawMonster;
-//            Drawing.OnDraw += JungleDraw.Drawing_OnDraw;
+            JungleDraw.DamageToMonster = SmiteDamage;
+            Drawing.OnDraw += JungleDraw.Drawing_OnDrawMonster;
+            Drawing.OnDraw += JungleDraw.Drawing_OnDraw;
             
 //
 //            Drawing.OnDraw += Timer.OnDraw;
