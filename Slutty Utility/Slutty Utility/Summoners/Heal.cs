@@ -18,10 +18,9 @@ namespace Slutty_Utility.Summoners
 
         private static void OnUpdate(EventArgs args)
         {
-            if (!Player.GetSpellSlot("summonerheal").IsReady() || Player.CountEnemiesInRange(2000) < 1) return;
-
             foreach (var hero in HeroManager.Allies.Where(x => x.Distance(Player) < 850 && !x.IsDead && !x.IsRecalling()))
             {
+                if (!Player.GetSpellSlot("summonerheal").IsReady() || hero.CountEnemiesInRange(2000) == 0) return;
                 if (HealthCheck("percenthealth" + hero.ChampionName) && GetBool("useheal" + hero.ChampionName, typeof(bool)))
                 {
                     Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerheal"));

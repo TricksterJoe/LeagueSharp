@@ -34,11 +34,16 @@ namespace Slutty_Utility.Summoners
 
         private static void OnUpdate(EventArgs args)
         {
-
+            foreach (var spell in Slots)
+            {
+                Player.Spellbook.GetSpell(spell).IsReady();
+            }
+            Console.WriteLine(Player.Spellbook.GetSpell(SpellSlot.Q).IsReady());
             foreach (var hero in HeroManager.Enemies.Where(x => x.IsValid && x.Distance(Player) <= 600 && !x.IsDead))
             {
                 if (GetBool("useignite" + hero.ChampionName, typeof (bool)))
                 {
+                    if (Player.GetSpellDamage(hero, SpellSlot.W) <= 0)
                     if (Ignite1.IsReady() &&
                             (hero.Health <=
                             Player.GetSpellDamage(hero, SpellSlot.Q)

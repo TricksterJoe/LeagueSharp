@@ -62,14 +62,14 @@ namespace Slutty_Utility.Tracker
             GameObject.OnCreate += OnCsreate;  //thanks wardtracker by anderluis
             GameObject.OnCreate += OnCreate;
             GameObject.OnDelete += OnDeletes;
-          //  Obj_AI_Base.OnProcessSpellCast += OnSpell; // thanks ward tracker by anderluis
+           // Obj_AI_Base.OnProcessSpellCast += OnSpell; // thanks ward tracker by anderluis
             Drawing.OnDraw += OnDraws;
         }
 
 
         private static void OnCreate(GameObject sender, EventArgs args)
         {
-                       if (!(sender is MissileClient))
+              if (!(sender is MissileClient))
             {
                 return;
             }
@@ -101,17 +101,17 @@ namespace Slutty_Utility.Tracker
             {
                 var rangecolor = ward.BaseWard.IsPink ? Color.Magenta : Color.Green;
                 var timercolors = ward.BaseWard.LifeSpan > Game.Time + 181 ? Color.Red : Color.Black;
-                var time = ward.BaseWard.LifeSpan > Game.Time + 181 ? "Pink" : (ward.DeathTime - Game.Time).ToString();
+                var time = ward.BaseWard.LifeSpan > Game.Time + 181 ? "Pink" : (ward.DeathTime - (int) Game.Time).ToString();
 
                 Render.Circle.DrawCircle(ward.Location, ward.BaseWard.Range, rangecolor);
 
                 Drawing.DrawText(Drawing.WorldToScreen(ward.Location).X, Drawing.WorldToScreen(ward.Location).Y,
-                    timercolors, time);
+                    timercolors,  time);
 
 
             }
         }
-
+//
 //        private static void OnSpell(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
 //        {
 //            if (sender.IsAlly)
