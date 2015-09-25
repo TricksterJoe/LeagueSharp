@@ -28,6 +28,9 @@ namespace Slutty_Veigar
 
         internal static void OnLoad(EventArgs args)
         {
+            if (Player.ChampionName != "Veigar")
+                return;
+
             MenuConfig.OnLoad();
             Config.AddToMainMenu();
             Q = new Spell(SpellSlot.Q, 890);
