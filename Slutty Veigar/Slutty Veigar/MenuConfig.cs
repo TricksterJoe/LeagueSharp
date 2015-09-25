@@ -35,22 +35,22 @@ namespace Slutty_Veigar
                         .SetValue(new StringList(new[] {"Use", "Don't Use"}));
                 }
                 AddBool(rsettings, "Use R", "user");
-                AddBool(combomenu, "Block AA in Combo", "aablock");
+                AddBool(combomenu, "Block AA in Combo", "aablock", false);
                 combomenu.AddSubMenu(rsettings);
             }
             Config.AddSubMenu(combomenu);
 
-            var harassmenu = new Menu("[H]arass Settings", "Haras Settings");
+            var harassmenu = new Menu("Harass Settings", "Harass Settings");
             {
                 AddBool(harassmenu, "Use [Q]", "useqharass");
-
+                AddBool(harassmenu, "Smart Q Enable", "smartq"); // so much kappa
                 harassmenu.AddItem(new MenuItem("usewmodeharass", "[W] Mode"))
                     .SetValue(new StringList(new[] { "Regular", "Only Stunned", "Don't Use" }));
                 AddBool(harassmenu, "Use [E]", "useeharass");
             }
             Config.AddSubMenu(harassmenu);
 
-            var lanemenu = new Menu("[L]ane Clear Settings", "Lane Clear Settings");
+            var lanemenu = new Menu("Lane Clear Settings", "Lane Clear Settings");
             {
                 AddValue(lanemenu, "Min %Mana To Lane Clear", "minmana", 40);
                 AddBool(lanemenu, "Use [Q]", "useqlaneclear");
@@ -61,14 +61,14 @@ namespace Slutty_Veigar
             }
             Config.AddSubMenu(lanemenu);
 
-            var drawingmenu = new Menu("[D]rawing Menu", "[D]rawing Menu");
+            var drawingmenu = new Menu("Drawing Menu", "[D]rawing Menu");
             {
                 AddBool(drawingmenu, "Display Player Damage On Target", "FillDamage");
                 AddBool(drawingmenu, "Fill Damage", "RushDrawWDamageFill");
             }
             Config.AddSubMenu(drawingmenu);
 
-            var lasthit = new Menu("[L]ast Hit", "[L]ast Hit");
+            var lasthit = new Menu("Last Hit", "[L]ast Hit");
             {
                 AddValue(lasthit, "Min %Mana To Lane Clear", "minmanalast", 40);
                 AddBool(lasthit, "Use [Q]", "useqlaneclearlast");
@@ -84,7 +84,7 @@ namespace Slutty_Veigar
             }
             Config.AddSubMenu(enviorment);
 
-            AddBool(Config, "Smart Q Enable", "smartq"); // so much kappa
+            
         }
     }
 }
