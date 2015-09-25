@@ -1,5 +1,7 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -35,15 +37,14 @@ namespace Slutty_Veigar
             Config.AddToMainMenu();
             Q = new Spell(SpellSlot.Q, 890);
             W = new Spell(SpellSlot.W, 880);
-            E = new Spell(SpellSlot.E, 690);
+            E = new Spell(SpellSlot.E, 850);
             R = new Spell(SpellSlot.R, 650);
 
             DamageToUnit = GetComboDamage;
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(1.25f, 225f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(1.2f, 25f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            R.SetTargetted(0f, 20f);
+            E.SetSkillshot(0f, 50f, float.MaxValue, false, SkillshotType.SkillshotLine);
 
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
@@ -265,7 +266,7 @@ namespace Slutty_Veigar
         {
             if (!GetBool(name, typeof (bool))) return;
             if (!R.IsReady() || !target.IsValidTarget(R.Range)) return;
-            if (R.GetDamage(target) > target.Health)
+            if (R.GetDamage(target) > target.Health || GetComboDamage(target) > target.Health)
                 foreach (var targets in HeroManager.Enemies.Where(x =>x.IsValid && x.IsChampion()))
                 {
                     if (GetStringValue("user" + targets.ChampionName) != 0) return;
@@ -323,7 +324,7 @@ namespace Slutty_Veigar
                     W.Cast(wpred.CastPosition);
                     break;
                 case 1:
-                    if (target.HasBuffOfType(BuffType.Stun))
+                    if (target.HasBuffOfType(BuffType.Stun) || W.GetDamage(target) >= target.Health)
                         W.Cast(target.Position);
                     break;
                 case 2:
@@ -426,16 +427,14 @@ namespace Slutty_Veigar
             var damage = 0d;
 
             if (Q.IsReady())
-                damage += Player.GetSpellDamage(enemy, SpellSlot.Q);
+                damage += Q.GetDamage(enemy);
 
-            if (E.IsReady())
-                damage += Player.GetSpellDamage(enemy, SpellSlot.E);
 
             if (W.IsReady())
-                damage += Player.GetSpellDamage(enemy, SpellSlot.W);
+                damage += W.GetDamage(enemy);
 
             if (R.IsReady())
-                damage += Player.GetSpellDamage(enemy, SpellSlot.R);
+                damage += R.GetDamage(enemy);
 
             if (Player.GetSpellSlot("summonerdot").IsReady())
                 damage += IgniteDamage(enemy);
