@@ -43,8 +43,10 @@ namespace Slutty_Veigar
             R.SetTargetted(0f, 20f);
 
             Game.OnUpdate += OnUpdate;
+            Drawing.OnDraw += OnDraw;
 
         }
+
         public static SpellSlot GetIgniteSlot()
         {
             return _ignite;
@@ -68,6 +70,7 @@ namespace Slutty_Veigar
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
                     LaneClear();
+                    JungleClear();
                     break;
                 case Orbwalking.OrbwalkingMode.LastHit:
                     LastHit();
@@ -91,6 +94,7 @@ namespace Slutty_Veigar
                 Player.Spellbook.CastSpell(Ignite, target);
             }   
         }
+
 
         private static void flee()
         {
@@ -140,6 +144,32 @@ namespace Slutty_Veigar
             }
         }
 
+        private static void JungleClear()
+        {
+            if (!ManaCheck("minmanajungle")) return;
+
+            var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Neutral,
+                MinionOrderTypes.MaxHealth);
+
+            if (minion == null) return;
+
+            foreach (var minions in minion)
+            {
+                if (GetBool("useqjungle", typeof (bool)) && Q.IsReady())
+                {
+                    Q.Cast(minions);
+                }
+
+                if (GetBool("usewjungle", typeof (bool)))
+                {
+                    var wcircle = W.GetCircularFarmLocation(minion);
+                    if (wcircle.MinionsHit >= 2 && W.IsReady())
+                    {
+                        W.Cast(wcircle.Position);
+                    }
+                }
+            }
+        }
         private static void LaneClear()
         {
             var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy,
@@ -363,6 +393,29 @@ namespace Slutty_Veigar
                     }
                 }
             }
+        }
+
+        private static void OnDraw(EventArgs args)
+        {
+            var drawq = GetBool("displayQrange", typeof (bool));
+            var draww = GetBool("displayWrange", typeof(bool));
+            var drawe = GetBool("displayErange", typeof(bool));
+            var drawr = GetBool("displayRrange", typeof(bool));
+            var draw = GetBool("displayrange", typeof(bool));
+
+            if (!draw) return;
+
+            if (drawq)
+                Render.Circle.DrawCircle(Player.Position, R.Range, Color.Magenta);
+
+            if (draww)
+                Render.Circle.DrawCircle(Player.Position, W.Range, Color.Aqua);
+
+            if (drawe)
+                Render.Circle.DrawCircle(Player.Position, E.Range, Color.Brown);
+
+            if (drawr)
+                Render.Circle.DrawCircle(Player.Position, R.Range, Color.Red);
         }
 
         private static float GetComboDamage(Obj_AI_Hero enemy)

@@ -60,29 +60,43 @@ namespace Slutty_Veigar
                 AddValue(lanemenu, "Min Minions For w", "wminionjigolo", 3, 1, 20);           
             }
             Config.AddSubMenu(lanemenu);
-
-            var drawingmenu = new Menu("Drawing Menu", "[D]rawing Menu");
-            {
-                AddBool(drawingmenu, "Display Player Damage On Target", "FillDamage");
-                AddBool(drawingmenu, "Fill Damage", "RushDrawWDamageFill");
-            }
-            Config.AddSubMenu(drawingmenu);
-
             var lasthit = new Menu("Last Hit", "[L]ast Hit");
             {
                 AddValue(lasthit, "Min %Mana To Lane Clear", "minmanalast", 40);
                 AddBool(lasthit, "Use [Q]", "useqlaneclearlast");
                 lasthit.AddItem(new MenuItem("qmodelast", "Q Modes"))
-                    .SetValue(new StringList(new[] { "2 Minions Kills", "1 Minion Kill", "None" }));     
+                    .SetValue(new StringList(new[] { "2 Minions Kills", "1 Minion Kill", "None" }));
             }
             Config.AddSubMenu(lasthit);
+
+            var junglemenu = new Menu("Jungle Clear", "Jungle Clear");
+            {
+                AddBool(junglemenu, "Use [Q]", "useqjungle");
+                AddBool(junglemenu, "Use [W]", "usewjungle");
+                AddValue(junglemenu, "Minimum %Mana", "minmanajungle", 40);
+            }
+            Config.AddSubMenu(junglemenu);
+
             var enviorment = new Menu("enviorment", "eviorment");
             {
                 AddBool(enviorment, "Auto Tear Stacks In Fountain", "tearoptions");
                 AddKeyBind(enviorment, "Flee Mode", "fleemode", 'Z', KeyBindType.Press);
-                AddBool(enviorment,"Use E In Flee Mode", "efleemode");
+                AddBool(enviorment, "Use E In Flee Mode", "efleemode");
             }
             Config.AddSubMenu(enviorment);
+
+            var drawingmenu = new Menu("Drawing Menu", "[D]rawing Menu");
+            {
+                AddBool(drawingmenu, "Display Drawings", "displayrange");
+                AddBool(drawingmenu, "Display Q Range", "displayQrange");
+                AddBool(drawingmenu, "Display W Range", "displayWrange");
+                AddBool(drawingmenu, "Display E Range", "displayErange");
+                AddBool(drawingmenu, "Display R Range", "displayRrange");
+                AddBool(drawingmenu, "Display Player Damage On Target", "FillDamage");
+                AddBool(drawingmenu, "Fill Damage", "RushDrawWDamageFill");
+            }
+            Config.AddSubMenu(drawingmenu);
+
 
             
         }
