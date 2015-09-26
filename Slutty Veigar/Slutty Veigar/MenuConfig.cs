@@ -97,10 +97,8 @@ namespace Slutty_Veigar
             }
             Config.AddSubMenu(drawingmenu);
 
-            Config.AddItem(new MenuItem("autoq", "Auto Q"))
-                .SetValue(new StringList(new[] {"2 Minions", "1 Minion", "Dont Auto Q"}));
 
-
+            
         }
     }
 }
