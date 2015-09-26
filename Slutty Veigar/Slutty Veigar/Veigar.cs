@@ -193,6 +193,7 @@ namespace Slutty_Veigar
 
         private static void LastHit()
         {
+            if (ManaCheck("minmanalast")) return;
             var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.MaxHealth);
 
@@ -437,7 +438,7 @@ namespace Slutty_Veigar
             }
             else
             {
-                E.Cast(pred.CastPosition.Extend(Player.Position, 150));
+                E.Cast(pred.CastPosition.Extend(Player.Position, 450));
                 laste = Environment.TickCount;
 
             }
