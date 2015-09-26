@@ -35,16 +35,16 @@ namespace Slutty_Veigar
 
             MenuConfig.OnLoad();
             Config.AddToMainMenu();
-            Q = new Spell(SpellSlot.Q, 860);
+            Q = new Spell(SpellSlot.Q, 800);
             W = new Spell(SpellSlot.W, 880);
             E = new Spell(SpellSlot.E, 850);
-            R = new Spell(SpellSlot.R, 650);
+            R = new Spell(SpellSlot.R, 600);
 
             DamageToUnit = GetComboDamage;
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
-            W.SetSkillshot(1.25f, 225f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotLine);
+            W.SetSkillshot(1f, 225f, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
           //  Ew.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
             Game.OnUpdate += OnUpdate;
@@ -96,6 +96,10 @@ namespace Slutty_Veigar
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (target == null) return;
             GetComboDamage(target);
+
+            if (GetBool("autoe", typeof(bool)))
+            autoe(target);
+
             if (target.IsValidTarget(E.Range) && E.IsReady() && target.HasBuffOfType(BuffType.Stun))
             {
                 var pred = E.GetPrediction(target).CastPosition;
@@ -104,6 +108,17 @@ namespace Slutty_Veigar
             if (Ignite.IsReady() && target.Health <= (Q.GetDamage(target) + Player.GetAutoAttackDamage(target)))
             {
                 Player.Spellbook.CastSpell(Ignite, target);
+            }
+        }
+
+        private static void autoe(Obj_AI_Hero target)
+        {
+            var pred = W.GetPrediction(target, true);
+            var predss = pred.AoeTargetsHitCount;
+
+            if (predss >=  GetValue("AutoE") - 1)
+            {
+                E.Cast(pred.CastPosition);
             }
         }
 
@@ -182,7 +197,7 @@ namespace Slutty_Veigar
                 MinionOrderTypes.MaxHealth);
 
             if (minion == null) return;
-
+            
             if (!GetBool("useqlaneclearlast", typeof(bool))) return;
 
             foreach (var minions in minion.Where(x => x.Name.Contains("siege")))
@@ -258,6 +273,7 @@ namespace Slutty_Veigar
         }
         private static void LaneClear()
         {
+            if (ManaCheck("minmana")) return;
             var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.MaxHealth);
 
@@ -410,27 +426,42 @@ namespace Slutty_Veigar
         public static void EComboHarasscast(string name, Obj_AI_Hero target)
         {
             if (!GetBool(name, typeof(bool))) return;
+
             if (!target.IsValidTarget(E.Range) || !E.IsReady()) return;
 
             var pred = E.GetPrediction(target);
-            E.Cast(pred.CastPosition);
+            if (Player.IsFacing(target))
+            {
+                E.Cast(pred.CastPosition.Extend(Player.Position, 300));
+                laste = Environment.TickCount;
+            }
+            else
+            {
+                E.Cast(pred.CastPosition.Extend(Player.Position, 150));
+                laste = Environment.TickCount;
+
+            }
         }
 
         public static void WComboHarassCast(string name, Obj_AI_Hero target)
         {
             if (!target.IsValidTarget(W.Range) || !W.IsReady()) return;
-            var wpred = W.GetPrediction(target, true);
-            switch (GetStringValue(name))
-            {
-                case 0:
-                    W.Cast(wpred.CastPosition);
-                    break;
-                case 1:
-                    if (target.HasBuffOfType(BuffType.Stun) || W.GetDamage(target) >= target.Health)
-                        W.Cast(target.Position);
-                    break;
-                case 2:
-                    break;
+            if ((!Player.HasBuffOfType(BuffType.Stun) && !Player.HasBuffOfType(BuffType.Taunt) &&
+                 !Player.HasBuffOfType(BuffType.Snare)) && Environment.TickCount - laste < 1500) return;
+                var wpred = W.GetPrediction(target, true);
+
+                switch (GetStringValue(name))
+                {
+                    case 0:
+                        W.Cast(wpred.CastPosition);
+                        break;
+                    case 1:
+                        if (target.HasBuffOfType(BuffType.Stun) || target.HasBuffOfType(BuffType.Snare) || target.HasBuffOfType(BuffType.Taunt)|| W.GetDamage(target) >= target.Health)
+                            W.Cast(target.Position);
+                        break;
+                    case 2:
+                        break;
+                
             }
         }
 
@@ -572,5 +603,7 @@ namespace Slutty_Veigar
             else
                 Q.Cast();
         }
+
+        public static int laste { get; set; }
     }
 }

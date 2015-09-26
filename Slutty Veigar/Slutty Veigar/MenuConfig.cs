@@ -83,6 +83,8 @@ namespace Slutty_Veigar
                 AddBool(enviorment, "Auto Tear Stacks In Fountain", "tearoptions");
                 AddKeyBind(enviorment, "Flee Mode", "fleemode", 'Z', KeyBindType.Press);
                 AddBool(enviorment, "Use E In Flee Mode", "efleemode");
+                AddBool(enviorment, "Use Auto E", "autoe");
+                AddValue(enviorment, "Auto E On X Targets", "AutoE", 2, 2, 5);
             }
             Config.AddSubMenu(enviorment);
 
@@ -100,6 +102,8 @@ namespace Slutty_Veigar
 
             Config.AddItem(new MenuItem("autoq", "Auto Q"))
                 .SetValue(new StringList(new[] {"2 Minions", "1 Minion", "Dont Auto Q"}));
+
+            
 
 
         }
