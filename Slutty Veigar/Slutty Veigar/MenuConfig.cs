@@ -100,7 +100,8 @@ namespace Slutty_Veigar
             }
             Config.AddSubMenu(drawingmenu);
 
-            Config.AddItem(new MenuItem("autoq", "Auto Q"))
+            AddKeyBind(Config, "Auto Q Toggle", "autoqtoggle", 'G', KeyBindType.Toggle);
+            Config.AddItem(new MenuItem("autoq", "Auto Q Farm"))
                 .SetValue(new StringList(new[] {"2 Minions", "1 Minion", "Dont Auto Q"}));
 
             

@@ -80,19 +80,20 @@ namespace Slutty_Veigar
                 case Orbwalking.OrbwalkingMode.LastHit:
                     LastHit();
                     break;
+                case Orbwalking.OrbwalkingMode.None:
+                    if (!GetBool("autoqtoggle", typeof (KeyBind))) return;
+                    if (GetStringValue("autoq") == 0 || GetStringValue("autoq") == 1)
+                        autoqs();
+                    break;
             }
             TearStack();
 
-            if (GetStringValue("autoq") == 0 || GetStringValue("autoq") == 1)
-                autoqs();
-
             if (GetBool("fleemode", typeof (KeyBind)))
-            {
                 flee();
-            }
 
             SetIgniteSlot(Player.GetSpellSlot("summonerdot"));
             Orbwalker.SetAttack(!GetBool("aablock", typeof(bool)));
+
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (target == null) return;
             GetComboDamage(target);
@@ -100,15 +101,18 @@ namespace Slutty_Veigar
             if (GetBool("autoe", typeof(bool)))
             autoe(target);
 
+            if (target.HasBuffOfType(BuffType.Stun))
+                W.Cast(target.Position);
+
+
             if (target.IsValidTarget(E.Range) && E.IsReady() && target.HasBuffOfType(BuffType.Stun))
             {
                 var pred = E.GetPrediction(target).CastPosition;
                 E.Cast(pred.Extend(Player.ServerPosition, 375));
             }
+
             if (Ignite.IsReady() && target.Health <= (Q.GetDamage(target) + Player.GetAutoAttackDamage(target)))
-            {
                 Player.Spellbook.CastSpell(Ignite, target);
-            }
         }
 
         private static void autoe(Obj_AI_Hero target)
@@ -385,12 +389,13 @@ namespace Slutty_Veigar
         {
             if (!GetBool(name, typeof(bool))) return;
             if (!R.IsReady() || !target.IsValidTarget(R.Range)) return;
-            if (R.GetDamage(target) > target.Health || GetComboDamage(target) > target.Health)
-                foreach (var targets in HeroManager.Enemies.Where(x => x.IsValid && x.IsChampion()))
-                {
-                    if (GetStringValue("user" + targets.ChampionName) != 0) return;
-                    R.CastOnUnit(target);
-                }
+            if (R.GetDamage(target) < target.Health) return;
+
+            foreach (var targets in HeroManager.Enemies)
+            {
+                if (GetStringValue("user" + targets.ChampionName) != 0) return;
+                R.Cast(target);
+            }
         }
 
         public static void QColCast(Obj_AI_Hero target, bool col = true)
@@ -399,9 +404,9 @@ namespace Slutty_Veigar
 
             var collision = Q.GetCollision(Player.Position.To2D(),
                 new List<Vector2> { prediction.UnitPosition.To2D() });
-
             if (col)
             {
+              
                 if (collision.Count == 2 && collision[0].IsValid && collision[1].IsValid)
                 {
                     if (collision[0].IsMinion &&
@@ -431,14 +436,21 @@ namespace Slutty_Veigar
             if (!target.IsValidTarget(E.Range) || !E.IsReady()) return;
 
             var pred = E.GetPrediction(target);
+
             if (Player.IsFacing(target))
+                facing = Environment.TickCount;
+
+            if (!Player.IsFacing(target))
+                nofacing = Environment.TickCount;
+
+            if (Player.IsFacing(target) && Environment.TickCount - facing > 1200)
             {
                 E.Cast(pred.CastPosition.Extend(Player.Position, 300));
                 laste = Environment.TickCount;
             }
-            else
+            else if (!Player.IsFacing(target) && Environment.TickCount - nofacing > 1200)
             {
-                E.Cast(pred.CastPosition.Extend(Player.Position, 450));
+                E.Cast(pred.CastPosition.Extend(Player.Position, 470));
                 laste = Environment.TickCount;
 
             }
@@ -449,15 +461,14 @@ namespace Slutty_Veigar
             if (!target.IsValidTarget(W.Range) || !W.IsReady()) return;
             if ((!Player.HasBuffOfType(BuffType.Stun) && !Player.HasBuffOfType(BuffType.Taunt) &&
                  !Player.HasBuffOfType(BuffType.Snare)) && Environment.TickCount - laste < 1500) return;
-                var wpred = W.GetPrediction(target, true);
 
-                switch (GetStringValue(name))
+            switch (GetStringValue(name))
                 {
                     case 0:
-                        W.Cast(wpred.CastPosition);
+                        W.Cast(target.Position);
                         break;
                     case 1:
-                        if (target.HasBuffOfType(BuffType.Stun) || target.HasBuffOfType(BuffType.Snare) || target.HasBuffOfType(BuffType.Taunt)|| W.GetDamage(target) >= target.Health)
+                        if (target.HasBuffOfType(BuffType.Stun) || target.HasBuffOfType(BuffType.Snare) || target.HasBuffOfType(BuffType.Taunt))
                             W.Cast(target.Position);
                         break;
                     case 2:
@@ -468,6 +479,8 @@ namespace Slutty_Veigar
 
         private static DamageToUnitDelegate _damageToUnit;
         private static SpellSlot _ignite;
+        private static int facing;
+        private static int nofacing;
         public static bool EnableDrawingDamage { get; set; }
         public static Color DamageFillColor { get; set; }
 
