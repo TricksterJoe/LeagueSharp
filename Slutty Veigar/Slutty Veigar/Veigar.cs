@@ -202,7 +202,7 @@ namespace Slutty_Veigar
                 MinionOrderTypes.MaxHealth);
 
             if (minion == null) return;
-            
+
             if (!GetBool("useqlaneclearlast", typeof(bool))) return;
 
             foreach (var minions in minion.Where(x => x.Name.Contains("siege")))
@@ -210,7 +210,7 @@ namespace Slutty_Veigar
                 if (minions.Health <= Q.GetDamage(minions))
                     Q.Cast(minions);
             }
-            if (GetStringValue("useqlaneclearlast") == 1)
+            if (GetStringValue("qmodelast") == 1)
             {
                 if (minion[0].Health <= Q.GetDamage(minion[0]))
                     Q.Cast(minion[0]);
