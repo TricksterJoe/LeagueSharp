@@ -25,7 +25,7 @@ namespace Slutty_Veigar
             {
                 AddBool(combomenu, "Use [Q]", "useqcombo");
                 combomenu.AddItem(new MenuItem("usewmode", "[W] Mode"))
-                    .SetValue(new StringList(new[] {"Regular", "Only Stunned", "Don't Use"}));
+                    .SetValue(new StringList(new[] {"Regular", "Only Stunned/Inside E", "Don't Use"}));
 
                 AddBool(combomenu, "Use [E]", "useecombo");
                 var rsettings = new Menu("[R] [S]ettings", "[R] [S]ettings");
@@ -49,6 +49,14 @@ namespace Slutty_Veigar
                 AddBool(harassmenu, "Use [E]", "useeharass");
             }
             Config.AddSubMenu(harassmenu);
+
+            var killsteal = new Menu("Kill Steal", "Kill Steal");
+            {
+                AddBool(killsteal, "Use Q", "useqks");
+                AddBool(killsteal, "Use W", "usewks");
+                AddBool(killsteal, "Use R", "userks");
+            }
+            Config.AddSubMenu(killsteal);
 
             var lanemenu = new Menu("Lane Clear Settings", "Lane Clear Settings");
             {

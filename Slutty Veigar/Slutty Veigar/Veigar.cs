@@ -44,13 +44,37 @@ namespace Slutty_Veigar
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(1f, 225f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(0.5f, 40f, float.MaxValue, false, SkillshotType.SkillshotCircle);
           //  Ew.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
-
+           // GameObject.OnCreate += OnCreate;
+           // CustomEvents.Unit.OnDash += Ondash;
         }
+//
+//        private static void Ondash(Obj_AI_Base sender, Dash.DashItem args)
+//        {
+//            if (sender.IsAlly || sender.IsMe || !sender.IsChampion()) return;
+//            E.Cast(args.EndPos.Extend(Player.Position.To2D(), 375));
+//        }
+
+
+
+
+//        private static void OnCreate(GameObject sender, EventArgs args)
+//        {
+//           // Game.PrintChat(sender.Name);
+//            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+//            if (target == null) return;
+//            if (sender.Name == "Veigar_Base_E_cage_green.troy")
+//            {
+//                if (sender.Position.Distance(Player.ServerPosition) < 375)
+//                {
+//                    W.Cast(target.Position);
+//                }
+//            }
+//        }
 
         public static SpellSlot GetIgniteSlot()
         {
@@ -87,7 +111,7 @@ namespace Slutty_Veigar
                     break;
             }
             TearStack();
-
+            KillSteal();
             if (GetBool("fleemode", typeof (KeyBind)))
                 flee();
 
@@ -113,6 +137,31 @@ namespace Slutty_Veigar
 
             if (Ignite.IsReady() && target.Health <= (Q.GetDamage(target) + Player.GetAutoAttackDamage(target)))
                 Player.Spellbook.CastSpell(Ignite, target);
+        }
+
+        private static void KillSteal()
+        {
+            var ksq = GetBool("useqks", typeof (bool));
+            var ksw = GetBool("usewks", typeof(bool));
+            var ksr = GetBool("userks", typeof(bool));
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+            if (target == null) return;
+
+            if (ksq && target.Health <= Q.GetDamage(target))
+            {
+                Q.Cast(target);
+            }
+
+            if (ksw && target.Health <= W.GetDamage(target))
+            {
+                W.Cast(target);
+            }
+
+            if (ksr && target.Health <= R.GetDamage(target))
+            {
+                R.Cast(target);
+            }
+
         }
 
         private static void autoe(Obj_AI_Hero target)
@@ -435,25 +484,40 @@ namespace Slutty_Veigar
 
             if (!target.IsValidTarget(E.Range) || !E.IsReady()) return;
 
-            var pred = E.GetPrediction(target);
+//            var pred = E.GetPrediction(target);
+//
+////            if (Player.IsFacing(target))
+////                facing = Environment.TickCount;
+////
+////            if (!Player.IsFacing(target))
+////                nofacing = Environment.TickCount;
+//
+//            if (Player.IsFacing(target))
+//            {
+//                E.Cast(pred.CastPosition.Extend(Player.Position, 300));
+//                laste = Environment.TickCount;
+//            }
+//            else
+//            {
+//                E.Cast(pred.CastPosition.Extend(Player.Position, 530));
+//                laste = Environment.TickCount;
+//
+//            }
 
-            if (Player.IsFacing(target))
-                facing = Environment.TickCount;
+//            var pred = E.GetPrediction(target);
+//            var targetPos = pred.UnitPosition;
+//            E.Cast(targetPos.Extend(Player.Position, 220).To2D());
 
-            if (!Player.IsFacing(target))
-                nofacing = Environment.TickCount;
-
-            if (Player.IsFacing(target))
+            var epred = E.GetPrediction(target);
+            var pos = epred.CastPosition;
+            if (pos.Distance(Player.Position) < E.Range
+                && epred.Hitchance >= HitChance.VeryHigh)
             {
-                E.Cast(pred.CastPosition.Extend(Player.Position, 300));
-                laste = Environment.TickCount;
+                E.Cast(pos.Extend(Player.Position, 230));
             }
-            else
-            {
-                E.Cast(pred.CastPosition.Extend(Player.Position, 530));
-                laste = Environment.TickCount;
 
-            }
+           // E.Cast(targetPos);
+
         }
 
         public static void WComboHarassCast(string name, Obj_AI_Hero target)
@@ -481,6 +545,7 @@ namespace Slutty_Veigar
         private static SpellSlot _ignite;
         private static int facing;
         private static int nofacing;
+        private static GameObject Veigare;
         public static bool EnableDrawingDamage { get; set; }
         public static Color DamageFillColor { get; set; }
 
