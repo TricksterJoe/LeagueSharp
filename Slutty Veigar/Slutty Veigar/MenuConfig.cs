@@ -60,6 +60,7 @@ namespace Slutty_Veigar
                 AddValue(lanemenu, "Min Minions For w", "wminionjigolo", 3, 1, 20);           
             }
             Config.AddSubMenu(lanemenu);
+
             var lasthit = new Menu("Last Hit", "[L]ast Hit");
             {
                 AddValue(lasthit, "Min %Mana To Lane Clear", "minmanalast", 40);
@@ -97,8 +98,10 @@ namespace Slutty_Veigar
             }
             Config.AddSubMenu(drawingmenu);
 
+            Config.AddItem(new MenuItem("autoq", "Auto Q"))
+                .SetValue(new StringList(new[] {"2 Minions", "1 Minion", "Dont Auto Q"}));
 
-            
+
         }
     }
 }
