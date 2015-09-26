@@ -35,7 +35,7 @@ namespace Slutty_Veigar
 
             MenuConfig.OnLoad();
             Config.AddToMainMenu();
-            Q = new Spell(SpellSlot.Q, 800);
+            Q = new Spell(SpellSlot.Q, 735);
             W = new Spell(SpellSlot.W, 880);
             E = new Spell(SpellSlot.E, 850);
             R = new Spell(SpellSlot.R, 600);
