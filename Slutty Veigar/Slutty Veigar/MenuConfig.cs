@@ -34,7 +34,7 @@ namespace Slutty_Veigar
                     rsettings.AddItem(new MenuItem("user" + hero.ChampionName, "Use [R] " + hero.ChampionName))
                         .SetValue(new StringList(new[] {"Use", "Don't Use"}));
                 }
-                AddBool(rsettings, "Use R", "user");
+                AddBool(rsettings, "Use R", "users");
                 AddBool(combomenu, "Block AA in Combo", "aablock", false);
                 combomenu.AddSubMenu(rsettings);
             }

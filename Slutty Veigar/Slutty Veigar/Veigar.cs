@@ -43,7 +43,7 @@ namespace Slutty_Veigar
             DamageToUnit = GetComboDamage;
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
-            W.SetSkillshot(1f, 225f, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            W.SetSkillshot(2f, 225f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.5f, 40f, float.MaxValue, false, SkillshotType.SkillshotCircle);
           //  Ew.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
@@ -107,6 +107,7 @@ namespace Slutty_Veigar
                 case Orbwalking.OrbwalkingMode.None:
                     if (!GetBool("autoqtoggle", typeof (KeyBind))) return;
                     if (GetStringValue("autoq") == 0 || GetStringValue("autoq") == 1)
+                        if (!Player.IsRecalling())
                         autoqs();
                     break;
             }
@@ -411,7 +412,7 @@ namespace Slutty_Veigar
                 Player.Spellbook.CastSpell(_ignite, target);
             }
             
-            RCast("user", target);
+            RCast("users", target);
             EComboHarasscast("useecombo", target);
             QComboHarassCast("useqcombo", target);
             WComboHarassCast("usewmode", target);
@@ -436,13 +437,14 @@ namespace Slutty_Veigar
 
         public static void RCast(string name, Obj_AI_Hero target)
         {
+            if (target.HasBuffOfType(BuffType.Invulnerability)) return;
             if (!GetBool(name, typeof(bool))) return;
             if (!R.IsReady() || !target.IsValidTarget(R.Range)) return;
             if (R.GetDamage(target) < target.Health) return;
 
             foreach (var targets in HeroManager.Enemies)
             {
-                if (GetStringValue("user" + targets.ChampionName) != 0) return;
+                if (GetStringValue("user" + targets.ChampionName) == 0) 
                 R.Cast(target);
             }
         }
@@ -513,10 +515,20 @@ namespace Slutty_Veigar
             if (pos.Distance(Player.Position) < E.Range
                 && epred.Hitchance >= HitChance.VeryHigh)
             {
-                E.Cast(pos.Extend(Player.Position, 230));
+                if (Utility.IsBothFacing(Player, target))
+                {
+                    E.Cast(pos.Extend(Player.Position, 300));
+                }
+                else if (Player.IsFacing(target) && !target.IsFacing(Player))
+                {
+                    E.Cast(pos.Extend(Player.Position, 150));
+                }
+                else if (!Player.IsFacing(target) && target.IsFacing(Player))
+                {
+                    E.Cast(pos.Extend(Player.Position, 300));
+                }
             }
-
-           // E.Cast(targetPos);
+            // E.Cast(targetPos);
 
         }
 
