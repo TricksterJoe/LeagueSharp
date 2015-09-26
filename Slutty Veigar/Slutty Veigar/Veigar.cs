@@ -450,7 +450,7 @@ namespace Slutty_Veigar
             }
             else
             {
-                E.Cast(pred.CastPosition.Extend(Player.Position, 470));
+                E.Cast(pred.CastPosition.Extend(Player.Position, 530));
                 laste = Environment.TickCount;
 
             }
