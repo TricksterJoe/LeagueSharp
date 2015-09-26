@@ -443,12 +443,12 @@ namespace Slutty_Veigar
             if (!Player.IsFacing(target))
                 nofacing = Environment.TickCount;
 
-            if (Player.IsFacing(target) && Environment.TickCount - facing > 300)
+            if (Player.IsFacing(target))
             {
                 E.Cast(pred.CastPosition.Extend(Player.Position, 300));
                 laste = Environment.TickCount;
             }
-            else if (!Player.IsFacing(target) && Environment.TickCount - nofacing > 300)
+            else
             {
                 E.Cast(pred.CastPosition.Extend(Player.Position, 470));
                 laste = Environment.TickCount;
