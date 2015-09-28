@@ -18,6 +18,7 @@ namespace Slutty_Lucian
 
         internal static void OnLoad(EventArgs args)
         {
+            if (Player.ChampionName != "Lucian") return;
             MenuConfig.OnLoad();
             Q = new Spell(SpellSlot.Q, 1100);
             R = new Spell(SpellSlot.R, 1400);
