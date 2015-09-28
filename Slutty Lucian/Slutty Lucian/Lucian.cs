@@ -48,7 +48,7 @@ namespace Slutty_Lucian
             if (args.SData.Name == "LucianW" || args.SData.Name == "LucianE" || args.SData.Name == "LucianQ")
             {
                 passive = true;
-                Utility.DelayAction.Add(450, Orbwalking.ResetAutoAttackTimer);
+               Orbwalking.ResetAutoAttackTimer();
             }
 
         }
