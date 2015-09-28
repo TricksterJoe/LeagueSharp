@@ -35,10 +35,10 @@ namespace Slutty_Veigar
 
             MenuConfig.OnLoad();
             Config.AddToMainMenu();
-            Q = new Spell(SpellSlot.Q, 735);
+            Q = new Spell(SpellSlot.Q, 900);
             W = new Spell(SpellSlot.W, 880);
-            E = new Spell(SpellSlot.E, 850);
-            R = new Spell(SpellSlot.R, 600);
+            E = new Spell(SpellSlot.E, 700);
+            R = new Spell(SpellSlot.R, 650);
 
             DamageToUnit = GetComboDamage;
 
