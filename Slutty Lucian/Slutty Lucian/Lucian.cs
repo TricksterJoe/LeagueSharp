@@ -44,7 +44,7 @@ namespace Slutty_Lucian
         private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
             if (!sender.IsMe) return;
-            Game.PrintChat(args.SData.Name);
+        //      Game.PrintChat(args.SData.Name);
             if (args.SData.Name == "LucianW" || args.SData.Name == "LucianE" || args.SData.Name == "LucianQ")
             {
                 passive = true;
@@ -66,15 +66,30 @@ namespace Slutty_Lucian
 
         private static void OnDraw(EventArgs args)
         {
-//            var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy);
-//            if (minion == null) return;
-//
-//            Drawing.DrawCircle(minion[0].Position, 100, Color.DarkRed);
+            if (GetBool("drawq", typeof (bool)) && Q.Level >= 1)
+            {
+                Drawing.DrawCircle(Player.Position, Q.Range, Color.LightSeaGreen);
+            }
+
+            if (GetBool("draww", typeof(bool)) && W.Level >= 1)
+            {
+                Drawing.DrawCircle(Player.Position, W.Range, Color.DarkOrchid);
+            }
+
+            if (GetBool("drawe", typeof(bool)) && E.Level >= 1)
+            {
+                Drawing.DrawCircle(Player.Position, E.Range, Color.DarkRed);
+            }
+
+            if (GetBool("drawr", typeof(bool)) && R.Level >= 1)
+            {
+                Drawing.DrawCircle(Player.Position, R.Range, Color.Chartreuse);
+            }
         }
 
         private static void OnUpdate(EventArgs args)
         {
-
+            RDamage(Player);
            if (passive || Player.IsDashing() || Player.HasBuff("lucianpassivebuff") || casted) return;
             switch (Orbwalker.ActiveMode)
             {
@@ -169,10 +184,24 @@ namespace Slutty_Lucian
             if (target == null) return;
             if (target.Distance(Player) < Player.AttackRange+ Player.BoundingRadius + 200) return;
             if (R.IsReady() && !Player.HasBuff("lucianr"))
-               
+            {
+                if (!E.IsReady() && (target.Health < RDamage(Player)))
                 R.Cast(target);
+            }
         }
 
+        public static float RDamage(Obj_AI_Hero hero)
+        {
+            double damage = 0;
+            var shots = 7.5 + 10.5*hero.AttackCastDelay*1000;
+            var damageperbolt = 65 + 0.4*hero.TotalMagicalDamage + 0.33*hero.TotalAttackDamage;
+            if (R.IsReady())
+            {
+                damage += shots*damageperbolt;
+            }
+
+            return (float) damage;
+        }
         public static void ExtendedQ(Obj_AI_Hero target, string menuname, string smart)
         {
             if (Player.HasBuff("lucianpassivebuff") || Player.IsDashing() || Player.IsWindingUp) return;

@@ -48,6 +48,14 @@ namespace Slutty_Lucian
             }
             Config.AddSubMenu(laneclear);
 
+            var drawing = new Menu("Drawings", "Drawins");
+            {
+                AddBool(drawing, "Draw [Q]", "drawq");
+                AddBool(drawing, "Draw [W]", "draww");
+                AddBool(drawing, "Draw [E]", "drawe");
+                AddBool(drawing, "Draw [R]", "drawr");
+            }
+            Config.AddSubMenu(drawing);
             Config.AddToMainMenu();
         }
     }
