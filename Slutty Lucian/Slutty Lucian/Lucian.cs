@@ -90,12 +90,13 @@ namespace Slutty_Lucian
         private static void OnUpdate(EventArgs args)
         {
             RDamage(Player);
-           if (passive || Player.IsDashing() || Player.HasBuff("lucianpassivebuff") || casted) return;
+           if (Player.IsDashing() || Player.HasBuff("lucianpassivebuff") || casted) return;
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
                     if (ValidTarget(R.Range))
                     {
+                        if (passive) return;
                         if (passive || Player.IsDashing() || Player.HasBuff("lucianpassivebuff")) return;
                         var targets = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
                         var targetsr = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
@@ -182,7 +183,7 @@ namespace Slutty_Lucian
         {
             if (!GetBool(name, typeof (bool))) return;
             if (target == null) return;
-            if (target.Distance(Player) < Player.AttackRange+ Player.BoundingRadius + 200) return;
+            if (target.Distance(Player) < Player.AttackRange+ Player.BoundingRadius) return;
             if (R.IsReady() && !Player.HasBuff("lucianr"))
             {
                 if (!E.IsReady() && (target.Health < RDamage(Player)))
