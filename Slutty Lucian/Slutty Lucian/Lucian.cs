@@ -155,7 +155,7 @@ namespace Slutty_Lucian
 
             foreach (var minions in minion)
             {
-                var prediction = Prediction.GetPrediction(minions, Q.Delay, 20);
+                var prediction = Prediction.GetPrediction(minions, Q.Delay, 10);
 
                 var collision = Q.GetCollision(Player.Position.To2D(),
                     new List<Vector2> {prediction.UnitPosition.To2D()});
@@ -209,7 +209,7 @@ namespace Slutty_Lucian
             if (!GetBool(menuname, typeof (bool))) return;
 
             if (target == null) return;
-            var prediction = Prediction.GetPrediction(target, 0.2f, 20);
+            var prediction = Prediction.GetPrediction(target, Q.Delay, 10);
             
             var collision = Q.GetCollision(Player.Position.To2D(),
                 new List<Vector2> {prediction.UnitPosition.To2D()});
@@ -217,16 +217,15 @@ namespace Slutty_Lucian
 
             if (!Q.IsReady()) return;
 
-            if (!collision.Any())
-            {
-                if (target.IsValidTarget(550))
-                    Q.Cast(target);
-            }
-
             if (collision.Any() && GetBool(smart, typeof(bool)))
             {
                     if (target.Distance(Player) <= Q.Range && collision[0].Distance(Player) <= 500 )
                         Q.Cast(collision[0]);
+            }
+            else
+            {
+                if (target.IsValidTarget(500))
+                    Q.Cast(target);
             }
         }
 
