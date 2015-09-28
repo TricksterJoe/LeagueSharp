@@ -58,7 +58,7 @@ namespace Slutty_Lucian
             if (args.Slot == SpellSlot.Q || args.Slot == SpellSlot.W || args.Slot == SpellSlot.E)
             {
                 passive = true;
-                Utility.DelayAction.Add(500, () => passive = false);
+                Utility.DelayAction.Add(150, () => passive = false);
             }
            
         }
