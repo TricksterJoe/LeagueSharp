@@ -17,7 +17,9 @@ namespace Slutty_Lucian
             Config.AddSubMenu(orbwalkerMenu);
 
             Orbwalker = new Orbwalking.Orbwalker(orbwalkerMenu);
-
+            var targetSelectorMenu = new Menu("Target Selector", "Target Selector");
+            TargetSelector.AddToMenu(targetSelectorMenu);
+            Config.AddSubMenu(targetSelectorMenu);
             var combo = new Menu("Combo Settings", "Combo Settings");
             {
                 AddBool(combo, "Use [Q]", "useqc");
