@@ -24,9 +24,9 @@ namespace Slutty_Gnar_Reworked
             var draws = new Menu("Drawings", "Drawings");
             {
                 draws.AddItem(new MenuItem("Draw", "Display Drawings").SetValue(true));
-                draws.AddItem(new MenuItem("qDraw", "Q Drawing").SetValue(true));
-                draws.AddItem(new MenuItem("wDraw", "W Drawing").SetValue(true));
-                draws.AddItem(new MenuItem("eDraw", "E Drawing").SetValue(true));
+                draws.AddItem(new MenuItem("qDraw", "Draw Q").SetValue(true));
+                draws.AddItem(new MenuItem("wDraw", "Draw W").SetValue(true));
+                draws.AddItem(new MenuItem("eDraw", "Draw E").SetValue(true));
             }
             Config.AddSubMenu(draws);
             #endregion
@@ -53,7 +53,7 @@ namespace Slutty_Gnar_Reworked
                     megagnar.AddItem(new MenuItem("UseWMega", "Use W").SetValue(true));
                     megagnar.AddItem(new MenuItem("UseRMega", "Use R").SetValue(true));
                     megagnar.AddItem(
-                        new MenuItem("useRSlider", "Min. Enemies to R").SetValue(new Slider(3, 1, 5)));
+                        new MenuItem("useRSlider", "Min. Targets to R").SetValue(new Slider(3, 1, 5)));
                     comboMenu.AddSubMenu(megagnar);
                 }
 
