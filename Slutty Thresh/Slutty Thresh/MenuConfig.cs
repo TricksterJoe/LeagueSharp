@@ -27,31 +27,31 @@ namespace Slutty_Thresh
 
             Config.AddSubMenu(new Menu("Drawings", "Drawings"));
             Config.SubMenu("Drawings").AddItem(new MenuItem("Draw", "Display Drawings").SetValue(true));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Draw Q").SetValue(true));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "Draw W").SetValue(true));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "Draw E").SetValue(true));
-            Config.SubMenu("Drawings").AddItem(new MenuItem("qfDraw", "Draw Flash-Q Range").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Draw [Q]").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "Draw [W]").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "Draw [E]").SetValue(true));
+            Config.SubMenu("Drawings").AddItem(new MenuItem("qfDraw", "Draw Flash-[Q] Range").SetValue(true));
 
             var comboMenu = new Menu("Combo Settings" , "combospells");
             {
                 var qsettings = new Menu("Q (Death Sentence) Settings", "settings");
                 {
                     
-                    qsettings.AddItem(new MenuItem("useQ", "Use Q (Death Sentence)").SetValue(true));
-                    qsettings.AddItem(new MenuItem("smartq", "Smart Q").SetValue(true));
-                    qsettings.AddItem(new MenuItem("useQ1", "Use Second-Q").SetValue(true));
+                    qsettings.AddItem(new MenuItem("useQ", "Use [Q] (Death Sentence)").SetValue(true));
+                    qsettings.AddItem(new MenuItem("smartq", "Smart [Q]").SetValue(true));
+                    qsettings.AddItem(new MenuItem("useQ1", "Use 2nd [Q] (Death Leap)").SetValue(true));
                     qsettings.AddItem(
-                        new MenuItem("useQ2", "Set Second-Q Delay (Death Leap)").SetValue(new Slider(1000, 0, 1500)));
+                        new MenuItem("useQ2", "Set 2nd-[Q] Delay (Death Leap)").SetValue(new Slider(1000, 0, 1500)));
                     qsettings.AddItem(
-                        new MenuItem("qrange", "Q Only if Target Range >=").SetValue(new Slider(500, 0, 1040)));
+                        new MenuItem("qrange", "Use [Q] Only if Target Range >=").SetValue(new Slider(500, 0, 1040)));
                     comboMenu.AddSubMenu(qsettings);
 
                 }
-                comboMenu.AddItem(new MenuItem("useE", "Use E (Flay)").SetValue(true));
-                comboMenu.AddItem(new MenuItem("combooptions", "Set E Mode").SetValue(new StringList(new[] {"Out", "In"}, 1)));
-                comboMenu.AddItem(new MenuItem("useR", "Use R (The Box)").SetValue(true));
+                comboMenu.AddItem(new MenuItem("useE", "Use [E] (Flay)").SetValue(true));
+                comboMenu.AddItem(new MenuItem("combooptions", "Set [E] Mode").SetValue(new StringList(new[] {"Push", "Pull"}, 1)));
+                comboMenu.AddItem(new MenuItem("useR", "Use [R] (The Box)").SetValue(true));
                 comboMenu.AddItem(
-    new MenuItem("rslider", "R Only if X Enemies in Range").SetValue(new Slider(3, 1, 5)));
+    new MenuItem("rslider", "Use [R] Only if X Target(s) in Range").SetValue(new Slider(3, 1, 5)));
 
             }
             Config.AddSubMenu(comboMenu);
@@ -74,12 +74,12 @@ namespace Slutty_Thresh
 
                 }
                 lantMenu.AddItem(new MenuItem("manalant", "Set % Mana for Lantern").SetValue(new Slider(50)));
-                lantMenu.AddItem(new MenuItem("autolantern", "Auto-Lantern Ally if Q hits").SetValue(false));
+                lantMenu.AddItem(new MenuItem("autolantern", "Auto-Lantern Ally if [Q] hits").SetValue(false));
             }
 
             var laneMenu = new Menu("Lane Clear", "laneclear");
             {
-                laneMenu.AddItem(new MenuItem("useelch", "Use E").SetValue(true));
+                laneMenu.AddItem(new MenuItem("useelch", "Use [E]").SetValue(true));
                 // laneMenu.AddItem(new MenuItem("elchslider", "Minimum Minions For E").SetValue(new Slider(0, 1, 10)));
             }
             Config.AddSubMenu(laneMenu);
@@ -94,11 +94,11 @@ namespace Slutty_Thresh
 
             Config.AddSubMenu(flashMenu);
 
-            var miscMenu = new Menu("Miscellaneous (Background)", "miscsettings");
+            var miscMenu = new Menu("Miscellaneous", "miscsettings");
 
             var eventMenu = new Menu("Events", "eventssettings");
             {
-                eventMenu.AddItem(new MenuItem("useW2I", "Interrupt with W").SetValue(true));
+                eventMenu.AddItem(new MenuItem("useW2I", "Interrupt with [W]").SetValue(true));
                 eventMenu.AddItem(new MenuItem("useQW2D", "Use W/Q on Dashing").SetValue(true));
             }
 
