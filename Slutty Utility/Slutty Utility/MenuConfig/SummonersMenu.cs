@@ -37,7 +37,7 @@ namespace Slutty_Utility.MenuConfig
             {
                 var ignitemenu = new Menu("Ignite Settings", "Ignite Settings");
                 {
-                    var championslist = new Menu("Champion Black List", "Champion Black List");
+                    var championslist = new Menu("Champion Blacklist", "Champion Black List");
                     foreach (var hero in HeroManager.Enemies)
                     {
                         AddBool(championslist, "Ignite " + hero.ChampionName, "useignite" + hero.ChampionName, true);
@@ -57,7 +57,7 @@ namespace Slutty_Utility.MenuConfig
                     foreach (var hero in HeroManager.AllHeroes.Where(x => x.IsMe || x.IsAlly))
                     {
                         AddBool(healmenu, "Use Heal On" + hero.ChampionName, "useheal" + hero.ChampionName, true);
-                        AddValue(healmenu, "Min %Health To Heal", "percenthealth" + hero.ChampionName, 30);
+                        AddValue(healmenu, "Min % HP to Heal", "percenthealth" + hero.ChampionName, 30);
                     }
                 }
                 summonersmenu.AddSubMenu(healmenu);
@@ -65,7 +65,7 @@ namespace Slutty_Utility.MenuConfig
                 var barriermenu = new Menu("Barrier Settings", "Barrier Settings");
                 {
                     AddBool(barriermenu, "Use Barrier", "usebarrier", true);
-                    AddValue(barriermenu, "%Health", "percenthealth", 30);
+                    AddValue(barriermenu, "Min. % HP to Barrier", "percenthealth", 30);
                 }
                 summonersmenu.AddSubMenu(barriermenu);
 
@@ -76,7 +76,7 @@ namespace Slutty_Utility.MenuConfig
                         AddBool(cleansemenu, "Cleanse On " + buff, "cleanse" + buff, true);
                     }
                     AddBool(cleansemenu, "Use Cleanse", "usecleanse", true);
-                    AddValue(cleansemenu, "Cleanse Delay", "cleansedelay", 0, 0, 1500);
+                    AddValue(cleansemenu, "Cleanse Usage Delay", "cleansedelay", 0, 0, 1500);
                 }
                 summonersmenu.AddSubMenu(cleansemenu);
             }

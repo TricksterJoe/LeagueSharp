@@ -27,7 +27,7 @@ namespace Slutty_Lucian
                 AddBool(combo, "Use [W]", "usewc");
                 AddBool(combo, "Use [E]", "useec");
                 AddBool(combo, "Use [R]", "userc");
-                AddBool(combo, "Move To Target When R", "usercmove");
+                AddBool(combo, "Move to Target During [R]", "usercmove");
             }
             Config.AddSubMenu(combo);
 
@@ -36,13 +36,13 @@ namespace Slutty_Lucian
                 AddBool(mixed, "Use [Q]", "useqh");
                 AddBool(mixed, "Use Smart [Q]", "useqhs");
                 AddBool(mixed, "Use [W]", "usewh");
-                AddValue(mixed, "Min Mana", "minmanah", 30);
+                AddValue(mixed, "Min. % Mana", "minmanah", 30);
             }
             Config.AddSubMenu(mixed);
 
             var laneclear = new Menu("Lane Clear", "Lane Clear");
             {
-                AddValue(laneclear, "Min Mana", "minmanal", 30);
+                AddValue(laneclear, "Min. % Mana", "minmanal", 30);
                 AddBool(laneclear, "Use [Q]", "useq");
                 AddBool(laneclear, "Use [W]", "usew");
                 AddValue(laneclear, "Use [Q] if X minions", "xminions", 1, 1, 6);

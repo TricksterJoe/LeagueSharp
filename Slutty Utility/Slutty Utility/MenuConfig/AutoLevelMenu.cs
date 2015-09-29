@@ -11,9 +11,9 @@ namespace Slutty_Utility.MenuConfig
     {
         public static void OnLoad()
         {
-            var autolevel =  new Menu("Auto Leveler", "Auto Levelers");
-            Helper.AddBool(autolevel, "Use Auto Level", "useautolevel", true);
-            autolevel.AddItem(new MenuItem("autolevelmode", "Auto Level Mode"))
+            var autolevel =  new Menu("Auto-Leveler", "Auto Levelers");
+            Helper.AddBool(autolevel, "Use Auto-Level", "useautolevel", true);
+            autolevel.AddItem(new MenuItem("autolevelmode", "Auto-Level Mode:"))
                 .SetValue(new StringList(new[] {"QWE", "WQE", "EQW"}));
             Helper.Config.AddSubMenu(autolevel);
         }
