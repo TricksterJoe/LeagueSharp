@@ -18,7 +18,7 @@ namespace Slutty_Kindred
     //            if (Player.ChampionName != ChampName)
     //                return;
 
-            Q = new Spell(SpellSlot.Q, 500);
+            Q = new Spell(SpellSlot.Q, 800);
             W = new Spell(SpellSlot.W, 800);
             E = new Spell(SpellSlot.E, Player.AttackRange + Player.BoundingRadius);
             R = new Spell(SpellSlot.Q, 1000);
@@ -233,14 +233,14 @@ namespace Slutty_Kindred
             {
                 case 0:
                 {
-                    if (Player.Distance(target) > 500)
+                    if (Player.Distance(target) > 500 && Player.Distance(target) < Q.Range)
                     {
                         Q.Cast(dashPosition);
                     }
                     break;
                 }
                 case 1:
-                    if (Player.Distance(target) > 550)
+                if (Player.Distance(target) > 500 && Player.Distance(target) < Q.Range)
                     {
                         Q.Cast(dashPosition);
                     }
