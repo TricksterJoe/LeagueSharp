@@ -483,6 +483,7 @@ namespace OAnnie
         ///     Combo
         /// </summary>
 
+
         #region Combo
         private static void Combo()
         {
@@ -557,20 +558,15 @@ namespace OAnnie
                     return;
                     W.Cast(target);
             }
-
+            var rpred = R.GetPrediction(target, true);
             if (R.IsReady()
                 && user && target.IsValidTarget(R.Range) && !Player.HasBuff("summonerteleport") && Player.HasBuff("pyromania_particle"))
             {
-                foreach (var rhit in
-                    ObjectManager.Get<Obj_AI_Hero>()
-                        .Where(enemy => enemy.IsValidTarget())
-                        .Select(x => R.GetPrediction(x, true))
-                        .Where(pred => pred.AoeTargetsHitCount >= userslider))
+                if (rpred.AoeTargetsHitCount >= userslider)
                 {
-                    R.Cast(rhit.CastPosition);
-
+                    R.Cast(rpred.CastPosition);
                 }
-               if (target.Health >= Q.GetDamage(target) +W.GetDamage(target))
+               if (target.Health <= Q.GetDamage(target) +W.GetDamage(target))
                 {
                     R.Cast(target.Position);
                 }
