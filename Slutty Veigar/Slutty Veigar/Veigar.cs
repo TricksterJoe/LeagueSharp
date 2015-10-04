@@ -159,10 +159,12 @@ namespace Slutty_Veigar
             {
                 W.Cast(target);
             }
-
-            if (ksr && target.Health <= R.GetDamage(target))
+            foreach (var hero in HeroManager.Enemies)
             {
-                R.Cast(target);
+                if (ksr && hero.Health <= R.GetDamage(hero) && GetStringValue("user" + hero.ChampionName) == 0)
+                {
+                    R.Cast(target);
+                }
             }
 
         }
