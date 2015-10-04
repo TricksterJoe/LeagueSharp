@@ -46,7 +46,7 @@ namespace Slutty_Veigar
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(2f, 225f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotLine);
+            E.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
           //  Ew.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
             Game.OnUpdate += OnUpdate;
