@@ -552,11 +552,11 @@ namespace Slutty_Veigar
             if (!target.IsValidTarget(W.Range) || !W.IsReady()) return;
             if ((!Player.HasBuffOfType(BuffType.Stun) && !Player.HasBuffOfType(BuffType.Taunt) &&
                  !Player.HasBuffOfType(BuffType.Snare)) && Environment.TickCount - laste < 1500) return;
-
+            var wpred = W.GetSPrediction(target);
             switch (GetStringValue(name))
                 {
                     case 0:
-                        W.Cast(target.Position);
+                        W.Cast(wpred.CastPosition);
                         break;
                     case 1:
                         if (target.HasBuffOfType(BuffType.Stun) || target.HasBuffOfType(BuffType.Snare) || target.HasBuffOfType(BuffType.Taunt))
