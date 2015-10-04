@@ -48,7 +48,7 @@
       <HintPath>C:\LeagueSharp\System\SharpDX.Direct3D9.dll</HintPath>
     </Reference>
     <Reference Include="SPrediction">
-      <HintPath>..\..\..\..\..\..\..\LeagueSharp\System\SPrediction.dll</HintPath>
+      <HintPath>C:\LeagueSharp\System\SPrediction.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
