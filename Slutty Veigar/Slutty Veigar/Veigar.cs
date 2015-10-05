@@ -39,14 +39,14 @@ namespace Slutty_Veigar
             
             Q = new Spell(SpellSlot.Q, 900);
             W = new Spell(SpellSlot.W, 880);
-            E = new Spell(SpellSlot.E, 700);
+            E = new Spell(SpellSlot.E, 800);
             R = new Spell(SpellSlot.R, 650);
             SPrediction.Prediction.Initialize(Config);
             DamageToUnit = GetComboDamage;
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(2f, 225f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotLine);
+            E.SetSkillshot(0.5f, 70f, 1500f, false, SkillshotType.SkillshotCircle);
           //  Ew.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
             Game.OnUpdate += OnUpdate;
@@ -131,12 +131,12 @@ namespace Slutty_Veigar
             if (target.HasBuffOfType(BuffType.Stun))
                 W.Cast(target.Position);
 
-
-            if (target.IsValidTarget(E.Range) && E.IsReady() && target.HasBuffOfType(BuffType.Stun))
-            {
-                var pred = E.GetPrediction(target).CastPosition;
-                E.Cast(pred.Extend(Player.ServerPosition, 375));
-            }
+//
+//            if (target.IsValidTarget(E.Range) && E.IsReady() && target.HasBuffOfType(BuffType.Stun))
+//            {
+//                var pred = E.GetPrediction(target).CastPosition;
+//                E.Cast(pred.Extend(Player.ServerPosition, 375));
+//            }
 
             if (Ignite.IsReady() && target.Health <= (Q.GetDamage(target) + Player.GetAutoAttackDamage(target)))
                 Player.Spellbook.CastSpell(Ignite, target);
@@ -157,7 +157,7 @@ namespace Slutty_Veigar
 
             if (ksw && target.Health <= W.GetDamage(target))
             {
-                W.Cast(target);
+                W.Cast(target.Position);
             }
             foreach (var hero in HeroManager.Enemies)
             {
@@ -444,17 +444,20 @@ namespace Slutty_Veigar
             if (target.HasBuffOfType(BuffType.Invulnerability)) return;
             if (!GetBool(name, typeof(bool))) return;
             if (!R.IsReady() || !target.IsValidTarget(R.Range)) return;
+            var prediction = LeagueSharp.Common.Prediction.GetPrediction(target, Q.Delay);
 
-            if (
-                (R.GetDamage(target) + Q.GetDamage(target) >= target.Health && Q.IsReady()) ||
-                (R.GetDamage(target) + W.GetDamage(target) >= target.Health && W.IsReady() && target.HasBuffOfType(BuffType.Stun)) ||
-                (R.GetDamage(target) + Q.GetDamage(target) + IgniteDamage(target) >= target.Health && Ignite.IsReady() && Q.IsReady()) ||
-                (R.GetDamage(target) + IgniteDamage(target) >= target.Health && Ignite.IsReady()))
+            var collision = Q.GetCollision(Player.Position.To2D(),
+                new List<Vector2> { prediction.UnitPosition.To2D() });
+            foreach (var targets in HeroManager.Enemies)
             {
-                foreach (var targets in HeroManager.Enemies)
-                {
+            if (
+                (R.GetDamage(targets) + Q.GetDamage(targets) >= targets.Health && Q.IsReady() && !collision.Any()) ||
+                (R.GetDamage(targets) + W.GetDamage(targets) >= targets.Health && W.IsReady() && target.HasBuffOfType(BuffType.Stun) && target.Distance(Player) < W.Range) ||
+                (R.GetDamage(targets) + Q.GetDamage(targets) + IgniteDamage(targets) >= targets.Health && Ignite.IsReady() && Q.IsReady() && !collision.Any()) ||
+                (R.GetDamage(targets) + IgniteDamage(targets) >= targets.Health && Ignite.IsReady()))
+            {
                     if (GetStringValue("user" + targets.ChampionName) == 0)
-                        R.Cast(target);
+                        R.Cast(targets);
                 }
             }
         }
@@ -541,7 +544,12 @@ namespace Slutty_Veigar
 
             var epred = E.GetSPrediction(target);
             var pos = epred.CastPosition;
-            if (epred.HitChance >= HitChance.High || epred.HitChance == HitChance.Immobile)
+            if ((epred.HitChance >= HitChance.VeryHigh || epred.HitChance == HitChance.Immobile) && target.Distance(Player) < 300)
+            {
+                E.Cast(pos.Extend(Player.Position.To2D(), 100));
+            }
+
+            if ((epred.HitChance >= HitChance.VeryHigh || epred.HitChance == HitChance.Immobile) && target.Distance(Player) > 300)
             {
                 E.Cast(pos.Extend(Player.Position.To2D(), 375));
             }
