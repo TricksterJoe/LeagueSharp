@@ -536,7 +536,7 @@ namespace Slutty_Veigar
 //                {
 //                    E.Cast(pos.Extend(Player.Position, 150));
 //                }
-//                else if (!Player.IsFacing(target) && target.IsFacing(Player))
+//                else if (!Player.IsFacing(target) && targetIsFacing(Player))
 //                {
 //                    E.Cast(pos.Extend(Player.Position, 300));
 //                }
