@@ -171,7 +171,7 @@ namespace Slutty_Veigar
 
         private static void autoe(Obj_AI_Hero target)
         {
-            var pred = W.GetPrediction(target, true);
+            var pred = E.GetPrediction(target, true);
             var predss = pred.AoeTargetsHitCount;
 
             if (predss >=  GetValue("AutoE") - 1)
