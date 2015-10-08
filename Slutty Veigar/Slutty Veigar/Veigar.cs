@@ -544,7 +544,7 @@ namespace Slutty_Veigar
 
             var epred = E.GetSPrediction(target);
             var pos = epred.CastPosition;
-            if ((epred.HitChance >= HitChance.VeryHigh || epred.HitChance == HitChance.Immobile) && target.Distance(Player) < 300)
+            if ((epred.HitChance >= HitChance.High || epred.HitChance == HitChance.Immobile) && target.Distance(Player) < 300)
             {
                 E.Cast(pos.Extend(Player.Position.To2D(), 100));
             }
