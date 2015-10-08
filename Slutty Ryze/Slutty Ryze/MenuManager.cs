@@ -208,11 +208,19 @@ namespace Slutty_ryze
                 ksMenu.AddItem(new MenuItem("useE2KS", "Use E to KS").SetValue(true));
             }
 
+            var chase = new Menu("Chase Target", "Chase Target");
+            {
+                chase.AddItem(new MenuItem("chase", "Activate Chase")).SetValue(new KeyBind('A', KeyBindType.Press));
+                chase.AddItem(new MenuItem("usewchase", "Use W")).SetValue(true);
+                chase.AddItem(new MenuItem("chaser", "Use [R]")).SetValue(false);
+            }
+
             miscMenu.AddSubMenu(passiveMenu);
             miscMenu.AddSubMenu(itemMenu);
             miscMenu.AddSubMenu(hpMenu);
             miscMenu.AddSubMenu(eventMenu);
             miscMenu.AddSubMenu(ksMenu);
+            miscMenu.AddSubMenu(chase);
             return miscMenu;
         }
         #endregion

@@ -130,6 +130,21 @@ namespace Slutty_ryze
                         _casted = false;
                     }
                 }
+
+                if (GlobalManager.Config.Item("chase").GetValue<KeyBind>().Active)
+                {
+                    GlobalManager.GetHero.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+                    var targets = TargetSelector.GetTarget(Champion.W.Range + 200, TargetSelector.DamageType.Magical);
+                    if (targets == null)
+                        return;
+
+                    if (GlobalManager.Config.Item("usewchase").GetValue<bool>())
+                        LaneOptions.CastW(targets);
+
+                    if (GlobalManager.Config.Item("chaser").GetValue<bool>() &&
+                        targets.Distance(GlobalManager.GetHero) > Champion.W.Range + 200)
+                        Champion.R.Cast();
+                }
            
                 if (GlobalManager.GetHero.IsDead)
                     return;
@@ -157,6 +172,11 @@ namespace Slutty_ryze
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
+                    if (Champion.W.IsReady())
+                    {
+                        MenuManager.Orbwalker.SetAttack(false);
+                    }
+
                     if (target.IsValidTarget() 
                         &&  GlobalManager.GetHero.Distance(target) > 400 && (Champion.Q.IsReady() && Champion.W.IsReady() && Champion.E.IsReady()))
                     {
@@ -174,6 +194,7 @@ namespace Slutty_ryze
 
                     Champion.AABlock();
                     LaneOptions.ImprovedCombo();
+                    MenuManager.Orbwalker.SetAttack(false);
                 }
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
