@@ -761,7 +761,7 @@ namespace Lee_Sin
             {
                 if (Player.Distance(target) <= 150 && W.IsReady())
                 {
-                    Jump(Player.Position.Extend(target.Position, Player.Distance(target.Position + 270)));
+                    Jump(Player.Position.Extend(target.Position, Player.Distance(target.Position + 275)));
                    //s Game.PrintChat("Ward Jump");
                    
                    Utility.DelayAction.Add(300, () => Steps = steps.R);
@@ -772,7 +772,7 @@ namespace Lee_Sin
 
             #region R Casting
 
-            if (Steps == steps.R)
+            if (Steps == steps.R && !W.IsReady())
             {
                 R.Cast(target);
               //  Game.PrintChat("R");
@@ -784,13 +784,13 @@ namespace Lee_Sin
 
             if (R.IsReady())
             {
-                if (slot != null && W.IsReady())
+                if (slot != null && W.IsReady() && Steps != steps.WardJump)
                 {
                     Steps = steps.WardJump;
                  //   Game.PrintChat("Wardjump");
                 }
-                else if (slot == null &&
-                         GetBool("useflash", typeof (bool))  && Steps != steps.WardJump &&
+                else if (!slot.IsValidSlot() &&slot == null &&
+                         GetBool("useflash", typeof (bool))  && Steps != steps.WardJump && Steps != steps.R &&
                          Player.GetSpellSlot("summonerflash").IsReady())
                 {
                     Steps = steps.Flash;
@@ -803,15 +803,16 @@ namespace Lee_Sin
             #region General Q Casting
 
             if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && R.IsReady() &&
-                target.Distance(Player) > 300 && qpred.Hitchance >= HitChance.Medium)
+                qpred.Hitchance >= HitChance.Medium && Steps != steps.WardJump)
             {
                 Q.Cast(target);
+
+                Steps = steps.WardJump;
             }
 
-            if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo")
+            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && target.Distance(Player) > 200)
             {
                 Q.Cast();
-                Steps = steps.WardJump;
             }
 
             #endregion
