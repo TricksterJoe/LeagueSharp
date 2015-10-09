@@ -520,30 +520,35 @@ namespace Lee_Sin
             return (float) (firstq + secondq);
         }
 
+        #region Combo
+
         private static void Combo()
         {
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-            if (!target.IsValidTarget()) 
+            if (!target.IsValidTarget())
                 return;
             if (Player.IsWindingUp) return;
-            var useq = GetBool("useq", typeof (bool));           
-            var usee = GetBool("usee", typeof(bool));
-            var user = GetBool("user", typeof(bool));
+            var useq = GetBool("useq", typeof (bool));
+            var usee = GetBool("usee", typeof (bool));
+            var user = GetBool("user", typeof (bool));
             var smite = GetBool("usessmite", typeof (bool));
             if (GetStringValue("hydrati") == 0 || GetStringValue("hydrati") == 2)
             {
-                if (target.IsValidTarget(400) && (ItemReady(Tiamat) || ItemReady(Hydra)) && (HasItem(Tiamat) || HasItem(Hydra)))
+                if (target.IsValidTarget(400) && (ItemReady(Tiamat) || ItemReady(Hydra)) &&
+                    (HasItem(Tiamat) || HasItem(Hydra)))
                 {
                     SelfCast(HasItem(Hydra) ? Hydra : Tiamat);
                 }
             }
 
-            if (GetBool("youm", typeof (bool)) && HasItem(Youm) && ItemReady(Youm) && target.Distance(Player) < Q.Range - 300)
+            if (GetBool("youm", typeof (bool)) && HasItem(Youm) && ItemReady(Youm) &&
+                target.Distance(Player) < Q.Range - 300)
             {
                 SelfCast(Youm);
             }
 
-            if (GetBool("omen", typeof (bool)) && HasItem(Omen) && ItemReady(Omen) && Player.CountAlliesInRange(400) >= GetValue("minrand"))
+            if (GetBool("omen", typeof (bool)) && HasItem(Omen) && ItemReady(Omen) &&
+                Player.CountAlliesInRange(400) >= GetValue("minrand"))
             {
                 SelfCast(Omen);
             }
@@ -552,14 +557,15 @@ namespace Lee_Sin
             {
                 var qpred = Q.GetPrediction(target);
                 if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                    qpred.Hitchance >= HitChance.Medium) 
+                    qpred.Hitchance >= HitChance.Medium)
                 {
                     Q.Cast(target);
                     _lastqc = Environment.TickCount;
                 }
 
                 if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blinkmonkqtwo" && Q.IsReady() &&
-                    (Environment.TickCount - _lastqc > 1000 || target.Distance(Player) > Player.AttackRange + Player.BoundingRadius))
+                    (Environment.TickCount - _lastqc > 1000 ||
+                     target.Distance(Player) > Player.AttackRange + Player.BoundingRadius))
                 {
                     Q.Cast();
                 }
@@ -618,9 +624,13 @@ namespace Lee_Sin
 //                    R.Cast(hero[0]);
 //                }
 //            }
-            
+
 
         }
+
+        #endregion
+
+        #region starcombo +angle
 
         public static float AngleBetween2Points(Obj_AI_Base first, Obj_AI_Base second)
         {
@@ -668,18 +678,21 @@ namespace Lee_Sin
                 Q.Cast(target);
             }
 
-            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo"  &&
-                target.IsValidTarget(R.Range)) 
+            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" &&
+                target.IsValidTarget(R.Range))
             {
                 R.Cast(target);
             }
 
-            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name.ToLower() == "blindmonkqtwo" && Q.IsReady() && !R.IsReady()) 
+            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name.ToLower() == "blindmonkqtwo" && Q.IsReady() && !R.IsReady())
             {
                 Utility.DelayAction.Add(300, () => Q.Cast());
             }
 
         }
+
+        #endregion
+
 
         private static void Wardinsec()
         {
@@ -865,9 +878,11 @@ namespace Lee_Sin
 
         }
 
+        #region Ward Jump
+
         private static void WardJump()
         {
-           
+
             Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             var pos = Player.Position.Extend(Game.CursorPos, 590);
             var minions =
@@ -875,13 +890,15 @@ namespace Lee_Sin
                     .GetMinions(Player.Position, W.Range, MinionTypes.All, MinionTeam.Ally)
                     .FirstOrDefault(x => !x.IsDead && x.IsValid && x.Distance(pos) < 200);
 
-            var allies = HeroManager.Allies.FirstOrDefault(x => !x.IsDead && x.IsValid && x.Distance(pos) < 200); //todo use pinkwards or not
+            var allies = HeroManager.Allies.FirstOrDefault(x => !x.IsDead && x.IsValid && x.Distance(pos) < 200);
+                //todo use pinkwards or not
             foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
             {
                 if (!_processw && W.IsReady() && Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" &&
-                    Player.Spellbook.GetSpell(SpellSlot.Q).Name != "blindmonkwtwo" 
+                    Player.Spellbook.GetSpell(SpellSlot.Q).Name != "blindmonkwtwo"
                     && ((wards.Name.ToLower().Contains("ward") &&
-                    wards.Distance(Player.Position.Extend(Game.CursorPos, 590)) < 200 && wards.IsAlly) || (allies != null) || (minions != null)))
+                         wards.Distance(Player.Position.Extend(Game.CursorPos, 590)) < 200 && wards.IsAlly) ||
+                        (allies != null) || (minions != null)))
                 {
 
 
@@ -899,13 +916,16 @@ namespace Lee_Sin
 
             var ward = Items.GetWardSlot();
             if (W.IsReady() && ward != null && !_casted && ward.IsValidSlot() && Environment.TickCount - _lastward > 400 &&
-                Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" && allies == null && minions == null) 
+                Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" && allies == null && minions == null)
             {
                 Player.Spellbook.CastSpell(ward.SpellSlot, Player.Position.Extend(Game.CursorPos, 590));
                 _lastward = Environment.TickCount;
             }
 
         }
+
+        #endregion
+
         public static readonly string[] Names =
         {
             "Krug",
