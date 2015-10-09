@@ -33,7 +33,7 @@ namespace Lee_Sin
 
             var combos = new Menu("Key Binds", "Key Binds");
             {
-                combos.AddItem(new MenuItem("targetmode", "Target Selecting Mode"))
+                combos.AddItem(new MenuItem("targetmode", "Targets Selecting Mode"))
     .SetValue(new StringList(new[] { "Target Selector", "Selected Target" }));
                 AddKeyBind(combos, "Ward Jump", "wardjump", 'G', KeyBindType.Press);
                 AddKeyBind(combos, "Use Insec", "wardinsec", 'X', KeyBindType.Press);
