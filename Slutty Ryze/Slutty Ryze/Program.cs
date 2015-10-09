@@ -172,6 +172,7 @@ namespace Slutty_ryze
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
+                     MenuManager.Orbwalker.SetAttack(true);
                     if (Champion.W.IsReady())
                     {
                         MenuManager.Orbwalker.SetAttack(false);
@@ -194,7 +195,7 @@ namespace Slutty_ryze
 
                     Champion.AABlock();
                     LaneOptions.ImprovedCombo();
-                    MenuManager.Orbwalker.SetAttack(true);
+                   
                 }
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
