@@ -715,7 +715,7 @@ namespace Lee_Sin
                 if (Player.Distance(target) <= 165 && W.IsReady())
                 {
                     Jump(Player.Position.Extend(target.Position, Player.Distance(target.Position + 270)));
-                   // Game.PrintChat("Ward Jump");
+                   //s Game.PrintChat("Ward Jump");
                     Utility.DelayAction.Add(300, () => Steps = steps.R);
                 }
             }
