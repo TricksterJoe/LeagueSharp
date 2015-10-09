@@ -33,6 +33,8 @@ namespace Lee_Sin
 
             var combos = new Menu("Key Binds", "Key Binds");
             {
+                combos.AddItem(new MenuItem("targetmode", "Target Selecting Mode"))
+    .SetValue(new StringList(new[] { "Target Selector", "Selected Target" }));
                 AddKeyBind(combos, "Ward Jump", "wardjump", 'G', KeyBindType.Press);
                 AddKeyBind(combos, "Use Insec", "wardinsec", 'X', KeyBindType.Press);
                 combos.AddItem(
@@ -45,8 +47,6 @@ namespace Lee_Sin
 
             var combo = new Menu("Combo Settings", "Combo Settings");
             {
-                combo.AddItem(new MenuItem("Target Selecting Mode", "targetmode"))
-                    .SetValue(new StringList(new[] {"Target Selector", "Selected Target"}));
                 AddBool(combo, "Use [Q]", "useq");
                 AddBool(combo, "Use [E]", "usee");
                 AddBool(combo, "Use [R]", "user");
