@@ -764,7 +764,7 @@ namespace Lee_Sin
                     Jump(Player.Position.Extend(target.Position, Player.Distance(target.Position + 270)));
                    //s Game.PrintChat("Ward Jump");
                    
-                   Steps = steps.R;
+                   Utility.DelayAction.Add(300, () => Steps = steps.R);
                 }
             }
 
@@ -772,7 +772,7 @@ namespace Lee_Sin
 
             #region R Casting
 
-            if (Steps == steps.R && !W.IsReady())
+            if (Steps == steps.R)
             {
                 R.Cast(target);
               //  Game.PrintChat("R");
