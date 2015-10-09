@@ -739,7 +739,7 @@ namespace Lee_Sin
 
             #region R Casting
 
-            if (Steps == steps.R && _processw)
+            if (Steps == steps.R && !W.IsReady())
             {
                 R.Cast(target);
               //  Game.PrintChat("R");
