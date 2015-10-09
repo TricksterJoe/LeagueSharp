@@ -551,14 +551,15 @@ namespace Lee_Sin
             if (useq)
             {
                 var qpred = Q.GetPrediction(target);
-                if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && qpred.Hitchance >= HitChance.Medium)
+                if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
+                    qpred.Hitchance >= HitChance.Medium) 
                 {
                     Q.Cast(target);
                     _lastqc = Environment.TickCount;
                 }
 
                 if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blinkmonkqtwo" && Q.IsReady() &&
-                     target.Distance(Player) > 140 && (Environment.TickCount - _lastqc > 1000 || target.Distance(Player) > Player.AttackRange + Player.BoundingRadius))
+                    (Environment.TickCount - _lastqc > 1000 || target.Distance(Player) > Player.AttackRange + Player.BoundingRadius))
                 {
                     Q.Cast();
                 }
@@ -725,7 +726,7 @@ namespace Lee_Sin
 
             #region R Casting
 
-            if (Steps == steps.R && !W.IsReady())
+            if (Steps == steps.R && _processw)
             {
                 R.Cast(target);
               //  Game.PrintChat("R");
