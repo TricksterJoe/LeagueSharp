@@ -123,17 +123,17 @@ namespace Lee_Sin
 
         private static void OnDash(Obj_AI_Base sender, Dash.DashItem args)
         {
-            if (sender.IsMe || !sender.IsChampion() || sender.IsAlly) return;
-
-            if (args.EndPos.Distance(Player) < 200)
-            {
-                Jump(args.EndPos.Extend(Player.Position.To2D(), args.EndPos.Distance(Player.Position) + 300).To3D2());
-            }
-
-            if (sender.Distance(Player) < 250 && R.IsReady())
-            {
-                R.Cast(sender);
-            }
+//            if (sender.IsMe || !sender.IsChampion() || sender.IsAlly) return;
+//
+//            if (args.EndPos.Distance(Player) < 200)
+//            {
+//                Jump(args.EndPos.Extend(Player.Position.To2D(), args.EndPos.Distance(Player.Position) + 300).To3D2());
+//            }
+//
+//            if (sender.Distance(Player) < 250 && R.IsReady())
+//            {
+//                R.Cast(sender);
+//            }
         }
 
         private static void OnSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
@@ -712,11 +712,12 @@ namespace Lee_Sin
 
             if (Steps == steps.WardJump)
             {
-                if (Player.Distance(target) <= 165 && W.IsReady())
+                if (Player.Distance(target) <= 150 && W.IsReady())
                 {
                     Jump(Player.Position.Extend(target.Position, Player.Distance(target.Position + 270)));
                    //s Game.PrintChat("Ward Jump");
-                    Utility.DelayAction.Add(300, () => Steps = steps.R);
+                   
+                   Steps = steps.R;
                 }
             }
 
@@ -736,7 +737,7 @@ namespace Lee_Sin
 
             if (R.IsReady())
             {
-                if (slot != null && W.IsReady() && Steps != steps.WardJump)
+                if (slot != null && W.IsReady())
                 {
                     Steps = steps.WardJump;
                  //   Game.PrintChat("Wardjump");
@@ -763,6 +764,7 @@ namespace Lee_Sin
             if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo")
             {
                 Utility.DelayAction.Add(450, () => Q.Cast());
+                Steps = steps.WardJump;
             }
 
             #endregion
