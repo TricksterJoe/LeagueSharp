@@ -194,7 +194,7 @@ namespace Slutty_ryze
 
                     Champion.AABlock();
                     LaneOptions.ImprovedCombo();
-                    MenuManager.Orbwalker.SetAttack(false);
+                    MenuManager.Orbwalker.SetAttack(true);
                 }
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
