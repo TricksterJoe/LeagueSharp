@@ -787,7 +787,7 @@ namespace Lee_Sin
 
             #region Ward Jump
 
-            if (Steps == steps.WardJump)
+            if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 2000)
             {
                 if (Player.Distance(target) <= 170 && W.IsReady())
                 {
