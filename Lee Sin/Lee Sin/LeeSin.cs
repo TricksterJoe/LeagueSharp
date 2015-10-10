@@ -756,7 +756,6 @@ namespace Lee_Sin
         private static void Wardinsec()
         {
             #region Target, Slots, Prediction
-            Game.PrintChat(Steps.ToString());
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
             if (target != null)
             {
@@ -827,9 +826,10 @@ namespace Lee_Sin
                     lastwardjump = Environment.TickCount;
                     //   Game.PrintChat("Wardjump");
                 }
-                else if (!slot.IsValidSlot() && slot == null &&
-                         GetBool("useflash", typeof (bool)) &&
-                         Player.GetSpellSlot("summonerflash").IsReady() && Environment.TickCount - lastwardjump > 2000 && target.Distance(Player) <200)
+                else if (GetBool("useflash", typeof (bool))  &&
+                         target.Distance(Player) < 200 &&
+                         ((Player.GetSpellSlot("summonerflash").IsReady() && Environment.TickCount - lastwardjump > 2000 &&
+                           slot == null))) 
                 {
                     Steps = steps.Flash;
                  //   Game.PrintChat("Wardflashe");
@@ -1037,6 +1037,7 @@ namespace Lee_Sin
                         && GetBool("usesmiteon" + name, typeof (bool)))
                     {
                         if (!mob.IsValidTarget()) return;
+
                         if (SmiteDamage(mob) > mob.Health && Smite.IsReady())
                         {
                             Player.Spellbook.CastSpell(Smite, mob);
