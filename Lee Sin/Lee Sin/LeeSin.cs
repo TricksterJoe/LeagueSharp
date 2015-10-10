@@ -109,9 +109,22 @@ namespace Lee_Sin
             Drawing.OnDraw += OnDraw;
             Drawing.OnDraw += OnCamps;
             Drawing.OnDraw += OnSpells;
+            GameObject.OnCreate += OnCreate;
             CustomEvents.Unit.OnDash += OnDash;
             Obj_AI_Base.OnProcessSpellCast += OnSpellcast;
             Spellbook.OnCastSpell += OnSpell;
+        }
+
+        private static void OnCreate(GameObject sender, EventArgs args)
+        {
+            var ward = (Obj_AI_Base)sender;
+
+            if (!ward.IsAlly) return;
+
+            if (ward.Name.Contains("ward") && GetBool("wardinsec", typeof(KeyBind)) && Environment.TickCount - _lastwards > 200)
+            {
+                W.Cast(ward);
+            }
         }
 
         #endregion
@@ -150,10 +163,16 @@ namespace Lee_Sin
 
         private static void OnSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
         {
-            if (args.Slot == SpellSlot.W)
+            if (args.Slot == SpellSlot.W && GetBool("wardinsec", typeof(KeyBind)))
             {
                 _processw = true;
             }
+
+            if (args.Slot == Items.GetWardSlot().SpellSlot && GetBool("wardinsec", typeof(KeyBind)))
+            {
+                _castedward = true;
+            }
+
             if (args.Slot == SpellSlot.W || args.Slot == SpellSlot.E || args.Slot == SpellSlot.Q)
             {
                 _process = true;
@@ -163,10 +182,7 @@ namespace Lee_Sin
             {
                 Playerpos = Player.Position;
             }
-            if (args.Slot == Items.GetWardSlot().SpellSlot)
-            {
-                _castedward = true;
-            }
+
             Utility.DelayAction.Add(1000, () => _process = false);
 
         }
@@ -774,10 +790,15 @@ namespace Lee_Sin
             {
                 if (Player.Distance(target) <= 150 && W.IsReady())
                 {
-                    Jump(Player.Position.Extend(target.Position, Player.Distance(target.Position + 270)));
+                    var pos = Player.Position.Extend(target.Position, Player.Distance(target.Position + 270));
+                    if (Environment.TickCount - _lastwards > 400 &&
+                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
+                    {
+                        Player.Spellbook.CastSpell(slot.SpellSlot, pos);
+                        _lastwards = Environment.TickCount;
+                    }
                 }
             }
-
             if (_castedward && _processw)
             {
                 Steps = steps.R;
