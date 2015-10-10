@@ -702,7 +702,7 @@ namespace Lee_Sin
             var useq = GetBool("useq", typeof (bool));
             var usee = GetBool("usee", typeof (bool));
             var user = GetBool("user", typeof (bool));
-            var usew = GetBool("usew", typeof (bool));
+            var usew = GetBool("wardjumpcombo", typeof(bool));
             var smite = GetBool("usessmite", typeof (bool));
             if (GetStringValue("hydrati") == 0 || GetStringValue("hydrati") == 2)
             {
