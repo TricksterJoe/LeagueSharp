@@ -359,14 +359,14 @@ namespace Lee_Sin
                     Game.PrintChat("ally");
                     return
                         SelectedAllyAiMinion.Position.Extend(target.Position,
-                            SelectedAllyAiMinion.Distance(target.Position + 400));
+                            SelectedAllyAiMinion.Distance(target.Position + 280));
                 }
                 if (SelectedAllyAiMinion == null)
                 {
                     Game.PrintChat("d");
                     return
                         Player.Position.Extend(target.Position,
-                            Player.Distance(target.Position + 260));
+                            Player.Distance(target.Position + 300));
                 }
 
 
@@ -935,7 +935,7 @@ namespace Lee_Sin
                     foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
                     {
                         if (wards.IsAlly && wards.Name.ToLower().Contains("ward") &&
-                            Player.GetSpell(SpellSlot.W).Name != "blindmonkwone" && wards.Distance(pos) < 200 )
+                            Player.GetSpell(SpellSlot.W).Name != "blindmonkwone" && wards.Distance(pos) < 400)
                         {
                             W.Cast(wards);
                         }
