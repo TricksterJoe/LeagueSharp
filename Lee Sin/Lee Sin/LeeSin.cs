@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Management.Instrumentation;
 using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
@@ -44,6 +45,7 @@ namespace Lee_Sin
         private static readonly int Tiamat;
         private static readonly int Youm;
         private static readonly int Omen;
+        public static Obj_AI_Base SelectedAllyAiMinion;
 
         static LeeSin()
         {
@@ -112,6 +114,7 @@ namespace Lee_Sin
             CustomEvents.Unit.OnDash += OnDash;
             Obj_AI_Base.OnProcessSpellCast += OnSpellcast;
             Spellbook.OnCastSpell += OnSpell;
+            Game.OnWndProc += OnWndProc;
         }
 
         private static void OnCreate(GameObject sender, EventArgs args)
@@ -123,6 +126,57 @@ namespace Lee_Sin
                 W.Cast((Obj_AI_Base) sender);
             }
         }
+
+
+        //basically copy pasted from Common target selector
+
+        #region Ally selector
+
+        private static void OnWndProc(WndEventArgs args)
+        {
+            if (args.Msg != (uint)WindowsMessages.WM_LBUTTONDOWN)
+            {
+                return;
+            }
+
+            var asec =
+    ObjectManager.Get<Obj_AI_Hero>()
+        .Where(a => a.IsEnemy && a.Distance(Game.CursorPos) < 200 && a.IsValid && !a.IsDead);
+            if (asec.Any())
+            {
+                return;
+            }
+            if (!lastClickBool || clickCount == 0)
+            {
+                clickCount++;
+                lastClickPos = Game.CursorPos;
+                lastClickBool = true;
+                SelectedAllyAiMinion = null;
+                return;
+            }
+
+
+            if (lastClickBool && lastClickPos.Distance(Game.CursorPos) < 200)
+            {
+                clickCount++;
+                lastClickBool = false;
+            }
+
+
+            SelectedAllyAiMinion =
+                ObjectManager.Get<Obj_AI_Base>()
+                    .Where(
+                        x => x.IsValid && x.Distance(Game.CursorPos, true) < 40000 && x.IsAlly)
+                    .OrderBy(h => h.Distance(Game.CursorPos, true)).FirstOrDefault();
+
+
+//
+//            SelectedAllyAiMinion = MinionManager.GetMinions(Player.Position, 40000, MinionTypes.All, MinionTeam.Ally)
+//                .FindAll(x => x.IsValid && x.Distance(Game.CursorPos, true) < 40000)
+//                .OrderBy(h => h.Distance(Game.CursorPos, true)).FirstOrDefault();
+        }
+
+        #endregion
 
         #endregion
 
@@ -223,9 +277,11 @@ namespace Lee_Sin
             }
         }
 
-        public static Vector2 Insec(Obj_AI_Hero target)
+        public static Vector3 Insec(Obj_AI_Hero target)
         {
             {
+                #region probably need to delete
+
 //            switch (GetStringValue("wardinsecmode")) // disabled due to minor bugs with allies that causes the insec to do it backwards, fix soontm
 //            {
 //                case 0:
@@ -277,13 +333,33 @@ namespace Lee_Sin
 //                    break;
 //                case 1:
 //                {                    
-                return Player.Position.Extend(target.Position, Player.Distance(target.Position + 260)).To2D();
-            }
 
-//                    break;
-//                default:
-//                    Console.WriteLine("Plantb made me do it");
-//                    break;
+                #endregion
+
+//
+//                if (SelectedAllyObjAiHero != null)
+//                {
+//                    return
+//                        SelectedAllyObjAiHero.Position.Extend(target.Position,
+//                            SelectedAllyObjAiHero.Distance(target.Position + 260));
+//                }
+
+                if (SelectedAllyAiMinion != null)
+                {
+                    return
+                        SelectedAllyAiMinion.Position.Extend(target.Position,
+                            SelectedAllyAiMinion.Distance(target.Position + 260));
+                }
+                if (SelectedAllyAiMinion == null)
+                {
+                    return
+                        Player.Position.Extend(target.Position,
+                            Player.Distance(target.Position + 260));
+                }
+
+
+            }
+            return new Vector3();
 
         }
 
@@ -299,6 +375,13 @@ namespace Lee_Sin
 
         private static void OnUpdate(EventArgs args)
         {
+            if (SelectedAllyAiMinion != null)
+            {
+                if (SelectedAllyAiMinion.IsDead)
+                {
+                    SelectedAllyAiMinion = null;
+                }
+            }
             if (Player.IsRecalling() || MenuGUI.IsChatOpen || MenuGUI.IsShopOpen) return;
 
             if (_processw && Environment.TickCount - lastprocessw > 500)
@@ -797,7 +880,7 @@ namespace Lee_Sin
                         }
                     }
 
-                    var pos = Player.Position.Extend(target.Position, Player.Distance(target.Position + 270));
+                    var pos = Insec(target);
                     if (Environment.TickCount - _lastwards > 1000 &&
                         Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
                     {
@@ -1022,6 +1105,11 @@ namespace Lee_Sin
         private static bool _processr;
         private static int lastprocessr;
         private static bool _processr2;
+        private static int clickCount;
+        private static bool lastClickBool;
+        private static Vector3 lastClickPos;
+        private static int doubleClickReset;
+        private static bool _b;
 
         private static void AutoSmite()
         {
@@ -1291,19 +1379,20 @@ namespace Lee_Sin
             if (!GetBool("spellsdraw", typeof (bool))) return;
             if (!GetBool("targetexpos", typeof (bool))) return;
             if (!GetBool("ovdrawings", typeof (bool))) return;
-            var allies =
-                HeroManager.Allies.Where(x => !x.IsMe && !x.IsDead && x.Distance(Player) < 1200)
-                    .OrderBy(x => x.Distance(Player))
-                    .FirstOrDefault();
-            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-            if (target != null && !target.IsDead)
+            if (SelectedAllyAiMinion != null)
+            Drawing.DrawCircle(SelectedAllyAiMinion.Position, 200, Color.Blue);
+            var target = TargetSelector.GetTarget(40000, TargetSelector.DamageType.Physical);
+
+            if (target != null)
             {
-                target = TargetSelector.SelectedTarget;
+                target = GetStringValue("targetmode") == 1
+                    ? TargetSelector.GetSelectedTarget()
+                    : target;
             }
 
-            if (target == null) return;
 
-            if (target.IsDead) return;
+
+            if (target == null) return;
 
 //            if (allies != null && GetStringValue("wardinsecmode") == 0)
 //            {
@@ -1320,14 +1409,25 @@ namespace Lee_Sin
 //                }
 //
 //            }
-            var pos1 = Drawing.WorldToScreen(target.Position);
-            var pos2 = Drawing.WorldToScreen(target.Position.Extend(Player.Position, 1200));
-            Drawing.DrawLine(pos1, pos2, 3, Color.Red);
-            Drawing.DrawCircle(target.Position.Extend(Player.Position, 1200), 100, Color.Blue);
-            Drawing.DrawText(pos2.X, pos2.Y, Color.Black, "X");
+            if (SelectedAllyAiMinion == null)
+            {
+                var pos11 = Drawing.WorldToScreen(target.Position);
+                var pos22 = Drawing.WorldToScreen(target.Position.Extend(Player.Position, 1200));
+                Drawing.DrawLine(pos11, pos22, 3, Color.Red);
+               Drawing.DrawCircle(target.Position.Extend(Player.Position, 1200), 100, Color.Blue);
+                Drawing.DrawText(pos22.X, pos22.Y, Color.Black, "X");
+            }
+
+            if (SelectedAllyAiMinion != null)
+            {
+                var pos3 = Drawing.WorldToScreen(target.Position);
+                var distance = target.Distance(SelectedAllyAiMinion);
+                var pos4 = Drawing.WorldToScreen(target.Position.Extend(SelectedAllyAiMinion.Position, distance));
+                Drawing.DrawLine(pos3, pos4, 3, Color.Red);
+                Drawing.DrawText(pos4.X, pos4.Y, Color.Black, "X");
+            }
 
         }
-
         #endregion
         public static Vector3 Playerpos { get; set; }
     }

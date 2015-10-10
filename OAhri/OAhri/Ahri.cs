@@ -31,7 +31,6 @@ namespace OAhri
 
             LoadMenu();
 
-            Game.PrintChat("<font color = \"asasdasdasd\"OAhri By 'Hoes' is Loaded!");
             Q = new Spell(SpellSlot.Q, 780);
             W = new Spell(SpellSlot.W, 400);
             E = new Spell(SpellSlot.E, 810);
