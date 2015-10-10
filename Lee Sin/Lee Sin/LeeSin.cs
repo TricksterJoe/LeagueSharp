@@ -761,7 +761,7 @@ namespace Lee_Sin
             {
                 if (Player.Distance(target) <= 150 && W.IsReady())
                 {
-                    Jump(Player.Position.Extend(target.Position, Player.Distance(target.Position + 275)));
+                    Jump(Player.Position.Extend(target.Position, Player.Distance(target.Position + 270)));
                    //s Game.PrintChat("Ward Jump");
                    
                    Utility.DelayAction.Add(300, () => Steps = steps.R);
@@ -803,14 +803,17 @@ namespace Lee_Sin
             #region General Q Casting
 
             if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && R.IsReady() &&
-                qpred.Hitchance >= HitChance.Medium && Steps != steps.WardJump)
+                qpred.Hitchance >= HitChance.Medium)
             {
                 Q.Cast(target);
 
-                Steps = steps.WardJump;
+                if (W.IsReady() && Steps != steps.WardJump)
+                {
+                    Steps = steps.WardJump;
+                }
             }
 
-            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && target.Distance(Player) > 200)
+            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && target.Distance(Player) > 300)
             {
                 Q.Cast();
             }
