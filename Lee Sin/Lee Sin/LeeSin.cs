@@ -810,7 +810,8 @@ namespace Lee_Sin
 #endregion
 
             #region R Casting
-            if (_processw || _processr || Steps == steps.Flash)
+            // !Player.IsDashing() <- broken Game.PrintChat(Player.IsDashing().ToString())
+            if (!Player.IsDashing() && (_processw || _processr || Steps == steps.Flash))
             {
                 R.Cast(target);
             }
