@@ -833,7 +833,7 @@ namespace Lee_Sin
                 }
                 else if (!slot.IsValidSlot() && slot == null &&
                          GetBool("useflash", typeof (bool)) &&
-                         Player.GetSpellSlot("summonerflash").IsReady() && Environment.TickCount - lastwardjump > 1000)
+                         Player.GetSpellSlot("summonerflash").IsReady() && Environment.TickCount - lastwardjump > 2000)
                 {
                     Steps = steps.Flash;
                  //   Game.PrintChat("Wardflashe");
