@@ -791,10 +791,7 @@ namespace Lee_Sin
                 {
                     foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
                     {
-                        if (wards.IsAlly &&
-                            wards.Distance(Player.Position.Extend(target.Position,
-                                Player.Distance(target.Position + 265))) <
-                            200 && wards.Name.ToLower().Contains("ward") &&
+                        if (wards.IsAlly && wards.Name.ToLower().Contains("ward") &&
                             Player.GetSpell(SpellSlot.W).Name != "blindmonkwone")
                         {
                             W.Cast(wards);
@@ -846,7 +843,8 @@ namespace Lee_Sin
                 qpred.Hitchance >= HitChance.Medium)
             {
                 Q.Cast(target);
-                if (slot != null && Environment.TickCount - lastwardjump > 1000 && R.IsReady() && W.IsReady() && target.Distance(Player) > 300)
+                if (slot != null && Environment.TickCount - lastwardjump > 1000 && R.IsReady() && W.IsReady() &&
+                    target.Distance(Player) > 300 && Steps != steps.Flash) 
                 {   
                     Steps = steps.WardJump;
                 }
