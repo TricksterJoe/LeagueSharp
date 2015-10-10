@@ -356,14 +356,14 @@ namespace OAhri
             var usew = Config.Item("harrasMenu.usew").GetValue<bool>();
             var usee = Config.Item("harrasMenu.usee").GetValue<bool>();
             var qpred = Q.GetPrediction(target);
-	        var epred = E.GetPrediction(target, false, E.Range,
-		        new[] {CollisionableObjects.Minions, CollisionableObjects.YasuoWall});
+	        var epred = E.GetPrediction(target);
+            var ecol = epred.CollisionObjects;
             if (Q.IsReady() && useq && target.IsValidTarget(Q.Range))
             {
                 Q.Cast(qpred.CastPosition);
             }
 
-            if (E.IsReady() && usee && target.IsValidTarget(E.Range))
+            if (E.IsReady() && usee && target.IsValidTarget(E.Range) && !ecol.Any())
             {
                 E.Cast(epred.CastPosition);
             }
@@ -397,6 +397,8 @@ namespace OAhri
             {
                 Player.Spellbook.CastSpell(Ignite, target);
             }
+            var epred = E.GetPrediction(target);
+            var ecol = epred.CollisionObjects;
 
             AhriR.RUlt();
             switch (combomode)
@@ -408,9 +410,9 @@ namespace OAhri
                         Q.Cast(qpred.CastPosition);
                     }
 
-                    if (E.IsReady() && usee && target.IsValidTarget(E.Range))
+                    if (E.IsReady() && usee && target.IsValidTarget(E.Range) && !ecol.Any())
                     {
-                        E.Cast(E.GetPrediction(target, false, E.Range, new []{CollisionableObjects.Minions, CollisionableObjects.YasuoWall}).CastPosition);
+                        E.Cast(epred.CastPosition);
                     }
 
                     if (W.IsReady() && target.IsValidTarget(600) && usew
@@ -424,9 +426,9 @@ namespace OAhri
                 {
                     if (E.IsReady() && !Q.IsReady() && target.IsValidTarget() && usee)
                     {
-	                    if (qpred.CollisionObjects.Count == 0 || qpred.CollisionObjects == null)
+	                    if (!ecol.Any())
 	                    {
-		                    E.Cast(qpred.CastPosition);
+		                    E.Cast(epred.CastPosition);
 	                    }
                     }
 
