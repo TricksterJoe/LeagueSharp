@@ -35,6 +35,7 @@ namespace Slutty_Veigar
                         .SetValue(new StringList(new[] {"Use", "Don't Use"}));
                 }
                 AddBool(rsettings, "Use [R]", "users");
+                AddBool(rsettings, "Advanced R Damage Calcs", "advancedr");
                 AddBool(combomenu, "Block AA in Combo", "aablock", false);
                 combomenu.AddSubMenu(rsettings);
             }

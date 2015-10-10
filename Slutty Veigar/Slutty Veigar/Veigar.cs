@@ -46,7 +46,7 @@ namespace Slutty_Veigar
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(2f, 225f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.5f, 70f, 1500f, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(0.7f, 70f, int.MaxValue, false, SkillshotType.SkillshotCircle);
           //  Ew.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
             Game.OnUpdate += OnUpdate;
@@ -246,12 +246,12 @@ namespace Slutty_Veigar
             Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             var target = TargetSelector.GetTarget(E.Range, TargetSelector.DamageType.Magical);
             if (target == null) return;
-            EComboHarasscast("efleemode", target);
+            EComboHarasscast("efleemode", target, typeof(KeyBind));
         }
 
         private static void LastHit()
         {
-            if (ManaCheck("minmanalast")) return;
+            if (Player.ManaPercent < GetValue("minmanalast")) return;
             var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.MaxHealth);
 
@@ -304,7 +304,7 @@ namespace Slutty_Veigar
 
         private static void JungleClear()
         {
-            if (!ManaCheck("minmanajungle")) return;
+            if (Player.ManaPercent < GetValue("minmanajungle")) return;
 
             var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Neutral,
                 MinionOrderTypes.MaxHealth);
@@ -332,7 +332,7 @@ namespace Slutty_Veigar
         }
         private static void LaneClear()
         {
-            if (ManaCheck("minmana")) return;
+            if (Player.ManaPercent < GetValue("minmana")) return;
             var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.MaxHealth);
 
@@ -402,7 +402,7 @@ namespace Slutty_Veigar
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
             if (target == null) return;
             QComboHarassCast("useqharass", target);
-            EComboHarasscast("useeharass", target);
+            EComboHarasscast("useeharass", target, typeof(bool));
             WComboHarassCast("usewmodeharass", target);
         }
 
@@ -417,7 +417,7 @@ namespace Slutty_Veigar
             }
             
             RCast("users", target);
-            EComboHarasscast("useecombo", target);
+            EComboHarasscast("useecombo", target, typeof(bool));
             QComboHarassCast("useqcombo", target);
             WComboHarassCast("usewmode", target);
         }
@@ -442,22 +442,41 @@ namespace Slutty_Veigar
         public static void RCast(string name, Obj_AI_Hero target)
         {
             if (target.HasBuffOfType(BuffType.Invulnerability)) return;
+            if (target.HasBuffOfType(BuffType.SpellShield) || target.HasBuffOfType(BuffType.SpellImmunity)) return;
             if (!GetBool(name, typeof(bool))) return;
             if (!R.IsReady() || !target.IsValidTarget(R.Range)) return;
             var prediction = LeagueSharp.Common.Prediction.GetPrediction(target, Q.Delay);
 
             var collision = Q.GetCollision(Player.Position.To2D(),
-                new List<Vector2> { prediction.UnitPosition.To2D() });
+                new List<Vector2> { prediction.UnitPosition.To2D()});
+
+            if (!GetBool("users", typeof (bool))) return;
+            
             foreach (var targets in HeroManager.Enemies)
             {
-            if (
-                (R.GetDamage(targets) + Q.GetDamage(targets) >= targets.Health && Q.IsReady() && !collision.Any()) ||
-                (R.GetDamage(targets) + W.GetDamage(targets) >= targets.Health && W.IsReady() && target.HasBuffOfType(BuffType.Stun) && target.Distance(Player) < W.Range) ||
-                (R.GetDamage(targets) + Q.GetDamage(targets) + IgniteDamage(targets) >= targets.Health && Ignite.IsReady() && Q.IsReady() && !collision.Any()) ||
-                (R.GetDamage(targets) + IgniteDamage(targets) >= targets.Health && Ignite.IsReady()))
-            {
-                    if (GetStringValue("user" + targets.ChampionName) == 0)
-                        R.Cast(targets);
+                if (GetStringValue("user" + targets.ChampionName) == 0)
+                {
+                    if (!GetBool("advancedr", typeof (bool)))
+                    {
+                        if (
+                            (R.GetDamage(targets) + Q.GetDamage(targets) >= targets.Health && Q.IsReady() &&
+                             !collision.Any()) ||
+                            (R.GetDamage(targets) + W.GetDamage(targets) >= targets.Health && W.IsReady() &&
+                             target.HasBuffOfType(BuffType.Stun) && target.Distance(Player) < W.Range) ||
+                            (R.GetDamage(targets) + Q.GetDamage(targets) + IgniteDamage(targets) >= targets.Health &&
+                             Ignite.IsReady() && Q.IsReady() && !collision.Any()) ||
+                            (R.GetDamage(targets) + IgniteDamage(targets) >= targets.Health && Ignite.IsReady()))
+                        {
+                            R.Cast(targets);
+                        }
+                    }
+                    else
+                    {
+                        if (R.GetDamage(targets) >= targets.Health)
+                        {
+                            R.Cast(targets);
+                        }
+                    }
                 }
             }
         }
@@ -493,9 +512,9 @@ namespace Slutty_Veigar
             }
         }
 
-        public static void EComboHarasscast(string name, Obj_AI_Hero target)
+        public static void EComboHarasscast(string name, Obj_AI_Hero target, Type type)
         {
-            if (!GetBool(name, typeof(bool))) return;
+            if (!GetBool(name, type)) return;
 
             if (!target.IsValidTarget(E.Range) || !E.IsReady()) return;
 
@@ -544,12 +563,7 @@ namespace Slutty_Veigar
 
             var epred = E.GetSPrediction(target);
             var pos = epred.CastPosition;
-            if ((epred.HitChance >= HitChance.High || epred.HitChance == HitChance.Immobile) && target.Distance(Player) < 300)
-            {
-                E.Cast(pos.Extend(Player.Position.To2D(), 100));
-            }
-
-            if ((epred.HitChance >= HitChance.High || epred.HitChance == HitChance.Immobile) && target.Distance(Player) > 300)
+            if ((epred.HitChance >= HitChance.High || target.IsStunned))
             {
                 E.Cast(pos.Extend(Player.Position.To2D(), 375));
             }
