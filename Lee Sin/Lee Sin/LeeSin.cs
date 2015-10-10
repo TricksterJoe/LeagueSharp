@@ -856,7 +856,7 @@ namespace Lee_Sin
 
             if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && (target.Distance(Player) > 300 || (Environment.TickCount - lastprocessw > 400 && _processw))) 
             {
-                Q.Cast();
+                Utility.DelayAction.Add(200, () => Q.Cast());
             }
 
             #endregion
