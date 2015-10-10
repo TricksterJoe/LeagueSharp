@@ -173,6 +173,11 @@ namespace Lee_Sin
                 lastprocessr = Environment.TickCount;
             }
 
+            if (args.Slot == SpellSlot.R)
+            {
+                _processr2 = true;
+            }
+
             if (args.Slot == SpellSlot.W || args.Slot == SpellSlot.E || args.Slot == SpellSlot.Q)
             {
                 _process = true;
@@ -624,9 +629,9 @@ namespace Lee_Sin
                     _lastqc = Environment.TickCount;
                 }
 
-                if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blinkmonkqtwo" && Q.IsReady() &&
+                if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && Q.IsReady() &&
                     (Environment.TickCount - _lastqc > 1000 ||
-                     target.Distance(Player) > Player.AttackRange + 200))
+                     Player.Distance(target) > 300))
                 {
                     Q.Cast();
                 }
@@ -815,7 +820,7 @@ namespace Lee_Sin
 #endregion
 
             #region R Casting
-            if (_processw || _processr)
+            if (_processw || _processr || Steps == steps.Flash)
             {
                 R.Cast(target);
             }
@@ -833,7 +838,7 @@ namespace Lee_Sin
                 }
                 else if (!slot.IsValidSlot() && slot == null &&
                          GetBool("useflash", typeof (bool)) &&
-                         Player.GetSpellSlot("summonerflash").IsReady() && Environment.TickCount - lastwardjump > 2000)
+                         Player.GetSpellSlot("summonerflash").IsReady() && Environment.TickCount - lastwardjump > 2000 && target.Distance(Player) <200)
                 {
                     Steps = steps.Flash;
                  //   Game.PrintChat("Wardflashe");
@@ -849,7 +854,7 @@ namespace Lee_Sin
             {
                 Q.Cast(target);
                 if (slot != null && Environment.TickCount - lastwardjump > 1000 && R.IsReady() && W.IsReady() && target.Distance(Player) > 300)
-                {
+                {   
                     Steps = steps.WardJump;
                 }
             }
@@ -864,6 +869,7 @@ namespace Lee_Sin
             #region Flash Casting
 
             if (Steps != steps.Flash) return;
+            if (!_processr2) return;
 
             if (Player.Distance(target) < 200 && R.IsReady() &&
                 Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
@@ -1025,6 +1031,7 @@ namespace Lee_Sin
         private static int lastwardjump;
         private static bool _processr;
         private static int lastprocessr;
+        private static bool _processr2;
 
         private static void AutoSmite()
         {
