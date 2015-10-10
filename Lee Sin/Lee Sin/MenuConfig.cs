@@ -50,7 +50,7 @@ namespace Lee_Sin
                 AddBool(combo, "Use [Q]", "useq");
                 AddBool(combo, "Use [E]", "usee");
                 AddBool(combo, "Use [R]", "user");
-                AddBool(combo, "Use [Ward] Jump", "wardjumpcombo");
+                AddBool(combo, "Use [W]", "wardjumpcombo");
                 AddBool(combo, "Use [Smite]", "usessmite");
                 var items = new Menu("Use Items", "Use Items");
                 {

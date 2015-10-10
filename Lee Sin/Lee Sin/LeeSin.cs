@@ -232,6 +232,11 @@ namespace Lee_Sin
                 _processr2 = true;
             }
 
+            if (args.Slot == SpellSlot.W)
+            {
+                _processw2 = true;
+            }
+
             if (args.Slot == SpellSlot.W || args.Slot == SpellSlot.E || args.Slot == SpellSlot.Q)
             {
                 _process = true;
@@ -406,6 +411,11 @@ namespace Lee_Sin
             if (_processw && Environment.TickCount - lastprocessw > 500)
             {
                 Utility.DelayAction.Add(2500, () => _processw = false);
+            }
+
+            if (_processw2)
+            {
+                Utility.DelayAction.Add(2500, () => _processw2 = false);
             }
 
             if (_processr && Environment.TickCount - lastprocessr > 100)
@@ -692,6 +702,7 @@ namespace Lee_Sin
             var useq = GetBool("useq", typeof (bool));
             var usee = GetBool("usee", typeof (bool));
             var user = GetBool("user", typeof (bool));
+            var usew = GetBool("usew", typeof (bool));
             var smite = GetBool("usessmite", typeof (bool));
             if (GetStringValue("hydrati") == 0 || GetStringValue("hydrati") == 2)
             {
@@ -713,37 +724,67 @@ namespace Lee_Sin
             {
                 SelfCast(Omen);
             }
+            if (usew)
+            {
+                if (Environment.TickCount - _lastqc > 300 && Environment.TickCount - _laste > 300 &&
+                    Environment.TickCount - lastwcombo > 300)
+                {
+                    if (W.IsReady() && target.Distance(Player) <= Player.AttackRange &&
+                        Player.Spellbook.GetSpell(SpellSlot.W).Name == "BlinkMonkWOne" && !HasPassive())
+                    {
+                        W.Cast(Player);
+                        lastwcombo = Environment.TickCount;
+                    }
+
+                    if (W.IsReady() && target.Distance(Player) <= Player.AttackRange &&
+                        Player.Spellbook.GetSpell(SpellSlot.W).Name == "blinkmonkwtwo" && !HasPassive())
+                    {
+                        W.Cast();
+                    }
+                }
+            }
 
             if (useq)
             {
-                var qpred = Q.GetPrediction(target);
-                if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                    qpred.Hitchance >= HitChance.Medium)
+                if (Environment.TickCount - _lastqc > 300 && Environment.TickCount - _laste > 300 &&
+                    Environment.TickCount - lastwcombo > 300)
                 {
-                    Q.Cast(target);
-                    _lastqc = Environment.TickCount;
-                }
+                    var qpred = Q.GetPrediction(target);
+                    if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
+                        qpred.Hitchance >= HitChance.Medium)
+                    {
+                        Q.Cast(target);
+                        _lastqc = Environment.TickCount;
+                    }
 
-                if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && Q.IsReady() &&
-                    (Environment.TickCount - _lastqc > 1000 ||
-                     Player.Distance(target) > 300))
-                {
-                    Q.Cast();
+                    if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && Q.IsReady() &&
+                        (Environment.TickCount - _lastqc > 1000 ||
+                         Player.Distance(target) > 300))
+                    {
+                        Q.Cast();
+                        _lastqc = Environment.TickCount;
+                    }
                 }
             }
 
             if (usee)
             {
-                if (target.Distance(Player) <= E.Range &&
-                    Player.GetSpell(SpellSlot.E).Name == "BlindMonkEOne")
+                if (Environment.TickCount - _lastqc > 300 && Environment.TickCount - _laste > 300 &&
+                    Environment.TickCount - lastwcombo > 300)
                 {
-                    E.Cast();
-                    _laste = Environment.TickCount;
-                }
-                if ((Player.Distance(target) > Player.AttackRange + Player.BoundingRadius + target.BoundingRadius + 100 ||
-                     Environment.TickCount - _laste > 2700) && Player.GetSpell(SpellSlot.E).Name == "blindmonketwo")
-                {
-                    E.Cast();
+                    if (target.Distance(Player) <= E.Range &&
+                        Player.GetSpell(SpellSlot.E).Name == "BlindMonkEOne")
+                    {
+                        E.Cast();
+                        _laste = Environment.TickCount;
+                    }
+                    if ((Player.Distance(target) >
+                         Player.AttackRange + Player.BoundingRadius + target.BoundingRadius + 100 ||
+                         Environment.TickCount - _laste > 2700) && Player.GetSpell(SpellSlot.E).Name == "blindmonketwo")
+                    {
+                        E.Cast();
+                        _laste = Environment.TickCount;
+                    }
                 }
             }
 
@@ -1099,7 +1140,7 @@ namespace Lee_Sin
                 //todo use pinkwards or not
             foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
             {
-                if (!_processw && W.IsReady() && Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" &&
+                if (!_processw2 && W.IsReady() && Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" &&
                     Player.Spellbook.GetSpell(SpellSlot.Q).Name != "blindmonkwtwo"
                     && ((wards.Name.ToLower().Contains("ward") &&
                          wards.Distance(Player.Position.Extend(Game.CursorPos, 590)) < 200 && wards.IsAlly) ||
@@ -1159,6 +1200,8 @@ namespace Lee_Sin
         private static Vector3 lastClickPos;
         private static int doubleClickReset;
         private static bool _b;
+        private static bool _processw2;
+        private static int lastwcombo;
 
         private static void AutoSmite()
         {
