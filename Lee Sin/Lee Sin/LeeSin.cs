@@ -379,25 +379,17 @@ namespace Lee_Sin
             var jungleminions =
                 MinionManager.GetMinions(
                     Player.ServerPosition,
-                    400,
+                    E.Range,
                     MinionTypes.All,
                     MinionTeam.Neutral,
                     MinionOrderTypes.MaxHealth);
+
             if (jungleminion == null) return;
-            if (jungleminions.FirstOrDefault() == null) return;
+
             var useq = GetBool("useqjl", typeof (bool));
             var usew = GetBool("usewjl", typeof (bool));
             var usee = GetBool("useejl", typeof (bool));
             var usesmart = GetBool("usesjl", typeof (bool));
-
-            if (GetStringValue("hydrati") == 0 || GetStringValue("hydrati") == 2)
-            {
-                if (jungleminions.Count > 0 && (ItemReady(Tiamat) || ItemReady(Hydra)) &&
-                    (HasItem(Tiamat) || HasItem(Hydra)))
-                {
-                    SelfCast(HasItem(Hydra) ? Hydra : Tiamat);
-                }
-            }
 
             if (useq)
             {
@@ -411,9 +403,10 @@ namespace Lee_Sin
                         Q.Cast(jungleminion);
                         _lastqj = Environment.TickCount;
                     }
-                    if (!HasPassive() &&
+                    if ((!HasPassive() &&
                         Environment.TickCount - _lastqj > 200 &&
                         Environment.TickCount - _lastwj > 200 && Environment.TickCount - _lastej > 200)
+                        || Player.Distance(jungleminion) > 300)
                     {
                         Q.Cast();
                     }
@@ -487,6 +480,17 @@ namespace Lee_Sin
 
             }
 
+            if (jungleminions == null) return;
+
+            if (GetStringValue("hydrati") == 0 || GetStringValue("hydrati") == 2)
+            {
+                if (jungleminions.Count > 0 && (ItemReady(Tiamat) || ItemReady(Hydra)) &&
+                    (HasItem(Tiamat) || HasItem(Hydra)))
+                {
+                    SelfCast(HasItem(Hydra) ? Hydra : Tiamat);
+                }
+            }
+
         }
 
         #endregion
@@ -501,7 +505,7 @@ namespace Lee_Sin
                     Q.Range,
                     MinionTypes.All,
                     MinionTeam.Enemy,
-                    MinionOrderTypes.MaxHealth).FirstOrDefault();
+                    MinionOrderTypes.MaxHealth);
 
             var minione =
                 MinionManager.GetMinions(
@@ -512,45 +516,21 @@ namespace Lee_Sin
                     MinionOrderTypes.MaxHealth);
 
             if (minion == null) return;
-            if (minione.FirstOrDefault() == null) return;
 
 
 
-            if (minion.Health <= Player.GetAutoAttackDamage(minion) &&
-                !minion.HasBuff("BlindMonkQOne")
-                && minion.Distance(Player) <= Player.AttackRange + Player.BoundingRadius) return;
+            if (minion[0].Health <= Player.GetAutoAttackDamage(minion[0]) &&
+                !minion[0].HasBuff("BlindMonkQOne")
+                && minion[0].Distance(Player) <= Player.AttackRange + Player.BoundingRadius) return;
 
 
             var useq = GetBool("useql", typeof (bool));
             var usee = GetBool("useel", typeof (bool));
             var useeslider = GetValue("useelv");
 
-            if (usee && minione.Count >= useeslider && E.IsReady() && minion.Distance(Player) < E.Range &&
-                Player.GetSpell(SpellSlot.E).Name == "BlindMonkEOne"
-                && Player.GetSpell(SpellSlot.Q).Name != "blindmonkqtwo")
+
+            foreach (var minions in minion)
             {
-                E.Cast();
-                _lastelane = Environment.TickCount;
-            }
-
-            if (minion.Distance(Player) < Player.AttackRange + Player.BoundingRadius
-                && (Player.GetSpell(SpellSlot.E).Name == "blindmonketwo" && Environment.TickCount - _lastelane > 2900))
-            {
-                E.Cast();
-            }
-
-            foreach (var minions in minione)
-            {
-
-                if (GetStringValue("hydrati") == 1 || GetStringValue("hydrati") == 2)
-                {
-                    if (minione.Count > 2 && (ItemReady(Tiamat) || ItemReady(Hydra)) &&
-                        (HasItem(Tiamat) || HasItem(Hydra)))
-                    {
-                        SelfCast(HasItem(Hydra) ? Hydra : Tiamat);
-                    }
-                }
-
                 if (Player.Spellbook.GetSpell(SpellSlot.Q).Name.ToLower() == "blindmonkqone" &&
                     minions.Health <= GetQDamage(minions) && useq &&
                     minions.Health >= Q.GetDamage(minions))
@@ -567,6 +547,30 @@ namespace Lee_Sin
                     Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne")
                 {
                     Q.Cast(minions);
+                }
+            }
+
+            if (minione == null) return;
+
+            if (usee && minione.Count >= useeslider && E.IsReady() &&
+                Player.GetSpell(SpellSlot.E).Name == "BlindMonkEOne"
+                && Player.GetSpell(SpellSlot.Q).Name != "blindmonkqtwo")
+            {
+                E.Cast();
+                _lastelane = Environment.TickCount;
+            }
+
+            if (minione[0].Distance(Player) < Player.AttackRange + Player.BoundingRadius
+                && (Player.GetSpell(SpellSlot.E).Name == "blindmonketwo" && Environment.TickCount - _lastelane > 2900))
+            {
+                E.Cast();
+            }
+            if (GetStringValue("hydrati") == 1 || GetStringValue("hydrati") == 2)
+            {
+                if (minione.Count > 1 && (ItemReady(Tiamat) || ItemReady(Hydra)) &&
+                    (HasItem(Tiamat) || HasItem(Hydra)))
+                {
+                    SelfCast(HasItem(Hydra) ? Hydra : Tiamat);
                 }
             }
 
