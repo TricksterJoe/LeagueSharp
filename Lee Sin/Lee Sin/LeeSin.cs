@@ -785,13 +785,13 @@ namespace Lee_Sin
 
             #region Ward Jump
 
-            if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 2000)
+            if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
             {
-                if (Player.Distance(target) <= 170 && W.IsReady())
+                if (Player.Distance(target) <= 150 && W.IsReady())
                 {
                     foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
                     {
-                        if (wards != null && wards.IsAlly &&
+                        if (wards.IsAlly &&
                             wards.Distance(Player.Position.Extend(target.Position,
                                 Player.Distance(target.Position + 265))) <
                             200 && wards.Name.ToLower().Contains("ward") &&
