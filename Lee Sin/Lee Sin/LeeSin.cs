@@ -117,13 +117,11 @@ namespace Lee_Sin
 
         private static void OnCreate(GameObject sender, EventArgs args)
         {
-            var ward = (Obj_AI_Base)sender;
+            if (!GetBool("wardinsec", typeof (KeyBind))) return;
 
-            if (!ward.IsAlly) return;
-
-            if (ward.Name.Contains("ward") && GetBool("wardinsec", typeof(KeyBind)) && Environment.TickCount - _lastwards > 200)
+            if (sender.Name.Contains("ward") && W.IsReady() && sender.IsAlly && !sender.IsDead && sender.IsValid) 
             {
-                W.Cast(ward);
+                W.Cast((Obj_AI_Base) sender);
             }
         }
 
@@ -166,11 +164,13 @@ namespace Lee_Sin
             if (args.Slot == SpellSlot.W && GetBool("wardinsec", typeof(KeyBind)))
             {
                 _processw = true;
+                lastprocessw = Environment.TickCount;
             }
 
-            if (args.Slot == Items.GetWardSlot().SpellSlot && GetBool("wardinsec", typeof(KeyBind)))
+            if (args.Slot == Player.GetSpellSlot("summonerflash") && GetBool("wardinsec", typeof(KeyBind)))
             {
-                _castedward = true;
+                _processr = true;
+                lastprocessr = Environment.TickCount;
             }
 
             if (args.Slot == SpellSlot.W || args.Slot == SpellSlot.E || args.Slot == SpellSlot.Q)
@@ -297,15 +297,16 @@ namespace Lee_Sin
         {
             if (Player.IsRecalling() || MenuGUI.IsChatOpen || MenuGUI.IsShopOpen) return;
 
-            if (_processw)
+            if (_processw && Environment.TickCount - lastprocessw > 500)
             {
                 Utility.DelayAction.Add(2500, () => _processw = false);
             }
 
-            if (_castedward)
+            if (_processr && Environment.TickCount - lastprocessr > 100)
             {
-                Utility.DelayAction.Add(2500, () => _castedward = false);
+                Utility.DelayAction.Add(400, () => _processr = false);
             }
+
             if (GetBool("smiteenable", typeof (KeyBind)))
             {
                 AutoSmite();
@@ -489,7 +490,6 @@ namespace Lee_Sin
 
         private static void LaneClear()
         {
-            if (Player.IsWindingUp) return;
             var minion =
                 MinionManager.GetMinions(
                     Player.ServerPosition,
@@ -501,7 +501,7 @@ namespace Lee_Sin
             var minione =
                 MinionManager.GetMinions(
                     Player.ServerPosition,
-                    Q.Range,
+                    E.Range,
                     MinionTypes.All,
                     MinionTeam.Enemy,
                     MinionOrderTypes.MaxHealth);
@@ -556,6 +556,7 @@ namespace Lee_Sin
                     minions.HasBuff("BlindMonkQOne"))
                 {
                     Q.Cast();
+                    Orbwalking.ResetAutoAttackTimer();
                 }
                 if (minions.Health <= Q.GetDamage(minions) && Q.IsReady() &&
                     Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne")
@@ -625,7 +626,7 @@ namespace Lee_Sin
 
                 if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blinkmonkqtwo" && Q.IsReady() &&
                     (Environment.TickCount - _lastqc > 1000 ||
-                     target.Distance(Player) > Player.AttackRange + Player.BoundingRadius))
+                     target.Distance(Player) > Player.AttackRange + 200))
                 {
                     Q.Cast();
                 }
@@ -777,21 +778,33 @@ namespace Lee_Sin
 
             #region Smite Cause why not
 
-            if (Smite.IsReady() && target.Distance(Player) < 500 && GetBool("UseSmite", typeof(bool)))
-            {
-                Player.Spellbook.CastSpell(Smite, target);
-            }
+//            if (Smite.IsReady() && target.Distance(Player) < 500 && GetBool("UseSmite", typeof(bool)))
+//            {
+//                Player.Spellbook.CastSpell(Smite, target);
+//            }
 
             #endregion
 
             #region Ward Jump
 
-            if (Steps == steps.WardJump && !_castedward)
+            if (Steps == steps.WardJump)
             {
-                if (Player.Distance(target) <= 150 && W.IsReady())
+                if (Player.Distance(target) <= 170 && W.IsReady())
                 {
+                    foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
+                    {
+                        if (wards.IsAlly &&
+                            wards.Distance(Player.Position.Extend(target.Position,
+                                Player.Distance(target.Position + 265))) <
+                            200 && wards.Name.ToLower().Contains("ward") &&
+                            Player.GetSpell(SpellSlot.W).Name != "blindmonkwone")
+                        {
+                            W.Cast(wards);
+                        }
+                    }
+
                     var pos = Player.Position.Extend(target.Position, Player.Distance(target.Position + 270));
-                    if (Environment.TickCount - _lastwards > 400 &&
+                    if (Environment.TickCount - _lastwards > 1000 &&
                         Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
                     {
                         Player.Spellbook.CastSpell(slot.SpellSlot, pos);
@@ -799,34 +812,28 @@ namespace Lee_Sin
                     }
                 }
             }
-            if (_castedward && _processw)
-            {
-                Steps = steps.R;
-            }
-            #endregion
+#endregion
 
             #region R Casting
-
-            if (Steps == steps.R)
+            if (_processw || _processr)
             {
                 R.Cast(target);
-                //  Game.PrintChat("R");
             }
-
             #endregion
 
             #region Determine if we want to flash or ward jump
 
             if (R.IsReady())
             {
-                if (slot != null && W.IsReady() && Player.Distance(target) <= 150)
+                if (slot.IsValidSlot() && slot != null && W.IsReady() && Player.Distance(target) <= 150)
                 {
                     Steps = steps.WardJump;
-                 //   Game.PrintChat("Wardjump");
+                    lastwardjump = Environment.TickCount;
+                    //   Game.PrintChat("Wardjump");
                 }
                 else if (!slot.IsValidSlot() && slot == null &&
-                         GetBool("useflash", typeof (bool))  && Steps != steps.WardJump && Steps != steps.R &&
-                         Player.GetSpellSlot("summonerflash").IsReady())
+                         GetBool("useflash", typeof (bool)) &&
+                         Player.GetSpellSlot("summonerflash").IsReady() && Environment.TickCount - lastwardjump > 1000)
                 {
                     Steps = steps.Flash;
                  //   Game.PrintChat("Wardflashe");
@@ -837,14 +844,17 @@ namespace Lee_Sin
 
             #region General Q Casting
 
-            if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && R.IsReady() &&
+            if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
                 qpred.Hitchance >= HitChance.Medium)
             {
                 Q.Cast(target);
-                Steps = steps.WardJump;
+                if (slot != null && Environment.TickCount - lastwardjump > 1000 && R.IsReady() && W.IsReady() && target.Distance(Player) > 300)
+                {
+                    Steps = steps.WardJump;
+                }
             }
 
-            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && target.Distance(Player) > 300)
+            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && (target.Distance(Player) > 300 || (Environment.TickCount - lastprocessw > 400 && _processw))) 
             {
                 Q.Cast();
             }
@@ -858,7 +868,6 @@ namespace Lee_Sin
             if (Player.Distance(target) < 200 && R.IsReady() &&
                 Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
             {
-                R.Cast(target);
                 Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
                     Player.Position.Extend(target.Position, Player.Distance(target) + 250));
             }
@@ -1011,6 +1020,11 @@ namespace Lee_Sin
 
         private static int _lastwards;
         private static bool _castedward;
+        private static int lastprocessw;
+        private static int lastprocessward;
+        private static int lastwardjump;
+        private static bool _processr;
+        private static int lastprocessr;
 
         private static void AutoSmite()
         {
