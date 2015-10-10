@@ -20,7 +20,13 @@ namespace Slutty_ryze
             CustomEvents.Game.OnGameLoad += OnLoad;
 #endif
         }
-
+        public static string ScriptVersion
+        {
+            get
+            {
+                return typeof(Program).Assembly.GetName().Version.ToString();
+            }
+        }
         private static void OnLoad(EventArgs args)
         {
             if (GlobalManager.GetHero.ChampionName != Champion.ChampName)
@@ -43,7 +49,9 @@ namespace Slutty_ryze
             Console.WriteLine(@"Loading Your Slutty Menu...");
             GlobalManager.Config = MenuManager.GetMenu();
             GlobalManager.Config.AddToMainMenu();
-
+            Printmsg("Ryze Assembly Loaded");
+            Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
+            Printmsg2("Don't Forget To " + "<font color='#00ff00'>[Upvote]</font> <font color='#FFFFFF'>" + "The Assembly In The Databse" + "</font>");
             //Other damge inficators in MenuManager ????
             GlobalManager.DamageToUnit = Champion.GetComboDamage;
 
@@ -59,7 +67,23 @@ namespace Slutty_ryze
 
         }
         #endregion
+        private static void Printmsg(string message)
+        {
+            Game.PrintChat(
+                "<font color='#6f00ff'>[Slutty Ryze]:</font> <font color='#FFFFFF'>" + message + "</font>");
+        }
 
+        private static void Printmsg1(string message)
+        {
+            Game.PrintChat(
+                "<font color='#ff00ff'>[Slutty Ryze]:</font> <font color='#FFFFFF'>" + message + "</font>");
+        }
+
+        private static void Printmsg2(string message)
+        {
+            Game.PrintChat(
+                "<font color='#00abff'>[Slutty Ryze]:</font> <font color='#FFFFFF'>" + message + "</font>");
+        }
         #region onGameUpdate
 
         private static void ShowDisplayMessage()
