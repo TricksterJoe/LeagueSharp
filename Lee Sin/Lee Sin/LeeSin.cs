@@ -730,7 +730,7 @@ namespace Lee_Sin
         private static void Wardinsec()
         {
             #region Target, Slots, Prediction
-
+            Game.PrintChat(Steps.ToString());
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
             if (target != null)
             {
@@ -738,6 +738,8 @@ namespace Lee_Sin
                     ? TargetSelector.GetSelectedTarget()
                     : target;
             }
+
+            
 
             var slot = Items.GetWardSlot();
             if (target == null) return;
@@ -757,14 +759,13 @@ namespace Lee_Sin
 
             #region Ward Jump
 
-            if (Steps == steps.WardJump)
+            if (Steps == steps.WardJump || Steps == steps.R)
             {
                 if (Player.Distance(target) <= 150 && W.IsReady())
                 {
                     Jump(Player.Position.Extend(target.Position, Player.Distance(target.Position + 270)));
                    //s Game.PrintChat("Ward Jump");
-                   
-                   Utility.DelayAction.Add(300, () => Steps = steps.R);
+                   Steps = steps.R;
                 }
             }
 
@@ -775,7 +776,7 @@ namespace Lee_Sin
             if (Steps == steps.R && !W.IsReady())
             {
                 R.Cast(target);
-              //  Game.PrintChat("R");
+                //  Game.PrintChat("R");
             }
 
             #endregion
@@ -784,7 +785,7 @@ namespace Lee_Sin
 
             if (R.IsReady())
             {
-                if (slot != null && W.IsReady() && Steps != steps.WardJump)
+                if (slot != null && W.IsReady() && Player.Distance(target) <= 150)
                 {
                     Steps = steps.WardJump;
                  //   Game.PrintChat("Wardjump");
