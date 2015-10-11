@@ -355,19 +355,28 @@ namespace Lee_Sin
                             Player.Distance(target.Position + 280));
                 }
 
-                if (SelectedAllyAiMinion != null && SelectedAllyAiMinion.Name.ToLower().Contains("ward"))
+                if (SelectedAllyAiMinion != null && SelectedAllyAiMinion.Name.ToLower().Contains("ward") && !target.IsMoving)
                 {
                     Game.PrintChat("allys");
                     return
                         SelectedAllyAiMinion.Position.Extend(target.Position,
                             SelectedAllyAiMinion.Distance(target.Position + 380));
                 }
+
+                if (SelectedAllyAiMinion != null && SelectedAllyAiMinion.Name.ToLower().Contains("ward") && target.IsMoving)
+                {
+                    Game.PrintChat("allys");
+                    return
+                        SelectedAllyAiMinion.Position.Extend(target.Position,
+                            SelectedAllyAiMinion.Distance(target.Position + 430));
+                }
+
                 if (SelectedAllyAiMinion == null)
                 {
                     Game.PrintChat("d");
                     return
                         Player.Position.Extend(target.Position,
-                            Player.Distance(target.Position + 300));
+                            Player.Distance(target.Position + 350));
                 }
 
 
