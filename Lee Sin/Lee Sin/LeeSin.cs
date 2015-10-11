@@ -730,14 +730,14 @@ namespace Lee_Sin
                     Environment.TickCount - lastwcombo > 300)
                 {
                     if (W.IsReady() && target.Distance(Player) <= Player.AttackRange &&
-                        Player.Spellbook.GetSpell(SpellSlot.W).Name == "BlinkMonkWOne" && !HasPassive())
+                        Player.Spellbook.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" && !HasPassive())
                     {
                         W.Cast(Player);
                         lastwcombo = Environment.TickCount;
                     }
 
                     if (W.IsReady() && target.Distance(Player) <= Player.AttackRange &&
-                        Player.Spellbook.GetSpell(SpellSlot.W).Name == "blinkmonkwtwo" && !HasPassive())
+                        Player.Spellbook.GetSpell(SpellSlot.W).Name == "blindmonkwtwo" && !HasPassive())
                     {
                         W.Cast();
                     }
@@ -759,7 +759,7 @@ namespace Lee_Sin
 
                     if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && Q.IsReady() &&
                         (Environment.TickCount - _lastqc > 1000 ||
-                         Player.Distance(target) > 300))
+                         (Player.Distance(target) > 300 && Environment.TickCount - _lastqc > 500)))
                     {
                         Q.Cast();
                         _lastqc = Environment.TickCount;
