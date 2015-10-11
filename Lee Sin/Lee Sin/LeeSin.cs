@@ -1046,7 +1046,7 @@ namespace Lee_Sin
                 Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
             {
                 Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-                    Player.Position.Extend(target.Position, Player.Distance(target) + 250));
+                    Insec(target));
             }
 
             #endregion
