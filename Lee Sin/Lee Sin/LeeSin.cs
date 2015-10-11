@@ -117,8 +117,8 @@ namespace Lee_Sin
         private static void OnCreate(GameObject sender, EventArgs args)
         {
             if (!GetBool("wardinsec", typeof (KeyBind))) return;
-
-            if (sender.Name.Contains("ward") && W.IsReady() && sender.IsAlly && !sender.IsDead && sender.IsValid)
+            
+            if (sender.Name.ToLower().Contains("ward") && W.IsReady())
             {
                 W.Cast((Obj_AI_Base) sender);
             }
@@ -346,20 +346,21 @@ namespace Lee_Sin
 
                 #endregion
 
-//
-//                if (SelectedAllyObjAiHero != null)
-//                {
-//                    return
-//                        SelectedAllyObjAiHero.Position.Extend(target.Position,
-//                            SelectedAllyObjAiHero.Distance(target.Position + 260));
-//                }
 
-                if (SelectedAllyAiMinion != null)
+                if (SelectedAllyAiMinion != null && !SelectedAllyAiMinion.Name.ToLower().Contains("ward"))
                 {
                     Game.PrintChat("ally");
                     return
                         SelectedAllyAiMinion.Position.Extend(target.Position,
-                            SelectedAllyAiMinion.Distance(target.Position + 280));
+                            Player.Distance(target.Position + 280));
+                }
+
+                if (SelectedAllyAiMinion != null && SelectedAllyAiMinion.Name.ToLower().Contains("ward"))
+                {
+                    Game.PrintChat("allys");
+                    return
+                        SelectedAllyAiMinion.Position.Extend(target.Position,
+                            SelectedAllyAiMinion.Distance(target.Position + 380));
                 }
                 if (SelectedAllyAiMinion == null)
                 {
@@ -406,6 +407,8 @@ namespace Lee_Sin
                     SelectedAllyAiMinion = null;
                 }
             }
+
+
             if (Player.IsRecalling() || MenuGUI.IsChatOpen || MenuGUI.IsShopOpen) return;
 
             if (_processw && Environment.TickCount - lastprocessw > 500)
@@ -730,7 +733,7 @@ namespace Lee_Sin
                     Environment.TickCount - lastwcombo > 300)
                 {
                     if (W.IsReady() && target.Distance(Player) <= Player.AttackRange &&
-                        Player.Spellbook.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" && !HasPassive())
+                        Player.Spellbook.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
                     {
                         W.Cast(Player);
                         lastwcombo = Environment.TickCount;
@@ -758,8 +761,7 @@ namespace Lee_Sin
                     }
 
                     if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && Q.IsReady() &&
-                        (Environment.TickCount - _lastqc > 1000 ||
-                         (Player.Distance(target) > 300 && Environment.TickCount - _lastqc > 500)))
+                        (Environment.TickCount - _lastqc > 1000))
                     {
                         Q.Cast();
                         _lastqc = Environment.TickCount;
@@ -929,24 +931,28 @@ namespace Lee_Sin
 
             if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
             {
-                if (W.IsReady())
+                if (W.IsReady() && R.IsReady())
                 {
-                    var pos = Insec(target);
-                    foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
-                    {
-                        if (wards.IsAlly && wards.Name.ToLower().Contains("ward") &&
-                            Player.GetSpell(SpellSlot.W).Name != "blindmonkwone" && wards.Distance(pos) < 400)
-                        {
-                            W.Cast(wards);
-                        }
-                    }
+                   var pos = Insec(target);
+//                    foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
+//                    {
+//                        if (wards.IsAlly && wards.Name.ToLower().Contains("ward")
+//                            && Environment.TickCount - _lastwards > 200)
+//                        {
+//                            W.Cast(wards);
+//                        }
+//                    }
 
-                    if (Environment.TickCount - _lastwards > 1000 &&
+                    if (Environment.TickCount - _lastwarr > 1000 &&
                         Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
                     {
                         Player.Spellbook.CastSpell(slot.SpellSlot, pos);
-                        _lastwards = Environment.TickCount;
+                        _lastwarr = Environment.TickCount;
                     }
+                    if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
+                    {
+                        _lastwards = Environment.TickCount;
+                    }   
                 }
             }
 #endregion
@@ -971,8 +977,8 @@ namespace Lee_Sin
                 }
                 else if (GetBool("useflash", typeof (bool))  &&
                          target.Distance(Player) < 200 &&
-                         ((Player.GetSpellSlot("summonerflash").IsReady() && Environment.TickCount - lastwardjump > 2000 &&
-                           slot == null))) 
+                         Player.GetSpellSlot("summonerflash").IsReady() && Environment.TickCount - lastwardjump > 2000 &&
+                           slot == null && !_processw) 
                 {
                     Steps = steps.Flash;
                  //   Game.PrintChat("Wardflashe");
@@ -1202,6 +1208,7 @@ namespace Lee_Sin
         private static bool _b;
         private static bool _processw2;
         private static int lastwcombo;
+        private static int _lastwarr;
 
         private static void AutoSmite()
         {
