@@ -353,7 +353,7 @@ namespace Lee_Sin
                     Game.PrintChat("selected no ward  move");
                     return
                         SelectedAllyAiMinion.ServerPosition.Extend(target.ServerPosition,
-                            SelectedAllyAiMinion.Distance(target.ServerPosition + 380)).To2D();
+                            SelectedAllyAiMinion.Distance(target.ServerPosition + 330)).To2D();
                    
                 }
 
@@ -363,7 +363,7 @@ namespace Lee_Sin
                     // Game.PrintChat("d");
                     return
                         Player.ServerPosition.Extend(target.ServerPosition,
-                            Player.Distance(target.ServerPosition + 420)).To2D();
+                            Player.Distance(target.ServerPosition + 300)).To2D();
                 }
             }
             return new Vector2();
@@ -925,13 +925,13 @@ namespace Lee_Sin
 
             if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
             {
-                if (W.IsReady() &&
+                if (W.IsReady() && R.IsReady() &&
                     (target.HasBuff("blinkmonkqtwo") || Player.ServerPosition.Distance(target.ServerPosition) < 250)) 
                 {
                    var pos = Insec(target);
 
                     if (!_processw &&
-                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
+                        Player.GetSpell(SpellSlot.  W).Name == "BlindMonkWOne")
                     {
                         Player.Spellbook.CastSpell(slot.SpellSlot, pos.To3D2());
                         _lastwarr = Environment.TickCount;
@@ -954,9 +954,9 @@ namespace Lee_Sin
 
             #region Determine if we want to flash or ward jump
 
-//            if (R.IsReady())
-//            {
-                if (slot.IsValidSlot() && slot != null && W.IsReady() && Player.Distance(target) <= 150)
+            if (R.IsReady())
+         {
+                if (slot.IsValidSlot() && slot != null && W.IsReady() && Player.Distance(target) <= 200)
                 {
                     Steps = steps.WardJump;
                     lastwardjump = Environment.TickCount;
@@ -970,7 +970,7 @@ namespace Lee_Sin
                     Steps = steps.Flash;
                  //   Game.PrintChat("Wardflashe");
                 }
-         //   }
+          }
 
             #endregion
 
@@ -986,7 +986,7 @@ namespace Lee_Sin
                     Steps = steps.WardJump;
                 }
             }
-            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && (target.Distance(Player) > 300 && Environment.TickCount - lastprocessw > 400 && _processw))
+            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && (target.Distance(Player) > 300))
             {
                 Utility.DelayAction.Add(200, () => Q.Cast());
             }
