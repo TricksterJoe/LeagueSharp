@@ -943,7 +943,7 @@ namespace Lee_Sin
 //                        }
 //                    }
 
-                    if (Environment.TickCount - _lastwarr > 1000 &&
+                    if (!_processw &&
                         Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
                     {
                         Player.Spellbook.CastSpell(slot.SpellSlot, pos);
@@ -976,8 +976,8 @@ namespace Lee_Sin
                     //   Game.PrintChat("Wardjump");
                 }
                 else if (GetBool("useflash", typeof (bool))  &&
-                         target.Distance(Player) < 200 &&
-                         Player.GetSpellSlot("summonerflash").IsReady() && Environment.TickCount - lastwardjump > 2000 &&
+                         target.Distance(Player) < 300 &&
+                         Player.GetSpellSlot("summonerflash").IsReady() &&
                            slot == null && !_processw) 
                 {
                     Steps = steps.Flash;
