@@ -349,7 +349,7 @@ namespace Lee_Sin
 
                 if (SelectedAllyAiMinion != null && !SelectedAllyAiMinion.Name.ToLower().Contains("ward"))
                 {
-                    Game.PrintChat("ally");
+                   // Game.PrintChat("ally");
                     return
                         SelectedAllyAiMinion.Position.Extend(target.Position,
                             Player.Distance(target.Position + 280));
@@ -357,7 +357,7 @@ namespace Lee_Sin
 
                 if (SelectedAllyAiMinion != null && SelectedAllyAiMinion.Name.ToLower().Contains("ward") && !target.IsMoving)
                 {
-                    Game.PrintChat("allys");
+                   // Game.PrintChat("allys");
                     return
                         SelectedAllyAiMinion.Position.Extend(target.Position,
                             SelectedAllyAiMinion.Distance(target.Position + 380));
@@ -365,7 +365,7 @@ namespace Lee_Sin
 
                 if (SelectedAllyAiMinion != null && SelectedAllyAiMinion.Name.ToLower().Contains("ward") && target.IsMoving)
                 {
-                    Game.PrintChat("allys");
+                  //  Game.PrintChat("allys");
                     return
                         SelectedAllyAiMinion.Position.Extend(target.Position,
                             SelectedAllyAiMinion.Distance(target.Position + 430));
@@ -373,7 +373,7 @@ namespace Lee_Sin
 
                 if (SelectedAllyAiMinion == null)
                 {
-                    Game.PrintChat("d");
+                   // Game.PrintChat("d");
                     return
                         Player.Position.Extend(target.Position,
                             Player.Distance(target.Position + 350));
