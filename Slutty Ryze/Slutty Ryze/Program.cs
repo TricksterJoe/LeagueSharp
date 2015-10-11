@@ -66,6 +66,7 @@ namespace Slutty_ryze
             ShowDisplayMessage();
 
         }
+
         #endregion
         private static void Printmsg(string message)
         {
@@ -196,27 +197,21 @@ namespace Slutty_ryze
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
-
-                    MenuManager.Orbwalker.SetAttack(true);
-                    if (Champion.W.IsReady())
-                    {
-                        MenuManager.Orbwalker.SetAttack(false);
-                    }
-
-                    if (target.IsValidTarget() 
-                        &&  GlobalManager.GetHero.Distance(target) > 400 && (Champion.Q.IsReady() && Champion.W.IsReady() && Champion.E.IsReady()))
-                    {
-                        MenuManager.Orbwalker.SetAttack(false);
-                    }
-
-                    if (target.IsValidTarget() && GlobalManager.GetHero.Distance(target) > 400
-                        && (GlobalManager.GetPassiveBuff == 4 || GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
-                        &&
-                        ((!Champion.Q.IsReady() && !Champion.W.IsReady() && !Champion.E.IsReady()) ||
-                         (Champion.Q.IsReady() && Champion.W.IsReady() && Champion.E.IsReady())))
-                    {
-                        MenuManager.Orbwalker.SetAttack(false);
-                    }
+//
+//                    if (target.IsValidTarget() 
+//                        &&  GlobalManager.GetHero.Distance(target) > 400 && (Champion.Q.IsReady() && Champion.W.IsReady() && Champion.E.IsReady()))
+//                    {
+//                        MenuManager.Orbwalker.SetAttack(false);
+//                    }
+//
+//                    if (target.IsValidTarget() && GlobalManager.GetHero.Distance(target) > 400
+//                        && (GlobalManager.GetPassiveBuff == 4 || GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
+//                        &&
+//                        ((!Champion.Q.IsReady() && !Champion.W.IsReady() && !Champion.E.IsReady()) ||
+//                         (Champion.Q.IsReady() && Champion.W.IsReady() && Champion.E.IsReady())))
+//                    {
+//                        MenuManager.Orbwalker.SetAttack(false);
+//                    }
 
                     Champion.AABlock();
                     LaneOptions.ImprovedCombo();

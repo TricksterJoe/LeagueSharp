@@ -385,21 +385,10 @@ namespace Slutty_ryze
                         if (GlobalManager.GetPassiveBuff <= 2
                             || !GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
                         {
-                            if (target.IsValidTarget(Champion.Q.Range)
-                                && qSpell
-                                && Champion.Q.IsReady())
-                                Champion.Q.Cast(target);
 
-                            if (target.IsValidTarget(Champion.W.Range)
-                                && wSpell
-                                && Champion.W.IsReady())
-                                Champion.W.CastOnUnit(target);
-
-                            if (target.IsValidTarget(Champion.E.Range)
-                                && eSpell
-                                && Champion.E.IsReady())
-                                Champion.E.CastOnUnit(target);
-
+                            CastQ(target);
+                            CastW(target);
+                            CastE(target);
                             if (Champion.R.IsReady()
                                 && rSpell)
                             {

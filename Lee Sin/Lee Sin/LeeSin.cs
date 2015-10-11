@@ -178,7 +178,7 @@ namespace Lee_Sin
 
         private static void OnSpellcast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender != null && (sender.IsMe || sender.IsAlly || !sender.IsChampion())) return;
+            if (sender.IsMe || sender.IsAlly || !sender.IsChampion()) return;
 
             switch (args.SData.Name)
             {
@@ -220,6 +220,7 @@ namespace Lee_Sin
                 _processw = true;
                 lastprocessw = Environment.TickCount;
             }
+
 
             if (args.Slot == Player.GetSpellSlot("summonerflash") && GetBool("wardinsec", typeof (KeyBind)))
             {
@@ -287,7 +288,7 @@ namespace Lee_Sin
 
         #region Insec Position
 
-        public static Vector3 Insec(Obj_AI_Hero target)
+        public static Vector2 Insec(Obj_AI_Hero target)
         {
             {
                 #region probably need to delete
@@ -346,42 +347,26 @@ namespace Lee_Sin
 
                 #endregion
 
-
-                if (SelectedAllyAiMinion != null && !SelectedAllyAiMinion.Name.ToLower().Contains("ward"))
+               //  && !SelectedAllyAiMinion.Name.ToLower().Contains("ward") && !target.IsMoving)
+                if (SelectedAllyAiMinion != null)
                 {
-                   // Game.PrintChat("ally");
+                    Game.PrintChat("selected no ward  move");
                     return
-                        SelectedAllyAiMinion.Position.Extend(target.Position,
-                            Player.Distance(target.Position + 280));
-                }
-
-                if (SelectedAllyAiMinion != null && SelectedAllyAiMinion.Name.ToLower().Contains("ward") && !target.IsMoving)
-                {
-                   // Game.PrintChat("allys");
-                    return
-                        SelectedAllyAiMinion.Position.Extend(target.Position,
-                            SelectedAllyAiMinion.Distance(target.Position + 380));
-                }
-
-                if (SelectedAllyAiMinion != null && SelectedAllyAiMinion.Name.ToLower().Contains("ward") && target.IsMoving)
-                {
-                  //  Game.PrintChat("allys");
-                    return
-                        SelectedAllyAiMinion.Position.Extend(target.Position,
-                            SelectedAllyAiMinion.Distance(target.Position + 430));
+                        SelectedAllyAiMinion.ServerPosition.Extend(target.ServerPosition,
+                            SelectedAllyAiMinion.Distance(target.ServerPosition + 380)).To2D();
+                   
                 }
 
                 if (SelectedAllyAiMinion == null)
                 {
-                   // Game.PrintChat("d");
+                    Game.PrintChat("regular");
+                    // Game.PrintChat("d");
                     return
-                        Player.Position.Extend(target.Position,
-                            Player.Distance(target.Position + 350));
+                        Player.ServerPosition.Extend(target.ServerPosition,
+                            Player.Distance(target.ServerPosition + 420)).To2D();
                 }
-
-
             }
-            return new Vector3();
+            return new Vector2();
 
         }
 
@@ -940,22 +925,15 @@ namespace Lee_Sin
 
             if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
             {
-                if (W.IsReady() && R.IsReady())
+                if (W.IsReady() &&
+                    (target.HasBuff("blinkmonkqtwo") || Player.ServerPosition.Distance(target.ServerPosition) < 250)) 
                 {
                    var pos = Insec(target);
-//                    foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
-//                    {
-//                        if (wards.IsAlly && wards.Name.ToLower().Contains("ward")
-//                            && Environment.TickCount - _lastwards > 200)
-//                        {
-//                            W.Cast(wards);
-//                        }
-//                    }
 
                     if (!_processw &&
                         Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
                     {
-                        Player.Spellbook.CastSpell(slot.SpellSlot, pos);
+                        Player.Spellbook.CastSpell(slot.SpellSlot, pos.To3D2());
                         _lastwarr = Environment.TickCount;
                     }
                     if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
@@ -976,8 +954,8 @@ namespace Lee_Sin
 
             #region Determine if we want to flash or ward jump
 
-            if (R.IsReady())
-            {
+//            if (R.IsReady())
+//            {
                 if (slot.IsValidSlot() && slot != null && W.IsReady() && Player.Distance(target) <= 150)
                 {
                     Steps = steps.WardJump;
@@ -992,7 +970,7 @@ namespace Lee_Sin
                     Steps = steps.Flash;
                  //   Game.PrintChat("Wardflashe");
                 }
-            }
+         //   }
 
             #endregion
 
@@ -1002,13 +980,13 @@ namespace Lee_Sin
                 qpred.Hitchance >= HitChance.Medium && target.Distance(Player) > 300)
             {
                 Q.Cast(target);
-                if (slot != null && Environment.TickCount - lastwardjump > 1000 && R.IsReady() && W.IsReady() &&
+                if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
                     target.Distance(Player) > 300 && Steps != steps.Flash) 
                 {   
                     Steps = steps.WardJump;
                 }
             }
-            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && (target.Distance(Player) > 300 || (Environment.TickCount - lastprocessw > 400 && _processw)))
+            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && (target.Distance(Player) > 300 && Environment.TickCount - lastprocessw > 400 && _processw))
             {
                 Utility.DelayAction.Add(200, () => Q.Cast());
             }
@@ -1055,7 +1033,7 @@ namespace Lee_Sin
                 Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
             {
                 Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-                    Insec(target));
+                    Insec(target).To3D());
             }
 
             #endregion

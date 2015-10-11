@@ -187,6 +187,11 @@ namespace Slutty_ryze
 
         public static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
         {
+            if (W.IsReady() && W.Level > 0 && MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            {
+                args.Process = false;
+            }
+
             var mura = GlobalManager.Config.Item("muramana").GetValue<bool>();
 
             if (!mura) return;
@@ -207,22 +212,22 @@ namespace Slutty_ryze
         internal static void OnProcess(Spellbook sender, SpellbookCastSpellEventArgs args)
         {
           //  if (sender.SpellWasCast)
-            {
-                if (args.Slot == SpellSlot.W
-                    || args.Slot == SpellSlot.Q
-                    || args.Slot == SpellSlot.E)
-                {
-                    casted = true;
-                    MenuManager.Orbwalker.SetMovement(false);
-                    MenuManager.Orbwalker.SetAttack(false);
-                }
-                if (casted)
-                {
-                    Utility.DelayAction.Add(10000, () => MenuManager.Orbwalker.SetMovement(true));
-                    Utility.DelayAction.Add(400, () => MenuManager.Orbwalker.SetMovement(true));
-                    casted = false;
-                }
-            }
+//            {
+//                if (args.Slot == SpellSlot.W
+//                    || args.Slot == SpellSlot.Q
+//                    || args.Slot == SpellSlot.E)
+//                {
+//                    casted = true;
+//                    MenuManager.Orbwalker.SetMovement(false);
+//                    MenuManager.Orbwalker.SetAttack(false);
+//                }
+//                if (casted)
+//                {
+//                    Utility.DelayAction.Add(10000, () => MenuManager.Orbwalker.SetMovement(true));
+//                    Utility.DelayAction.Add(400, () => MenuManager.Orbwalker.SetMovement(true));
+//                    casted = false;
+//                }
+//            }
         }
         /*
         internal static void OnOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
