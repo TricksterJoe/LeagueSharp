@@ -35,7 +35,7 @@ namespace Lee_Sin
             {
                 combos.AddItem(new MenuItem("targetmode", "Targets Selecting Mode"))
     .SetValue(new StringList(new[] { "Target Selector", "Selected Target" }));
-                AddKeyBind(combos, "Ward Jump", "flashinsecc", 'T', KeyBindType.Press);
+                AddKeyBind(combos, "Ward Flash", "flashinsecc", 'T', KeyBindType.Press);
                 AddKeyBind(combos, "Ward Jump", "wardjump", 'G', KeyBindType.Press);
                 AddKeyBind(combos, "Use Insec", "wardinsec", 'X', KeyBindType.Press);
                 combos.AddItem(
@@ -49,6 +49,7 @@ namespace Lee_Sin
             var combo = new Menu("Combo Settings", "Combo Settings");
             {
                 AddBool(combo, "Use [Q]", "useq");
+                AddBool(combo, "Use Second [Q]", "useq2");
                 AddBool(combo, "Use [E]", "usee");
                 AddBool(combo, "Use [R]", "user");
                 AddBool(combo, "Use [W]", "wardjumpcombo");
@@ -64,11 +65,20 @@ namespace Lee_Sin
                 }
                 combo.AddSubMenu(items);
             }
+
+            var harass = new Menu("Harass Settings", "Harass Settings");
+            {
+                AddBool(harass, "Use [Q]", "useqh");
+                AddBool(harass, "Use Second [Q]", "useq2h");
+                AddBool(harass, "Use [E]", "useeh");
+                AddValue(harass, "Min Energy", "minenergy", 100, 0, 200);
+            }
             var laneclear = new Menu("Lane Clear Settings", "Lane Clear Settings");
             {
                 AddBool(laneclear, "Use [Q]", "useql");
                 AddBool(laneclear, "Use [E]", "useel");
                 AddValue(laneclear, "[E] On X Minions", "useelv", 3, 1, 10);
+                AddValue(laneclear, "Min Energy", "minenergyl", 100, 0, 200);
             }
             var jungleClear = new Menu("Jungle Clear Settings", "Jungle Clear Settings");
             {
@@ -121,6 +131,7 @@ namespace Lee_Sin
 
             Config.AddSubMenu(combos);
             Config.AddSubMenu(combo);
+            Config.AddSubMenu(harass);
             Config.AddSubMenu(laneclear);
             Config.AddSubMenu(jungleClear);
             Config.AddSubMenu(Smite);

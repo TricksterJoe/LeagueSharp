@@ -109,6 +109,7 @@ namespace Lee_Sin
             Obj_AI_Base.OnProcessSpellCast += OnSpellcast;
             Spellbook.OnCastSpell += OnSpell;
             Game.OnWndProc += OnWndProc;
+            
         }    
         #endregion
 
@@ -357,7 +358,7 @@ namespace Lee_Sin
                     Game.PrintChat("selected no ward  move");
                     return
                         SelectedAllyAiMinion.ServerPosition.Extend(target.ServerPosition,
-                            SelectedAllyAiMinion.Distance(target) + 330).To2D();
+                            SelectedAllyAiMinion.Distance(target) + 300).To2D();
                    
                 }
 
@@ -367,7 +368,7 @@ namespace Lee_Sin
                     // Game.PrintChat("d");
                     return
                         Player.ServerPosition.Extend(target.ServerPosition,
-                            Player.Distance(target.ServerPosition) + 350).To2D();
+                            Player.Distance(target.ServerPosition) + 300).To2D();
                 }
             }
             return new Vector2();
@@ -619,6 +620,7 @@ namespace Lee_Sin
         #region Lane clear
         private static void LaneClear2()
         {
+            if (Player.Mana <= GetValue("minenergyl")) return;
             var minion =
     MinionManager.GetMinions(
         Player.ServerPosition,
@@ -662,6 +664,7 @@ namespace Lee_Sin
         }
         private static void LaneClear()
         {
+            if (Player.Mana <= GetValue("minenergyl")) return;
             var minion =
                 MinionManager.GetMinions(
                     Player.ServerPosition,
@@ -775,14 +778,14 @@ namespace Lee_Sin
                 {
                     var qpred = Q.GetPrediction(target);
                     if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                        qpred.Hitchance >= HitChance.Medium)
+                        (qpred.Hitchance >= HitChance.Medium || qpred.Hitchance == HitChance.Immobile || qpred.Hitchance == HitChance.Dashing))
                     {
                         Q.Cast(target);
                         _lastqc = Environment.TickCount;
                     }
 
                     if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && Q.IsReady() &&
-                        (Environment.TickCount - _lastqc > 1000))
+                        (Environment.TickCount - _lastqc > 1000) && GetBool("useq2", typeof(bool)))
                     {
                         Q.Cast();
                         _lastqc = Environment.TickCount;
@@ -969,17 +972,19 @@ namespace Lee_Sin
 
             var slot = Items.GetWardSlot();
 
-            if (Player.ServerPosition.Distance(target.ServerPosition) >= R.Range &&
-                Player.ServerPosition.Distance(target.ServerPosition) <= 720
+            if (Player.Distance(target) >= 300 &&
+                Player.ServerPosition.Distance(target.ServerPosition) <= 420
                 && R.IsReady() && slot != null && W.IsReady() && Player.GetSpellSlot("summonerflash").IsReady())
             {
                 Steps = steps.WardJump;
+                lastwardjump = Environment.TickCount;
             }
 
             #region R Casting
 
             // !Player.IsDashing() <- broken Game.PrintChat(Player.IsDashing().ToString())
-            if (!Player.IsDashing() && _processr)
+            if (Steps == steps.Flash && Player.Distance(target) < 220 &&
+                  Player.GetSpellSlot("summonerflash").IsReady())
             {
                 R.Cast(target);
             }
@@ -989,7 +994,7 @@ namespace Lee_Sin
             if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
             {
                 var pos = Player.ServerPosition.Extend(target.ServerPosition,
-                    Player.ServerPosition.Distance(target.ServerPosition) - 300);
+                    Player.ServerPosition.Distance(target.ServerPosition) - 250);
                 if (!_processw &&
                     Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" && slot != null)
                 {
@@ -1092,7 +1097,10 @@ namespace Lee_Sin
             #region R Casting
 
             // !Player.IsDashing() <- broken Game.PrintChat(Player.IsDashing().ToString())
-            if (!Player.IsDashing() && (_processw || _processr || Steps == steps.Flash))
+            if (!Player.IsDashing() &&
+                (_processw ||
+                 (Steps == steps.Flash && Player.Distance(target) < 200 &&
+                  Player.GetSpellSlot("summonerflash").IsReady()))) 
             {
                 R.Cast(target);
             }
@@ -1103,7 +1111,7 @@ namespace Lee_Sin
 
             if (R.IsReady())
             {
-                if (slot.IsValidSlot() && slot != null && W.IsReady() && Player.Distance(target) <= 200)
+                if (slot.IsValidSlot() && slot != null && W.IsReady())
                 {
                     Steps = steps.WardJump;
                     lastwardjump = Environment.TickCount;
@@ -1133,7 +1141,8 @@ namespace Lee_Sin
                     Steps = steps.WardJump;
                 }
             }
-            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && (target.Distance(Player) > 300))
+            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && (target.Distance(Player) > 400) &&
+                R.IsReady()) 
             {
                 Utility.DelayAction.Add(200, () => Q.Cast());
             }
@@ -1174,13 +1183,15 @@ namespace Lee_Sin
             #region Flash Casting
 
             if (Steps != steps.Flash) return;
-            if (!_processr2) return;
 
-            if (Player.Distance(target) < 200 && R.IsReady() &&
-                Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
+            if (_processr2)
             {
-                Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-                    Insec(target).To3D());
+                if (Player.Distance(target) < 200 && R.IsReady() &&
+                    Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
+                {
+                    Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
+                        Insec(target).To3D());
+                }
             }
 
             #endregion
