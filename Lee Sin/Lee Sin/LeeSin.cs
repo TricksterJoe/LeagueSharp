@@ -924,7 +924,7 @@ namespace Lee_Sin
 //            }
 
             var slot = Items.GetWardSlot();
-            if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && Player.Distance(target) > 400)
+            if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne")
             {
                 Q.Cast(target);
             }
@@ -940,25 +940,25 @@ namespace Lee_Sin
                 Utility.DelayAction.Add(300, () => Q.Cast());
             }
 
-            if (Player.Distance(target) < 700 && Player.Distance(target) > 300 && W.IsReady() && R.IsReady() &&
-                Q.IsReady())
-            {
-                if (W.IsReady() && R.IsReady())
-                {
-                    var pos = target.ServerPosition.Extend(Player.ServerPosition, target.Distance(Player) - 200);
-
-                    if (!_processw &&
-                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
-                    {
-                        Player.Spellbook.CastSpell(slot.SpellSlot, pos);
-                        _lastwarr = Environment.TickCount;
-                    }
-                    if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
-                    {
-                        _lastwards = Environment.TickCount;
-                    }
-                }
-            }
+//            if (Player.Distance(target) < 700 && Player.Distance(target) > 300 && W.IsReady() && R.IsReady() &&
+//                Q.IsReady())
+//            {
+//                if (W.IsReady() && R.IsReady())
+//                {
+//                    var pos = target.ServerPosition.Extend(Player.ServerPosition, target.Distance(Player) - 200);
+//
+//                    if (!_processw &&
+//                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
+//                    {
+//                        Player.Spellbook.CastSpell(slot.SpellSlot, pos);
+//                        _lastwarr = Environment.TickCount;
+//                    }
+//                    if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
+//                    {
+//                        _lastwards = Environment.TickCount;
+//                    }
+//                }
+//            }
 
 
             #region why is it here
@@ -1169,7 +1169,7 @@ namespace Lee_Sin
 
             if (R.IsReady())
             {
-                if (slot != null && W.IsReady())
+                if (slot != null && W.IsReady() && slot.IsValidSlot())
                 {
                     Steps = steps.WardJump;
                     lastwardjump = Environment.TickCount;
