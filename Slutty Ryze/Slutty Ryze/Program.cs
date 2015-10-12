@@ -209,6 +209,16 @@ namespace Slutty_ryze
 
                     Champion.AABlock();
                     LaneOptions.ImprovedCombo();
+
+                    if (target.Distance(GlobalManager.GetHero) >=
+                        GlobalManager.Config.Item("minaarange").GetValue<Slider>().Value)
+                    {
+                        MenuManager.Orbwalker.SetAttack(false);
+                    }
+                    else
+                    {
+                        MenuManager.Orbwalker.SetAttack(true);
+                    }
                 }
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)
