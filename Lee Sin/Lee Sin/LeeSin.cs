@@ -142,10 +142,6 @@ namespace Lee_Sin
 
         private static void OnCreate(GameObject sender, EventArgs args)
         {
-//
-//
-            if (sender.Name != "missile" && !sender.Name.Contains("SRU") && !sender.Name.Contains("Minion"))
-                Game.PrintChat(sender.Name);
             if (!GetBool("wardinsec", typeof (KeyBind)) && !GetBool("starcombo", typeof (KeyBind))) return;
 
             if (_processw2 || !W.IsReady() || Player.GetSpell(SpellSlot.W).Name != "BlindMonkWOne" ||
@@ -390,7 +386,7 @@ namespace Lee_Sin
                //  && !SelectedAllyAiMinion.Name.ToLower().Contains("ward") && !target.IsMoving)
                 if (SelectedAllyAiMinion != null)
                 {
-                    Game.PrintChat("selected no ward  move");
+                    //Game.PrintChat("selected no ward  move");
                     return
                         SelectedAllyAiMinion.ServerPosition.Extend(target.ServerPosition,
                             SelectedAllyAiMinion.Distance(target) + 300).To2D();
@@ -399,7 +395,7 @@ namespace Lee_Sin
 
                 if (SelectedAllyAiMinion == null)
                 {
-                    Game.PrintChat("regular");
+                  //  Game.PrintChat("regular");
                     // Game.PrintChat("d");
                     return
                         Player.ServerPosition.Extend(target.ServerPosition,
