@@ -35,8 +35,9 @@ namespace Lee_Sin
             {
                 combos.AddItem(new MenuItem("targetmode", "Targets Selecting Mode"))
     .SetValue(new StringList(new[] { "Target Selector", "Selected Target" }));
-                AddKeyBind(combos, "Ward Flash", "flashinsecc", 'T', KeyBindType.Press);
+               // AddKeyBind(combos, "Ward Flash", "flashinsecc", 'T', KeyBindType.Press);
                 AddKeyBind(combos, "Ward Jump", "wardjump", 'G', KeyBindType.Press);
+                AddBool(combos, "Use Pink Wards?", "usepinks");
                 AddKeyBind(combos, "Use Insec", "wardinsec", 'X', KeyBindType.Press);
                 combos.AddItem(
                     new MenuItem("wardinsecmode", "Insec Mode").SetValue(

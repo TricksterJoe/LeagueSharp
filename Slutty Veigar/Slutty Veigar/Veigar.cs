@@ -39,14 +39,14 @@ namespace Slutty_Veigar
             
             Q = new Spell(SpellSlot.Q, 900);
             W = new Spell(SpellSlot.W, 880);
-            E = new Spell(SpellSlot.E, 800);
+            E = new Spell(SpellSlot.E, 800 + 350);
             R = new Spell(SpellSlot.R, 650);
             SPrediction.Prediction.Initialize(Config);
             DamageToUnit = GetComboDamage;
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(2f, 225f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.7f, 70f, int.MaxValue, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(0.5f, 30f, int.MaxValue, false, SkillshotType.SkillshotCircle);
           //  Ew.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
             Game.OnUpdate += OnUpdate;
@@ -155,18 +155,21 @@ namespace Slutty_Veigar
                 Q.Cast(target);
             }
 
-            if (ksw && target.Health <= W.GetDamage(target))
+            if (ksw && target.Health <= W.GetDamage(target) && target.IsStunned)
             {
                 W.Cast(target.Position);
             }
-            foreach (var hero in HeroManager.Enemies)
-            {
-                if (ksr && hero.Health <= R.GetDamage(hero) && GetStringValue("user" + hero.ChampionName) == 0)
-                {
-                    R.Cast(target);
-                }
-            }
+            if (!ksr) return;
 
+            foreach (
+                var hero in
+                    HeroManager.Enemies.Where(
+                        hero =>
+                            hero.Health < R.GetDamage(hero) && GetStringValue("user" + hero.ChampionName) == 0 &&
+                            hero.IsValidTarget(R.Range) && !hero.IsDead))  
+            {
+                R.Cast(hero);
+            }
         }
 
         private static void autoe(Obj_AI_Hero target)
@@ -184,15 +187,16 @@ namespace Slutty_Veigar
         {
             var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.MaxHealth);
-
+            
             if (minion != null)
             {
                 if ((GetStringValue("autoq") == 0 || GetStringValue("autoq") == 1))
                 {
                     foreach (var minions in minion.Where(x => x.Name.Contains("siege")))
                     {
-
-                        if (minions.Health <= Q.GetDamage(minions))
+                        var qpred = Q.GetPrediction(minions);
+                        var col = qpred.CollisionObjects;
+                        if (minions.Health <= Q.GetDamage(minions) && col.Count() <= 1)
                             Q.Cast(minions);
                     }
                 }
@@ -201,9 +205,11 @@ namespace Slutty_Veigar
                 {
                     if (GetStringValue("autoq") == 1)
                     {
+                        var qpred = Q.GetPrediction(minions);
+                        var col = qpred.CollisionObjects;
                         if (minions != null)
                         {
-                            if (minions.Health <= Q.GetDamage(minions))
+                            if (minions.Health <= Q.GetDamage(minions) && col.Count() <= 1)
                                 Q.Cast(minions);
                         }
                     }
@@ -254,20 +260,28 @@ namespace Slutty_Veigar
             if (Player.ManaPercent < GetValue("minmanalast")) return;
             var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy,
                 MinionOrderTypes.MaxHealth);
-
+           
             if (minion == null) return;
 
             if (!GetBool("useqlaneclearlast", typeof(bool))) return;
 
             foreach (var minions in minion.Where(x => x.Name.Contains("siege")))
             {
-                if (minions.Health <= Q.GetDamage(minions))
+                var qpred = Q.GetPrediction(minions);
+                var col = qpred.CollisionObjects;
+                if (minions.Health <= Q.GetDamage(minions) && col.Count() <= 1)
                     Q.Cast(minions);
             }
-            if (GetStringValue("qmodelast") == 1)
+
+            foreach (var minions in minion)
             {
-                if (minion[0].Health <= Q.GetDamage(minion[0]))
-                    Q.Cast(minion[0]);
+                if (GetStringValue("qmodelast") == 1)
+                {
+                    var qpred = Q.GetPrediction(minions);
+                    var col = qpred.CollisionObjects;
+                    if (minions.Health <= Q.GetDamage(minions) && col.Count() <= 1)
+                        Q.Cast(minions);
+                }
             }
 
             foreach (var minions in minion)
@@ -345,25 +359,27 @@ namespace Slutty_Veigar
                     W.Cast(wcircle.Position);
             }
 
-
-            if (!GetBool("useqlaneclear", typeof(bool))) return;
-
-            if (GetStringValue("qmode") == 1)
+            foreach (var minions in minion)
             {
-                if (minion[0].Health <= Q.GetDamage(minion[0]))
-                    Q.Cast(minion[0]);
+                if (!GetBool("useqlaneclear", typeof (bool))) return;
+                var qpred = Q.GetPrediction(minions);
+                var col = qpred.CollisionObjects;
+                if (GetStringValue("qmode") == 1)
+                {
+                    if (minions.Health <= Q.GetDamage(minions) && col.Count() <= 1)
+                        Q.Cast(minions);
+                }
             }
+
 
             foreach (var minions in minion.Where(x => x.Name.Contains("siege")))
             {
-                if (minions.Health <= Q.GetDamage(minions))
+                var qpred = Q.GetPrediction(minions);
+                var col = qpred.CollisionObjects;
+                if (minions.Health <= Q.GetDamage(minions) && col.Count() <= 1)
                     Q.Cast(minions);
             }
-            if (GetStringValue("qmode") == 1)
-            {
-                if (minion[0].Health <= Q.GetDamage(minion[0]))
-                    Q.Cast(minion[0]);
-            }
+
             foreach (var minions in minion)
             {
                 var prediction = LeagueSharp.Common.Prediction.GetPrediction(minions, Q.Delay);
@@ -452,30 +468,30 @@ namespace Slutty_Veigar
 
             if (!GetBool("users", typeof (bool))) return;
             
-            foreach (var targets in HeroManager.Enemies)
+            foreach (var targets in HeroManager.Enemies.Where(x => x.IsValidTarget(R.Range) && !x.IsDead))
             {
-                if (GetStringValue("user" + targets.ChampionName) == 0)
+
+                if (GetStringValue("user" + targets.ChampionName) != 0) continue;
+
+                if (!GetBool("advancedr", typeof (bool)))
                 {
-                    if (!GetBool("advancedr", typeof (bool)))
+                    if (
+                        (R.GetDamage(targets) + Q.GetDamage(targets) >= targets.Health && Q.IsReady() &&
+                         !collision.Any()) ||
+                        (R.GetDamage(targets) + W.GetDamage(targets) >= targets.Health && W.IsReady() &&
+                         target.HasBuffOfType(BuffType.Stun) && target.Distance(Player) < W.Range) ||
+                        (R.GetDamage(targets) + Q.GetDamage(targets) + IgniteDamage(targets) >= targets.Health &&
+                         Ignite.IsReady() && Q.IsReady() && !collision.Any()) ||
+                        (R.GetDamage(targets) + IgniteDamage(targets) >= targets.Health && Ignite.IsReady()))
                     {
-                        if (
-                            (R.GetDamage(targets) + Q.GetDamage(targets) >= targets.Health && Q.IsReady() &&
-                             !collision.Any()) ||
-                            (R.GetDamage(targets) + W.GetDamage(targets) >= targets.Health && W.IsReady() &&
-                             target.HasBuffOfType(BuffType.Stun) && target.Distance(Player) < W.Range) ||
-                            (R.GetDamage(targets) + Q.GetDamage(targets) + IgniteDamage(targets) >= targets.Health &&
-                             Ignite.IsReady() && Q.IsReady() && !collision.Any()) ||
-                            (R.GetDamage(targets) + IgniteDamage(targets) >= targets.Health && Ignite.IsReady()))
-                        {
-                            R.Cast(targets);
-                        }
+                        R.Cast(targets);
                     }
-                    else
+                }
+                else
+                {
+                    if (R.GetDamage(targets) >= targets.Health)
                     {
-                        if (R.GetDamage(targets) >= targets.Health)
-                        {
-                            R.Cast(targets);
-                        }
+                        R.Cast(targets);
                     }
                 }
             }
@@ -565,7 +581,7 @@ namespace Slutty_Veigar
             var pos = epred.CastPosition;
             if ((epred.HitChance >= HitChance.High || target.IsStunned))
             {
-                E.Cast(pos.Extend(Player.Position.To2D(), 375));
+                E.Cast(pos.Extend(Player.Position.To2D(), 330));
             }
             // E.Cast(targetPos);
 
