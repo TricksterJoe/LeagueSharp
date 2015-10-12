@@ -101,7 +101,7 @@ namespace Lee_Sin
                 if (spell.Name.Contains("smite"))
                     Smite = spell.Slot;
             }
-            Printmsg("Lee Sin Assembly Loaded");
+            Printmsg("Lee Sin By Hoes Assembly Loaded");
             Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
             Printmsg2("Don't Forget To " + "<font color='#00ff00'>[Upvote]</font> <font color='#FFFFFF'>" + "The Assembly In The Databse" + "</font>");
             

@@ -48,12 +48,33 @@ namespace Slutty_Veigar
             W.SetSkillshot(2f, 225f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             E.SetSkillshot(0.2f, 30f, int.MaxValue, false, SkillshotType.SkillshotCircle);
           //  Ew.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
-
+            Printmsg("Veigar Assembly By Hoes Loaded");
+            Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
+            Printmsg2("Don't Forget To " + "<font color='#00ff00'>[Upvote]</font> <font color='#FFFFFF'>" + "The Assembly In The Databse" + "</font>");
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
            // GameObject.OnCreate += OnCreate;
            // CustomEvents.Unit.OnDash += Ondash;
         }
+
+        private static void Printmsg(string message)
+        {
+            Game.PrintChat(
+                "<font color='#6f00ff'>[Slutty Veigar]:</font> <font color='#FFFFFF'>" + message + "</font>");
+        }
+
+        private static void Printmsg1(string message)
+        {
+            Game.PrintChat(
+                "<font color='#ff00ff'>[Slutty Veigar]:</font> <font color='#FFFFFF'>" + message + "</font>");
+        }
+
+        private static void Printmsg2(string message)
+        {
+            Game.PrintChat(
+                "<font color='#00abff'>[Slutty Veigar]:</font> <font color='#FFFFFF'>" + message + "</font>");
+        }
+
 //
 //        private static void Ondash(Obj_AI_Base sender, Dash.DashItem args)
 //        {
