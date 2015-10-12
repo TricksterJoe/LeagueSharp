@@ -263,9 +263,10 @@ namespace Lee_Sin
                 lastprocessr = Environment.TickCount;
             }
 
-            if (args.Slot == SpellSlot.R)
+            if (args.Slot == SpellSlot.R && GetBool("wardinsec", typeof(KeyBind)))
             {
                 _processr2 = true;
+                _processr2t = Environment.TickCount;
             }
 
             if (args.Slot == SpellSlot.W && GetBool("wardinsec", typeof(KeyBind)))
@@ -455,6 +456,11 @@ namespace Lee_Sin
             }
 
             if (_processr && Environment.TickCount - lastprocessr > 100)
+            {
+                Utility.DelayAction.Add(400, () => _processr = false);
+            }
+
+            if (_processr2 && Environment.TickCount - _processr2t > 100)
             {
                 Utility.DelayAction.Add(400, () => _processr = false);
             }
@@ -1243,8 +1249,7 @@ namespace Lee_Sin
 
             if (_processr2)
             {
-                if (R.IsReady() &&
-                    Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
+                if (Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
                 {
                     Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
                         Insec(target).To3D());
@@ -1410,6 +1415,7 @@ namespace Lee_Sin
         private static bool _processw2;
         private static int lastwcombo;
         private static int _lastwarr;
+        private static int _processr2t;
 
         private static void AutoSmite()
         {
