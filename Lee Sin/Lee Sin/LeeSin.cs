@@ -973,7 +973,7 @@ namespace Lee_Sin
             var slot = Items.GetWardSlot();
 
             if (Player.Distance(target) >= 300 &&
-                Player.ServerPosition.Distance(target.ServerPosition) <= 420
+                Player.ServerPosition.Distance(target.ServerPosition) <= 600
                 && R.IsReady() && slot != null && W.IsReady() && Player.GetSpellSlot("summonerflash").IsReady())
             {
                 Steps = steps.WardJump;
@@ -983,7 +983,7 @@ namespace Lee_Sin
             #region R Casting
 
             // !Player.IsDashing() <- broken Game.PrintChat(Player.IsDashing().ToString())
-            if (Steps == steps.Flash && Player.Distance(target) < 220 &&
+            if (Steps == steps.Flash &&
                   Player.GetSpellSlot("summonerflash").IsReady())
             {
                 R.Cast(target);
@@ -994,7 +994,7 @@ namespace Lee_Sin
             if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
             {
                 var pos = Player.ServerPosition.Extend(target.ServerPosition,
-                    Player.ServerPosition.Distance(target.ServerPosition) - 250);
+                    Player.ServerPosition.Distance(target.ServerPosition) - 100);
                 if (!_processw &&
                     Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" && slot != null)
                 {
@@ -1011,16 +1011,17 @@ namespace Lee_Sin
             }
 
             if (Steps != steps.Flash) return;
+            if (!_processr2) return;
 
             if (Player.Distance(target) < 200 && R.IsReady() &&
                 Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
             {
                 Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-                    Insec(target).To3D());
-                Steps = steps.Q;
+                                            Player.ServerPosition.Extend(target.ServerPosition,
+                            Player.Distance(target.ServerPosition) + 150));
             }
 
-            if (Steps == steps.Q && Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne")
+            if (!R.IsReady() && Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne")
             {
                 Q.Cast(target);
             }
