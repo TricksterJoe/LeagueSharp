@@ -1141,8 +1141,7 @@ namespace Lee_Sin
                     Steps = steps.WardJump;
                 }
             }
-            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && (target.Distance(Player) > 400) &&
-                R.IsReady()) 
+            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && (target.Distance(Player) > 350)) 
             {
                 Utility.DelayAction.Add(200, () => Q.Cast());
             }
