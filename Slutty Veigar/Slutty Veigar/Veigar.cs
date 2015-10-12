@@ -45,8 +45,8 @@ namespace Slutty_Veigar
             DamageToUnit = GetComboDamage;
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
-            W.SetSkillshot(0.5f, 225f, int.MaxValue, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.2f, 30f, int.MaxValue, false, SkillshotType.SkillshotCircle);
+            W.SetSkillshot(0.5f, 300f, int.MaxValue, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(0.2f, 60f, int.MaxValue, false, SkillshotType.SkillshotCircle);
           //  Ew.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             Printmsg("Veigar Assembly By Hoes Loaded");
             Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
@@ -598,11 +598,12 @@ namespace Slutty_Veigar
 //                }
 //            }
 
-            var epred = E.GetSPrediction(target);
+            var epred = E.GetRingSPrediction(target, 375);
+
             var pos = epred.CastPosition;
             if ((epred.HitChance >= HitChance.High || target.IsStunned))
             {
-                E.Cast(pos.Extend(Player.Position.To2D(), 340));
+                E.Cast(pos);
             }
             // E.Cast(targetPos);
 
