@@ -91,7 +91,9 @@ namespace Slutty_ryze
                 combo1Menu.AddItem(new MenuItem("useR", "Use R (Desperate Power)").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("useRww", "Only Use R if Target is Rooted").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("AAblock", "Block Auto Attack in Combo").SetValue(false));
-                combo1Menu.AddItem(new MenuItem("minaarange", "Disable AA If Target Distance from target >").SetValue(new Slider(550, 100, 550)));
+                combo1Menu.AddItem(
+                    new MenuItem("minaarange", "Disable AA If Target Distance from target >").SetValue(new Slider(550,
+                        100, 550)));
             }
             return combo1Menu;
         }
