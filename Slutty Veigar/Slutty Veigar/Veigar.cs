@@ -46,7 +46,7 @@ namespace Slutty_Veigar
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(0.5f, 300f, int.MaxValue, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.2f, 60f, int.MaxValue, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(0.3f, 30f, int.MaxValue, false, SkillshotType.SkillshotCircle);
           //  Ew.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             Printmsg("Veigar Assembly By Hoes Loaded");
             Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
@@ -598,7 +598,7 @@ namespace Slutty_Veigar
 //                }
 //            }
 
-            var epred = E.GetRingSPrediction(target, 375);
+            var epred = E.GetRingSPrediction(target, 350);
 
             var pos = epred.CastPosition;
             if ((epred.HitChance >= HitChance.High || target.IsStunned))
