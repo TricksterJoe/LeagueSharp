@@ -581,7 +581,7 @@ namespace Slutty_Veigar
             var pos = epred.CastPosition;
             if ((epred.HitChance >= HitChance.High || target.IsStunned))
             {
-                E.Cast(pos.Extend(Player.Position.To2D(), 350));
+                E.Cast(pos.Extend(Player.Position.To2D(), 340));
             }
             // E.Cast(targetPos);
 
