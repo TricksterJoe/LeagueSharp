@@ -499,6 +499,9 @@ namespace Lee_Sin
                     LaneClear2();
                     JungleClear();
                     break;
+                    case Orbwalking.OrbwalkingMode.Mixed:
+                    Harass();
+                    break;
             }
 
             #region Soontm
@@ -763,6 +766,71 @@ namespace Lee_Sin
         #endregion
 
 
+        #region Harass
+
+        private static void Harass()
+        {
+            if (Player.Mana < GetValue("minenergy")) return;
+
+            var useq = GetBool("useqh", typeof (bool));
+            var usee = GetBool("useeh", typeof (bool));
+            var useq2 = GetBool("useq2h", typeof (bool));
+            var delay = GetValue("secondqdelayh");
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+            if (!target.IsValidTarget())
+                return;
+
+            if (useq)
+            {
+                if (Environment.TickCount - _lastqh > 100 && Environment.TickCount - _lasteh > 300)
+                {
+                    var qpred = Q.GetPrediction(target);
+                    if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
+                        (qpred.Hitchance >= HitChance.Medium || qpred.Hitchance == HitChance.Immobile ||
+                         qpred.Hitchance == HitChance.Dashing))
+                    {
+                        Q.Cast(target);
+                        _lastqh = Environment.TickCount;
+                    }
+
+                    if (!useq2) return;
+
+                    if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && Q.IsReady() &&
+                        Environment.TickCount - _lastqc > delay)
+                    {
+                        Q.Cast();
+                        _lastqh = Environment.TickCount;
+                    }
+                }
+
+
+                if (usee)
+                {
+                    if (Environment.TickCount - _lastqh > 300 && Environment.TickCount - _lasteh > 300)
+                    {
+                        if (target.Distance(Player) <= E.Range &&
+                            Player.GetSpell(SpellSlot.E).Name == "BlindMonkEOne")
+                        {
+                            E.Cast();
+                            _lasteh = Environment.TickCount;
+                        }
+                        if ((Player.Distance(target) >
+                             Player.AttackRange + Player.BoundingRadius + target.BoundingRadius + 100 ||
+                             Environment.TickCount - _laste > 2700) &&
+                            Player.GetSpell(SpellSlot.E).Name == "blindmonketwo")
+                        {
+                            E.Cast();
+                            _lasteh = Environment.TickCount;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        #endregion
+
+
         #region Combo
 
         private static void Combo()
@@ -830,7 +898,7 @@ namespace Lee_Sin
                     }
 
                     if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && Q.IsReady() &&
-                        (Environment.TickCount - _lastqc > 1000) && GetBool("useq2", typeof(bool)))
+                        (Environment.TickCount - _lastqc > GetValue("secondqdelay")) && GetBool("useq2", typeof(bool)))
                     {
                         Q.Cast();
                         _lastqc = Environment.TickCount;
@@ -1416,6 +1484,8 @@ namespace Lee_Sin
         private static int lastwcombo;
         private static int _lastwarr;
         private static int _processr2t;
+        private static int _lastqh;
+        private static int _lasteh;
 
         private static void AutoSmite()
         {

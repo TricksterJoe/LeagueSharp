@@ -47,6 +47,7 @@ namespace Lee_Sin
             {
                 AddBool(combo, "Use [Q]", "useq");
                 AddBool(combo, "Use Second [Q]", "useq2");
+                AddValue(combo, "Use Second [Q] Delay", "secondqdelay", 500, 0, 2500);
                 AddBool(combo, "Use [E]", "usee");
                 AddBool(combo, "Use [R]", "user");
                 AddBool(combo, "Use [W]", "wardjumpcombo");
@@ -67,6 +68,7 @@ namespace Lee_Sin
             {
                 AddBool(harass, "Use [Q]", "useqh");
                 AddBool(harass, "Use Second [Q]", "useq2h");
+                AddValue(harass, "Use Second [Q] Delay", "secondqdelay", 500, 0, 2500);
                 AddBool(harass, "Use [E]", "useeh");
                 AddValue(harass, "Min Energy", "minenergy", 100, 0, 200);
             }
