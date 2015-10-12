@@ -916,7 +916,50 @@ namespace Lee_Sin
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
             if (target == null)
                 return;
-            
+//
+//            if (Smite.IsReady() && target.Distance(Player) < 500)
+//            {
+//                Player.Spellbook.CastSpell(Smite, target);
+//            }
+
+            var slot = Items.GetWardSlot();
+            if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && Player.Distance(target) > 400)
+            {
+                Q.Cast(target);
+            }
+
+            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" &&
+                target.IsValidTarget(R.Range) && Q.IsReady())
+            {
+                R.Cast(target);
+            }
+
+            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name.ToLower() == "blindmonkqtwo" && Q.IsReady() && !R.IsReady())
+            {
+                Utility.DelayAction.Add(300, () => Q.Cast());
+            }
+
+            if (Player.Distance(target) < 700 && Player.Distance(target) > 300 && W.IsReady() && R.IsReady() &&
+                Q.IsReady())
+            {
+                if (W.IsReady() && R.IsReady())
+                {
+                    var pos = target.ServerPosition.Extend(Player.ServerPosition, target.Distance(Player) - 200);
+
+                    if (!_processw &&
+                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
+                    {
+                        Player.Spellbook.CastSpell(slot.SpellSlot, pos);
+                        _lastwarr = Environment.TickCount;
+                    }
+                    if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
+                    {
+                        _lastwards = Environment.TickCount;
+                    }
+                }
+            }
+
+
             #region why is it here
 
 //            var slot = Items.GetWardSlot();
@@ -938,59 +981,33 @@ namespace Lee_Sin
 
             #endregion
 
-            if (Player.Distance(target) > R.Range && Player.Distance(target) < 520 && R.IsReady() && Q.IsReady()
-                && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlinkMonkQOne" && W.IsReady())
-            {
-                Steps = steps.WardJump;              
-            }
-
-
-
-            if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
-            {
-                if (W.IsReady() && R.IsReady())
-                {
-                    var pos = Player.ServerPosition.Extend(target.ServerPosition,
-                        Player.ServerPosition.Distance(target.ServerPosition) - 200);
-                    var slot = Items.GetWardSlot();
-                    if (!_processw &&
-                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
-                    {
-                        Player.Spellbook.CastSpell(slot.SpellSlot, pos);
-                        _lastwarr = Environment.TickCount;
-                    }
-                    if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
-                    {
-                        _lastwards = Environment.TickCount;
-                    }
-                }
-            }
-
-            if (Smite.IsReady() && target.Distance(Player) < 500)
-            {
-                Player.Spellbook.CastSpell(Smite, target);
-            }
-
-            if (R.IsReady() && target.IsValidTarget(R.Range))
-            {
-                Steps = steps.Q;
-            }
-
-            if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && Steps == steps.Q)
-            {
-                Q.Cast(target);
-            }
-
-            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" &&
-                target.IsValidTarget(R.Range))
-            {
-                R.Cast(target);
-            }
-
-            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name.ToLower() == "blindmonkqtwo" && Q.IsReady() && !R.IsReady())
-            {
-                Utility.DelayAction.Add(300, () => Q.Cast());
-            }
+//            if (Player.Distance(target) > R.Range && Player.Distance(target) < 520 && R.IsReady() && Q.IsReady()
+//                && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlinkMonkQOne" && W.IsReady())
+//            {
+//                Steps = steps.WardJump;              
+//            }
+//
+//
+//
+//            if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
+//            {
+//                if (W.IsReady() && R.IsReady())
+//                {
+//                    var pos = Player.ServerPosition.Extend(target.ServerPosition,
+//                        Player.ServerPosition.Distance(target.ServerPosition) - 200);
+//                    var slot = Items.GetWardSlot();
+//                    if (!_processw &&
+//                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
+//                    {
+//                        Player.Spellbook.CastSpell(slot.SpellSlot, pos);
+//                        _lastwarr = Environment.TickCount;
+//                    }
+//                    if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
+//                    {
+//                        _lastwards = Environment.TickCount;
+//                    }
+//                }
+//            }
 
         }
 
