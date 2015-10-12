@@ -257,7 +257,7 @@ namespace Lee_Sin
             }
 
 
-            if (args.Slot == Player.GetSpellSlot("summonerflash") && GetBool("wardinsec", typeof (KeyBind)) && GetBool("flashinsecc", typeof(KeyBind)))
+            if (args.Slot == Player.GetSpellSlot("summonerflash") && GetBool("wardinsec", typeof (KeyBind)))
             {
                 _processr = true;
                 lastprocessr = Environment.TickCount;
@@ -268,7 +268,7 @@ namespace Lee_Sin
                 _processr2 = true;
             }
 
-            if (args.Slot == SpellSlot.W)
+            if (args.Slot == SpellSlot.W && GetBool("wardinsec", typeof(KeyBind)))
             {
                 _processw2 = true;
             }
@@ -1169,7 +1169,7 @@ namespace Lee_Sin
 
             if (R.IsReady())
             {
-                if (slot.IsValidSlot() && slot != null && W.IsReady())
+                if (slot != null && W.IsReady())
                 {
                     Steps = steps.WardJump;
                     lastwardjump = Environment.TickCount;
