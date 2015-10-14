@@ -236,13 +236,17 @@ namespace Slutty_Kindred
              if (Player.Distance(target) < Q.Range)
                     {
                         Q.Cast(dashPosition);
+Utility.DelayAction.Add(100 + Game.Ping, Orbwalking.ResetAutoAttackTimer);
+                    
                     }
                     break;
                 }
                 case 1:
                 if (Player.Distance(target) < Q.Range)
                     {
-                        Q.Cast(dashPosition);
+Q.Cast(dashPosition);
+ Utility.DelayAction.Add(100 + Game.Ping, Orbwalking.ResetAutoAttackTimer);                    
+               
                     }
                     break;
             }
