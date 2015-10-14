@@ -20,7 +20,7 @@ namespace Slutty_Kindred
 
             Q = new Spell(SpellSlot.Q, 800);
             W = new Spell(SpellSlot.W, 800);
-            E = new Spell(SpellSlot.E, Player.AttackRange + Player.BoundingRadius);
+            E = new Spell(SpellSlot.E, 550);
             R = new Spell(SpellSlot.R, 1000);
 
             MenuConfig.OnLoad();
