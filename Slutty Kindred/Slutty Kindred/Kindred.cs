@@ -233,14 +233,14 @@ namespace Slutty_Kindred
             {
                 case 0:
                 {
-                    if (Player.Distance(target) > 500 && Player.Distance(target) < Q.Range)
+             if (Player.Distance(target) < Q.Range)
                     {
                         Q.Cast(dashPosition);
                     }
                     break;
                 }
                 case 1:
-                if (Player.Distance(target) > 500 && Player.Distance(target) < Q.Range)
+                if (Player.Distance(target) < Q.Range)
                     {
                         Q.Cast(dashPosition);
                     }
