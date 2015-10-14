@@ -20,7 +20,7 @@ namespace Slutty_Kindred
 
             Q = new Spell(SpellSlot.Q, 800);
             W = new Spell(SpellSlot.W, 800);
-            E = new Spell(SpellSlot.E, Player.AttackRange + Player.BoundingRadius);
+            E = new Spell(SpelSlot.E, 600);
             R = new Spell(SpellSlot.R, 1000);
 
             MenuConfig.OnLoad();
@@ -30,7 +30,7 @@ namespace Slutty_Kindred
             Orbwalking.BeforeAttack += BeforeAttack;
             Obj_AI_Base.OnIssueOrder += OnIssueOrder;
             Drawing.OnDraw += OnDraw;
-            CustomEvents.Unit.OnDash += Ondash;
+          //  CustomEvents.Unit.OnDash += Ondash;
         }
 
         private static void Ondash(Obj_AI_Base sender, Dash.DashItem args)
@@ -40,7 +40,7 @@ namespace Slutty_Kindred
             if (endpos.Distance(Player) < 300)
             {
                 Q.Cast(endpos.Extend(Player.ServerPosition.To2D(), Q.Range));
-            }
+    }
         }
 
 
@@ -161,7 +161,7 @@ namespace Slutty_Kindred
 
             if (GetBool("wallhops", typeof (KeyBind)))
             {
-                Wallhops();
+             //   Wallhops();
             }
         }
 
