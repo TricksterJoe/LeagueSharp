@@ -257,7 +257,7 @@ namespace Slutty_Kindred
 
                 if (hero.HealthPercent < GetValue("minhpr"))
                 {
-                    R.Cast();
+                    R.Cast(hero);
                 }
             }
         }
