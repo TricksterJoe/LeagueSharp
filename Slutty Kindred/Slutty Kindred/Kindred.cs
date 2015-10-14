@@ -126,7 +126,7 @@ namespace Slutty_Kindred
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None) return;
 
-            var dashPosition = Player.Position.Extend(Game.CursorPos, Q.Range);
+            var dashPosition = Player.Position.Extend(Game.CursorPos, 330);
             if (!Q.IsReady() || !target.IsValidTarget(840)) return;
 
             switch (GetStringValue("qmode"))
@@ -228,7 +228,7 @@ namespace Slutty_Kindred
             }
 
 
-            var dashPosition = Player.Position.Extend(Game.CursorPos, Q.Range);
+            var dashPosition = Player.Position.Extend(Game.CursorPos, 330);
             switch (GetStringValue("qmode")) 
             {
                 case 0:
