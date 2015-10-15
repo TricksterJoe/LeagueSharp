@@ -193,7 +193,7 @@ namespace Lee_Sin
             SelectedAllyAiMinion =
                 ObjectManager.Get<Obj_AI_Base>()
                     .Where(
-                        x => x.IsValid && x.Distance(Game.CursorPos, true) < 40000 && x.IsAlly)
+                        x => x.IsValid && x.Distance(Game.CursorPos, true) < 40000 && x.IsAlly && !x.IsMe)
                     .OrderBy(h => h.Distance(Game.CursorPos, true)).FirstOrDefault();
 
 
