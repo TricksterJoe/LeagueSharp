@@ -1141,7 +1141,7 @@ namespace Lee_Sin
 
 //        private static void WardFlash()
 //        {
-//            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+//            var ttarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
 //            if (target != null)
 //            {
 //                target = GetStringValue("targetmode") == 1
