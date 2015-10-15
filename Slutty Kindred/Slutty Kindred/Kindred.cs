@@ -18,9 +18,15 @@ namespace Slutty_Kindred
     //            if (Player.ChampionName != ChampName)
     //                return;
 
+<<<<<<< HEAD
             Q = new Spell(SpellSlot.Q, 900);
             W = new Spell(SpellSlot.W, 600);
             E = new Spell(SpellSlot.E, 500);
+=======
+            Q = new Spell(SpellSlot.Q, 800);
+            W = new Spell(SpellSlot.W, 800);
+            E = new Spell(SpellSlot.E, 550);
+>>>>>>> origin/master
             R = new Spell(SpellSlot.R, 1000);
 
             MenuConfig.OnLoad();
@@ -152,8 +158,13 @@ namespace Slutty_Kindred
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None) return;
 
+<<<<<<< HEAD
             var dashPosition = Player.Position.Extend(Game.CursorPos,350);
             if (!Q.IsReady() || !target.IsValidTarget(Player.AttackRange)) return;
+=======
+            var dashPosition = Player.Position.Extend(Game.CursorPos, 330);
+            if (!Q.IsReady() || !target.IsValidTarget(840)) return;
+>>>>>>> origin/master
 
             switch (GetStringValue("qmodes"))
             {
@@ -263,6 +274,7 @@ namespace Slutty_Kindred
                     W.Cast();
             }
 
+<<<<<<< HEAD
             if (E.IsReady() && target.IsValidTarget(E.Range))
                 E.Cast(target);
             
@@ -272,6 +284,15 @@ namespace Slutty_Kindred
                 case 0:
                 {
                     if (Player.Distance(target) > Player.AttackRange && Player.Distance(target) < Q.Range && Q.IsReady())
+=======
+
+            var dashPosition = Player.Position.Extend(Game.CursorPos, 330);
+            switch (GetStringValue("qmode")) 
+            {
+                case 0:
+                {
+             if (Player.Distance(target) < Q.Range)
+>>>>>>> origin/master
                     {
                         Q.Cast(dashPosition);
                         if (target.Distance(Player) < Player.AttackRange)
@@ -283,7 +304,11 @@ namespace Slutty_Kindred
                     break;
                 }
                 case 1:
+<<<<<<< HEAD
                 if (Player.Distance(target) > Player.AttackRange && Player.Distance(target) < Q.Range)
+=======
+                if (Player.Distance(target) < Q.Range)
+>>>>>>> origin/master
                     {
                         Q.Cast(dashPosition); 
                     if (target.Distance(Player) < Player.AttackRange)
@@ -304,10 +329,20 @@ namespace Slutty_Kindred
                                                                   x.HealthPercent < GetValue("minhpr"))
                 )
             {
+<<<<<<< HEAD
                 if (!target.IsFacing(hero)) return;
                 if (target.Distance(hero) > 550) return;
                 if (GetBool("useron" + hero.CharData.BaseSkinName, typeof(bool)))
                 R.Cast(hero);
+=======
+                if (!R.IsReady() || Player.CountAlliesInRange(R.Range) < GetValue("minallies") ||
+                    Player.CountAlliesInRange(R.Range) < GetValue("minenemies")) continue;
+
+                if (hero.HealthPercent < GetValue("minhpr"))
+                {
+                    R.Cast(hero);
+                }
+>>>>>>> origin/master
             }
         }
     }
