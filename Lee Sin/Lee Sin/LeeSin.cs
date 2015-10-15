@@ -212,7 +212,6 @@ namespace Lee_Sin
         {
             if (sender.IsMe)
             {
-                Game.PrintChat(args.SData.Name);
                 if (args.SData.Name == "BlindMonkRKick")
                 {
                     _processroncast = true;
