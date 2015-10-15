@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slutty Kindred", "Slutty Kindred\Slutty Kindred.csproj", "{9575AAE7-2C92-4BA2-861E-FA1FC17D14ED}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Majestic AF Kindred", "Slutty Kindred\Majestic AF Kindred.csproj", "{9575AAE7-2C92-4BA2-861E-FA1FC17D14ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
