@@ -18,13 +18,18 @@ namespace Slutty_Kindred
     //            if (Player.ChampionName != ChampName)
     //                return;
 
-            Q = new Spell(SpellSlot.Q, 800);
-            W = new Spell(SpellSlot.W, 800);
-            E = new Spell(SpellSlot.E, Player.AttackRange + Player.BoundingRadius);
-            R = new Spell(SpellSlot.Q, 1000);
+            Q = new Spell(SpellSlot.Q, 900);
+            W = new Spell(SpellSlot.W, 600);
+            E = new Spell(SpellSlot.E, 500);
+            R = new Spell(SpellSlot.R, 1000);
 
             MenuConfig.OnLoad();
-            
+
+            Printmsg("Majestic AF Kindred Assembly By Hoes Loaded");
+            Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
+            Printmsg2("Don't Forget To " + "<font color='#00ff00'>[Upvote]</font> <font color='#FFFFFF'>" +
+                      "The Assembly In The Database");
+
             Game.OnUpdate += OnUpdate;
             Orbwalking.AfterAttack += AfterAttack;
             Orbwalking.BeforeAttack += BeforeAttack;
@@ -68,7 +73,23 @@ namespace Slutty_Kindred
                 Render.Circle.DrawCircle(Player.Position, R.Range, Color.Black, 4);
             }
         }
+        private static void Printmsg(string message)
+        {
+            Game.PrintChat(
+                "<font color='#6f00ff'>[Majestic AF Kindred]:</font> <font color='#FFFFFF'>" + message + "</font>");
+        }
 
+        private static void Printmsg1(string message)
+        {
+            Game.PrintChat(
+                "<font color='#ff00ff'>[Majestic AF Kindred]:</font> <font color='#FFFFFF'>" + message + "</font>");
+        }
+
+        private static void Printmsg2(string message)
+        {
+            Game.PrintChat(
+                "<font color='#00abff'>[Majestic AF Kindred]:</font> <font color='#FFFFFF'>" + message + "</font>");
+        }
         private static void OnIssueOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
         {
 //            if (!sender.IsMe || args.Order != GameObjectOrder.AutoAttack) return;
@@ -108,17 +129,22 @@ namespace Slutty_Kindred
         private static void BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
         {
 
-            // soontm
-//            foreach (
-//                var target in
-//                    HeroManager.Enemies.Where(
-//                        x =>
-//                            x.IsValid && x.Distance(Player) < Player.AttackRange && GetPassiveBuff > 0 &&
-//                            x.IsVisible))
-//            {
-//                if (GetBool("forceetarget", typeof (bool)))
-//                    Orbwalker.ForceTarget(target);
-//            }
+           
+            foreach (
+                var target in
+                    HeroManager.Enemies.Where(
+                        x =>
+                            x.IsValid && x.Distance(Player) < Player.AttackRange && 
+                            x.IsVisible))
+            {
+                if (!target.HasBuff("kindredcharge")) return;
+                if (GetBool("forceetarget", typeof (bool)))
+                {
+                    if (target.HasBuff("kindredcharge"))
+                        Orbwalker.ForceTarget(target);
+                }
+                
+            }
         }
 
         private static void AfterAttack(AttackableUnit unit, AttackableUnit target)
@@ -126,19 +152,18 @@ namespace Slutty_Kindred
 
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.None) return;
 
-            var dashPosition = Player.Position.Extend(Game.CursorPos, Q.Range);
-            if (!Q.IsReady() || !target.IsValidTarget(840)) return;
+            var dashPosition = Player.Position.Extend(Game.CursorPos,350);
+            if (!Q.IsReady() || !target.IsValidTarget(Player.AttackRange)) return;
 
-            switch (GetStringValue("qmode"))
+            switch (GetStringValue("qmodes"))
             {
                 case 0:
                     Q.Cast(dashPosition);
                     Utility.DelayAction.Add(100 + Game.Ping, Orbwalking.ResetAutoAttackTimer);
                     break;
                 case 1:
-                    if (target.Position.Distance(Player.Position) < 500)
-                    {
-                        Backwardscast(SpellSlot.Q, target);
+                {
+                    Q.Cast(dashPosition);
                         Utility.DelayAction.Add(100 + Game.Ping, Orbwalking.ResetAutoAttackTimer);
                     }
                     break;
@@ -147,6 +172,17 @@ namespace Slutty_Kindred
 
         private static void OnUpdate(EventArgs args)
         {
+//            var hero = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+//            if (hero != null)
+//            {
+//                foreach (var buff in hero.Buffs)
+//                {
+////                    if (!buff.Name.Contains("kindred")) return;
+////                    if (buff.Name.Contains("refresh")) return;
+////                    if (buff.Name.Contains("charge")) return;                    
+//                    Game.PrintChat(buff.Name);
+//                }
+//            }
 
             switch (Orbwalker.ActiveMode)
             {
@@ -159,10 +195,10 @@ namespace Slutty_Kindred
                     break;
             }
 
-            if (GetBool("wallhops", typeof (KeyBind)))
-            {
-                Wallhops();
-            }
+//            if (GetBool("wallhops", typeof (KeyBind)))
+//            {
+//                Wallhops();
+//            }
         }
 
         private static void Jungleclear()
@@ -227,38 +263,51 @@ namespace Slutty_Kindred
                     W.Cast();
             }
 
-
-            var dashPosition = Player.Position.Extend(Game.CursorPos, Q.Range);
-            switch (GetStringValue("qmode")) 
+            if (E.IsReady() && target.IsValidTarget(E.Range))
+                E.Cast(target);
+            
+            var dashPosition = Player.Position.Extend(Game.CursorPos, 320);
+            switch (GetStringValue("qmodes")) 
             {
                 case 0:
                 {
-                    if (Player.Distance(target) > 500 && Player.Distance(target) < Q.Range)
+                    if (Player.Distance(target) > Player.AttackRange && Player.Distance(target) < Q.Range && Q.IsReady())
                     {
                         Q.Cast(dashPosition);
+                        if (target.Distance(Player) < Player.AttackRange)
+                        {
+                            Player.IssueOrder(GameObjectOrder.AutoAttack, target);
+                        }
+                        Utility.DelayAction.Add(Game.Ping, Orbwalking.ResetAutoAttackTimer);
                     }
                     break;
                 }
                 case 1:
-                if (Player.Distance(target) > 500 && Player.Distance(target) < Q.Range)
+                if (Player.Distance(target) > Player.AttackRange && Player.Distance(target) < Q.Range)
                     {
-                        Q.Cast(dashPosition);
+                        Q.Cast(dashPosition); 
+                    if (target.Distance(Player) < Player.AttackRange)
+                        {
+                            Player.IssueOrder(GameObjectOrder.AutoAttack, target);
+                        }
+                        Utility.DelayAction.Add(Game.Ping, Orbwalking.ResetAutoAttackTimer);
                     }
                     break;
             }
+//            
 
-            if (E.IsReady() && target.IsValidTarget(E.Range))
-                E.Cast(target);
-            
-            foreach (var hero in HeroManager.Allies)
+            if (!R.IsReady()) return;
+            foreach (var hero in HeroManager.Allies.Where(x => x.IsValid && x.IsVisible && x.Distance(Player) < R.Range
+                                                                  &&
+                                                                  x.CountEnemiesInRange(R.Range) <=
+                                                                  GetValue("minenemies") &&
+                                                                  x.HealthPercent < GetValue("minhpr"))
+                )
             {
-                if (!R.IsReady() || Player.CountAlliesInRange(R.Range) < GetValue("minallies") ||
-                    Player.CountAlliesInRange(R.Range) < GetValue("minenemies")) continue;
-
-                if (hero.HealthPercent < GetValue("minhpr"))
-                {
-                    R.Cast();
-                }
+                if (!target.IsFacing(hero)) return;
+                if (target.Distance(hero) > 550) return;
+                if (GetBool("useron" + hero.CharData.BaseSkinName, typeof(bool)))
+                R.Cast(hero);
             }
         }
     }

@@ -28,11 +28,23 @@ namespace Slutty_Kindred
                 AddBool(combomenu, "Use W", "usew", true);
                 AddBool(combomenu, "Use E", "use", true);
                 AddBool(combomenu, "Focus E target", "focusetarget", true);
-                AddBool(combomenu, "Use R", "user", true);
-                AddValue(combomenu, "Minimum Allies in Range R", "minallies", 2, 1, 5);
-                AddValue(combomenu, "Minimum Enemies in Range R", "minenemies", 2, 1, 5);
-                AddValue(combomenu, "Min HP To R", "minhpr", 30);
+                var rsettings = new Menu("R Settings", "R Settings");
+                {
+                    var rblack = new Menu("R Black List", "R Black List");
+                    {
+                        foreach (var ally in HeroManager.Allies)
+                        {
+                            AddBool(rblack, "Use R On " + ally.CharData.BaseSkinName, "useron" + ally.CharData.BaseSkinName, true);
+                        }
+                    }
+                    rsettings.AddSubMenu(rblack);
+                    AddBool(rsettings, "Use R", "users", true);
+                    AddValue(rsettings, "Minimum Enemies in Range R", "minenemies", 2, 1, 5);
+                    AddValue(rsettings, "Min HP To R", "minhpr", 30);
+                }
+                combomenu.AddSubMenu(rsettings);
             }
+            
             Config.AddSubMenu(combomenu);
 
             var laneclear = new Menu("Lane Clear Settings", "Lane Clear Settings");
@@ -65,7 +77,7 @@ namespace Slutty_Kindred
             }
             Config.AddSubMenu(drawmenu);
 
-            AddKeyBind(Config, "Wall Hops", "wallhops", 'Z', KeyBindType.Press);
+         //   AddKeyBind(Config, "Wall Hops", "wallhops", 'Z', KeyBindType.Press);
             Config.AddToMainMenu();
         }
     }

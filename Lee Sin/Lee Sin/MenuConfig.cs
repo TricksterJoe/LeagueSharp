@@ -68,7 +68,7 @@ namespace Lee_Sin
             {
                 AddBool(harass, "Use [Q]", "useqh");
                 AddBool(harass, "Use Second [Q]", "useq2h");
-                AddValue(harass, "Use Second [Q] Delay", "secondqdelay", 500, 0, 2500);
+                AddValue(harass, "Use Second [Q] Delay", "secondqdelayh", 500, 0, 2500);
                 AddBool(harass, "Use [E]", "useeh");
                 AddValue(harass, "Min Energy", "minenergy", 100, 0, 200);
             }

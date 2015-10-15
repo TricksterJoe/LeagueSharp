@@ -12,7 +12,7 @@ namespace Slutty_Kindred
         public static Obj_AI_Hero Player { get { return ObjectManager.Player; } }
         public static Menu Config;
         private static readonly DateTime AssemblyLoadTime = DateTime.Now;
-        public const string Menuname = "Slutty Kindred";
+        public const string Menuname = "Majestic AF Kindred";
 
         public static void AddBool(Menu menu, string displayName, string name, bool value)
         {
