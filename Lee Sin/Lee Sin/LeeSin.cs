@@ -89,13 +89,13 @@ namespace Lee_Sin
 
         internal static void Load(EventArgs args)
         {
-            if (Player.ChampionName != "LeeSin") return;
+//            if (Player.ChampionName != "LeeSin") return;
             MenuConfig.OnLoad();
             Q = new Spell(SpellSlot.Q, 1100);
             W = new Spell(SpellSlot.W, 700);
             E = new Spell(SpellSlot.E, 350);
             R = new Spell(SpellSlot.R, 375);
-            Q.SetSkillshot(0.1f, 55f, 2000f, true, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0f, 30f, 2000f, true, SkillshotType.SkillshotLine);
 
             foreach (var spell in Player.Spellbook.Spells)
             {
@@ -137,7 +137,6 @@ namespace Lee_Sin
         }
 
         #endregion
-
 
         #region OnCreate
 
@@ -211,6 +210,15 @@ namespace Lee_Sin
 
         private static void OnSpellcast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
+            if (sender.IsMe)
+            {
+                Game.PrintChat(args.SData.Name);
+                if (args.SData.Name == "BlindMonkRKick")
+                {
+                    _processroncast = true;
+                    _processroncastr = Environment.TickCount;
+                }
+            }
             if (sender.IsMe || sender.IsAlly || !sender.IsChampion()) return;
 
             switch (args.SData.Name)
@@ -448,6 +456,11 @@ namespace Lee_Sin
             if (_processw && Environment.TickCount - lastprocessw > 500)
             {
                 Utility.DelayAction.Add(2500, () => _processw = false);
+            }
+
+            if (_processroncast && Environment.TickCount - _processroncastr > 500)
+            {
+                Utility.DelayAction.Add(2500, () => _processroncast = false);
             }
 
             if (_processw2)
@@ -728,11 +741,11 @@ namespace Lee_Sin
 
             var useq = GetBool("useql", typeof (bool));
 
-
+            if (!useq) return;
             foreach (var minions in minion)
             {
                 if (Player.Spellbook.GetSpell(SpellSlot.Q).Name.ToLower() == "blindmonkqone" &&
-                    minions.Health <= GetQDamage(minions) && useq &&
+                    minions.Health <= GetQDamage(minions) &&
                     minions.Health >= Q.GetDamage(minions))
                 {
                     Q.Cast(minions);
@@ -891,7 +904,7 @@ namespace Lee_Sin
                 {
                     var qpred = Q.GetPrediction(target);
                     if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                        (qpred.Hitchance >= HitChance.Medium || qpred.Hitchance == HitChance.Immobile || qpred.Hitchance == HitChance.Dashing))
+                        (qpred.Hitchance >= HitChance.VeryHigh || qpred.Hitchance == HitChance.Immobile || qpred.Hitchance == HitChance.Dashing))
                     {
                         Q.Cast(target);
                         _lastqc = Environment.TickCount;
@@ -1014,6 +1027,40 @@ namespace Lee_Sin
                 Utility.DelayAction.Add(300, () => Q.Cast());
             }
 
+            if (R.IsReady() && Q.IsReady() && W.IsReady())
+            {
+                if (target.Distance(Player) > R.Range
+                    && target.Distance(Player) < R.Range + 580)
+                {
+                    var pos = target.ServerPosition.Extend(Player.ServerPosition, 100);
+                    if (!_processw &&
+                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
+                    {
+                        Player.Spellbook.CastSpell(slot.SpellSlot, pos);
+                        _lastwarr = Environment.TickCount;
+                    }
+                    if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
+                    {
+                        _lastwards = Environment.TickCount;
+                    }
+                }
+            }
+
+            if (E.IsReady() && E.Instance.Name == "BlindMonkEOne"
+                && target.IsValidTarget(E.Range))
+            {
+                E.Cast();
+            }
+
+            if (E.IsReady() && E.Instance.Name != "BlindMonkEOne"
+                && !target.IsValidTarget(Orbwalking.GetRealAutoAttackRange(Player)))
+            {
+                E.Cast();
+            }
+
+
+            #region zzz
+
 //            if (Player.Distance(target) < 700 && Player.Distance(target) > 300 && W.IsReady() && R.IsReady() &&
 //                Q.IsReady())
 //            {
@@ -1083,6 +1130,8 @@ namespace Lee_Sin
 //                    }
 //                }
 //            }
+
+            #endregion
 
         }
 
@@ -1207,7 +1256,7 @@ namespace Lee_Sin
 
             if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
             {
-                if (W.IsReady() && R.IsReady())
+                if (W.IsReady() && R.IsReady() && Player.ServerPosition.Distance(target.ServerPosition) < 300)
                 {
                     var pos = Insec(target);
 
@@ -1315,7 +1364,7 @@ namespace Lee_Sin
 
             if (Steps != steps.Flash) return;
 
-            if (_processr2)
+            if (_processroncast)
             {
                 if (Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
                 {
@@ -1486,6 +1535,9 @@ namespace Lee_Sin
         private static int _processr2t;
         private static int _lastqh;
         private static int _lasteh;
+        private static bool _processroncast;
+        private static int lastprocessroncast;
+        private static int _processroncastr;
 
         private static void AutoSmite()
         {
