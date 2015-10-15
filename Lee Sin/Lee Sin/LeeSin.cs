@@ -1058,7 +1058,6 @@ namespace Lee_Sin
                 E.Cast();
             }
 
-
             #region zzz
 
 //            if (Player.Distance(target) < 700 && Player.Distance(target) > 300 && W.IsReady() && R.IsReady() &&
