@@ -28,18 +28,17 @@ namespace Lee_Sin
             var targetSelectorMenu = new Menu("Target Selector", "Target Selector");
             TargetSelector.AddToMenu(targetSelectorMenu);
             Config.AddSubMenu(targetSelectorMenu);
-
             Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
 
             var combos = new Menu("Key Binds", "Key Binds");
             {
                 combos.AddItem(new MenuItem("targetmode", "Targets Selecting Mode"))
-    .SetValue(new StringList(new[] { "Target Selector", "Selected Target" }));
-               // AddKeyBind(combos, "Ward Flash", "flashinsecc", 'T', KeyBindType.Press);
+                    .SetValue(new StringList(new[] {"Target Selector", "Selected Target"}));
                 AddKeyBind(combos, "Ward Jump", "wardjump", 'G', KeyBindType.Press);
                 AddKeyBind(combos, "Use Insec", "wardinsec", 'X', KeyBindType.Press);
                 AddBool(combos, "Use Flash In Insec?", "useflash");
-                AddBool(combos, "*BETA* Ward -> Flash", "expwardflash");
+                AddBool(combos, "Prioritize Flash Over Ward?", "prioflash");
+                AddBool(combos, "*BETA* Ward -> Flash", "expwardflash", false);
                 AddBool(combos, "Use Smite In Insec", "UseSmite");
                 AddKeyBind(combos, "StarCombo", "starcombo", 'A', KeyBindType.Press);
             }

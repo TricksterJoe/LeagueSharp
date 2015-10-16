@@ -1341,9 +1341,16 @@ namespace Lee_Sin
             {
                 if (slot != null && W.IsReady() && slot.IsValidSlot())
                 {
-                    Steps = steps.WardJump;
-                    lastwardjump = Environment.TickCount;
-                    //   Game.PrintChat("Wardjump");
+                    if (GetBool("prioflash", typeof (bool)) && Player.GetSpellSlot("summonerflash").IsReady())
+                    {
+                        Steps = steps.Flash;
+                        lastflashstep = Environment.TickCount;
+                    }
+                    else if (Environment.TickCount - lastflashstep > 2500)
+                    {
+                        Steps = steps.WardJump;
+                        lastwardjump = Environment.TickCount;
+                    }                  
                 }
                 else if (GetBool("useflash", typeof (bool)) &&
                          target.Distance(Player) < 300 &&
@@ -1351,7 +1358,6 @@ namespace Lee_Sin
                          (slot == null || !W.IsReady()) && Environment.TickCount - lastwardjump > 2000)
                 {
                     Steps = steps.Flash;
-                    //   Game.PrintChat("Wardflashe");
                 }
             }
 
@@ -1408,12 +1414,12 @@ namespace Lee_Sin
 
             #endregion
 
-
+            #region Ward flash
 
             var pred = Q.GetPrediction(target);
             var collision = pred.CollisionObjects;
             if (collision.Any() && W.IsReady() && Player.GetSpellSlot("summonerflash").IsReady()
-                && slot != null && GetBool("expwardflash", typeof(bool)))
+                && slot != null && GetBool("expwardflash", typeof (bool)))
             {
                 if (Player.ServerPosition.Distance(target.ServerPosition) > 530 &&
                     Player.ServerPosition.Distance(target.ServerPosition) < 880)
@@ -1432,6 +1438,8 @@ namespace Lee_Sin
                 }
                 Steps = steps.Flash;
             }
+
+            #endregion
 
             #region Flash Casting
 
@@ -1494,7 +1502,6 @@ namespace Lee_Sin
 
         #endregion
 
-
         #region Everything Jungle Based
 
         public static readonly string[] Names =
@@ -1534,6 +1541,7 @@ namespace Lee_Sin
         private static int _processroncastr;
         private static int printed;
         private static Geometry.Polygon.Rectangle ultPolyExpectedPos;
+        private static int lastflashstep;
 
         private static void AutoSmite()
         {
@@ -1800,8 +1808,8 @@ namespace Lee_Sin
                 Render.Circle.DrawCircle(Player.Position, R.Range, colorr);
             }
             var target =
-HeroManager.Enemies.Where(x => x.Distance(Player) < R.Range && !x.IsDead && x.IsValidTarget(R.Range))
-.OrderBy(x => x.Distance(Player)).FirstOrDefault();
+                HeroManager.Enemies.Where(x => x.Distance(Player) < R.Range && !x.IsDead && x.IsValidTarget(R.Range))
+                    .OrderBy(x => x.Distance(Player)).FirstOrDefault();
             if (target == null || Player.IsDead)
             {
                 ultPoly = null;
@@ -1830,7 +1838,9 @@ HeroManager.Enemies.Where(x => x.Distance(Player) < R.Range && !x.IsDead && x.Is
             if (!GetBool("targetexpos", typeof (bool))) return;
             if (!GetBool("ovdrawings", typeof (bool))) return;
             if (SelectedAllyAiMinion != null)
-            Drawing.DrawCircle(SelectedAllyAiMinion.Position, 200, Color.Blue);
+            {
+                Drawing.DrawCircle(SelectedAllyAiMinion.Position, 200, Color.Blue);
+            }
             var target = TargetSelector.GetTarget(40000, TargetSelector.DamageType.Physical);
 
             if (target != null)
@@ -1844,21 +1854,6 @@ HeroManager.Enemies.Where(x => x.Distance(Player) < R.Range && !x.IsDead && x.Is
 
             if (target == null || target.IsDead || !target.IsVisible) return;
 
-//            if (allies != null && GetStringValue("wardinsecmode") == 0)
-//            {
-//                if (Playerpos.Distance(target.Position) <
-//                    Playerpos.Distance(allies.Position.Extend(target.Position,
-//                        allies.Distance(target.Position + 350))))
-//                {                  
-//                    var pos1 = Drawing.WorldToScreen(target.Position);
-//                    var pos2 = Drawing.WorldToScreen(target.Position.Extend(allies.Position, 1200));
-//                    Drawing.DrawLine(pos1, pos2, 3,
-//                        Color.Red);
-//                    Drawing.DrawCircle(target.Position.Extend(allies.Position, 1200), 100, Color.Blue);
-//                    Drawing.DrawText(pos2.X, pos2.Y, Color.Black, "XA");
-//                }
-//
-//            }
             if (SelectedAllyAiMinion == null)
             {
                 var pos11 = Drawing.WorldToScreen(target.Position);
