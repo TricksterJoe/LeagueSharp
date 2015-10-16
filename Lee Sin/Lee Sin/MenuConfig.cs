@@ -39,6 +39,7 @@ namespace Lee_Sin
                 AddKeyBind(combos, "Ward Jump", "wardjump", 'G', KeyBindType.Press);
                 AddKeyBind(combos, "Use Insec", "wardinsec", 'X', KeyBindType.Press);
                 AddBool(combos, "Use Flash In Insec?", "useflash");
+                AddBool(combos, "*BETA* Ward -> Flash", "expwardflash");
                 AddBool(combos, "Use Smite In Insec", "UseSmite");
                 AddKeyBind(combos, "StarCombo", "starcombo", 'A', KeyBindType.Press);
             }
@@ -50,6 +51,7 @@ namespace Lee_Sin
                 AddValue(combo, "Use Second [Q] Delay", "secondqdelay", 500, 0, 2500);
                 AddBool(combo, "Use [E]", "usee");
                 AddBool(combo, "Use [R]", "user");
+                AddValue(combo, "Auto [R] On X targets", "autoron", 1, 1, 4);
                 AddBool(combo, "Use [W]", "wardjumpcombo");
                 AddBool(combo, "Use [Smite]", "usessmite");
                 var items = new Menu("Use Items", "Use Items");
