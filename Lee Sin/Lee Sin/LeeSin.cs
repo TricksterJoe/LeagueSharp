@@ -450,6 +450,9 @@ namespace Lee_Sin
                 }
             }
 
+
+
+
             if (Player.IsRecalling() || MenuGUI.IsChatOpen || MenuGUI.IsShopOpen) return;
 
             if (_processw && Environment.TickCount - lastprocessw > 500)
@@ -1213,6 +1216,7 @@ namespace Lee_Sin
         #endregion
 
 
+
         #region Ward Insec
 
         private static void Wardinsec()
@@ -1246,22 +1250,36 @@ namespace Lee_Sin
             #endregion
 
             #region Ward Jump
-
-//            if (!R.IsReady() && target.IsValidTarget(E.Range))
-//            {
-//                E.Cast();
-//            }
-
+//            var objs =
+////ObjectManager
+////.Get<Obj_AI_Base>()
+////.Where(x => x.IsValid && !x.IsEnemy && x.Distance(Insec(target)) < 250
+////           && x.Type != GameObjectType.obj_AI_Turret &&
+////           x.Type != GameObjectType.obj_Turret).ToList();
+////
+////            Game.PrintChat(objs.Count().ToString());
+////                    
             if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
             {
-                if (W.IsReady() && R.IsReady() && Player.ServerPosition.Distance(target.ServerPosition) < 300)
+                if (W.IsReady() &&  R.IsReady() && Player.ServerPosition.Distance(target.ServerPosition) < 300)
                 {
                     var pos = Insec(target);
+                    var obj =
+                        ObjectManager   
+                            .Get<Obj_AI_Base>()
+                            .Where(x => x.IsValid && !x.IsMe && !x.IsEnemy && x.Distance(Insec(target)) < 150
+                                                 && x.Type != GameObjectType.obj_AI_Turret &&
+                                                 x.Type != GameObjectType.obj_Turret).OrderBy(x => x.Distance(Insec(target))).FirstOrDefault();
 
                     if (!_processw &&
                         Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
                     {
+                        if (obj == null)
                         Player.Spellbook.CastSpell(slot.SpellSlot, pos.To3D2());
+                        if (obj != null && GetBool("useobjects", typeof(bool)))
+                        {
+                            W.Cast(obj);
+                        }
                         _lastwarr = Environment.TickCount;
                     }
                     if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
@@ -1299,7 +1317,7 @@ namespace Lee_Sin
                 else if (GetBool("useflash", typeof (bool)) &&
                          target.Distance(Player) < 300 &&
                          Player.GetSpellSlot("summonerflash").IsReady() &&
-                         slot == null && !_processw)
+                         (slot == null || !W.IsReady()) && !_processw)
                 {
                     Steps = steps.Flash;
                     //   Game.PrintChat("Wardflashe");
@@ -1330,12 +1348,12 @@ namespace Lee_Sin
                     ObjectManager.Get<Obj_AI_Base>()
                         .Where(
                             x =>
-                                x.IsValidTarget() && x.IsEnemy && !x.IsDead && x.Distance(target) < 250 &&
-                                x.Distance(Player) < Q.Range);
-                var objAiBases = minions as Obj_AI_Base[] ?? minions.ToArray();
-                if (objAiBases.FirstOrDefault() == null) return;
+                                !x.IsAlly && !x.IsMe && !x.IsDead && x.Distance(target) < 300 &&
+                                x.Distance(Player) < Q.Range && (x.IsMinion || x.IsChampion())).ToList();
+               
+                if (minions.FirstOrDefault() == null) return;
 
-                foreach (var minion in objAiBases)
+                foreach (var minion in minions)
                 {
                     var objpred = Q.GetPrediction(minion);
                     var cols = objpred.CollisionObjects;
@@ -1351,6 +1369,7 @@ namespace Lee_Sin
                     if (slot != null && Environment.TickCount - lastwardjump > 1000 && R.IsReady() && W.IsReady() &&
                         target.Distance(Player) > 300 && Steps != steps.Flash)
                     {
+                        Q.Cast();
                         Steps = steps.WardJump;
                     }
                 }
@@ -1367,7 +1386,7 @@ namespace Lee_Sin
                 if (Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
                 {
                     Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-                        Insec(target).To3D());
+                        Insec(target).To3D2());
                 }
             }
 
