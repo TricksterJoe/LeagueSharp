@@ -1425,7 +1425,7 @@ namespace Lee_Sin
 
             #region General Q Casting
             if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                qpred.HitChance >= HitChance.High && target.Distance(Player) > 300 && count < 1)
+                qpred.HitChance >= HitChance.High && target.Distance(Player) > 300 && count <= 1)
             {
                 Q.Cast(qpred.CastPosition);
                 if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
