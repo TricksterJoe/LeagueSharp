@@ -136,7 +136,7 @@ namespace Lee_Sin
             Config.AddSubMenu(jungleClear);
             Config.AddSubMenu(Smite);
             Config.AddSubMenu(drawings);
-            SpacebarPrediction.Prediction.Initialize(Config);
+            SPrediction.Prediction.Initialize(Config);
             Config.AddToMainMenu();
         }
     }
