@@ -1016,7 +1016,7 @@ namespace Lee_Sin
                     var qpred = Q.GetSPrediction(target);
                     var colss = qpred.CollisionResult;
                     var col = colss.Units;
-                    if (Q.IsReady() && col.Count < 1 && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
+                    if (Q.IsReady() && col.Count <= 1 && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
                         (qpred.HitChance >= HitChance.High || qpred.HitChance == HitChance.Immobile ||
                          qpred.HitChance == HitChance.Dashing))
                     {
