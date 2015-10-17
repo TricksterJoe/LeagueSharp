@@ -4,8 +4,12 @@ using System.ComponentModel;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Lee_Sin.SpacebarPrediction;
 using SharpDX;
 using Color = System.Drawing.Color;
+using Geometry = LeagueSharp.Common.Geometry;
+using Prediction = LeagueSharp.Common.Prediction;
+using Utility = LeagueSharp.Common.Utility;
 
 namespace Lee_Sin
 {
@@ -835,12 +839,12 @@ namespace Lee_Sin
             {
                 if (Environment.TickCount - _lastqh > 100 && Environment.TickCount - _lasteh > 300)
                 {
-                    var qpred = Q.GetPrediction(target);
+                    var qpred = Q.GetSPrediction(target);
                     if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                        (qpred.Hitchance >= HitChance.Medium || qpred.Hitchance == HitChance.Immobile ||
-                         qpred.Hitchance == HitChance.Dashing))
+                        (qpred.HitChance >= HitChance.High || qpred.HitChance == HitChance.Immobile ||
+                         qpred.HitChance == HitChance.Dashing))
                     {
-                        Q.Cast(target);
+                        Q.Cast(qpred.CastPosition);
                         _lastqh = Environment.TickCount;
                     }
 
@@ -953,7 +957,6 @@ namespace Lee_Sin
 
             #endregion
 
-
             #region Regular combo
 
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
@@ -1010,12 +1013,14 @@ namespace Lee_Sin
                 if (Environment.TickCount - _lastqc > 300 && Environment.TickCount - _laste > 300 &&
                     Environment.TickCount - lastwcombo > 300)
                 {
-                    var qpred = Q.GetPrediction(target);
-                    if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                        (qpred.Hitchance >= HitChance.VeryHigh || qpred.Hitchance == HitChance.Immobile ||
-                         qpred.Hitchance == HitChance.Dashing))
+                    var qpred = Q.GetSPrediction(target);
+                    var colss = qpred.CollisionResult;
+                    var col = colss.Units;
+                    if (Q.IsReady() && col.Count < 1 && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
+                        (qpred.HitChance >= HitChance.High || qpred.HitChance == HitChance.Immobile ||
+                         qpred.HitChance == HitChance.Dashing))
                     {
-                        Q.Cast(target);
+                        Q.Cast(qpred.CastPosition);
                         _lastqc = Environment.TickCount;
                     }
 
@@ -1097,9 +1102,10 @@ namespace Lee_Sin
 //            }
 
             var slot = Items.GetWardSlot();
+            var qpred = Q.GetSPrediction(target);
             if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne")
             {
-                Q.Cast(target);
+                Q.Cast(qpred.CastPosition);
             }
 
             if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" &&
@@ -1317,8 +1323,10 @@ namespace Lee_Sin
 
             var slot = Items.GetWardSlot();
             if (target == null) return;
-            var qpred = Q.GetPrediction(target);
-            var col = qpred.CollisionObjects;
+            var qpred = Q.GetSPrediction(target);
+            var colss = qpred.CollisionResult;
+            var col = colss.Units;
+            var count = col.Count;
 
             #endregion
 
@@ -1416,11 +1424,10 @@ namespace Lee_Sin
             #endregion
 
             #region General Q Casting
-
             if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                qpred.Hitchance >= HitChance.Medium && target.Distance(Player) > 300)
+                qpred.HitChance >= HitChance.High && target.Distance(Player) > 300 && count < 1)
             {
-                Q.Cast(target);
+                Q.Cast(qpred.CastPosition);
                 if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
                     target.Distance(Player) > 300 && Steps != steps.Flash)
                 {
@@ -1468,10 +1475,8 @@ namespace Lee_Sin
 
             #region Ward flash
 
-            var pred = Q.GetPrediction(target);
-            var collision = pred.CollisionObjects;
-            if (collision.Any() && W.IsReady() && Player.GetSpellSlot("summonerflash").IsReady()
-                && slot != null && GetBool("expwardflash", typeof (bool)))
+            if (col.Any() && W.IsReady() && Player.GetSpellSlot("summonerflash").IsReady()
+                && slot != null && GetBool("expwardflash", typeof (bool)) && R.IsReady())
             {
                 if (Player.ServerPosition.Distance(target.ServerPosition) > 530 &&
                     Player.ServerPosition.Distance(target.ServerPosition) < 880)
