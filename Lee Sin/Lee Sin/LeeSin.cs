@@ -94,7 +94,7 @@ namespace Lee_Sin
 
         internal static void Load(EventArgs args)
         {
-//            if (Player.ChampionName != "LeeSin") return;
+            if (Player.ChampionName != "LeeSin") return;
             MenuConfig.OnLoad();
             Q = new Spell(SpellSlot.Q, 1100);
             W = new Spell(SpellSlot.W, 700);
