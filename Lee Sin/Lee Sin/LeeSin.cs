@@ -4,8 +4,8 @@ using System.ComponentModel;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
-using Lee_Sin.SpacebarPrediction;
 using SharpDX;
+using SPrediction;
 using Color = System.Drawing.Color;
 using Geometry = LeagueSharp.Common.Geometry;
 using Prediction = LeagueSharp.Common.Prediction;
@@ -100,7 +100,7 @@ namespace Lee_Sin
             W = new Spell(SpellSlot.W, 700);
             E = new Spell(SpellSlot.E, 350);
             R = new Spell(SpellSlot.R, 375);
-            Q.SetSkillshot(0.3f, 30f, 2000f, true, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.3f, 40f, 2000f, false, SkillshotType.SkillshotLine);
 
             foreach (var spell in Player.Spellbook.Spells)
             {
@@ -1014,10 +1014,8 @@ namespace Lee_Sin
                     Environment.TickCount - lastwcombo > 300)
                 {
                     var qpred = Q.GetSPrediction(target);
-                    var colss = qpred.CollisionResult;
-                    var col = colss.Units;
-                    if (Q.IsReady() && col.Count <= 1 && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                        (qpred.HitChance >= HitChance.High || qpred.HitChance == HitChance.Immobile ||
+                    if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
+                        (qpred.HitChance >= HitChance.Medium || qpred.HitChance == HitChance.Immobile ||
                          qpred.HitChance == HitChance.Dashing))
                     {
                         Q.Cast(qpred.CastPosition);
@@ -1228,83 +1226,6 @@ namespace Lee_Sin
 
         #endregion
 
-
-        #region Ward Flash
-
-//        private static void WardFlash()
-//        {
-//            var ttarget = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-//            if (target != null)
-//            {
-//                target = GetStringValue("targetmode") == 1
-//                    ? TargetSelector.GetSelectedTarget()
-//                    : target;
-//            }
-//            if (target == null) return;
-//
-//            var slot = Items.GetWardSlot();
-//
-//            if (Player.Distance(target) >= 300 &&
-//                Player.ServerPosition.Distance(target.ServerPosition) <= 600
-//                && R.IsReady() && slot != null && W.IsReady() && Player.GetSpellSlot("summonerflash").IsReady())
-//            {
-//                Steps = steps.WardJump;
-//                lastwardjump = Environment.TickCount;
-//            }
-//
-//            #region R Casting
-//
-//            // !Player.IsDashing() <- broken Game.PrintChat(Player.IsDashing().ToString())
-//            if (Player.GetSpellSlot("summonerflash").IsReady() && target.Distance(Player) <= 220 && R.IsReady())
-//            {
-//                R.Cast(target);
-//            }
-//
-//            #endregion
-//
-//            if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
-//            {
-//                var pos = Player.ServerPosition.Extend(target.ServerPosition,
-//                    Player.ServerPosition.Distance(target.ServerPosition) - 200);
-//                if (!_processw &&
-//                    Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" && slot != null)
-//                {
-//                    Player.Spellbook.CastSpell(slot.SpellSlot, pos);
-//                    _lastwarr = Environment.TickCount;
-//                }
-//
-//                if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
-//                {
-//                    _lastwards = Environment.TickCount;
-//                }
-//
-//            }
-//
-//            if (!R.IsReady() && Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne")
-//            {
-//                Q.Cast(target);
-//            }
-//
-//            if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blinkmonkwtwo")
-//            {
-//                Utility.DelayAction.Add(450, () => Q.Cast());
-//            }
-//
-//            if (Steps != steps.Flash) return;
-//            if (!_processr2) return;
-//
-//            if (Player.Distance(target) < 200 && R.IsReady() &&
-//                Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
-//            {
-//                Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-//                                            Player.ServerPosition.Extend(target.ServerPosition,
-//                            Player.Distance(target.ServerPosition) + 200));
-//            }
-//
-//        }
-
-        #endregion
-
         #region Ward Insec
 
         private static void Wardinsec()
@@ -1324,10 +1245,7 @@ namespace Lee_Sin
             var slot = Items.GetWardSlot();
             if (target == null) return;
             var qpred = Q.GetSPrediction(target);
-            var colss = qpred.CollisionResult;
-            var col = colss.Units;
-            var count = col.Count;
-
+            var col = Q.GetPrediction(target).CollisionObjects;
             #endregion
 
             #region Smite Cause why not
@@ -1425,7 +1343,7 @@ namespace Lee_Sin
 
             #region General Q Casting
             if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                qpred.HitChance >= HitChance.High && target.Distance(Player) > 300 && count <= 1)
+                qpred.HitChance >= HitChance.High && target.Distance(Player) > 300)
             {
                 Q.Cast(qpred.CastPosition);
                 if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
@@ -1515,7 +1433,6 @@ namespace Lee_Sin
         }
 
         #endregion
-
 
         #region Ward Jump
 
