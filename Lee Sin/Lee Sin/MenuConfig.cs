@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LeagueSharp.Common;
+﻿using LeagueSharp.Common;
 
 namespace Lee_Sin
 {
@@ -50,7 +45,14 @@ namespace Lee_Sin
                 AddValue(combo, "Use Second [Q] Delay", "secondqdelay", 500, 0, 2500);
                 AddBool(combo, "Use [E]", "usee");
                 AddBool(combo, "Use [R]", "user");
-                AddValue(combo, "Auto [R] On X targets", "autoron", 1, 1, 4);
+                AddValue(combo, "Auto [R] On X targets", "autoron", 1, 1, 5);
+                //var rmenu = new Menu("Auto R on X Enemies", "autorxenemies");
+                //{
+                //    AddBool(rmenu, "Use ward", "xeward");
+                //    AddBool(rmenu, "Use flash", "xeflash");
+                //    AddValue(rmenu, "Min enemies hit", "xeminhit", 3, 2, 5);
+                //    combo.AddSubMenu(rmenu);
+                //}
                 AddBool(combo, "Use [W]", "wardjumpcombo");
                 AddBool(combo, "Use [Smite]", "usessmite");
                 var items = new Menu("Use Items", "Use Items");
@@ -136,7 +138,6 @@ namespace Lee_Sin
             Config.AddSubMenu(jungleClear);
             Config.AddSubMenu(Smite);
             Config.AddSubMenu(drawings);
-            SPrediction.Prediction.Initialize(Config);
             Config.AddToMainMenu();
         }
     }

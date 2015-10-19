@@ -5,7 +5,6 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
-using SPrediction;
 using Color = System.Drawing.Color;
 using Geometry = LeagueSharp.Common.Geometry;
 using Prediction = LeagueSharp.Common.Prediction;
@@ -18,6 +17,7 @@ namespace Lee_Sin
         #region vars, enums, misc
 
         public static Spell Q, W, E, R, Rk;
+        private static SpellSlot FlashSlot;
         private static int _lastward;
         private static bool _casted;
         private static bool _qcasted;
@@ -101,6 +101,7 @@ namespace Lee_Sin
             E = new Spell(SpellSlot.E, 350);
             R = new Spell(SpellSlot.R, 375);
             Q.SetSkillshot(0.3f, 40f, 2000f, true, SkillshotType.SkillshotLine);
+            FlashSlot = ObjectManager.Player.GetSpellSlot("summonerflash");
 
             foreach (var spell in Player.Spellbook.Spells)
             {
@@ -174,9 +175,7 @@ namespace Lee_Sin
             }
 
             //Credits to jQuery's ElLeeSin
-            var asec =
-    ObjectManager.Get<Obj_AI_Hero>()
-        .Where(a => a.IsEnemy && a.Distance(Game.CursorPos) < 200 && a.IsValid && !a.IsDead);
+            var asec = ObjectManager.Get<Obj_AI_Hero>().Where(a => a.IsEnemy && a.Distance(Game.CursorPos) < 200 && a.IsValid && !a.IsDead);
             if (asec.Any())
             {
                 return;
@@ -460,7 +459,7 @@ namespace Lee_Sin
             }
 
 
-            if (Player.IsRecalling() || MenuGUI.IsChatOpen || MenuGUI.IsShopOpen) return;
+            if (Player.IsRecalling() || MenuGUI.IsChatOpen) return;
 
             if (_processw && Environment.TickCount - lastprocessw > 500)
             {
@@ -559,7 +558,7 @@ namespace Lee_Sin
         #region AutoUlt
         private static void AutoUlt()
         {
-
+            // Hoes code below
             var target =
                 HeroManager.Enemies.Where(x => x.Distance(Player) < R.Range && !x.IsDead && x.IsValidTarget(R.Range))
                     .OrderBy(x => x.Distance(Player)).FirstOrDefault();
@@ -582,6 +581,23 @@ namespace Lee_Sin
             {
                 R.Cast(target);
             }
+
+            //// HyunMi code here
+            //var enemies = Playerpos.GetEnemiesInRange(2800);
+            //byte minEnemHitConstraint = (byte)Config.Item("xeminhit").GetValue<Slider>().Value;
+
+            //if (enemies.Count < minEnemHitConstraint) return;
+
+            //bool xeallowFlash = Config.Item("xeflash").GetValue<bool>();
+            //bool allowWard = Config.Item("xeward").GetValue<bool>();
+
+            //bool canUseWard = false, canUseFlash = false;
+            //if (FlashSlot.IsReady() && FlashSlot != SpellSlot.Unknown && xeallowFlash)
+            //{
+            //    canUseFlash = true;
+            //}
+
+            ////TODO: check if player has a ward and w is ready if so canUseWard == true only if AllowWard = true
         }
 
         #endregion
@@ -839,10 +855,10 @@ namespace Lee_Sin
             {
                 if (Environment.TickCount - _lastqh > 100 && Environment.TickCount - _lasteh > 300)
                 {
-                    var qpred = Q.GetSPrediction(target);
+                    var qpred = Q.GetPrediction(target);
                     if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                        (qpred.HitChance >= HitChance.High || qpred.HitChance == HitChance.Immobile ||
-                         qpred.HitChance == HitChance.Dashing))
+                        (qpred.Hitchance >= HitChance.High || qpred.Hitchance == HitChance.Immobile ||
+                         qpred.Hitchance == HitChance.Dashing))
                     {
                         Q.Cast(qpred.CastPosition);
                         _lastqh = Environment.TickCount;
@@ -1013,10 +1029,10 @@ namespace Lee_Sin
                 if (Environment.TickCount - _lastqc > 300 && Environment.TickCount - _laste > 300 &&
                     Environment.TickCount - lastwcombo > 300)
                 {
-                    var qpred = Q.GetSPrediction(target);
+                    var qpred = Q.GetPrediction(target);
                     if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                        (qpred.HitChance >= HitChance.Medium || qpred.HitChance == HitChance.Immobile ||
-                         qpred.HitChance == HitChance.Dashing))
+                        (qpred.Hitchance >= HitChance.Medium || qpred.Hitchance == HitChance.Immobile ||
+                         qpred.Hitchance == HitChance.Dashing))
                     {
                         Q.Cast(qpred.CastPosition);
                         _lastqc = Environment.TickCount;
@@ -1100,7 +1116,7 @@ namespace Lee_Sin
 //            }
 
             var slot = Items.GetWardSlot();
-            var qpred = Q.GetSPrediction(target);
+            var qpred = Q.GetPrediction(target);
             if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne")
             {
                 Q.Cast(qpred.CastPosition);
@@ -1244,7 +1260,7 @@ namespace Lee_Sin
 
             var slot = Items.GetWardSlot();
             if (target == null) return;
-            var qpred = Q.GetSPrediction(target);
+            var qpred = Q.GetPrediction(target);
             var col = Q.GetPrediction(target).CollisionObjects;
             #endregion
 
@@ -1343,7 +1359,7 @@ namespace Lee_Sin
 
             #region General Q Casting
             if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-                qpred.HitChance >= HitChance.High && target.Distance(Player) > 300)
+                qpred.Hitchance >= HitChance.High && target.Distance(Player) > 300)
             {
                 Q.Cast(qpred.CastPosition);
                 if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
