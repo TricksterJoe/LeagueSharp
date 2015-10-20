@@ -100,7 +100,7 @@ namespace Lee_Sin
             W = new Spell(SpellSlot.W, 700);
             E = new Spell(SpellSlot.E, 350);
             R = new Spell(SpellSlot.R, 375);
-            Q.SetSkillshot(0.3f, 40f, 2000f, true, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.25f, 60f, 1800f, true, SkillshotType.SkillshotLine);
             FlashSlot = ObjectManager.Player.GetSpellSlot("summonerflash");
 
             foreach (var spell in Player.Spellbook.Spells)
