@@ -89,7 +89,6 @@ namespace Lee_Sin
         }
         #endregion
 
-
         #region On Load
 
         internal static void Load(EventArgs args)
@@ -144,7 +143,6 @@ namespace Lee_Sin
 
         #endregion
 
-
         #region OnCreate
 
         private static void OnCreate(GameObject sender, EventArgs args)
@@ -163,7 +161,6 @@ namespace Lee_Sin
         }
 
         #endregion
-
 
         #region Ally selector 
 
@@ -212,7 +209,6 @@ namespace Lee_Sin
 
         #endregion
 
-
         #region processspellcast,
 
         private static void OnSpellcast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -239,7 +235,6 @@ namespace Lee_Sin
 
         #endregion
 
-
         #region On Dash
 
         private static void OnDash(Obj_AI_Base sender, Dash.DashItem args)
@@ -258,7 +253,6 @@ namespace Lee_Sin
         }
 
         #endregion
-
 
         #region On spell cast
 
@@ -305,7 +299,6 @@ namespace Lee_Sin
 
         #endregion
 
-
         #region Ward Insec Jump Postion
 
         public static void Jump(Vector3 pos)
@@ -337,7 +330,6 @@ namespace Lee_Sin
         }
 
         #endregion
-
 
         #region Insec Position
 
@@ -425,7 +417,6 @@ namespace Lee_Sin
 
         #endregion
 
-
         #region #Star
 
         public static Vector2 Star(Obj_AI_Hero target)
@@ -435,7 +426,6 @@ namespace Lee_Sin
 
         #endregion
 
-
         #region Has Passive
 
         public static bool HasPassive()
@@ -444,8 +434,7 @@ namespace Lee_Sin
         }
 
         #endregion
-
-     
+  
         #region On Update
 
         private static void OnUpdate(EventArgs args)
@@ -554,7 +543,6 @@ namespace Lee_Sin
 
         #endregion
 
-
         #region AutoUlt
         private static void AutoUlt()
         {
@@ -601,7 +589,6 @@ namespace Lee_Sin
         }
 
         #endregion
- 
 
         #region Jungle Clear
 
@@ -733,7 +720,6 @@ namespace Lee_Sin
 
         #endregion
 
-
         #region Lane clear
         private static void LaneClear2()
         {
@@ -824,7 +810,6 @@ namespace Lee_Sin
 
         #endregion
 
-
         #region Q Damage
 
         public static float GetQDamage(Obj_AI_Base unit)
@@ -835,7 +820,6 @@ namespace Lee_Sin
         }
 
         #endregion
-
 
         #region Harass
 
@@ -900,7 +884,6 @@ namespace Lee_Sin
         }
 
         #endregion
-
 
         #region Combo
 
@@ -1093,7 +1076,6 @@ namespace Lee_Sin
         }
 
         #endregion
-
 
         #region starcombo +angle
 
@@ -1292,7 +1274,7 @@ namespace Lee_Sin
                         ObjectManager   
                             .Get<Obj_AI_Base>()
                             .Where(x => x.IsValid && !x.IsMe && !x.IsEnemy && x.Distance(Insec(target)) < 150
-                                                 && !x.Name.ToLower().Contains("turret")).OrderBy(x => x.Distance(Insec(target))).FirstOrDefault();
+                                                 && !x.Name.ToLower().Contains("turret"))eex => x.Distance(Insec(target))).FirstOrDefault();
 
                     if (!_processw &&
                         Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
