@@ -1271,10 +1271,12 @@ namespace Lee_Sin
                 {
                     var pos = Insec(target);
                     var obj =
-                        ObjectManager   
+                        ObjectManager
                             .Get<Obj_AI_Base>()
                             .Where(x => x.IsValid && !x.IsMe && !x.IsEnemy && x.Distance(Insec(target)) < 150
-                                                 && !x.Name.ToLower().Contains("turret"))eex => x.Distance(Insec(target))).FirstOrDefault();
+                                        && !x.Name.ToLower().Contains("turret"))
+                            .OrderBy(x => x.Distance(Insec(target)))
+                            .FirstOrDefault();
 
                     if (!_processw &&
                         Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
