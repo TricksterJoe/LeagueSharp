@@ -81,6 +81,12 @@ namespace Lee_Sin
                 AddValue(laneclear, "[E] On X Minions", "useelv", 3, 1, 10);
                 AddValue(laneclear, "Min Energy", "minenergyl", 100, 0, 200);
             }
+
+            var lasthit = new Menu("Last Hit Settings", "Last Hit Settings");
+            {
+                AddBool(lasthit, "Use [Q] Last Hit", "useqlh");
+                AddValue(lasthit, "Min Energy", "minenergylh", 100, 0, 200);
+            }
             var jungleClear = new Menu("Jungle Clear Settings", "Jungle Clear Settings");
             {
                 AddBool(jungleClear, "Use [Q]", "useqjl");
@@ -135,6 +141,7 @@ namespace Lee_Sin
             Config.AddSubMenu(harass);
             Config.AddSubMenu(laneclear);
             Config.AddSubMenu(jungleClear);
+            Config.AddSubMenu(lasthit);
             Config.AddSubMenu(Smite);
             Config.AddSubMenu(drawings);
             Config.AddToMainMenu();
