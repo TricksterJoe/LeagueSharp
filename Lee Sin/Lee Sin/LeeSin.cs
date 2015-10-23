@@ -338,7 +338,7 @@ namespace Lee_Sin
         {
             var hero =
                 HeroManager.Allies.Where(x => !x.IsMe && !x.IsDead && x.Distance(Player) < 1200)
-                    .OrderBy(x => x.Distance(Player)).FirstOrDefault();
+                    .OrderByDescending(x => x.Distance(Player)).FirstOrDefault();
 
             if (SelectedAllyAiMinion != null)
             {
@@ -349,16 +349,16 @@ namespace Lee_Sin
 
             if (SelectedAllyAiMinion == null)
             {
-              //  if (hero == null)
-              //  {
+                if (hero == null)
+                {
                 return
                    Player.ServerPosition.Extend(target.ServerPosition,
                        Player.Distance(target.ServerPosition) + 300).To2D();
-       //         }
-//                if (hero != null)
-//                    return
-//                        hero.ServerPosition.Extend(target.ServerPosition,
-//                            hero.Distance(target) + 300).To2D();
+                }
+                if (hero != null)
+                    return
+                        hero.ServerPosition.Extend(target.ServerPosition,
+                            hero.Distance(target) + 300).To2D();
             }
 
             return new Vector2();
@@ -384,7 +384,68 @@ namespace Lee_Sin
         }
 
         #endregion
-  
+
+        private static int MaxTravelDistance()
+        {
+            var slot = Items.GetWardSlot();
+            var flash = Player.GetSpellSlot("summonerflash");
+            if (slot != null && flash.IsReady() && W.IsReady())
+            {
+                return 1125;
+            }
+
+            if (slot != null && !W.IsReady())
+            {
+                return 185;
+            }
+
+            if (slot != null && W.IsReady())
+            {
+                return 600;
+            }
+
+            if (slot == null)
+            {
+                return 185;
+            }
+
+            return 185;
+        }
+
+        public static void AutoWardUlt()
+        {
+            var distance = MaxTravelDistance();
+            var enemiescount = GetValue("enemiescount");
+            var enemies = Player.GetEnemiesInRange(2800);
+            var wardflashpos = Mathematics.GetWardFlashPositions(distance, Player, (byte) enemiescount, enemies);
+            var wardJumpPos = Mathematics.MoveVector(Player.Position, wardflashpos);
+
+            if (Player.Distance(wardJumpPos) < 600)
+            {
+                var pos = wardJumpPos;
+                foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
+                {
+                    if (!_processw2 && W.IsReady() && Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" &&
+                        Player.Spellbook.GetSpell(SpellSlot.Q).Name != "blindmonkwtwo"
+                        && ((wards.Name.ToLower().Contains("ward") && wards.IsAlly)))
+                    {
+                        W.Cast(wards);
+                    }
+                }
+
+                var ward = Items.GetWardSlot();
+                if (W.IsReady() && ward != null && !_casted && ward.IsValidSlot() &&
+                    Environment.TickCount - _lastward > 400 &&
+                    Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne"
+                    )
+                {
+                    Player.Spellbook.CastSpell(ward.SpellSlot, pos);
+                    _lastward = Environment.TickCount;
+                }
+
+            }
+        }
+
         #region On Update
 
         private static void OnUpdate(EventArgs args)
@@ -1250,15 +1311,14 @@ namespace Lee_Sin
                   Player.GetSpellSlot("summonerflash").IsReady()))
             {
                 R.Cast(target);
-               // Game.PrintChat("CastR");
             }
 
             #endregion
 
             #region Determine if we want to flash or ward jump
 
-           // if (R.IsReady())
-          //  {
+           if (R.IsReady())
+           {
                 if (slot != null && W.IsReady() && slot.IsValidSlot())
                 {
                     if (GetBool("prioflash", typeof (bool)) && Player.GetSpellSlot("summonerflash").IsReady() && obj == null)
@@ -1282,7 +1342,7 @@ namespace Lee_Sin
                     Steps = steps.Flash;
                     Playerposition = Player.Position;
                 }
-           // }
+            }
 
             #endregion
 
@@ -1730,8 +1790,7 @@ namespace Lee_Sin
         }
 
 #endregion
-
-        
+     
         #region Drawings
 
         private static void OnSpells(EventArgs args)
@@ -1744,8 +1803,17 @@ namespace Lee_Sin
             }
 
             if (RCombo != null) Render.Circle.DrawCircle((Vector3) RCombo, 100, Color.Red, 5, true);
+            var getresults = Mathematics.GetPositions(Player, 1125, (byte)3, HeroManager.Enemies);
+            if (getresults.Count > 1)
+            {
+                var Getposition = Mathematics.SelectBest(getresults, Player);
+                Render.Circle.DrawCircle(Getposition, 100, Color.Red, 3, true);
+            }
 
 
+
+
+            Render.Circle.DrawCircle(Player.Position, 1125, Color.DarkViolet);
             if (!GetBool("spellsdraw", typeof (bool))) return;
             if (!GetBool("ovdrawings", typeof (bool))) return;
             if (GetBool("qrange", typeof (bool)) && Q.Level > 0)
@@ -1805,6 +1873,8 @@ namespace Lee_Sin
             {
                 Drawing.DrawCircle(SelectedAllyAiMinion.Position, 200, Color.Blue);
             }
+
+            
 
             var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Physical);
 

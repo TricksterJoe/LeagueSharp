@@ -1,103 +1,53 @@
-﻿//
-// This file was created by HyunMi on 10/19/2015
-//
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using LeagueSharp;
-using LeagueSharp.Common;
-using SharpDX;
-
-namespace Lee_Sin
+﻿namespace Lee_Sin
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using LeagueSharp;
+    using LeagueSharp.Common;
+    using SharpDX;
+
+    /// <summary>
+    /// The static mathematics class for lee sin x on n enemies hit.
+    /// </summary>
     public static class Mathematics
     {
-        // Ward position, flash position, position to be in when you have to cast r, if a parameter is not applicable eg flash pos without having flash than this param will be set to new Vector3(nullptr)
-        // Func will return null when no position is found
-        public static Tuple<Vector3, Vector3, Vector3> GetWardFlashPositions(bool canUseWard, bool canUseFlash, Obj_AI_Hero player, byte minHitRequirement, List<Obj_AI_Hero> enemies)
+        /// <summary>
+        /// Gets the best possible destination where the max amount of enemies will be hit.
+        /// </summary>
+        /// <param name="maxTravelDistance">
+        /// The max travel distance of lee sin.
+        /// </param>
+        /// <param name="player">
+        /// The player obj.
+        /// </param>
+        /// <param name="minHitRequirement">
+        /// The min hit requirement, min amount of enemies to be hit.
+        /// </param>
+        /// <param name="enemies">
+        /// The enemies.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Vector3"/>, position that is where lee should be to cast r, eg the destination.
+        /// </returns>
+        public static Vector3 GetWardFlashPositions(float maxTravelDistance, Obj_AI_Hero player, byte minHitRequirement, List<Obj_AI_Hero> enemies)
         {
-            var maxTravelDistance = GetMaxTravelDistance(canUseWard, canUseFlash);
-            var destination = SelectBest(GetPositions(player, maxTravelDistance, minHitRequirement, enemies),player);
-
-            if (destination == new Vector3(null))
-            {
-                return null;
-            }
-
-            bool useWard, useFlash;
-
-            if (maxTravelDistance == 187.5f)
-            {
-                useWard = false;
-                useFlash = false;
-            }
-            else
-            {
-                if (player.Distance(destination) <= 600f)
-                {
-                    useWard = true;
-                    useFlash = false;
-                }
-                else
-                {
-                    useWard = true;
-                    useFlash = true;
-                }
-            }
-
-            Vector3 wardPos = new Vector3(null), flashPos = new Vector3(null);
-
-            if (useWard && useFlash)
-            {
-                wardPos = MoveVector(player.ServerPosition, destination, 600f);
-                flashPos = destination;
-            }
-
-            if (useWard && !useFlash)
-            {
-                wardPos = destination;
-            }
-
-            return new Tuple<Vector3, Vector3, Vector3>(wardPos, flashPos, destination);
+            Vector3 destination = SelectBest(GetPositions(player, maxTravelDistance, minHitRequirement, enemies), player);
+            return destination;
         }
 
-        private static float GetMaxTravelDistance(bool canUseWard, bool canUseFlash)
-        {
-            if (canUseWard && canUseFlash)
-            {
-                return 1125f;
-            }
-
-            if (canUseWard)
-            {
-                return 600f;
-            }
-
-            if (canUseFlash)
-            {
-                return 425f;
-            }
-
-            return 187.5f;
-        }
-
-        //Lazy kappa
-        private static Vector3 SelectBest(List<Vector3> getPositionsResults, Obj_AI_Hero player)
+        // Lazy kappa
+        public static Vector3 SelectBest(List<Vector3> getPositionsResults, Obj_AI_Hero player)
         {
             if (getPositionsResults.Count == 0)
             {
                 return new Vector3(null);
             }
 
-            if (player.ServerPosition.Distance(getPositionsResults[0]) < player.Distance(getPositionsResults[1]))
-            {
-                return getPositionsResults[0];
-            }
-            return getPositionsResults[1];
+            return getPositionsResults[0];
         }
 
-        private static List<Vector3> GetPositions(Obj_AI_Hero player, float maxTravelDistance, byte minHitRequirement, List<Obj_AI_Hero> enemies)
+        public static List<Vector3> GetPositions(Obj_AI_Hero player, float maxTravelDistance, byte minHitRequirement, List<Obj_AI_Hero> enemies)
         {
             var polygons = GeneratePolygons(enemies);
             var removedDuplicates = RemoveDuplicates(polygons);
@@ -108,11 +58,11 @@ namespace Lee_Sin
         }
 
         // Best position order is maintained
-        private static List<Vector3> TravelRangeFilter(IEnumerable<Tuple<Geometry.Polygon.Rectangle, Vector3, Vector3>> generatePositionsResult, float maxTravelDistance, Obj_AI_Hero player)
+        private static List<Vector3> TravelRangeFilter(List<Tuple<Geometry.Polygon.Rectangle, Vector3, Vector3>> generatePositionsResult, float maxTravelDistance, Obj_AI_Hero player)
         {
-            var leePos = player.ServerPosition;
-            var results = new List<Vector3>();
-            foreach (var tuple in generatePositionsResult)
+            Vector3 leePos = player.ServerPosition;
+            List<Vector3> results = new List<Vector3>();
+            foreach (Tuple<Geometry.Polygon.Rectangle, Vector3, Vector3> tuple in generatePositionsResult)
             {
                 if (leePos.Distance(tuple.Item2) <= maxTravelDistance)
                 {
@@ -213,7 +163,7 @@ namespace Lee_Sin
         }
 
         // Distance from start to end is t = 1
-        private static Vector3 MoveVector(Vector3 start, Vector3 end, float distance = 2250F)
+        public static Vector3 MoveVector(Vector3 start, Vector3 end, float distance = 2250F)
         {
             float t = distance / (start.Distance(end));
             Vector3 direction = new Vector3(end.X - start.X, end.Y - start.Y, end.Z - start.Z);
