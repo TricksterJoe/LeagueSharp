@@ -1444,12 +1444,12 @@ namespace Lee_Sin
             {
                 Utility.DelayAction.Add(200, () => Q.Cast());
             }
-            if (Q.IsReady() && R.IsReady())
+            if (Q.IsReady())
             {
                 var minions =
                     ObjectManager
                         .Get<Obj_AI_Base>(
-                        ).Where(x => !x.IsAlly && !x.IsMe && !x.IsDead && x.Distance(Insec(target)) < 500 &&
+                        ).Where(x => !x.IsAlly && !x.IsMe && !x.IsDead && x.Distance(Insec(target)) < 700 &&
                                               x.Distance(Player) < Q.Range
                                               && !x.Name.ToLower().Contains("turret"));
                 if (minions == null) return;
@@ -1457,10 +1457,12 @@ namespace Lee_Sin
                 {
                     var objpred = Q.GetPrediction(minion);
                     var cols = objpred.CollisionObjects;
-
-                    if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlinkMonkQOne")
+                    if (!cols.Any())
+                    Render.Circle.DrawCircle(minion.Position, 100, Color.Yellow);
+                    if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && Q.IsReady())
                     {
-                        Q.Cast(objpred.CastPosition);
+                        Q.Cast(minion);
+                       
                     }
 
                     if (minion.HasBuff("BlinkMonkQOne"))
