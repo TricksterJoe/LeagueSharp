@@ -1458,8 +1458,7 @@ namespace Lee_Sin
                     var objpred = Q.GetPrediction(minion);
                     var cols = objpred.CollisionObjects;
 
-                    if (!cols.Any() &&
-                        Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlinkMonkQOne")
+                    if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlinkMonkQOne")
                     {
                         Q.Cast(objpred.CastPosition);
                     }
