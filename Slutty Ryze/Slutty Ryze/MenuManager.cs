@@ -33,11 +33,11 @@ namespace Slutty_ryze
         {
             var humanizerMenu = new Menu("Humanizer", "Humanizer");
 
-            humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("minDelay", "Minimum Delay for Actions (ms)").SetValue(new Slider(10, 0, 200)));
-            humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("maxDelay", "Maximum Delay for Actions (ms)").SetValue(new Slider(75, 0, 250)));
+            humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("minDelay", "Minimum Delay for Actions (ms)").SetValue(new Slider(0, 0, 200)));
+            humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("maxDelay", "Maximum Delay for Actions (ms)").SetValue(new Slider(0,  0, 250)));
             humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("minCreepHPOffset", "Minimum HP for a Minion to Have Before CSing Damage >= HP+(%)").SetValue(new Slider(5, 0, 25)));
             humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("maxCreepHPOffset", "Maximum HP for a Minion to Have Before CSing Damage >= HP+(%)").SetValue(new Slider(15, 0, 25)));
-            humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("doHuman", "Humanize").SetValue(true));
+            humanizerMenu.SubMenu("Humanizer").AddItem(new MenuItem("doHuman", "Humanize").SetValue(false));
 
             return humanizerMenu;
         }
