@@ -1181,7 +1181,7 @@ namespace Lee_Sin
                 Utility.DelayAction.Add(300, () => Q.Cast());
             }
 
-            if (R.IsReady() && Q.IsReady() && W.IsReady())
+            if (R.IsReady() && Q.IsReady() && W.IsReady() && slot != null)
             {
                 if (target.Distance(Player) > R.Range
                     && target.Distance(Player) < R.Range + 580)
