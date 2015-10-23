@@ -337,28 +337,32 @@ namespace Lee_Sin
         public static Vector2 Insec(Obj_AI_Hero target)
         {
             var hero =
-                HeroManager.Allies.Where(x => !x.IsMe && !x.IsDead && x.Distance(Player) < 1200)
-                    .OrderByDescending(x => x.Distance(Player)).FirstOrDefault();
+                HeroManager.Allies.Where(x => !x.IsMe && !x.IsDead && x.Distance(Player) < 1000)
+                    .OrderBy(x => x.Distance(Player)).FirstOrDefault();
 
             if (SelectedAllyAiMinion != null)
             {
                 return
                     SelectedAllyAiMinion.ServerPosition.Extend(target.ServerPosition,
-                        SelectedAllyAiMinion.Distance(target) + 300).To2D();
+                        SelectedAllyAiMinion.Distance(target) + 290).To2D();
             }
 
             if (SelectedAllyAiMinion == null)
             {
-                if (hero == null)
+                if (hero == null || (Player.Distance(target) > Player.Distance(hero.ServerPosition.Extend(target.ServerPosition,
+                             hero.Distance(target) + 290).To2D()) && hero != null))
                 {
                 return
                    Player.ServerPosition.Extend(target.ServerPosition,
-                       Player.Distance(target.ServerPosition) + 300).To2D();
+                       Player.Distance(target.ServerPosition) + 290).To2D();
                 }
-                if (hero != null)
+                else if (hero != null && Player.Distance(target) < Player.Distance(hero.ServerPosition.Extend(target.ServerPosition,
+                             hero.Distance(target) + 290).To2D()))
+                {
                     return
                         hero.ServerPosition.Extend(target.ServerPosition,
-                            hero.Distance(target) + 300).To2D();
+                            hero.Distance(target) + 290).To2D();
+                }
             }
 
             return new Vector2();
@@ -1319,7 +1323,7 @@ namespace Lee_Sin
 
            if (R.IsReady())
            {
-                if (slot != null && W.IsReady() && slot.IsValidSlot())
+               if (slot != null && W.IsReady() && slot.IsValidSlot() && Player.Distance(Insec(target)) > 150)
                 {
                     if (GetBool("prioflash", typeof (bool)) && Player.GetSpellSlot("summonerflash").IsReady() && obj == null)
                     {
@@ -1388,7 +1392,8 @@ namespace Lee_Sin
             
 
             if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
-                target.Distance(Player) < 500 && Steps != steps.Flash)
+                target.Distance(Player) < 500 && Steps != steps.Flash
+                && Player.Distance(Insec(target)) > 150 && R.IsReady())
             {
                 Steps = steps.WardJump;
                 Playerposition = Player.Position;
@@ -1398,7 +1403,7 @@ namespace Lee_Sin
             {
                 Utility.DelayAction.Add(200, () => Q.Cast());
             }
-            if (Q.IsReady())
+            if (Q.IsReady() && R.IsReady())
             {
                 var minions =
                     ObjectManager.Get<Obj_AI_Base>()
@@ -1423,7 +1428,8 @@ namespace Lee_Sin
                     if (!minion.HasBuff("BlinkMonkQOne")) continue;
 
                     if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
-                        target.Distance(Player) > 300 && Steps != steps.Flash)
+                        target.Distance(Player) > 300 && Steps != steps.Flash
+                        && Player.Distance(Insec(target)) > 150)
                     {
                         Q.Cast();
                         Steps = steps.WardJump;
@@ -1436,7 +1442,8 @@ namespace Lee_Sin
             #region Ward flash
 
             if (col.Any() && W.IsReady() && Player.GetSpellSlot("summonerflash").IsReady()
-                && slot != null && GetBool("expwardflash", typeof (bool)))
+                && slot != null && GetBool("expwardflash", typeof (bool))
+                && Player.Distance(Insec(target)) > 150 && R.IsReady())
             {
                 if (Player.ServerPosition.Distance(target.ServerPosition) > 530 &&
                     Player.ServerPosition.Distance(target.ServerPosition) < 880)
@@ -1887,7 +1894,7 @@ namespace Lee_Sin
 
             if (target == null || target.IsDead || !target.IsVisible) return;
 
-            var allies = HeroManager.Allies.Where(x => x.IsValid && !x.IsDead && x.Distance(Player) < 1800 && !x.IsMe
+            var allies = HeroManager.Allies.Where(x => x.IsValid && !x.IsDead && x.Distance(Player) < 1000 && !x.IsMe
                 ).OrderBy(x => x.Distance(Player)).FirstOrDefault();
 
 
