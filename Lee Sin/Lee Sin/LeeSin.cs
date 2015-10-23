@@ -350,15 +350,13 @@ namespace Lee_Sin
 
             if (SelectedAllyAiMinion == null)
             {
-                if (hero == null || (Player.Distance(target) > Player.Distance(hero.ServerPosition.Extend(target.ServerPosition,
-                             hero.Distance(target) + 290).To2D()) && hero != null))
+                if (hero == null)
                 {
                 return
                    Player.ServerPosition.Extend(target.ServerPosition,
                        Player.Distance(target) + 290).To2D();
                 }
-                else if (hero != null && Player.Distance(target) < Player.Distance(hero.ServerPosition.Extend(target.ServerPosition,
-                             hero.Distance(target) + 290).To2D()))
+                else if (hero != null)
                 {
                     return
                         hero.ServerPosition.Extend(target.ServerPosition,
