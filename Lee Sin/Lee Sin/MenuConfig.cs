@@ -27,15 +27,14 @@ namespace Lee_Sin
 
             var combos = new Menu("Key Binds", "Key Binds");
             {
-                combos.AddItem(new MenuItem("targetmode", "Targets Selecting Mode"))
-                    .SetValue(new StringList(new[] {"Target Selector", "Selected Target"}));
-                AddKeyBind(combos, "Ward Jump", "wardjump", 'G', KeyBindType.Press);
-                AddKeyBind(combos, "Use Insec", "wardinsec", 'X', KeyBindType.Press);
-                AddBool(combos, "Use Flash In Insec?", "useflash");
-                AddBool(combos, "Prioritize Flash Over Ward?", "prioflash");
-                AddBool(combos, "*BETA* Ward -> Flash", "expwardflash", false);
+                AddKeyBind(combos, "StarCombo", "starcombo", 'Z', KeyBindType.Press);
+                AddKeyBind(combos, "Ward Jump", "wardjump", 'A', KeyBindType.Press);
+                AddKeyBind(combos, "Use Insec", "wardinsec", 'G', KeyBindType.Press);
+                AddBool(combos, "Use Flash In Insec", "useflash");
+                AddBool(combos, "Use Objects In Insec", "useobjects");
+                AddBool(combos, "Prioritize Flash Over Ward", "prioflash");
+                AddBool(combos, "Ward -> Flash Insec", "expwardflash", false);
                 AddBool(combos, "Use Smite In Insec", "UseSmite");
-                AddKeyBind(combos, "StarCombo", "starcombo", 'A', KeyBindType.Press);
             }
 
             var combo = new Menu("Combo Settings", "Combo Settings");

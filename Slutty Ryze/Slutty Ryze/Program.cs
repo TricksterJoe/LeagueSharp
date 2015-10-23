@@ -36,8 +36,8 @@ namespace Slutty_ryze
             Champion.E = new Spell(SpellSlot.E, 585);
             Champion.R = new Spell(SpellSlot.R);
 
-            Champion.Q.SetSkillshot(0.26f, 50f, 1700f, true, SkillshotType.SkillshotLine);
-            Champion.Qn.SetSkillshot(0.26f, 50f, 1700f, false, SkillshotType.SkillshotLine);
+            Champion.Q.SetSkillshot(0.25f, 50f, 1700f, true, SkillshotType.SkillshotLine);
+            Champion.Qn.SetSkillshot(0.25f, 50f, 1700f, false, SkillshotType.SkillshotLine);
 
             //assign menu from MenuManager to Config
             Console.WriteLine(@"Loading Your Slutty Menu...");
@@ -51,10 +51,8 @@ namespace Slutty_ryze
 
             Drawing.OnDraw += DrawManager.Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
-#pragma warning disable 618
-            Interrupter.OnPossibleToInterrupt += Champion.RyzeInterruptableSpell;
-            Spellbook.OnCastSpell += Champion.OnProcess;
-#pragma warning restore 618
+            AntiGapcloser.OnEnemyGapcloser += Champion.OnGapClose;
+            Interrupter2.OnInterruptableTarget+= Champion.RyzeInterruptableSpell;
             Orbwalking.BeforeAttack += Champion.Orbwalking_BeforeAttack;
             //CustomEvents.Unit.OnDash += Champion;
             ShowDisplayMessage();
@@ -181,7 +179,6 @@ namespace Slutty_ryze
                 {
                     if (!Humanizer.CheckDelay("generalDelay")) // Wait for delay for all other events
                     {
-                        Console.WriteLine(@"Waiting on Human delay");
                         return;
                     }
                     //Console.WriteLine("Seeding Human Delay");

@@ -17,8 +17,8 @@ namespace Lee_Sin
         // Func will return null when no position is found
         public static Tuple<Vector3, Vector3, Vector3> GetWardFlashPositions(bool canUseWard, bool canUseFlash, Obj_AI_Hero player, byte minHitRequirement, List<Obj_AI_Hero> enemies)
         {
-            float maxTravelDistance = GetMaxTravelDistance(canUseWard, canUseFlash);
-            Vector3 destination = SelectBest(GetPositions(player, maxTravelDistance, minHitRequirement, enemies),player);
+            var maxTravelDistance = GetMaxTravelDistance(canUseWard, canUseFlash);
+            var destination = SelectBest(GetPositions(player, maxTravelDistance, minHitRequirement, enemies),player);
 
             if (destination == new Vector3(null))
             {
@@ -108,11 +108,11 @@ namespace Lee_Sin
         }
 
         // Best position order is maintained
-        private static List<Vector3> TravelRangeFilter(List<Tuple<Geometry.Polygon.Rectangle, Vector3, Vector3>> generatePositionsResult, float maxTravelDistance, Obj_AI_Hero player)
+        private static List<Vector3> TravelRangeFilter(IEnumerable<Tuple<Geometry.Polygon.Rectangle, Vector3, Vector3>> generatePositionsResult, float maxTravelDistance, Obj_AI_Hero player)
         {
-            Vector3 leePos = player.ServerPosition;
-            List<Vector3> results = new List<Vector3>();
-            foreach (Tuple<Geometry.Polygon.Rectangle, Vector3, Vector3> tuple in generatePositionsResult)
+            var leePos = player.ServerPosition;
+            var results = new List<Vector3>();
+            foreach (var tuple in generatePositionsResult)
             {
                 if (leePos.Distance(tuple.Item2) <= maxTravelDistance)
                 {

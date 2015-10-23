@@ -71,14 +71,14 @@ namespace Slutty_ryze
 
         public static float GetComboDamage(Obj_AI_Base enemy)
         {
-            if (Q.IsReady() || Player.Mana <= Q.Instance.ManaCost * 5)
-                return Q.GetDamage(enemy) * 5;
+            if (Q.IsReady() || Player.Mana <= Q.Instance.ManaCost)
+                return Q.GetDamage(enemy);
 
-            if (E.IsReady() || Player.Mana <= E.Instance.ManaCost * 5)
-                return E.GetDamage(enemy) * 5;
+            if (E.IsReady() || Player.Mana <= E.Instance.ManaCost)
+                return E.GetDamage(enemy);
 
-            if (W.IsReady() || Player.Mana <= W.Instance.ManaCost * 3)
-                return W.GetDamage(enemy) * 3;
+            if (W.IsReady() || Player.Mana <= W.Instance.ManaCost)
+                return W.GetDamage(enemy);
 
             return 0;
         }
@@ -116,20 +116,10 @@ namespace Slutty_ryze
             {
                 if (!Game.CursorPos.IsZero)
                     Q.Cast(Game.CursorPos);
-                else
-                    Q.Cast();
             }
-            Console.WriteLine(Game.Ping);
-
         }
 
-        public static void RyzeInterruptableSpell(Obj_AI_Base unit, InterruptableSpell spell)
-        {
-            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            var wSpell = GlobalManager.Config.Item("useW2I").GetValue<bool>();
-            if (!wSpell) return;
-            W.CastOnUnit(target);
-        }
+
 
 //        public static void Unit_OnDash(Obj_AI_Base sender, Dash.DashItem args)
 //        {
@@ -163,7 +153,7 @@ namespace Slutty_ryze
         public static void KillSteal()
         {
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
-            if (target == null || !target.IsValidTarget() || target.IsInvulnerable)
+            if (target == null || !target.IsValidTarget(Q.Range) || target.IsInvulnerable)
                 return;
 
             var qSpell = GlobalManager.Config.Item("useQ2KS").GetValue<bool>();
@@ -177,12 +167,12 @@ namespace Slutty_ryze
             if (wSpell
                 && W.GetDamage(target) > target.Health
                 && target.IsValidTarget(W.Range))
-                W.CastOnUnit(target);
+                W.Cast(target);
 
             if (eSpell
                 && E.GetDamage(target) > target.Health
                 && target.IsValidTarget(E.Range))
-                E.CastOnUnit(target);
+                E.Cast(target);
         }
 
         public static void Orbwalking_BeforeAttack(Orbwalking.BeforeAttackEventArgs args)
@@ -209,39 +199,19 @@ namespace Slutty_ryze
         #endregion
 
 
-        internal static void OnProcess(Spellbook sender, SpellbookCastSpellEventArgs args)
+        internal static void RyzeInterruptableSpell(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
-          //  if (sender.SpellWasCast)
-//            {
-//                if (args.Slot == SpellSlot.W
-//                    || args.Slot == SpellSlot.Q
-//                    || args.Slot == SpellSlot.E)
-//                {
-//                    casted = true;
-//                    MenuManager.Orbwalker.SetMovement(false);
-//                    MenuManager.Orbwalker.SetAttack(false);
-//                }
-//                if (casted)
-//                {
-//                    Utility.DelayAction.Add(10000, () => MenuManager.Orbwalker.SetMovement(true));
-//                    Utility.DelayAction.Add(400, () => MenuManager.Orbwalker.SetMovement(true));
-//                    casted = false;
-//                }
-//            }
+            var wSpell = GlobalManager.Config.Item("useW2I").GetValue<bool>();
+            if (!wSpell || !sender.IsValidTarget(W.Range)) return;
+            W.Cast(sender);
         }
-        /*
-        internal static void OnOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
+
+        internal static void OnGapClose(ActiveGapcloser gapcloser)
         {
-            if (casted)
+            if (gapcloser.End.Distance(Player.ServerPosition) < W.Range)
             {
-                if (args.Order == GameObjectOrder.AttackUnit
-                    && Environment.TickCount - lastprocess >= 1000 + Game.Ping)
-                {
-                    args.Process = false;
-                    lastprocess = Environment.TickCount;
-                }
+                W.Cast(gapcloser.Sender);
             }
         }
-         */
     }
 }
