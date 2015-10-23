@@ -1449,11 +1449,13 @@ namespace Lee_Sin
                 var minions =
                     ObjectManager
                         .Get<Obj_AI_Base>(
-                            ).FirstOrDefault(x => !x.IsAlly && !x.IsMe && !x.IsDead && x.Distance(target) < 300 &&
-                                x.Distance(Player) < Q.Range && (x.IsMinion || x.IsChampion()));
-               
-                if (minions == null) return;    
-                    var objpred = Q.GetPrediction(minions);
+                        ).Where(x => !x.IsAlly && !x.IsMe && !x.IsDead && x.Distance(Insec(target)) < 500 &&
+                                              x.Distance(Player) < Q.Range
+                                              && !x.Name.ToLower().Contains("turret"));
+                if (minions == null) return;
+                foreach (var minion in minions)
+                {
+                    var objpred = Q.GetPrediction(minion);
                     var cols = objpred.CollisionObjects;
 
                     if (!cols.Any() &&
@@ -1462,7 +1464,7 @@ namespace Lee_Sin
                         Q.Cast(objpred.CastPosition);
                     }
 
-                    if (minions.HasBuff("BlinkMonkQOne"))
+                    if (minion.HasBuff("BlinkMonkQOne"))
                     {
                         if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
                             target.Distance(Player) > 300 && Steps != steps.Flash
@@ -1472,6 +1474,7 @@ namespace Lee_Sin
                             Steps = steps.WardJump;
                         }
                     }
+                }
             }
 
             #endregion
