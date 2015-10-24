@@ -1453,7 +1453,7 @@ namespace Lee_Sin
                 var minions =
                     ObjectManager
                         .Get<Obj_AI_Base>(
-                        ).Where(x => !x.IsAlly && !x.IsMe && !x.IsDead && x.Distance(Insec(target)) < 700 &&
+                        ).Where(x => !x.IsAlly && !x.IsMe && !x.IsDead && x.Distance(Insec(target)) < 500 &&
                                               x.Distance(Player) < Q.Range
                                               && !x.Name.ToLower().Contains("turret"));
                 if (minions == null) return;
