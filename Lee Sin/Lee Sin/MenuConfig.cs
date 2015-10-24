@@ -130,6 +130,15 @@ namespace Lee_Sin
                     AddBool(spells, "[E] Range", "erange");
                     AddBool(spells, "[R] Range", "rrange");
                 }
+                var misc = new Menu("Misc Drawings", "Misc Drawings");
+                {
+                    AddBool(misc, "Show Expected Target Position After Insec", "targetexpos");
+                    AddBool(misc, "Show Ward Position", "wardpositionshow");
+                    AddBool(misc, "Display [R] Polygon", "rpolygon");
+                    AddBool(misc, "Show target count hit by R", "counthitr");
+                    AddBool(misc, "Show Line Between Objects", "linebetween");
+                }
+                drawings.AddSubMenu(misc);
                 drawings.AddSubMenu(spells);
                 AddBool(drawings, "Enable Drawings", "ovdrawings");
             }

@@ -214,11 +214,11 @@ namespace Lee_Sin
         private static void OnSpellcast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
 
-            if (args.SData.Name.ToLower().Contains("turret") && args.SData.Name.ToLower().Contains("attack")
-                && args.Target.NetworkId == Player.NetworkId)
-            {
-                Game.PrintChat("hi");
-            }
+//            if (args.SData.Name.ToLower().Contains("turret") && args.SData.Name.ToLower().Contains("attack")
+//                && args.Target.NetworkId == Player.NetworkId)
+//            {
+//                Game.PrintChat("hi");
+//            }
             if (sender.IsMe)
             {
                 if (args.SData.Name == "BlindMonkRKick")
@@ -351,16 +351,16 @@ namespace Lee_Sin
                     SelectedAllyAiMinion.ServerPosition.Extend(target.ServerPosition,
                         SelectedAllyAiMinion.Distance(target) + 290).To2D();
             }
-
+            
             if (SelectedAllyAiMinion == null)
             {
-                if (hero == null)
+                if (hero == null || !GetBool("useobjectsallies", typeof(bool)))
                 {
                 return
                    Player.ServerPosition.Extend(target.ServerPosition,
                        Player.Distance(target) + 290).To2D();
                 }
-                else if (hero != null)
+                else if (hero != null && GetBool("useobjectsallies", typeof(bool)))
                 {
                     return
                         hero.ServerPosition.Extend(target.ServerPosition,
@@ -1456,26 +1456,30 @@ namespace Lee_Sin
                         ).Where(x => !x.IsAlly && !x.IsMe && !x.IsDead && x.Distance(Insec(target)) < 500 &&
                                               x.Distance(Player) < Q.Range
                                               && !x.Name.ToLower().Contains("turret"));
+                var qpredd = Q.GetPrediction(target);
+                if (qpredd.CollisionObjects.Any())
+                { 
                 if (minions == null) return;
-                foreach (var minion in minions)
-                {
-                    var objpred = Q.GetPrediction(minion);
-                    var cols = objpred.CollisionObjects;
-                    if (!cols.Any())
-                    Render.Circle.DrawCircle(minion.Position, 100, Color.Yellow);
-                    if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && Q.IsReady() && !cols.Any())
+                    foreach (var minion in minions)
                     {
-                        Q.Cast(minion);                       
-                    }
-
-                    if (minion.HasBuff("BlinkMonkQOne"))
-                    {
-                        if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
-                            target.Distance(Player) > 300 && Steps != steps.Flash
-                            && Player.Distance(Insec(target)) > 150)
+                        var objpred = Q.GetPrediction(minion);
+                        var cols = objpred.CollisionObjects;
+                        if (!cols.Any())
+                            Render.Circle.DrawCircle(minion.Position, 100, Color.Yellow);
+                        if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && Q.IsReady() && !cols.Any())
                         {
-                            Q.Cast();
-                            Steps = steps.WardJump;
+                            Q.Cast(minion);
+                        }
+
+                        if (minion.HasBuff("BlinkMonkQOne"))
+                        {
+                            if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
+                                target.Distance(Player) > 300 && Steps != steps.Flash
+                                && Player.Distance(Insec(target)) > 150)
+                            {
+                                Q.Cast();
+                                Steps = steps.WardJump;
+                            }
                         }
                     }
                 }
@@ -1486,13 +1490,12 @@ namespace Lee_Sin
             #region Ward flash
 
             if (col.Any() && W.IsReady() && Player.GetSpellSlot("summonerflash").IsReady()
-                && slot != null && GetBool("expwardflash", typeof (bool))
-                && Player.Distance(Insec(target)) > 150 && R.IsReady())
+                && slot != null && GetBool("expwardflash", typeof (bool)) && R.IsReady())
             {
                 if (Player.ServerPosition.Distance(target.ServerPosition) > 530 &&
-                    Player.ServerPosition.Distance(target.ServerPosition) < 880)
+                    Player.ServerPosition.Distance(target.ServerPosition) < 680)
                 {
-                    var pos = target.ServerPosition.Extend(Player.ServerPosition, 300);
+                    var pos = target.ServerPosition.Extend(Player.ServerPosition, 200);
 
                     if (Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
                     {
@@ -1853,17 +1856,21 @@ namespace Lee_Sin
         {
             if (Player.IsDead) return;
 
-            if (ultPoly != null)
+            if (ultPoly != null && GetBool("rpolygon", typeof(bool)))
             {
                 ultPoly.Draw(Color.Red);
             }
 
-            if (RCombo != null) Render.Circle.DrawCircle((Vector3) RCombo, 100, Color.Red, 5, true);
-            var getresults = Mathematics.GetPositions(Player, 1125, (byte)3, HeroManager.Enemies);
-            if (getresults.Count > 1)
+            if (RCombo != null && GetBool("rpolygon", typeof(bool))) Render.Circle.DrawCircle((Vector3) RCombo, 100, Color.Red, 5, true);
+
+            if (GetBool("counthitr", typeof (bool)))
             {
-                var Getposition = Mathematics.SelectBest(getresults, Player);
-                Render.Circle.DrawCircle(Getposition, 100, Color.Red, 3, true);
+                var getresults = Mathematics.GetPositions(Player, 1125, (byte) 3, HeroManager.Enemies);
+                if (getresults.Count > 1)
+                {
+                    var Getposition = Mathematics.SelectBest(getresults, Player);
+                    Render.Circle.DrawCircle(Getposition, 100, Color.Red, 3, true);
+                }
             }
 
 
@@ -1907,13 +1914,15 @@ namespace Lee_Sin
             ultPoly = new Geometry.Polygon.Rectangle(Player.ServerPosition,
                 Player.ServerPosition.Extend(target.Position, 1100),
                 target.BoundingRadius + 20);
+            if (GetBool("counthitr", typeof (bool)))
+            {
+                var counts =
+                    HeroManager.Enemies.Where(x => x.Distance(Player) < 1200 && x.IsValidTarget(1200))
+                        .Count(h => h.NetworkId != target.NetworkId && ultPoly.IsInside(h.ServerPosition));
 
-            var counts =
-                HeroManager.Enemies.Where(x => x.Distance(Player) < 1200 && x.IsValidTarget(1200))
-                    .Count(h => h.NetworkId != target.NetworkId && ultPoly.IsInside(h.ServerPosition));
-
-            Drawing.DrawText(Drawing.WorldToScreen(Player.Position).X, Drawing.WorldToScreen(Player.Position).Y,
-                Color.Magenta, "Ult Will Hit " + counts);
+                Drawing.DrawText(Drawing.WorldToScreen(Player.Position).X, Drawing.WorldToScreen(Player.Position).Y,
+                    Color.Magenta, "Ult Will Hit " + counts);
+            }
         }
 
         #region Range draws
@@ -1924,6 +1933,7 @@ namespace Lee_Sin
             if (!GetBool("spellsdraw", typeof (bool))) return;
             if (!GetBool("targetexpos", typeof (bool))) return;
             if (!GetBool("ovdrawings", typeof (bool))) return;
+
             if (SelectedAllyAiMinion != null)
             {
                 Drawing.DrawCircle(SelectedAllyAiMinion.Position, 200, Color.Blue);
@@ -1948,18 +1958,22 @@ namespace Lee_Sin
                 ).OrderBy(x => x.Distance(Player)).FirstOrDefault();
 
             var pos = Insec(target);
-            Render.Circle.DrawCircle(pos.To3D(), 100, Color.Yellow, 3);
-            var text = Drawing.WorldToScreen(pos.To3D()).X - 20;
-            var text2 = Drawing.WorldToScreen(pos.To3D()).Y;
-            const string texts = "Insec Position";
-            Drawing.DrawText(text, text2, Color.Red, texts);
+            if (GetBool("wardpositionshow", typeof (bool)))
+            {
+                Render.Circle.DrawCircle(pos.To3D(), 100, Color.Yellow, 3);
+                var text = Drawing.WorldToScreen(pos.To3D()).X - 20;
+                var text2 = Drawing.WorldToScreen(pos.To3D()).Y;
+                const string texts = "Insec Position";
+                Drawing.DrawText(text, text2, Color.Red, texts);
+            }
 //            color = new ColorBGRA(100, 100, 100, 100);
 //            text = new Render.Text(pos, "Ward Here", 3, color);
-  
-            
+
+            if (!GetBool("linebetween", typeof (bool))) return;
+
             if (SelectedAllyAiMinion == null)
             {
-                if (allies != null && Player.Distance(target) < Player.Distance(Insec(target))) 
+                if (allies != null &&  GetBool("useobjectsallies", typeof(bool)))
                 {
 
                     var pos11 = Drawing.WorldToScreen(target.Position);
