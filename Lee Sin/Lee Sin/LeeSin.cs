@@ -1235,8 +1235,8 @@ namespace Lee_Sin
 
             var target = TargetSelector.GetTarget(Q.Range + 500, TargetSelector.DamageType.Physical);
             if (target != null)
-            {                
-                target = TargetSelector.SelectedTarget == null ? target : TargetSelector.GetSelectedTarget();
+            {
+                target = TargetSelector.GetSelectedTarget();
             }
 
 
@@ -1888,11 +1888,11 @@ namespace Lee_Sin
             
 
             var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Physical);
+
             if (target != null)
             {
-                target = TargetSelector.SelectedTarget == null ? target : TargetSelector.GetSelectedTarget();
+                target = TargetSelector.GetSelectedTarget();
             }
-
 
             
             
