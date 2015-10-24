@@ -1397,7 +1397,7 @@ namespace Lee_Sin
         .Where(
             x =>
                 x.IsValid && x.Distance(Insec(target)) < 500 && !x.IsAlly && !x.IsDead &&
-                !x.Name.ToLower().Contains("turret")).ToList();
+                !x.Name.ToLower().Contains("turret") && x.Health > Q.GetDamage(x) + 10).ToList();
 
 
                 var qpredd = Q.GetPrediction(target);
@@ -1405,7 +1405,6 @@ namespace Lee_Sin
                 {
                     foreach (var min in minions)
                     {
-                        var objpred = Q.GetPrediction(min);
                         var objpreds = Q.GetPrediction(min);
                         if (objpreds.Hitchance != HitChance.Collision)
                             Render.Circle.DrawCircle(min.Position, 100, Color.Yellow);
