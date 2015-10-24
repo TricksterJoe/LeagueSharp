@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using LeagueSharp;
@@ -349,7 +350,7 @@ namespace Lee_Sin
             {
                 return
                     SelectedAllyAiMinion.ServerPosition.Extend(target.ServerPosition,
-                        SelectedAllyAiMinion.Distance(target) + 290).To2D();
+                        SelectedAllyAiMinion.Distance(target) + 270).To2D();
             }
             
             if (SelectedAllyAiMinion == null)
@@ -358,13 +359,13 @@ namespace Lee_Sin
                 {
                 return
                    Player.ServerPosition.Extend(target.ServerPosition,
-                       Player.Distance(target) + 290).To2D();
+                       Player.Distance(target.ServerPosition) + 270).To2D();
                 }
                 else if (hero != null && GetBool("useobjectsallies", typeof(bool)))
                 {
                     return
                         hero.ServerPosition.Extend(target.ServerPosition,
-                            hero.Distance(target) + 290).To2D();
+                            hero.Distance(target) + 270).To2D();
                 }
             }
 
@@ -546,10 +547,12 @@ namespace Lee_Sin
                     LaneClear();
                     LaneClear2();
                     JungleClear();
-                    LastHit();
                     break;
                     case Orbwalking.OrbwalkingMode.Mixed:
                     Harass();
+                    break;
+                    case Orbwalking.OrbwalkingMode.LastHit:
+                    LastHit();
                     break;
             }
 
@@ -1218,76 +1221,6 @@ namespace Lee_Sin
 
             #region zzz
 
-//            if (Player.Distance(target) < 700 && Player.Distance(target) > 300 && W.IsReady() && R.IsReady() &&
-//                Q.IsReady())
-//            {
-//                if (W.IsReady() && R.IsReady())
-//                {
-//                    var pos = target.ServerPosition.Extend(Player.ServerPosition, target.Distance(Player) - 200);
-//
-//                    if (!_processw &&
-//                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
-//                    {
-//                        Player.Spellbook.CastSpell(slot.SpellSlot, pos);
-//                        _lastwarr = Environment.TickCount;
-//                    }
-//                    if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
-//                    {
-//                        _lastwards = Environment.TickCount;
-//                    }
-//                }
-//            }
-
-
-            #region why is it here
-
-//            var slot = Items.GetWardSlot();
-//            if (target.IsValidTarget(Q.Range) && Q.IsReady() &&
-//                Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-//                target.Distance(Player) > R.Range + 250 && R.IsReady() && slot.IsValidSlot())
-//            {
-//                Q.Cast(target);
-//                Steps = steps.WardJump;             
-//            }
-//            if (slot.IsValidSlot() && target.Distance(Player) > R.Range + 250 && R.IsReady())
-//            {
-//                Steps = steps.WardJump;
-//            }   
-//            if (Steps == steps.WardJump)
-//            {
-//                Jump(Player.Position.Extend(target.Position, target.Distance(Player) - 200));
-//            }
-
-            #endregion
-
-//            if (Player.Distance(target) > R.Range && Player.Distance(target) < 520 && R.IsReady() && Q.IsReady()
-//                && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlinkMonkQOne" && W.IsReady())
-//            {
-//                Steps = steps.WardJump;              
-//            }
-//
-//
-//
-//            if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
-//            {
-//                if (W.IsReady() && R.IsReady())
-//                {
-//                    var pos = Player.ServerPosition.Extend(target.ServerPosition,
-//                        Player.ServerPosition.Distance(target.ServerPosition) - 200);
-//                    var slot = Items.GetWardSlot();
-//                    if (!_processw &&
-//                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
-//                    {
-//                        Player.Spellbook.CastSpell(slot.SpellSlot, pos);
-//                        _lastwarr = Environment.TickCount;
-//                    }
-//                    if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
-//                    {
-//                        _lastwards = Environment.TickCount;
-//                    }
-//                }
-//            }
-
             #endregion
 
         }
@@ -1323,7 +1256,7 @@ namespace Lee_Sin
                              && !x.Name.ToLower().Contains("turret"));
             if (Steps == steps.WardJump || Environment.TickCount - lastwardjump < 3000)
             {
-                if (W.IsReady()&& Player.Distance(target) < 500)
+                if (W.IsReady()&& Player.Distance(target) < 500 && Player.Mana >= 50)
                 {
                     
 
@@ -1450,38 +1383,52 @@ namespace Lee_Sin
             }
             if (Q.IsReady())
             {
+//                var minions =
+//                    ObjectManager
+//                        .Get<Obj_AI_Base>(
+//                        ).Where(x => !x.IsAlly && (x.IsChampion() || x.IsMinion) && !x.IsDead && x.Distance(Insec(target)) < 400 &&
+//                                              x.Distance(Player) < Q.Range
+//                                              && !x.Name.ToLower().Contains("turret"));
+
                 var minions =
-                    ObjectManager
-                        .Get<Obj_AI_Base>(
-                        ).Where(x => !x.IsAlly && !x.IsMe && !x.IsDead && x.Distance(Insec(target)) < 500 &&
-                                              x.Distance(Player) < Q.Range
-                                              && !x.Name.ToLower().Contains("turret"));
+    ObjectManager
+        .Get<Obj_AI_Base>(
+        )
+        .Where(
+            x =>
+                x.IsValid && x.Distance(Insec(target)) < 500 && !x.IsAlly && !x.IsDead &&
+                !x.Name.ToLower().Contains("turret")).ToList();
+
+
                 var qpredd = Q.GetPrediction(target);
-                if (qpredd.CollisionObjects.Any())
-                { 
-                if (minions == null) return;
-                    foreach (var minion in minions)
+                if (qpredd.Hitchance == HitChance.Collision)
+                {
+                    foreach (var min in minions)
                     {
-                        var objpred = Q.GetPrediction(minion);
-                        var cols = objpred.CollisionObjects;
-                        if (!cols.Any())
-                            Render.Circle.DrawCircle(minion.Position, 100, Color.Yellow);
-                        if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && Q.IsReady() && !cols.Any())
+                        var objpred = Q.GetPrediction(min);
+                        var objpreds = Q.GetPrediction(min);
+                        if (objpreds.Hitchance != HitChance.Collision)
+                            Render.Circle.DrawCircle(min.Position, 100, Color.Yellow);
+
+                        if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && Q.IsReady())
                         {
-                            Q.Cast(minion);
+                            Q.Cast(min);
                         }
 
-                        if (minion.HasBuff("BlinkMonkQOne"))
+
+                        if (min.HasBuff("BlinkMonkQOne"))
                         {
                             if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
                                 target.Distance(Player) > 300 && Steps != steps.Flash
-                                && Player.Distance(Insec(target)) > 150)
+                                && Player.Distance(Insec(target)) > 15 && R.IsReady())
                             {
                                 Q.Cast();
                                 Steps = steps.WardJump;
                             }
+
                         }
                     }
+
                 }
             }
 

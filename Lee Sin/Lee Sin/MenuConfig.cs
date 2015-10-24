@@ -32,6 +32,7 @@ namespace Lee_Sin
                 AddKeyBind(combos, "Use Insec", "wardinsec", 'G', KeyBindType.Press);
                 AddBool(combos, "Use Flash In Insec", "useflash");
                 AddBool(combos, "Use Objects In Insec", "useobjects");
+                AddBool(combos, "Insec Towards Allies/Turrets", "useobjectsallies");
                 AddBool(combos, "Prioritize Flash Over Ward", "prioflash");
                 AddBool(combos, "Ward -> Flash Insec", "expwardflash", false);
                 AddBool(combos, "Use Smite In Insec", "UseSmite");
