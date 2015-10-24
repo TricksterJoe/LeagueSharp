@@ -5,6 +5,10 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using Color = System.Drawing.Color;
+using System.Net;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using Version = System.Version;
 
 namespace Lee_Sin
 {
@@ -106,7 +110,7 @@ namespace Lee_Sin
             Printmsg("Lee Sin By Hoes Assembly Loaded");
             Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
             Printmsg2("Don't Forget To " + "<font color='#00ff00'>[Upvote]</font> <font color='#FFFFFF'>" + "The Assembly In The Databse" + "</font>");
-            
+            UpdateCheck();
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             Drawing.OnDraw += OnCamps;
@@ -1501,7 +1505,10 @@ namespace Lee_Sin
                         _lastwards = Environment.TickCount;
                     }
                 }
-                Steps = steps.Flash;
+                if (Steps != steps.WardJump)
+                {
+                    Steps = steps.Flash;
+                }
             }
 
             #endregion
@@ -1989,6 +1996,59 @@ namespace Lee_Sin
         #endregion
 
         #endregion
+
+        public static void UpdateCheck()
+        {
+            Task.Factory.StartNew(
+                () =>
+                {
+                    try
+                    {
+                        using (var c = new WebClient())
+                        {
+                            var rawVersion =
+                                c.DownloadString(
+                                    "https://raw.githubusercontent.com/HoesLeaguesharp/LeagueSharp/master/Lee%20Sin/Lee%20Sin/Properties/AssemblyInfo.cs");
+                            var match =
+                                new Regex(
+                                    @"\[assembly\: AssemblyVersion\(""(\d{1,})\.(\d{1,})\.(\d{1,})\.(\d{1,})""\)\]")
+                                    .Match(rawVersion);
+
+                            if (match.Success)
+                            {
+                                var gitVersion =
+                                    new Version(
+                                        string.Format(
+                                            "{0}.{1}.{2}.{3}",
+                                            match.Groups[1],
+                                            match.Groups[2],
+                                            match.Groups[3],
+                                            match.Groups[4]));
+
+                                if (gitVersion > typeof(Program).Assembly.GetName().Version)
+                                {
+                                    Game.PrintChat(
+                                        "<font color='#15C3AC'>Support:</font> <font color='#FF0000'>"
+                                        + "OUTDATED - Please Update to Version: " + gitVersion + "</font>");
+                                    Game.PrintChat(
+                                        "<font color='#15C3AC'>Support:</font> <font color='#FF0000'>"
+                                        + "OUTDATED - Please Update to Version: " + gitVersion + "</font>");
+                                }
+                                else
+                                {
+                                    Game.PrintChat(
+    "<font color='#15C3AC'>Slutty Lee Sin:</font> <font color='#40FF00'>"
+    + "UPDATED - Version: " + gitVersion + "</font>");
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                    }
+                });
+        }
 
         public static Vector3 Playerpos { get; set; }
 
