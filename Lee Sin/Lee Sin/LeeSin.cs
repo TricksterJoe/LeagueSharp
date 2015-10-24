@@ -1906,7 +1906,7 @@ namespace Lee_Sin
             var pos = Insec(target);
             if (GetBool("wardpositionshow", typeof (bool)))
             {
-                Render.Circle.DrawCircle(pos.To3D2(), 100, Color.Yellow, 3);
+                Render.Circle.DrawCircle(pos.To3D(), 100, Color.Yellow, 3);
                 var text = Drawing.WorldToScreen(pos.To3D()).X - 20;
                 var text2 = Drawing.WorldToScreen(pos.To3D()).Y;
                 const string texts = "Insec Position";
