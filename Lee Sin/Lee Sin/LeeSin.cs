@@ -1463,10 +1463,9 @@ namespace Lee_Sin
                     var cols = objpred.CollisionObjects;
                     if (!cols.Any())
                     Render.Circle.DrawCircle(minion.Position, 100, Color.Yellow);
-                    if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && Q.IsReady())
+                    if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && Q.IsReady() && !cols.Any())
                     {
-                        Q.Cast(minion);
-                       
+                        Q.Cast(minion);                       
                     }
 
                     if (minion.HasBuff("BlinkMonkQOne"))
