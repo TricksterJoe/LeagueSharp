@@ -1819,7 +1819,7 @@ namespace Lee_Sin
 
 
 
-            Render.Circle.DrawCircle(Player.Position, 1125, Color.DarkViolet);
+           
             if (!GetBool("spellsdraw", typeof (bool))) return;
             if (!GetBool("ovdrawings", typeof (bool))) return;
             if (GetBool("qrange", typeof (bool)) && Q.Level > 0)
