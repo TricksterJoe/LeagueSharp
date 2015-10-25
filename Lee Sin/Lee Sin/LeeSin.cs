@@ -1301,7 +1301,7 @@ namespace Lee_Sin
 
            if (R.IsReady())
            {
-               if (slot != null && W.IsReady() && slot.IsValidSlot() && Player.Distance(Insec(target)) > 150)
+               if (slot != null && W.IsReady() && slot.IsValidSlot())
                 {
                     if (GetBool("prioflash", typeof (bool)) && Player.GetSpellSlot("summonerflash").IsReady() && obj == null)
                     {
