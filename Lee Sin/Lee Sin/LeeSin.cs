@@ -1401,7 +1401,7 @@ namespace Lee_Sin
 
 
                 var qpredd = Q.GetPrediction(target);
-                if (qpredd.Hitchance == HitChance.Collision)
+                if (qpredd.Hitchance == HitChance.Collision || Player.Distance(target) > Q.Range)
                 {
                     foreach (var min in minions)
                     {
@@ -1415,7 +1415,7 @@ namespace Lee_Sin
                         }
 
 
-                        if (min.HasBuff("BlinkMonkQOne"))
+                        if (min.HasBuff("BlindMonkQOne"))
                         {
                             if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
                                 target.Distance(Player) > 300 && Steps != steps.Flash
@@ -1439,9 +1439,9 @@ namespace Lee_Sin
                 && slot != null && GetBool("expwardflash", typeof (bool)) && R.IsReady())
             {
                 if (Player.ServerPosition.Distance(target.ServerPosition) > 530 &&
-                    Player.ServerPosition.Distance(target.ServerPosition) < 680)
+                    Player.ServerPosition.Distance(target.ServerPosition) < 880)
                 {
-                    var pos = target.ServerPosition.Extend(Player.ServerPosition, 200);
+                    var pos = target.ServerPosition.Extend(Player.ServerPosition, 300);
 
                     if (Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
                     {
@@ -1453,10 +1453,8 @@ namespace Lee_Sin
                         _lastwards = Environment.TickCount;
                     }
                 }
-                if (Steps != steps.WardJump)
-                {
                     Steps = steps.Flash;
-                }
+                
             }
 
             #endregion
