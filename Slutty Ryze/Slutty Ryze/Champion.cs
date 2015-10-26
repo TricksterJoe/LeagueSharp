@@ -203,14 +203,14 @@ namespace Slutty_ryze
         {
             var wSpell = GlobalManager.Config.Item("useW2I").GetValue<bool>();
             if (!wSpell || !sender.IsValidTarget(W.Range)) return;
-            W.Cast(sender);
+           W.Cast(sender);
         }
 
         internal static void OnGapClose(ActiveGapcloser gapcloser)
         {
             if (gapcloser.End.Distance(Player.ServerPosition) < W.Range)
             {
-                W.Cast(gapcloser.Sender);
+              //  W.Cast(gapcloser.Sender);
             }
         }
     }
