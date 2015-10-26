@@ -392,23 +392,23 @@ namespace Slutty_ryze
                     CastR(target);
                 }
             }
-//            else
-//            {
-//                if (wSpell 
-//                    && Champion.W.IsReady()
-//                    && target.IsValidTarget(Champion.W.Range))
-//                    Champion.W.CastOnUnit(target);
-//
-//                if (qSpell
-//                    && Champion.Qn.IsReady()
-//                    && target.IsValidTarget(Champion.Qn.Range))
-//                    Champion.Qn.Cast(target);
-//
-//                if (eSpell
-//                    && Champion.E.IsReady()
-//                    && target.IsValidTarget(Champion.E.Range))
-//                    Champion.E.CastOnUnit(target);
-//            }
+           else
+           {
+               if (wSpell 
+                   && Champion.W.IsReady()
+                   && target.IsValidTarget(Champion.W.Range))
+                    Champion.W.CastOnUnit(target);
+
+               if (qSpell
+                   && Champion.Qn.IsReady()
+                  && target.IsValidTarget(Champion.Qn.Range))
+                    Champion.Qn.Cast(target);
+
+            if (eSpell
+                    && Champion.E.IsReady()
+                 && target.IsValidTarget(Champion.E.Range))
+                   Champion.E.CastOnUnit(target);
+         }
             if (Champion.R.IsReady() && (GlobalManager.GetPassiveBuff == 4 || GlobalManager.GetHero.HasBuff("ryzepassivecharged")) && rSpell)
             {
                 if (!Champion.Q.IsReady() && !Champion.W.IsReady() && !Champion.E.IsReady())
