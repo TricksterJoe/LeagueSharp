@@ -1889,7 +1889,7 @@ namespace Lee_Sin
 
             if (target != null)
             {
-                target = TargetSelector.GetSelectedTarget();
+                target = TargetSelector.SelectedTarget != null ? TargetSelector.GetSelectedTarget() : target;
             }
 
             
