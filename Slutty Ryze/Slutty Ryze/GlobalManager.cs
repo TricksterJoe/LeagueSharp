@@ -61,8 +61,6 @@ namespace Slutty_ryze
             get
             {
                 var data = GetHero.Buffs.FirstOrDefault(b => b.DisplayName == "RyzePassiveStack");
-                // Does not use C# v6+ T_T
-                // return data?.Count ?? 0;
                 if (data != null)
                 {
                     return data.Count == -1 ? 0 : data.Count == 0 ? 1 : data.Count;
