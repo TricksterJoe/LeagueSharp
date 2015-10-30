@@ -117,6 +117,7 @@ namespace Slutty_ryze
         {
             try // lazy
             {
+                Game.PrintChat(GlobalManager.GetPassiveBuff.ToString());
                 if (GlobalManager.Config.Item("test").GetValue<KeyBind>().Active)
                 {
                     GlobalManager.GetHero.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);

@@ -8,7 +8,7 @@ namespace Slutty_ryze
     class GlobalManager
     {
         #region Variable Declaration
-        private static readonly Obj_AI_Hero PlayerHero = ObjectManager.Player;
+
         private static DamageToUnitDelegate _damageToUnit;
         private const string _menuName = "Slutty Ryze";
 
@@ -35,10 +35,7 @@ namespace Slutty_ryze
             return (minion.IsMinion || minion.MaxHealth > 3 || minion.Armor > 0 || minion.IsTargetable);
         }
 
-        public static Obj_AI_Hero GetHero
-        {
-            get { return PlayerHero; }
-        }
+        public static Obj_AI_Hero GetHero { get; } = ObjectManager.Player;
 
         public static DamageToUnitDelegate DamageToUnit
         {
@@ -66,7 +63,11 @@ namespace Slutty_ryze
                 var data = GetHero.Buffs.FirstOrDefault(b => b.DisplayName == "RyzePassiveStack");
                 // Does not use C# v6+ T_T
                 // return data?.Count ?? 0;
-                return data != null ? data.Count : 0;
+                if (data != null)
+                {
+                    return data.Count == -1 ? 0 : data.Count == 0 ? 1 : data.Count;
+                }
+                return 0;
             }
         }
 
