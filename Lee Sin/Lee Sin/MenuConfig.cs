@@ -2,9 +2,9 @@
 
 namespace Lee_Sin
 {
-    internal class MenuConfig : Helper
+   internal class MenuConfig : Helper
     {
-        public static readonly string[] Names =
+       public static readonly string[] Names =
         {
             "Krug",
             "Razorbeak",
@@ -59,7 +59,7 @@ namespace Lee_Sin
                 {
                     items.AddItem(
                         new MenuItem("hydrati", "Hydra/Tiamat Mode").SetValue(
-                            new StringList(new[] { "Combo", "Lane Clear", "Both", "None" })));
+                            new StringList(new[] {"Combo", "Lane Clear", "Both", "None"})));
                     AddBool(items, "Youmuu's Ghostblade", "youm");
                     AddBool(items, "Randuin's Omen", "omen");
                     AddValue(items, "Minimum targets to Randuin", "minrand", 3, 1, 5);
@@ -111,7 +111,7 @@ namespace Lee_Sin
                 AddKeyBind(Smite, "Enable Smite", "smiteenable", 'M', KeyBindType.Toggle);
                 Smite.AddSubMenu(smtiekill);
             }
-
+            
             var drawings = new Menu("Drawings Menu", "Drawings Menu");
             {
                 var jungle = new Menu("Jungle Drawings", "Jungle Drawings");
