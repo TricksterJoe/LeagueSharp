@@ -422,15 +422,18 @@ namespace Lee_Sin
             return 185;
         }
 
+
+
+
         public static void AutoWardUlt()
         {
             //var distance = MaxTravelDistance();
             //var enemiescount = GetValue("enemiescount");
             //var enemies = Player.GetEnemiesInRange(2800);
-            //var wardflashpos = Mathematics.GetWardFlashPositions(distance, Player, (byte) enemiescount, enemies);
+            //var wardflashpos = Mathematics.GetWardFlashPositions(distance, Player, (byte)enemiescount, enemies);
             //var wardJumpPos = Mathematics.MoveVector(Player.Position, wardflashpos);
             //var enemies1 = HeroManager.Enemies.Where(x => !x.IsDead && x.Distance(Player) < 1125).ToList();
-            //var getresults = Mathematics.GetPositions(Player, 1125, (byte) enemiescount, enemies1);
+            //var getresults = Mathematics.GetPositions(Player, 1125, (byte)enemiescount, enemies1);
             //var items = Items.GetWardSlot();
             //if (getresults.Count > 1)
             //{
@@ -460,13 +463,36 @@ namespace Lee_Sin
             //        }
             //    }
             //}
-            //    if (enemies1.FirstOrDefault() == null) return;
-            //    if (Environment.TickCount - lastcasted < 1000)
-            //    {
-            //        R.Cast(enemies1.FirstOrDefault());
-            //    }
-            
+            //if (enemies1.FirstOrDefault() == null) return;
+            //if (Environment.TickCount - lastcasted < 1000)
+            //{
+            //    R.Cast(enemies1.FirstOrDefault());
+            //}
+
+
         }
+
+        #region HyunMi
+
+        public static Vector3? GetDestination(float maxTravelDistance, byte minHitRequirement)
+        {
+            var enemies = ObjectManager.Player.GetEnemiesInRange(2800);
+            if (enemies.Count < minHitRequirement)
+            {
+                return null;
+            }
+
+            try
+            {
+                return (from tar in enemies from end in enemies.Where(e => e.NetworkId != tar.NetworkId) select new Geometry.Polygon.Rectangle(tar.ServerPosition.Move(end.ServerPosition), end.ServerPosition.Move(tar.ServerPosition), (tar.BoundingRadius + end.BoundingRadius) / 2)).Distinct().Where(rectangle => enemies.Select(e => e.ServerPosition).Count(rectangle.IsInside) >= minHitRequirement).Select(r => HeroManager.Enemies.Where(e => r.IsInside(e.ServerPosition)).OrderBy(e => e.Distance(ObjectManager.Player))).Select(io => new List<Vector3>() { io.First().ServerPosition.Move(io.Last().ServerPosition, -187.5f), io.Last().ServerPosition.Move(io.First().ServerPosition, -187.5f) }.Where(e => e.Distance(ObjectManager.Player.ServerPosition) < maxTravelDistance).OrderBy(e => e.Distance(ObjectManager.Player.ServerPosition)).First()).First();
+            }
+            catch (InvalidOperationException)
+            {
+                // Ignored, somewhere in the linq query the filtering returned empty thus throwing error on next operation
+                return null;
+            }
+        }
+        #endregion
 
         #endregion
 
@@ -613,23 +639,6 @@ namespace Lee_Sin
             {
                 R.Cast(target);
             }
-
-            //// HyunMi code here
-            //var enemies = Playerpos.GetEnemiesInRange(2800);
-            //byte minEnemHitConstraint = (byte)Config.Item("xeminhit").GetValue<Slider>().Value;
-
-            //if (enemies.Count < minEnemHitConstraint) return;
-
-            //bool xeallowFlash = Config.Item("xeflash").GetValue<bool>();
-            //bool allowWard = Config.Item("xeward").GetValue<bool>();
-
-            //bool canUseWard = false, canUseFlash = false;
-            //if (FlashSlot.IsReady() && FlashSlot != SpellSlot.Unknown && xeallowFlash)
-            //{
-            //    canUseFlash = true;
-            //}
-
-            ////TODO: check if player has a ward and w is ready if so canUseWard == true only if AllowWard = true
         }
 
         #endregion
