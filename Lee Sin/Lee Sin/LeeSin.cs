@@ -424,47 +424,47 @@ namespace Lee_Sin
 
         public static void AutoWardUlt()
         {
-            var distance = MaxTravelDistance();
-            var enemiescount = GetValue("enemiescount");
-            var enemies = Player.GetEnemiesInRange(2800);
-            var wardflashpos = Mathematics.GetWardFlashPositions(distance, Player, (byte) enemiescount, enemies);
-            var wardJumpPos = Mathematics.MoveVector(Player.Position, wardflashpos);
-            var enemies1 = HeroManager.Enemies.Where(x => !x.IsDead && x.Distance(Player) < 1125).ToList();
-            var getresults = Mathematics.GetPositions(Player, 1125, (byte) enemiescount, enemies1);
-            var items = Items.GetWardSlot();
-            if (getresults.Count > 1)
-            {
-                var getposition = Mathematics.SelectBest(getresults, Player);
-                if (Player.Distance(getposition) < 600 && W.IsReady() && items != null)
-                {
-                    var pos = getposition;
-                    foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
-                    {
-                        if (!_processw2 && W.IsReady() && Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" &&
-                            Player.Spellbook.GetSpell(SpellSlot.Q).Name != "blindmonkwtwo"
-                            && ((wards.Name.ToLower().Contains("ward") && wards.IsAlly)))
-                        {
-                            W.Cast(wards);
-                            lastcasted = Environment.TickCount;
-                        }
-                    }
+            //var distance = MaxTravelDistance();
+            //var enemiescount = GetValue("enemiescount");
+            //var enemies = Player.GetEnemiesInRange(2800);
+            //var wardflashpos = Mathematics.GetWardFlashPositions(distance, Player, (byte) enemiescount, enemies);
+            //var wardJumpPos = Mathematics.MoveVector(Player.Position, wardflashpos);
+            //var enemies1 = HeroManager.Enemies.Where(x => !x.IsDead && x.Distance(Player) < 1125).ToList();
+            //var getresults = Mathematics.GetPositions(Player, 1125, (byte) enemiescount, enemies1);
+            //var items = Items.GetWardSlot();
+            //if (getresults.Count > 1)
+            //{
+            //    var getposition = Mathematics.SelectBest(getresults, Player);
+            //    if (Player.Distance(getposition) < 600 && W.IsReady() && items != null)
+            //    {
+            //        var pos = getposition;
+            //        foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
+            //        {
+            //            if (!_processw2 && W.IsReady() && Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" &&
+            //                Player.Spellbook.GetSpell(SpellSlot.Q).Name != "blindmonkwtwo"
+            //                && ((wards.Name.ToLower().Contains("ward") && wards.IsAlly)))
+            //            {
+            //                W.Cast(wards);
+            //                lastcasted = Environment.TickCount;
+            //            }
+            //        }
 
-                    var ward = Items.GetWardSlot();
-                    if (W.IsReady() && ward != null && !_casted && ward.IsValidSlot() &&
-                        Environment.TickCount - _lastward > 400 &&
-                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne"
-                        )
-                    {
-                        Player.Spellbook.CastSpell(ward.SpellSlot, pos);
-                        _lastward = Environment.TickCount;
-                    }
-                }
-            }
-                if (enemies1.FirstOrDefault() == null) return;
-                if (Environment.TickCount - lastcasted < 1000)
-                {
-                    R.Cast(enemies1.FirstOrDefault());
-                }
+            //        var ward = Items.GetWardSlot();
+            //        if (W.IsReady() && ward != null && !_casted && ward.IsValidSlot() &&
+            //            Environment.TickCount - _lastward > 400 &&
+            //            Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne"
+            //            )
+            //        {
+            //            Player.Spellbook.CastSpell(ward.SpellSlot, pos);
+            //            _lastward = Environment.TickCount;
+            //        }
+            //    }
+            //}
+            //    if (enemies1.FirstOrDefault() == null) return;
+            //    if (Environment.TickCount - lastcasted < 1000)
+            //    {
+            //        R.Cast(enemies1.FirstOrDefault());
+            //    }
             
         }
 
@@ -1807,15 +1807,15 @@ namespace Lee_Sin
 
             if (RCombo != null && GetBool("rpolygon", typeof(bool))) Render.Circle.DrawCircle((Vector3) RCombo, 100, Color.Red, 5, true);
 
-            if (GetBool("counthitr", typeof (bool)))
-            {
-                var getresults = Mathematics.GetPositions(Player, 1125, (byte) 3, HeroManager.Enemies);
-                if (getresults.Count > 1)
-                {
-                    var Getposition = Mathematics.SelectBest(getresults, Player);
-                    Render.Circle.DrawCircle(Getposition, 100, Color.Red, 3, true);
-                }
-            }
+            //if (GetBool("counthitr", typeof (bool)))
+            //{
+            //    var getresults = Mathematics.GetPositions(Player, 1125, (byte) 3, HeroManager.Enemies);
+            //    if (getresults.Count > 1)
+            //    {
+            //        var Getposition = Mathematics.SelectBest(getresults, Player);
+            //        Render.Circle.DrawCircle(Getposition, 100, Color.Red, 3, true);
+            //    }
+            //}
 
 
 
