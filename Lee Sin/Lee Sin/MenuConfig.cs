@@ -46,13 +46,6 @@ namespace Lee_Sin
                 AddBool(combo, "Use [E]", "usee");
                 AddBool(combo, "Use [R]", "user");
                 AddValue(combo, "Auto [R] On X targets", "autoron", 1, 1, 5);
-                //var rmenu = new Menu("Auto R on X Enemies", "autorxenemies");
-                //{
-                //    AddBool(rmenu, "Use ward", "xeward");
-                //    AddBool(rmenu, "Use flash", "xeflash");
-                //    AddValue(rmenu, "Min enemies hit", "xeminhit", 3, 2, 5);
-                //    combo.AddSubMenu(rmenu);
-                //}
                 AddBool(combo, "Use [W]", "wardjumpcombo");
                 AddBool(combo, "Use [Smite]", "usessmite");
                 var items = new Menu("Use Items", "Use Items");
@@ -145,7 +138,7 @@ namespace Lee_Sin
             }
 
             //todo Anti Dash/Gap Closer (Ward jump/R)
-
+            Config.AddItem(new MenuItem("hyundebug", "DEBUG").SetValue(new KeyBind(0x40, KeyBindType.Toggle)));
             Config.AddSubMenu(combos);
             Config.AddSubMenu(combo);
             Config.AddSubMenu(harass);

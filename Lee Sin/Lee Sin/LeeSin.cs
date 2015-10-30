@@ -473,6 +473,66 @@ namespace Lee_Sin
         }
 
         #region HyunMi
+        private const float WardDistance = 600f, MaxDistance = 1025f, FlashDistance = 425f;
+
+        public static void HyunR(byte minHitRequirement, bool allowFlash)
+        {
+            if (!R.IsReady()) return;
+
+            var wardSlot = Items.GetWardSlot();
+            var flashSlot = allowFlash ? Player.GetSpellSlot("summonerflash") : SpellSlot.Unknown;
+
+            bool canFlash = false, canWard = false;
+
+            float maxTravelDistance = R.Range;
+            if (allowFlash && flashSlot != SpellSlot.Unknown && flashSlot.IsReady())
+            {
+                maxTravelDistance += FlashDistance;
+                canFlash = true;
+            }
+
+            if (wardSlot != null && W.IsReady() && wardSlot.Charges != 0)
+            {
+                maxTravelDistance += WardDistance;
+                canWard = true;
+            }
+
+            var destination = GetDestination(maxTravelDistance, minHitRequirement);
+
+            if (!destination.HasValue) return;
+
+            var distance = destination.Value.Distance(ObjectManager.Player.ServerPosition);
+
+            var target = destination.Value.GetEnemiesInRange(R.Range).FirstOrDefault();
+            if (target == null) return;
+
+            if (distance <= R.Range)
+            {
+                R.Cast(target);
+            }
+            else if (distance <= WardDistance && distance >= R.Range && canWard)
+            {
+                var wardPos = ObjectManager.Player.ServerPosition.Move(destination.Value, distance);
+
+                ObjectManager.Player.Spellbook.CastSpell(wardSlot.SpellSlot, wardPos);
+                var wardObj = MinionManager.GetMinions(wardPos, 50, MinionTypes.Wards).FirstOrDefault();
+                Game.PrintChat(wardObj.Name);
+                W.CastOnUnit(wardObj);
+                R.Cast(target);
+            }
+            else if (distance <= MaxDistance && distance > WardDistance && canWard && canFlash)
+            {
+                var wardPos = ObjectManager.Player.ServerPosition.Move(destination.Value, WardDistance);
+
+                ObjectManager.Player.Spellbook.CastSpell(wardSlot.SpellSlot, wardPos);
+                var wardObj = MinionManager.GetMinions(wardPos, 50, MinionTypes.Wards).FirstOrDefault();
+                Game.PrintChat(wardObj.Name);
+                W.CastOnUnit(wardObj);
+                ObjectManager.Player.Spellbook.CastSpell(flashSlot, destination.Value);
+                R.Cast(target);
+            }
+        }
+
 
         public static Vector3? GetDestination(float maxTravelDistance, byte minHitRequirement)
         {
@@ -508,6 +568,12 @@ namespace Lee_Sin
 //                    && !buff.Name.ToLower().Contains("mastery") && !buff.Name.ToLower().Contains("potion"))
 //                Game.PrintChat(buff.Name.ToString());
 //            }
+
+            if (Config.Item("hyundebug").GetValue<KeyBind>().Active)
+            {
+                HyunR(2, true);
+            }
+
             if (SelectedAllyAiMinion != null)
             {
                 if (SelectedAllyAiMinion.IsDead)
