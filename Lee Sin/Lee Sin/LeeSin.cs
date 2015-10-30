@@ -1301,6 +1301,7 @@ namespace Lee_Sin
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             if (R.IsReady())
             {
                 if (slot != null && W.IsReady() && slot.IsValidSlot() && Player.Distance(Insec(target)) > 150)
@@ -1309,6 +1310,11 @@ namespace Lee_Sin
            {
                if (slot != null && W.IsReady() && slot.IsValidSlot())
 >>>>>>> origin/master
+=======
+           if (R.IsReady())
+           {
+               if (slot != null && W.IsReady() && slot.IsValidSlot() && Player.Distance(Insec(target)) > 150)
+>>>>>>> parent of f4094ed... Lee Sin Reupload
 =======
            if (R.IsReady())
            {
@@ -1834,6 +1840,7 @@ namespace Lee_Sin
 <<<<<<< HEAD
             Render.Circle.DrawCircle(Player.Position, 1125, Color.DarkViolet);
 <<<<<<< HEAD
+<<<<<<< HEAD
             if (!GetBool("spellsdraw", typeof(bool))) return;
             if (!GetBool("ovdrawings", typeof(bool))) return;
             if (GetBool("qrange", typeof(bool)) && Q.Level > 0)
@@ -1843,6 +1850,11 @@ namespace Lee_Sin
             if (!GetBool("ovdrawings", typeof (bool))) return;
             if (GetBool("qrange", typeof (bool)) && Q.Level > 0)
 >>>>>>> origin/master
+=======
+            if (!GetBool("spellsdraw", typeof (bool))) return;
+            if (!GetBool("ovdrawings", typeof (bool))) return;
+            if (GetBool("qrange", typeof (bool)) && Q.Level > 0)
+>>>>>>> parent of f4094ed... Lee Sin Reupload
 =======
             if (!GetBool("spellsdraw", typeof (bool))) return;
             if (!GetBool("ovdrawings", typeof (bool))) return;
