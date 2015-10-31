@@ -370,17 +370,17 @@ namespace Slutty_ryze
                 if (GlobalManager.GetPassiveBuff == 3)
                 {
                     CastQn(target);
+                    CastR(target);
                     CastW(target);
                     CastE(target);
-                    CastR(target);
                 }
 
                 if (GlobalManager.GetPassiveBuff == 4)
                 {
-                    CastE(target);
-                    CastQn(target);
                     CastW(target);
+                    CastE(target);
                     CastR(target);
+                    CastQn(target);
                 }
 
                 if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
