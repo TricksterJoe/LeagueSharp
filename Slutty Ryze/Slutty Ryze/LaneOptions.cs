@@ -370,8 +370,8 @@ namespace Slutty_ryze
                 if (GlobalManager.GetPassiveBuff == 3)
                 {
                     CastQn(target);
-                    CastE(target);
                     CastW(target);
+                    CastE(target);
                     CastR(target);
                 }
 
