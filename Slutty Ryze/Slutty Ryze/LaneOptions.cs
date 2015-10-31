@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 
 namespace Slutty_ryze
 {
@@ -291,6 +292,7 @@ namespace Slutty_ryze
 
         public static void CastQn(Obj_AI_Hero target)
         {
+         
             if (target.IsValidTarget(Champion.Qn.Range)
                 && QSpell
                 && Champion.Qn.IsReady())
@@ -347,23 +349,20 @@ namespace Slutty_ryze
 
             if (target.IsValidTarget(Champion.Q.Range))
             {
-                if (GlobalManager.GetPassiveBuff < 2
-                    || !GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
+                if (GlobalManager.GetPassiveBuff < 2)
                 {
-
-                    CastQ(target);
                     CastW(target);
+                    CastQ(target);
                     CastE(target);
                     CastR(target);
                 }
 
                 if (GlobalManager.GetPassiveBuff == 2)
                 {
-
-                    CastQn(target);
                     CastW(target);
+                    CastQn(target);
                     CastE(target);
-                    CastR(target);
+                    CastR(target);   
                 }
 
 
@@ -373,14 +372,13 @@ namespace Slutty_ryze
                     CastE(target);
                     CastW(target);
                     CastR(target);
-
                 }
 
                 if (GlobalManager.GetPassiveBuff == 4)
                 {
-                    CastW(target);
-                    CastQn(target);
                     CastE(target);
+                    CastQn(target);
+                    CastW(target);
                     CastR(target);
                 }
 

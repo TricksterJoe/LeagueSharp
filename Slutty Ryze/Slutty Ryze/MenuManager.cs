@@ -61,6 +61,7 @@ namespace Slutty_ryze
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Draw Q").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "Draw E").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "Draw W").SetValue(true));
+            drawMenu.SubMenu("Drawings").AddItem(new MenuItem("stackDraw", "Stack Count").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("notdraw", "Draw Floating Text").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("keyBindDisplay", "Display Keybinds").SetValue(true));  
 

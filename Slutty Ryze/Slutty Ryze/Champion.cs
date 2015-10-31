@@ -208,7 +208,7 @@ namespace Slutty_ryze
 
         internal static void OnGapClose(ActiveGapcloser gapcloser)
         {
-            if (gapcloser.End.Distance(Player.ServerPosition) < W.Range)
+            if (gapcloser.End.Distance(Player.ServerPosition) < W.Range && GlobalManager.Config.Item("useQW2D").GetValue<bool>())
             {
                 W.Cast(gapcloser.Sender);
             }
