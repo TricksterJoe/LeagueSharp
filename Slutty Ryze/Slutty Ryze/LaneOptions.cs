@@ -349,7 +349,7 @@ namespace Slutty_ryze
 
             if (target.IsValidTarget(Champion.Q.Range))
             {
-                if (GlobalManager.GetPassiveBuff <= 1)
+                if (GlobalManager.GetPassiveBuff <= 1 && !GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
                 {
                     CastQ(target);
                                             CastE(target);
