@@ -54,7 +54,8 @@ namespace Slutty_ryze
                 case 0:
                     Drawing.DrawLine(new Vector2(pos.X - 25, pos.Y + 20), new Vector2(pos.X + 150, pos.Y + 20), 2,
                         System.Drawing.Color.SteelBlue);
-
+                  //  if (LaneOptions.newPoly != null)
+                   // LaneOptions.newPoly.Draw(System.Drawing.Color.Blue);
                     var col = 0;
                     Drawing.DrawText(pos.X, pos.Y, System.Drawing.Color.SteelBlue, "Key Table");
 
