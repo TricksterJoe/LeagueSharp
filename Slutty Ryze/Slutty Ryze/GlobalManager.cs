@@ -35,7 +35,7 @@ namespace Slutty_ryze
             return (minion.IsMinion || minion.MaxHealth > 3 || minion.Armor > 0 || minion.IsTargetable);
         }
 
-        public static Obj_AI_Hero GetHero { get; } = ObjectManager.Player;
+        public static Obj_AI_Hero GetHero = ObjectManager.Player;
 
         public static DamageToUnitDelegate DamageToUnit
         {
