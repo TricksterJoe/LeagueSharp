@@ -349,11 +349,11 @@ namespace Slutty_ryze
 
             if (target.IsValidTarget(Champion.Q.Range))
             {
-                if (GlobalManager.GetPassiveBuff < 2)
+                if (GlobalManager.GetPassiveBuff <= 1)
                 {
-                    CastW(target);
                     CastQ(target);
-                    CastE(target);
+                                            CastE(target);
+                    CastW(target);
                     CastR(target);
                 }
 
