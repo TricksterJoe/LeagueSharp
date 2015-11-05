@@ -188,34 +188,26 @@ namespace Slutty_ryze
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
                 {
-//
-//                    if (target.IsValidTarget() 
-//                        &&  GlobalManager.GetHero.Distance(target) > 400 && (Champion.Q.IsReady() && Champion.W.IsReady() && Champion.E.IsReady()))
-//                    {
-//                        MenuManager.Orbwalker.SetAttack(false);
-//                    }
-//
-//                    if (target.IsValidTarget() && GlobalManager.GetHero.Distance(target) > 400
-//                        && (GlobalManager.GetPassiveBuff == 4 || GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
-//                        &&
-//                        ((!Champion.Q.IsReady() && !Champion.W.IsReady() && !Champion.E.IsReady()) ||
-//                         (Champion.Q.IsReady() && Champion.W.IsReady() && Champion.E.IsReady())))
-//                    {
-//                        MenuManager.Orbwalker.SetAttack(false);
-//                    }
+
+                    var expires = (GlobalManager.GetHero.Spellbook.GetSpell(SpellSlot.Q).CooldownExpires);
+                    var CD =
+                        (int)
+                            (expires -
+                             (Game.Time - 1));
+                    if (Champion.W.IsReady() && !(CD < 2.5f))
+                    {
+                        MenuManager.Orbwalker.SetAttack(true);
+                    }
+                    else
+                    {
+                        MenuManager.Orbwalker.SetAttack(false);
+                    }
 
                     Champion.AABlock();
                     LaneOptions.ImprovedCombo();
 
-                    if (target.Distance(GlobalManager.GetHero) >=
-                        GlobalManager.Config.Item("minaarange").GetValue<Slider>().Value)
-                    {
-                        MenuManager.Orbwalker.SetAttack(false);
-                    }
-                    else
-                    {
-                        MenuManager.Orbwalker.SetAttack(true);
-                    }
+                    MenuManager.Orbwalker.SetAttack(!(target.Distance(GlobalManager.GetHero) >=
+                                                      GlobalManager.Config.Item("minaarange").GetValue<Slider>().Value));
                 }
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)

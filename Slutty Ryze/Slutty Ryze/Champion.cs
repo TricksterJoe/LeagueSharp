@@ -106,6 +106,7 @@ namespace Slutty_ryze
 
             var stackSliders = GlobalManager.Config.Item("stackSlider").GetValue<Slider>().Value;
             if (GlobalManager.GetHero.InFountain()) return;
+            if (GlobalManager.Config.Item("stackMana").GetValue<Slider>().Value > GlobalManager.GetHero.ManaPercent)
 
             if (GlobalManager.GetPassiveBuff >= stackSliders)
                 return;
