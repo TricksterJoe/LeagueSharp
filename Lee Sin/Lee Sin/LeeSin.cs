@@ -1413,7 +1413,7 @@ namespace Lee_Sin
 
 
 
-            if (Steps == steps.WardJump && R.IsReady() && Player.Distance(poss.To3D()) > 150)
+            if (Steps == steps.WardJump && R.IsReady() && Player.Distance(poss.To3D()) > 90)
             {
                 if (target.Distance(Player) > 600) return;
                 WardJump(poss.To3D(), false);
