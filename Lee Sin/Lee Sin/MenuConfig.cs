@@ -54,6 +54,7 @@ namespace Lee_Sin
                 //    combo.AddSubMenu(rmenu);
                 //}
                 AddBool(combo, "Use [W]", "wardjumpcombo");
+                AddBool(combo, "Use [W]ard Jump", "wardjumpcombo1");
                 AddBool(combo, "Use [Smite]", "usessmite");
                 var items = new Menu("Use Items", "Use Items");
                 {
