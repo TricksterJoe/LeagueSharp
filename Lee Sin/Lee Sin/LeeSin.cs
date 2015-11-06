@@ -2037,7 +2037,7 @@ namespace Lee_Sin
                     HeroManager.Enemies.Where(x => x.Distance(Player) < 1200 && x.IsValidTarget(1200))
                         .Count(h => h.NetworkId != target.NetworkId && ultPoly.IsInside(h.ServerPosition));
 
-                Drawing.DrawText(Drawing.WorldToScreen(Player.Position).X, Drawing.WorldToScreen(Player.Position).Y,
+                Drawing.DrawText(Drawing.WorldToScreen(Player.Position).X - 50, Drawing.WorldToScreen(Player.Position).Y + 30,
                     Color.Magenta, "Ult Will Hit " + counts);
             }
         }
