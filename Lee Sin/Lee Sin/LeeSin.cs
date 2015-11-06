@@ -238,7 +238,7 @@ namespace Lee_Sin
 
                     if (target == null) return;
 
-                    Utility.DelayAction.Add(200, () => Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
+                    Utility.DelayAction.Add((Game.Ping/2 )+ 10, () => Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
     Insec(target, 260, true).To3D()));
                 }
             }
