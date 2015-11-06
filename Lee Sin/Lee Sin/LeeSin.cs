@@ -186,6 +186,7 @@ namespace Lee_Sin
                 lastClickPos = Game.CursorPos;
                 lastClickBool = true;
                 SelectedAllyAiMinion = null;
+                SelectedAllyAiMinionv = new Vector3();
                 return;
             }
 
