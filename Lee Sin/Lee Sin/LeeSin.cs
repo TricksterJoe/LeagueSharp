@@ -9,7 +9,6 @@ using Color = System.Drawing.Color;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using static LeagueSharp.Common.MinionTypes;
 using Version = System.Version;
 
 namespace Lee_Sin
