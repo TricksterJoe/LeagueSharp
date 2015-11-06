@@ -224,10 +224,22 @@ namespace Lee_Sin
             //            }
             if (sender.IsMe)
             {
+                Game.PrintChat(args.SData.Name);
                 if (args.SData.Name == "BlindMonkRKick")
                 {
                     _processroncast = true;
                     _processroncastr = Environment.TickCount;
+                    Playerpos = Player.Position;
+                    var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
+                    if (target != null)
+                    {
+                        target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
+                    }
+
+                    if (target == null) return;
+
+                    Utility.DelayAction.Add(200, () => Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
+    Insec(target, 260, true).To3D()));
                 }
             }
             if (sender.IsMe || sender.IsAlly || !sender.IsChampion()) return;
@@ -307,17 +319,7 @@ namespace Lee_Sin
             {
                 _processr2 = true;
                 _processr2t = Environment.TickCount;
-                Playerpos = Player.Position;
-                var target = TargetSelector.GetTarget(Q.Range + 500, TargetSelector.DamageType.Physical);
-                if (target != null)
-                {
-                    target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
-                }
-
-                if (target == null) return;
-
-                Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-Insec(target, 260, true).To3D());
+               
             }
             Utility.DelayAction.Add(1000, () => _process = false);
 
@@ -1319,6 +1321,7 @@ Insec(target, 260, true).To3D());
 
             if (target == null) return;
             var qpred = Q.GetPrediction(target);
+
             var col = Q.GetPrediction(target).CollisionObjects;
 
 
