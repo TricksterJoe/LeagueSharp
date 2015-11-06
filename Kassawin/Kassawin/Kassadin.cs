@@ -33,12 +33,35 @@ namespace Kassawin
             DamageToUnit = GetComboDamage;
             E.SetSkillshot(0.25f, 20, int.MaxValue, false, SkillshotType.SkillshotCone);
             R.SetSkillshot(0.25f, 270, int.MaxValue, false, SkillshotType.SkillshotCircle);
+
+            Printmsg("Kassadin Assembly Loaded");
+            Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
+            Printmsg2("Don't Forget To " + "<font color='#00ff00'>[Upvote]</font> <font color='#FFFFFF'>" + "The Assembly In The Databse" + "</font>");
+
             MenuConfig.OnLoad();
             Game.OnUpdate += OnUpdate;
             Obj_AI_Base.OnDoCast += OnDoCast;
             Obj_AI_Base.OnDoCast += OnDoCasts;
             Interrupter2.OnInterruptableTarget += OnInteruppt;
             Drawing.OnDraw += OnDraw;
+        }
+
+        private static void Printmsg(string message)
+        {
+            Game.PrintChat(
+                "<font color='#6f00ff'>[Slutty Kassadin]:</font> <font color='#FFFFFF'>" + message + "</font>");
+        }
+
+        private static void Printmsg1(string message)
+        {
+            Game.PrintChat(
+                "<font color='#ff00ff'>[Slutty Kassadin]:</font> <font color='#FFFFFF'>" + message + "</font>");
+        }
+
+        private static void Printmsg2(string message)
+        {
+            Game.PrintChat(
+                "<font color='#00abff'>[Slutty Kassadin]:</font> <font color='#FFFFFF'>" + message + "</font>");
         }
 
         private static float GetComboDamage(Obj_AI_Hero enemy)
