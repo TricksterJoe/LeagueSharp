@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 
 namespace Slutty_ryze
 {
@@ -81,9 +82,9 @@ namespace Slutty_ryze
                 if (!GlobalManager.CheckMinion(minion)) continue;
 
                 var minionHp = minion.Health;// Reduce Calls and add in randomization buffer.
-                if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
-                    minionHp = minion.Health * (1 + (Seeder.Next(GlobalManager.Config.Item("minCreepHPOffset").GetValue<Slider>().Value, GlobalManager.Config.Item("maxCreepHPOffset").GetValue<Slider>().Value) / 100.0f));//Randomioze Minion Hp from min to max hp less than damage
-
+                //if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
+                //    minionHp = minion.Health * (1 + (Seeder.Next(GlobalManager.Config.Item("minCreepHPOffset").GetValue<Slider>().Value, GlobalManager.Config.Item("maxCreepHPOffset").GetValue<Slider>().Value) / 100.0f));//Randomioze Minion Hp from min to max hp less than damage
+                if (minion.IsDead) return;
                 if (qlchSpell
                     && Champion.Q.IsReady()
                     && minion.IsValidTarget(Champion.Q.Range)
@@ -291,6 +292,7 @@ namespace Slutty_ryze
 
         public static void CastQn(Obj_AI_Hero target)
         {
+         
             if (target.IsValidTarget(Champion.Qn.Range)
                 && QSpell
                 && Champion.Qn.IsReady())
@@ -347,13 +349,11 @@ namespace Slutty_ryze
 
             if (target.IsValidTarget(Champion.Q.Range))
             {
-                if (GlobalManager.GetPassiveBuff < 2
-                    || !GlobalManager.GetHero.HasBuff("RyzePassiveStack"))
+                if (GlobalManager.GetPassiveBuff <= 1 && !GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
                 {
-
                     CastQ(target);
-                    CastW(target);
                     CastE(target);
+                    CastW(target);
                     CastR(target);
                 }
 
@@ -364,6 +364,7 @@ namespace Slutty_ryze
                     CastW(target);
                     CastE(target);
                     CastR(target);
+
                 }
 
 
@@ -373,7 +374,6 @@ namespace Slutty_ryze
                     CastE(target);
                     CastW(target);
                     CastR(target);
-
                 }
 
                 if (GlobalManager.GetPassiveBuff == 4)
@@ -392,23 +392,21 @@ namespace Slutty_ryze
                     CastR(target);
                 }
             }
-//            else
-//            {
-//                if (wSpell 
-//                    && Champion.W.IsReady()
-//                    && target.IsValidTarget(Champion.W.Range))
-//                    Champion.W.CastOnUnit(target);
-//
-//                if (qSpell
-//                    && Champion.Qn.IsReady()
-//                    && target.IsValidTarget(Champion.Qn.Range))
-//                    Champion.Qn.Cast(target);
-//
-//                if (eSpell
-//                    && Champion.E.IsReady()
-//                    && target.IsValidTarget(Champion.E.Range))
-//                    Champion.E.CastOnUnit(target);
-//            }
+           else
+           {
+               if (wSpell 
+                   && Champion.W.IsReady()
+                 && target.IsValidTarget(Champion.W.Range))
+                  Champion.W.CastOnUnit(target);
+
+                if (qSpell
+                 && Champion.Qn.IsReady()
+                 && target.IsValidTarget(Champion.Qn.Range))
+                  Champion.Qn.Cast(target);
+
+              if (eSpell
+                  && Champion.E.IsReady()
+                    && target.IsValidTarget(Champion.E.Range))                  Champion.E.CastOnUnit(target);            }
             if (Champion.R.IsReady() && (GlobalManager.GetPassiveBuff == 4 || GlobalManager.GetHero.HasBuff("ryzepassivecharged")) && rSpell)
             {
                 if (!Champion.Q.IsReady() && !Champion.W.IsReady() && !Champion.E.IsReady())

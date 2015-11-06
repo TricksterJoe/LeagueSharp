@@ -106,6 +106,7 @@ namespace Slutty_ryze
 
             var stackSliders = GlobalManager.Config.Item("stackSlider").GetValue<Slider>().Value;
             if (GlobalManager.GetHero.InFountain()) return;
+            if (GlobalManager.Config.Item("stackMana").GetValue<Slider>().Value > GlobalManager.GetHero.ManaPercent)
 
             if (GlobalManager.GetPassiveBuff >= stackSliders)
                 return;
@@ -208,7 +209,7 @@ namespace Slutty_ryze
 
         internal static void OnGapClose(ActiveGapcloser gapcloser)
         {
-            if (gapcloser.End.Distance(Player.ServerPosition) < W.Range)
+            if (gapcloser.End.Distance(Player.ServerPosition) < W.Range && GlobalManager.Config.Item("useQW2D").GetValue<bool>())
             {
                 W.Cast(gapcloser.Sender);
             }

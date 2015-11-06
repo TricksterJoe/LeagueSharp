@@ -5,6 +5,7 @@ using System.Data.Common;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Prediction = LeagueSharp.Common.Prediction;
 using SharpDX;
 using Color = System.Drawing.Color;
 using SPrediction;
@@ -39,14 +40,14 @@ namespace Slutty_Veigar
             
             Q = new Spell(SpellSlot.Q, 900);
             W = new Spell(SpellSlot.W, 880);
-            E = new Spell(SpellSlot.E, 800);
+            E = new Spell(SpellSlot.E, 700);
             R = new Spell(SpellSlot.R, 650);
             SPrediction.Prediction.Initialize(Config);
             DamageToUnit = GetComboDamage;
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
             W.SetSkillshot(0.5f, 200f, int.MaxValue, false, SkillshotType.SkillshotCircle);
-            E.SetSkillshot(0.3f, 60f, int.MaxValue, false, SkillshotType.SkillshotCircle);
+            E.SetSkillshot(0.5f, 80f, int.MaxValue, false, SkillshotType.SkillshotCircle);
           //  Ew.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
             Printmsg("Veigar Assembly By Hoes Loaded");
             Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
@@ -195,7 +196,7 @@ namespace Slutty_Veigar
 
         private static void autoe(Obj_AI_Hero target)
         {
-            var pred = W.GetPrediction(target, true);
+            var pred = E.GetPrediction(target, true);
             var predss = pred.AoeTargetsHitCount;
 
             if (predss >=  GetValue("AutoE") - 1)
@@ -228,11 +229,8 @@ namespace Slutty_Veigar
                     {
                         var qpred = Q.GetPrediction(minions);
                         var col = qpred.CollisionObjects;
-                        if (minions != null)
-                        {
-                            if (minions.Health <= Q.GetDamage(minions) && col.Count() <= 1)
-                                Q.Cast(minions);
-                        }
+                        if (minions?.Health <= Q.GetDamage(minions) && col.Count() <= 1)
+                            Q.Cast(minions);
                     }
 
                     var prediction = LeagueSharp.Common.Prediction.GetPrediction(minions, Q.Delay);
@@ -494,7 +492,7 @@ namespace Slutty_Veigar
 
                 if (GetStringValue("user" + targets.ChampionName) != 0) continue;
 
-                if (!GetBool("advancedr", typeof (bool)))
+                if (GetBool("advancedr", typeof (bool)))
                 {
                     if (
                         (R.GetDamage(targets) + Q.GetDamage(targets) >= targets.Health && Q.IsReady() &&
@@ -555,57 +553,20 @@ namespace Slutty_Veigar
 
             if (!target.IsValidTarget(E.Range) || !E.IsReady()) return;
 
-//            var pred = E.GetPrediction(target);
-//
-////            if (Player.IsFacing(target))
-////                facing = Environment.TickCount;
-////
-////            if (!Player.IsFacing(target))
-////                nofacing = Environment.TickCount;
-//
-//            if (Player.IsFacing(target))
-//            {
-//                E.Cast(pred.CastPosition.Extend(Player.Position, 300));
-//                laste = Environment.TickCount;
-//            }
-//            else
-//            {
-//                E.Cast(pred.CastPosition.Extend(Player.Position, 530));
-//                laste = Environment.TickCount;
-//
-//            }
-
-//            var pred = E.GetPrediction(target);
-//            var targetPos = pred.UnitPosition;
-//            E.Cast(targetPos.Extend(Player.Position, 220).To2D());
-
-//            var epred = E.GetPrediction(target);
-//            var pos = epred.CastPosition;
-//            if (pos.Distance(Player.Position) < E.Range
-//                && epred.Hitchance >= HitChance.VeryHigh)
-//            {
-//                if (Utility.IsBothFacing(Player, target))
-//                {
-//                    E.Cast(pos.Extend(Player.Position, 300));
-//                }
-//                else if (Player.IsFacing(target) && !target.IsFacing(Player))
-//                {
-//                    E.Cast(pos.Extend(Player.Position, 150));
-//                }
-//                else if (!Player.IsFacing(target) && targetIsFacing(Player))
-//                {
-//                    E.Cast(pos.Extend(Player.Position, 300));
-//                }
-//            }
-
-            var epred = E.GetRingSPrediction(target, 350);
-
-            var pos = epred.CastPosition;
-            if ((epred.HitChance >= HitChance.High || target.IsStunned))
+            var epred = E.GetRingSPrediction(target, 375);
+            var pred = Prediction.GetPrediction(target, 0.2f, target.BoundingRadius);
+            var pos = pred.UnitPosition;
+            var extendpos = pos.Extend(Player.ServerPosition, 360);
+            switch (GetStringValue("useemode"))
             {
-                E.Cast(pos);
+                case 0:
+                    E.Cast(extendpos);
+                    break;
+
+                case 1:
+                    E.Cast(epred.CastPosition);
+                    break;
             }
-            // E.Cast(targetPos);
 
         }
 

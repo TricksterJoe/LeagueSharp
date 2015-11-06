@@ -54,7 +54,8 @@ namespace Slutty_ryze
                 case 0:
                     Drawing.DrawLine(new Vector2(pos.X - 25, pos.Y + 20), new Vector2(pos.X + 150, pos.Y + 20), 2,
                         System.Drawing.Color.SteelBlue);
-
+                  //  if (LaneOptions.newPoly != null)
+                   // LaneOptions.newPoly.Draw(System.Drawing.Color.Blue);
                     var col = 0;
                     Drawing.DrawText(pos.X, pos.Y, System.Drawing.Color.SteelBlue, "Key Table");
 
@@ -146,11 +147,16 @@ namespace Slutty_ryze
 
             if (!GlobalManager.GetHero.Position.IsOnScreen())
                 return;
-
+            if (GlobalManager.Config.Item("stackDraw").GetValue<bool>())
+            {
+                Drawing.DrawText(Drawing.WorldToScreen(GlobalManager.GetHero.Position).X - 55,
+                    Drawing.WorldToScreen(GlobalManager.GetHero.Position).Y, System.Drawing.Color.Cyan,
+                    "Current Stacks " + GlobalManager.GetPassiveBuff);
+            }
             // drawCircleThing((int)Champion.Q.Range/2, Drawing.WorldToScreen(GlobalManager.GetHero.Position), Color.Pink);
             var tears = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active;
             var passive = GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active;
-            var laneclear = !GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
+            var laneclear = GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
 
             var heroPosition = Drawing.WorldToScreen(GlobalManager.GetHero.Position);
             var textDimension = Drawing.GetTextExtent("Stunnable!");
