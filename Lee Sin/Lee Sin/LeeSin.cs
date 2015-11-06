@@ -682,15 +682,14 @@ Insec(target, 500, true).To3D());
             var jungleminion =
                 MinionManager.GetMinions(
                     Player.ServerPosition,
-                    Q.Range,
-                    All,
+                    Q.Range, MinionTypes.All,
                     MinionTeam.Neutral,
                     MinionOrderTypes.MaxHealth).FirstOrDefault();
             var jungleminions =
                 MinionManager.GetMinions(
                     Player.ServerPosition,
                     E.Range,
-                    All,
+                    MinionTypes.All,
                     MinionTeam.Neutral,
                     MinionOrderTypes.MaxHealth);
 
@@ -813,7 +812,7 @@ Insec(target, 500, true).To3D());
                 MinionManager.GetMinions(
                     Player.ServerPosition,
                     Q.Range,
-                    All,
+                    MinionTypes.All,
                     MinionTeam.Enemy,
                     MinionOrderTypes.MaxHealth);
 
@@ -841,7 +840,7 @@ Insec(target, 500, true).To3D());
     MinionManager.GetMinions(
         Player.ServerPosition,
         E.Range,
-        All,
+        MinionTypes.All,
         MinionTeam.Enemy,
         MinionOrderTypes.MaxHealth);
 
@@ -885,7 +884,7 @@ Insec(target, 500, true).To3D());
                 MinionManager.GetMinions(
                     Player.ServerPosition,
                     Q.Range,
-                    All,
+                    MinionTypes.All,
                     MinionTeam.Enemy,
                     MinionOrderTypes.MaxHealth);
 
@@ -1751,7 +1750,7 @@ Insec(target, 500, true).To3D());
             if (!GetBool("smiteonkillable", typeof(bool))) return;
 
             foreach (var mob in
-                MinionManager.GetMinions(Player.Position, 550, All, MinionTeam.Neutral,
+                MinionManager.GetMinions(Player.Position, 550, MinionTypes.All, MinionTeam.Neutral,
                     MinionOrderTypes.MaxHealth))
             {
                 foreach (var name in Names)
