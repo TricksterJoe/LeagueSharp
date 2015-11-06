@@ -2156,8 +2156,13 @@ Insec(target, 500, true).To3D());
                             if (match.Success)
                             {
                                 var gitVersion =
-                                    new Version(
-                                        $"{match.Groups[1]}.{match.Groups[2]}.{match.Groups[3]}.{match.Groups[4]}");
+                                     new Version(
+                                         string.Format(
+                                             "{0}.{1}.{2}.{3}",
+                                             match.Groups[1],
+                                             match.Groups[2],
+                                             match.Groups[3],
+                                             match.Groups[4]));
 
                                 if (gitVersion != typeof(Program).Assembly.GetName().Version)
                                 {
