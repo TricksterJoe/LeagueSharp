@@ -18,16 +18,14 @@ namespace Lee_Sin
         #region vars, enums, misc
         public static bool canFlash = false;
        public static  bool canWard = false;
-        public static Spell Q, W, E, R, Rk;
+        public static Spell Q, W, E, R;
         private static SpellSlot FlashSlot;
         private static int _lastward;
         private static bool _casted;
         private static bool _qcasted;
-        public static bool Castedonward;
         private static bool _qcasteds;
         private static int _lastq;
         private static bool _jumped;
-        private static bool _wardcasteds;
         private static Vector3 _position;
         private static Vector3 _playerpos;
         private static bool _qcast;
@@ -1184,10 +1182,10 @@ Insec(target, 500, true).To3D());
             {
                 Player.Spellbook.CastSpell(Smite, target);
             }
-            var poss = Player.ServerPosition.Extend(target.ServerPosition, Player.Distance(target) - 100);
-            if (E.IsReady() && W.IsReady() && target.Distance(Player) > E.Range)
-                if (!GetBool("wardjumpcombo1", typeof(bool))) return;
-            { WardJump(poss, false); }
+            //var poss = Player.ServerPosition.Extend(target.ServerPosition, Player.Distance(target) - 100);
+            //if (E.IsReady() && W.IsReady() && target.Distance(Player) > E.Range)
+            //    if (!GetBool("wardjumpcombo1", typeof(bool))) return;
+            //{ WardJump(poss, false); }
 
 
             #endregion
@@ -1686,14 +1684,10 @@ Insec(target, 500, true).To3D());
             }
 
             var ward = Items.GetWardSlot();
-            if (W.IsReady() && ward != null && !_casted && ward.IsValidSlot() && Environment.TickCount - _lastward > 400 &&
-                W1() && objects == null
-               )
-            {
-                Player.Spellbook.CastSpell(ward.SpellSlot, position);
-                _lastward = Environment.TickCount;
-            }
-
+            if (!W.IsReady() || ward == null || _casted || !ward.IsValidSlot() ||
+                Environment.TickCount - _lastward <= 400 || !W1() || objects != null) return;
+            Player.Spellbook.CastSpell(ward.SpellSlot, position);
+            _lastward = Environment.TickCount;
         }
 
         #endregion
@@ -1716,7 +1710,6 @@ Insec(target, 500, true).To3D());
         private static int _lastwards;
         private static bool _castedward;
         private static int lastprocessw;
-        private static int lastprocessward;
         private static int lastwardjump;
         private static bool _processr;
         private static int lastprocessr;
