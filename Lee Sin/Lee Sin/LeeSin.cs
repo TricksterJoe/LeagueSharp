@@ -190,15 +190,22 @@ namespace Lee_Sin
                 return;
             }
 
+            if (clickCounts == 0)
+            {
+                SelectedAllyAiMinionv = new Vector3();
+            }
 
-            if (lastClickBool && lastClickPos.Distance(Game.CursorPos) < 200)
+
+            if (lastClickBool && lastClickPos.Distance(Game.CursorPos) < 100)
             {
                 clickCount++;
                 lastClickBool = false;
             }
+
             if (GetBool("clickto", typeof (bool)))
             {
-                SelectedAllyAiMinionv = Game.CursorPos;
+         //       SelectedAllyAiMinionv = Game.CursorPos;
+                clickCounts++;
             }
             SelectedAllyAiMinion =
                 ObjectManager.Get<Obj_AI_Base>()
@@ -212,6 +219,8 @@ namespace Lee_Sin
             //                .FindAll(x => x.IsValid && x.Distance(Game.CursorPos, true) < 40000)
             //                .OrderBy(h => h.Distance(Game.CursorPos, true)).FirstOrDefault();
         }
+
+        public static int clickCounts { get; set; }
 
         public static Vector3 SelectedAllyAiMinionv
         { get; set; }
