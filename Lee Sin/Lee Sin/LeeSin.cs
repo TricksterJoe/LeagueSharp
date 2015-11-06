@@ -229,7 +229,7 @@ namespace Lee_Sin
                 {
                     _processroncast = true;
                     _processroncastr = Environment.TickCount;
-                    Playerpos = Player.Position;
+                    Playerpos = Player.ServerPosition;
                     var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
                     if (target != null)
                     {
@@ -398,8 +398,8 @@ namespace Lee_Sin
                         Player.Distance(target) + extendvalue).To2D();
                     if (flashcasting)
                     {
-                        return Playerpos.Extend(target.Position,
-                            Playerpos.Distance(target.Position) + 425 - Playerpos.Distance(target.Position)).To2D();
+                        return Playerpos.Extend(target.ServerPosition,
+                            Playerpos.Distance(target.ServerPosition) + 425 - Playerpos.Distance(target.ServerPosition)).To2D();
                     }
 
                 }
