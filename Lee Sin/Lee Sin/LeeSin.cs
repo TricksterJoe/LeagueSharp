@@ -1421,7 +1421,7 @@ namespace Lee_Sin
 
             if (_processw ||
                 (Steps == steps.Flash && target.Distance(Player) < 250) ||
-                Player.Distance(poss.To3D()) < 800) 
+                Player.Distance(poss.To3D()) < 80) 
             {
                 if (R.IsReady())
                 R.Cast(target);
