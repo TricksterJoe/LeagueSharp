@@ -1328,12 +1328,12 @@ Insec(target, 260, true).To3D());
                 new List<Vector2> {prediction.UnitPosition.To2D()});
             foreach (var collisions in collision)
             {
-                colbool = collision.Count >= 1;
+                colbool = collision.Count > 1;
             }
 
             #endregion
 
-            if (Player.Distance(target) > 300)
+            if (Player.Distance(target) > 500)
             {
                 if (Q2() && Q.IsReady())
                 {
@@ -1374,7 +1374,6 @@ Insec(target, 260, true).To3D());
                         Q.Cast();
                     }
                 }
-
             }
 
 
@@ -1383,15 +1382,11 @@ Insec(target, 260, true).To3D());
             var wardtotargetpos = Player.ServerPosition.Extend(target.ServerPosition, Player.Distance(target) - 180);
             var wardFlashBool = GetBool("expwardflash", typeof (bool));
 
-            if (slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 700 && R.IsReady() && wardFlashBool && (!Q.IsReady() || colbool))
+            if (slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 700 && R.IsReady() &&
+                wardFlashBool && ((!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 1000) || colbool))
             {
-                    WardJump(wardtotargetpos, false);
-                    Steps = steps.Flash;
-                }
-
-                if (Steps == steps.Flash)
-                {
-             //   FlashCast(Insec(target, 500, true));
+                WardJump(wardtotargetpos, false);
+                Steps = steps.Flash;
             }
 
 
