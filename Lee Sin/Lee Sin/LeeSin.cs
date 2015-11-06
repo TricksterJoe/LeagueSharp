@@ -1413,15 +1413,15 @@ namespace Lee_Sin
 
 
 
-            if (Steps == steps.WardJump && R.IsReady() && Player.Distance(poss.To3D()) > 90)
+            if (Steps == steps.WardJump && R.IsReady() && Player.Distance(poss.To3D()) > 20)
             {
                 if (target.Distance(Player) > 600) return;
                 WardJump(poss.To3D(), false);
             }
 
             if (_processw ||
-                (Steps == steps.Flash && target.Distance(Player) < 250) || Environment.TickCount - lastprocessw < 2000 ||
-                Player.Distance(poss.To3D()) < 90) 
+                (Steps == steps.Flash && target.Distance(Player) < 250) ||
+                Player.Distance(poss.To3D()) < 20) 
             {
                 if (R.IsReady())
                 R.Cast(target);
