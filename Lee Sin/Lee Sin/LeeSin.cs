@@ -195,8 +195,10 @@ namespace Lee_Sin
                 clickCount++;
                 lastClickBool = false;
             }
-
-
+            if (GetBool("clickto", typeof (bool)))
+            {
+                SelectedAllyAiMinionv = Game.CursorPos;
+            }
             SelectedAllyAiMinion =
                 ObjectManager.Get<Obj_AI_Base>()
                     .Where(
@@ -209,6 +211,9 @@ namespace Lee_Sin
             //                .FindAll(x => x.IsValid && x.Distance(Game.CursorPos, true) < 40000)
             //                .OrderBy(h => h.Distance(Game.CursorPos, true)).FirstOrDefault();
         }
+
+        public static Vector3 SelectedAllyAiMinionv
+        { get; set; }
 
         #endregion
 
@@ -238,9 +243,9 @@ namespace Lee_Sin
 
                     if (target == null) return;
 
-                        Utility.DelayAction.Add(50, () =>  Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
+                        Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
     Insec(target, 260, true).To3D(
-        )));
+        ));
                 }
             }
             if (sender.IsMe || sender.IsAlly || !sender.IsChampion()) return;
@@ -384,25 +389,35 @@ namespace Lee_Sin
 
             if (SelectedAllyAiMinion == null)
             {
-                var objAiHero = GetAllyHeroes(target, 1200).FirstOrDefault();
-                if (GetBool("useobjectsallies", typeof (bool)) && objAiHero != null)
-                {          
+                if (SelectedAllyAiMinionv == new Vector3() || !GetBool("clickto", typeof(bool)))
+                {
+                    var objAiHero = GetAllyHeroes(target, 1200).FirstOrDefault();
+                    if (GetBool("useobjectsallies", typeof (bool)) && objAiHero != null)
+                    {
                         return
                             objAiHero.ServerPosition.Extend(target.ServerPosition,
                                 objAiHero.Distance(target) + extendvalue).To2D();
-                }
-
-                 if (!GetBool("useobjectsallies", typeof(bool)) || objAiHero == null)
-                {
-                    if (!flashcasting)
-                        return Player.ServerPosition.Extend(target.ServerPosition,
-                        Player.Distance(target) + extendvalue).To2D();
-                    if (flashcasting)
-                    {
-                        return Playerpos.Extend(target.ServerPosition,
-                            Playerpos.Distance(target.ServerPosition) + 425 - Playerpos.Distance(target.ServerPosition)).To2D();
                     }
 
+                    if (!GetBool("useobjectsallies", typeof (bool)) || objAiHero == null)
+                    {
+                        if (!flashcasting)
+                            return Player.ServerPosition.Extend(target.ServerPosition,
+                                Player.Distance(target) + extendvalue).To2D();
+                        if (flashcasting)
+                        {
+                            return Playerpos.Extend(target.ServerPosition,
+                                Playerpos.Distance(target.ServerPosition) + 425 -
+                                Playerpos.Distance(target.ServerPosition)).To2D();
+                        }
+
+                    }
+                }
+                else
+                {
+                    return
+    SelectedAllyAiMinionv.Extend(target.ServerPosition,
+        SelectedAllyAiMinionv.Distance(target.ServerPosition) + extendvalue).To2D();
                 }
             }
             return new Vector2();
@@ -512,6 +527,8 @@ namespace Lee_Sin
 
         private static void OnUpdate(EventArgs args)
         {
+           // Game.PrintChat(SelectedAllyAiMinionv.ToString());
+           // Game.PrintChat(new Vector3().ToString());
             //
             //            foreach (var buff in Player.Buffs)
             //            {
@@ -1395,14 +1412,15 @@ namespace Lee_Sin
 
 
 
-            if (Steps == steps.WardJump && R.IsReady())
+            if (Steps == steps.WardJump && R.IsReady() && Player.Distance(poss.To3D()) > 150)
             {
                 if (target.Distance(Player) > 600) return;
                 WardJump(poss.To3D(), false);
             }
 
-            if (_processw || 
-                (Steps == steps.Flash && target.Distance(Player) < 250) || Environment.TickCount -  lastprocessw < 2000)
+            if (_processw ||
+                (Steps == steps.Flash && target.Distance(Player) < 250) || Environment.TickCount - lastprocessw < 2000 ||
+                Player.Distance(poss.To3D()) < 150) 
             {
                 if (R.IsReady())
                 R.Cast(target);
@@ -2055,7 +2073,10 @@ namespace Lee_Sin
             {
                 Render.Circle.DrawCircle(SelectedAllyAiMinion.Position, 200, Color.Blue, 2, true);
             }
-
+            if (SelectedAllyAiMinionv != new Vector3() && GetBool("clickto", typeof(bool)))
+            {
+                Render.Circle.DrawCircle(SelectedAllyAiMinionv, 200, Color.Blue, 2, true);
+            }
 
 
             var target = TargetSelector.GetTarget(2000, TargetSelector.DamageType.Physical);
@@ -2086,8 +2107,8 @@ namespace Lee_Sin
 
             if (!GetBool("linebetween", typeof(bool))) return;
             var objAiHero = GetAllyHeroes(target, 1200).FirstOrDefault();
-            if (SelectedAllyAiMinion == null)
-            {
+            if (SelectedAllyAiMinion == null && SelectedAllyAiMinionv == new Vector3())
+            {               
                 if (objAiHero != null && GetBool("useobjectsallies", typeof(bool)))
                 {
                     var pos11 = Drawing.WorldToScreen(target.Position);
@@ -2118,6 +2139,16 @@ namespace Lee_Sin
                 Drawing.DrawLine(pos3, pos4, 3, Color.Red);
                 Drawing.DrawText(pos4.X, pos4.Y, Color.Black, "X");
             }
+
+            if (SelectedAllyAiMinionv != new Vector3())
+            {
+                var pos3 = Drawing.WorldToScreen(target.Position);
+                var distance = target.Distance(SelectedAllyAiMinionv);
+                var pos4 = Drawing.WorldToScreen(target.Position.Extend(SelectedAllyAiMinionv, distance));
+                Drawing.DrawLine(pos3, pos4, 3, Color.Red);
+                Drawing.DrawText(pos4.X, pos4.Y, Color.Black, "X");
+            }
+
 
         }
 
