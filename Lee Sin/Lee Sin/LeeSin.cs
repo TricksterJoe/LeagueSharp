@@ -104,7 +104,7 @@ namespace Lee_Sin
 
             foreach (var spell in Player.Spellbook.Spells)
             {
-                if (spell.Name.Contains("smite"))
+                if (spell.Name.ToLower().Contains("smite"))
                     Smite = spell.Slot;
             }
             Printmsg("Lee Sin By Hoes Assembly Loaded");
@@ -305,7 +305,6 @@ namespace Lee_Sin
             }
             if (args.Slot == SpellSlot.R && GetBool("wardinsec", typeof(KeyBind)))
             {
-
                 _processr2 = true;
                 _processr2t = Environment.TickCount;
                 Playerpos = Player.Position;
@@ -318,7 +317,7 @@ namespace Lee_Sin
                 if (target == null) return;
 
                 Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-Insec(target, 500, true).To3D());
+Insec(target, 260, true).To3D());
             }
             Utility.DelayAction.Add(1000, () => _process = false);
 
@@ -397,8 +396,8 @@ Insec(target, 500, true).To3D());
                         Player.Distance(target) + extendvalue).To2D();
                     if (flashcasting)
                     {
-                        return Playerpos.Extend(target.ServerPosition,
-                            Playerpos.Distance(target.ServerPosition) + 425 - Playerpos.Distance(target.ServerPosition)).To2D();
+                        return Playerpos.Extend(target.Position,
+                            Playerpos.Distance(target.Position) + 425 - Playerpos.Distance(target.Position)).To2D();
                     }
 
                 }
