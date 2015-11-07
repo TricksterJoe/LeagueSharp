@@ -242,49 +242,47 @@ namespace Slutty_ryze
 
         }
 
-        public static void CastQ(Obj_AI_Base target)
+        public static void CastQ(Obj_AI_Base target, bool menu = true)
         {
+            if (menu && !QSpell) return;
             if (target.IsValidTarget(Champion.Q.Range)
-                && QSpell
                 && Champion.Q.IsReady())
                 Champion.Q.Cast(target);
         }
 
-        public static void CastQn(Obj_AI_Base target)
+        public static void CastQn(Obj_AI_Base target, bool menu = true)
         {
-         
+            if (menu && !QSpell) return;
             if (target.IsValidTarget(Champion.Qn.Range)
-                && QSpell
                 && Champion.Qn.IsReady())
                 Champion.Qn.Cast(target);
         }
 
-        public static void CastW(Obj_AI_Base target)
+        public static void CastW(Obj_AI_Base target, bool menu = true)
         {
+            if (menu && !WSpell) return;
             if (target.IsValidTarget(Champion.W.Range)
-                && WSpell
                 && Champion.W.IsReady())
                 Champion.W.Cast(target);
         }
 
-        public static void CastE(Obj_AI_Base target)
+        public static void CastE(Obj_AI_Base target, bool menu = true)
         {
+            if (menu && !ESpell) return;
             if (target.IsValidTarget(Champion.E.Range)
-                && ESpell
                 && Champion.E.IsReady())
                 Champion.E.Cast(target);
         }
 
-        public static void CastR(Obj_AI_Base target)
+        public static void CastR(Obj_AI_Base target, bool menu = true)
         {
-            if (!RSpell || !Champion.R.IsReady())
+            if (menu && !RSpell) return;
+            if (!Champion.R.IsReady())
                 return;
             if (target.IsValidTarget(Champion.W.Range)
                 && target.Health > (Champion.Q.GetDamage(target) + Champion.E.GetDamage(target)))
             {
-                if (RwwSpell && target.HasBuff("RyzeW"))
-                    Champion.R.Cast();
-                if (!RwwSpell)
+                if (target.HasBuff("RyzeW"))
                     Champion.R.Cast();
             }
         }
@@ -299,45 +297,64 @@ namespace Slutty_ryze
             {
                 if (GlobalManager.GetPassiveBuff <= 1 && !GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
                 {
-                    CastQ(target);
-                    CastE(target);
-                    CastW(target);
-                    CastR(target);
+                    if (qSpell)
+                    CastQ(target, false);
+                    if(eSpell)
+                    CastE(target, false);
+                    if(wSpell)
+                    CastW(target, false);
+                    if(rSpell)
+                    CastR(target, false);
                 }
 
                 if (GlobalManager.GetPassiveBuff == 2)
                 {
-
-                    CastQn(target);
-                    CastW(target);
-                    CastE(target);
-                    CastR(target);
+                    if (qSpell)
+                    CastQn(target, false);
+                    if (wSpell)
+                    CastW(target, false);
+                    if (eSpell)
+                    CastE(target, false);
+                    if (rSpell)
+                    CastR(target, false);
 
                 }
 
 
                 if (GlobalManager.GetPassiveBuff == 3)
                 {
-                    CastQn(target);
-                    CastE(target);
-                    CastW(target);
-                    CastR(target);
+                    if (qSpell)
+                    CastQn(target, false);
+                    if (eSpell)
+                    CastE(target, false);
+                    if (wSpell)
+                    CastW(target, false);
+                    if (rSpell)
+                    CastR(target, false);
                 }
 
                 if (GlobalManager.GetPassiveBuff == 4)
                 {
-                    CastW(target);
-                    CastQn(target);
-                    CastE(target);
-                    CastR(target);
+                    if (wSpell)
+                    CastW(target, false);
+                    if (qSpell)
+                    CastQn(target, false);
+                    if (eSpell)
+                    CastE(target, false);
+                    if (rSpell)
+                    CastR(target, false);
                 }
 
                 if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
                 {
-                    CastW(target);
-                    CastQn(target);
-                    CastE(target);
-                    CastR(target);
+                    if (wSpell)
+                    CastW(target, false);
+                    if (qSpell)
+                    CastQn(target, false);
+                    if (eSpell)
+                    CastE(target, false);
+                    if (rSpell)
+                    CastR(target, false);
                 }
             }
             else
