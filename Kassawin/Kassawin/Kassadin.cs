@@ -45,7 +45,32 @@ namespace Kassawin
             Obj_AI_Base.OnDoCast += OnDoCast;
             Obj_AI_Base.OnDoCast += OnDoCasts;
             Interrupter2.OnInterruptableTarget += OnInteruppt;
+            Spellbook.OnCastSpell += OnCastSpell;
+            Obj_AI_Base.OnProcessSpellCast += OnProcess;
             Drawing.OnDraw += OnDraw;
+        }
+
+        private static void OnProcess(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (sender.IsMe)
+            {
+                if (args.SData.Name == "RiftWalk" || args.SData.Name == "ForcePulse" || args.SData.Name == "NetherBlade" || args.SData.Name == "NullSphere")
+                {
+                    dontAtt = true;
+                }
+                else
+                    dontAtt = false;
+            }
+
+        }
+
+        private static void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
+        {
+            if (args.Slot == SpellSlot.R || args.Slot == SpellSlot.E || args.Slot == SpellSlot.Q || args.Slot == SpellSlot.W)
+            {
+                dontAtt = true;
+                dontatttimer = Environment.TickCount;
+            }
         }
 
         private static void Printmsg(string message)
@@ -264,16 +289,6 @@ namespace Kassawin
 
         private static void OnUpdate(EventArgs args)
         {
-
-            //  Game.PrintChat(Player.Spellbook.GetSpell(SpellSlot.R).ManaCost.ToString());
-            // Game.PrintChat(Player.GetBuffCount("forcepulsecounter").ToString());
-            //  Game.PrintChat(Player.GetSpell(SpellSlot.W).State.ToString());
-
-            //foreach (var buff in Player.Buffs)
-            //{
-            //    Game.PrintChat(buff.Name);
-            //}
-            //Game.PrintChat(GetPassiveBuff.ToString());
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -297,7 +312,6 @@ namespace Kassawin
             }
 
             Killsteal();
-
 
         }
 
@@ -557,7 +571,6 @@ namespace Kassawin
 
         private static void Combo()
         {
-
             var target = TargetSelector.GetTarget(Q.Range + 200, TargetSelector.DamageType.Magical);
             if (target == null) return;
             var useq = GetBool("useq", typeof (bool));
@@ -618,6 +631,8 @@ namespace Kassawin
         private static int facing;
         private static int nofacing;
         private static GameObject Veigare;
+        public static int dontatttimer;
+        public static bool dontAtt = false;
         public static bool EnableDrawingDamage { get; set; }
         public static Color DamageFillColor { get; set; }
 
