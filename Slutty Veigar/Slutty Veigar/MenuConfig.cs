@@ -25,7 +25,7 @@ namespace Slutty_Veigar
             {
                 AddBool(combomenu, "Use [Q]", "useqcombo");
                 combomenu.AddItem(new MenuItem("usewmode", "[W] Mode"))
-                    .SetValue(new StringList(new[] {"Regular", "On Immobilized", "Don't Use"}));
+                    .SetValue(new StringList(new[] {"Regular", "On Immobilized/Inside Cage", "Don't Use"}));
                 combomenu.AddItem(new MenuItem("useemode", "[E] Mode"))
                     .SetValue(new StringList(new[] {"Beta Prediction"}));
                 AddBool(combomenu, "Use [E]", "useecombo");
