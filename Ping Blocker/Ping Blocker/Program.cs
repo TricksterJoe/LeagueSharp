@@ -57,7 +57,7 @@ namespace Ping_Blocker
         {
             foreach (var hero in HeroManager.Allies.Where(x => !x.IsMe))
             {
-                if (args.Source.NetworkId != Player.NetworkId)
+                if (args.Source.NetworkId != Player.NetworkId) // most likely redundant, keeping it anyways
                 {
                     if (args.Source.NetworkId == hero.NetworkId)
                     {
@@ -71,9 +71,9 @@ namespace Ping_Blocker
 
             foreach (var hero in HeroManager.Allies.Where(x => !x.IsMe))
             {
-                if (args.Source.NetworkId != Player.NetworkId)
+                if (args.Source.NetworkId != Player.NetworkId) // most likely redundant, keeping it anyways
                 {
-                    Game.PrintChat(args.PingType.ToString());
+                  
                     foreach (var types in PingCategorys)
                     {
                         if (GetBool("useon" + types + hero.ChampionName, typeof (bool)) &&
