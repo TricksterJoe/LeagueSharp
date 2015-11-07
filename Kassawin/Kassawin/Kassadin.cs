@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
 using Color = System.Drawing.Color;
 
 
@@ -29,7 +30,7 @@ namespace Kassawin
             if (Player.ChampionName != "Kassadin") return;
             Q = new Spell(SpellSlot.Q, 650);
             W = new Spell(SpellSlot.W, 200);
-            E = new Spell(SpellSlot.E, 700);
+            E = new Spell(SpellSlot.E, 400);
             R = new Spell(SpellSlot.R, 700);
             DamageToUnit = GetComboDamage;
             E.SetSkillshot(0.25f, 20, int.MaxValue, false, SkillshotType.SkillshotCone);
@@ -173,14 +174,29 @@ namespace Kassawin
             if (!usew) return;
             if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
             {
-                if (W.IsReady() &&
-                    ((Obj_AI_Base) args.Target).Health > Player.GetAutoAttackDamage((Obj_AI_Base) args.Target) + 50)
+                var minions =
+                    MinionManager.GetMinions(Player.Position, 300);
+                
+                if (W.IsReady())
                 {
-                    W.Cast();
-                    Orbwalking.ResetAutoAttackTimer();
-                    Orbwalker.ForceTarget((Obj_AI_Base) args.Target);
+                    if(((Obj_AI_Base) args.Target).Health > Player.GetAutoAttackDamage((Obj_AI_Base) args.Target) + 50)                      
+                    {
+                        W.Cast();
+                        Orbwalking.ResetAutoAttackTimer();
+                        Orbwalker.ForceTarget((Obj_AI_Base) args.Target);
+                    }
+                    foreach (var min in minions.Where(
+                            x => x.NetworkId != ((Obj_AI_Base)args.Target).NetworkId))
+                    {
+                        if (((Obj_AI_Base) args.Target).Health > Player.GetAutoAttackDamage((Obj_AI_Base) args.Target))
+                        {
+                            W.Cast();
+                            Orbwalking.ResetAutoAttackTimer();
+                            Orbwalker.ForceTarget(min);
+                        }
+                    }
                 }
-            }
+            }   
         }
 
         private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -210,6 +226,20 @@ namespace Kassawin
         private static bool eCanCast()
         {
             return Player.HasBuff("forcepulsecancast");
+        }
+
+
+        public static int GetPassiveBuff
+        {
+            get
+            {
+                var data = Player.Buffs.FirstOrDefault(b => b.Name.ToLower() == "forcepulsecounter");
+                if (data != null)
+                {
+                    return data.Count == -1 ? 0 : data.Count == 0 ? 1 : data.Count;
+                }
+                return 0;
+            }
         }
 
         public static int ForcePulseCount()
@@ -243,6 +273,7 @@ namespace Kassawin
             //{
             //    Game.PrintChat(buff.Name);
             //}
+            //Game.PrintChat(GetPassiveBuff.ToString());
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -387,7 +418,7 @@ namespace Kassawin
                     //else if (Player.Distance(minions) > Orbwalking.GetRealAutoAttackRange(minions))
                     //{
                     var miniosn =
-                        MinionManager.GetMinions(Player.Position, E.Range);
+                        MinionManager.GetMinions(Player.Position, 400);
                     {
                         if (miniosn.FirstOrDefault() != null)
                         {
@@ -456,7 +487,7 @@ namespace Kassawin
                     Q.Cast(target);
             }
 
-            if (target.Health < E.GetDamage(target) && eCanCast() && target.IsValidTarget(E.Range))
+            if (target.Health < E.GetDamage(target) && eCanCast() && target.Distance(Player) < 500)
             {
                 if (eks)
                     E.Cast(target.Position);
@@ -499,7 +530,7 @@ namespace Kassawin
                 }
             }
 
-            if (E.IsReady() && eCanCast() && target.IsValidTarget(E.Range))
+            if (E.IsReady() && eCanCast() && target.Distance(Player) < 500)
             {
                 if (usee)
                     E.Cast(target);
@@ -527,7 +558,7 @@ namespace Kassawin
         private static void Combo()
         {
 
-            var target = TargetSelector.GetTarget(Q.Range + 400, TargetSelector.DamageType.Magical);
+            var target = TargetSelector.GetTarget(Q.Range + 200, TargetSelector.DamageType.Magical);
             if (target == null) return;
             var useq = GetBool("useq", typeof (bool));
             var user = GetBool("user", typeof (bool));
@@ -555,27 +586,29 @@ namespace Kassawin
                 }
             }
 
-            if (E.IsReady() && usee && target.IsValidTarget(E.Range - 200) && eCanCast())
+            if (E.IsReady() && usee && target.Distance(Player) < 500 && eCanCast())
             {
                 if (Player.Distance(target) < Orbwalking.GetRealAutoAttackRange(target) && !W.IsReady())
                     E.Cast(target.Position);
                 else if (Player.Distance(target) > Orbwalking.GetRealAutoAttackRange(target))
                 {
-                    E.Cast(target.Position);
+                   Utility.DelayAction.Add(200, () =>  E.Cast(target.Position));
                 }
             }
 
             var rCount = GetValue("rcount");
-            var turret =
-                ObjectManager.Get<Obj_AI_Turret>().Where(x => !x.IsDead && x.Distance(target) < 600 && x.IsEnemy);
             var extendedposition = Player.Position.Extend(target.Position, 500);
             if (ForcePulseCount() < rCount && user && R.IsReady() && Player.IsFacing(target))
             {
-                if (turret.FirstOrDefault() != null && userturret) return;
-                if (Player.Mana >= Player.Spellbook.GetSpell(SpellSlot.R).ManaCost + Q.ManaCost)
+                if (target.UnderTurret(true) && userturret) return;
+                if (target.HealthPercent - 15 > Player.HealthPercent) return;
+                if (Q.IsReady() || (E.IsReady() && (eCanCast() || GetPassiveBuff == 5)) || W.IsReady())
                 {
-                    if (Player.Distance(target) > Orbwalking.GetRealAutoAttackRange(target))
-                        R.Cast(extendedposition);
+                    if (Player.Mana >= Player.Spellbook.GetSpell(SpellSlot.R).ManaCost + Q.ManaCost)
+                    {
+                        if (Player.Distance(target) > Orbwalking.GetRealAutoAttackRange(target))
+                            R.Cast(extendedposition);
+                    }
                 }
             }
 
