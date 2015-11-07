@@ -252,7 +252,7 @@ namespace Lee_Sin
                     }
 
                     if (target == null) return;
-                    if (!GetBool("wardinsec", typeof(KeyBind))) return
+                    if (!GetBool("wardinsec", typeof(KeyBind))) return;
                       Utility.DelayAction.Add(50, () =>  Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
     Insec(target, 260, true).To3D(
         )));
