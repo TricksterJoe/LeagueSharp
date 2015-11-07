@@ -31,20 +31,16 @@ namespace Ping_Blocker
         {
             Config = new Menu(Menuname, Menuname, true);
 
-            var targetSelectorMenu = new Menu("Target Selector", "Target Selector");
-            TargetSelector.AddToMenu(targetSelectorMenu);
-            Config.AddSubMenu(targetSelectorMenu);
-            Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
-
             var allies = new Menu("Allies Settings", "Allies Settings");
             foreach (var hero in HeroManager.Allies.Where(x => !x.IsMe))
             {
-                var ally = new Menu(hero.ChampionName, "heronames");
+                var ally = new Menu(hero.ChampionName, "heronames" + hero.ChampionName);
                 foreach (var  type in PingCategorys)
                 {
                     AddBool(ally, "Use On " + type, "useon" + type + hero.ChampionName, false);
-                    AddBool(ally, "Disable All Pings", "disableall" + hero.ChampionName, false);
+                    
                 }
+                AddBool(ally, "Disable All Pings", "disableall" + hero.ChampionName, false);
                 allies.AddSubMenu(ally);
             }
 
