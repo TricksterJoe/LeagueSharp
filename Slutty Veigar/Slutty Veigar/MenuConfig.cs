@@ -27,7 +27,7 @@ namespace Slutty_Veigar
                 combomenu.AddItem(new MenuItem("usewmode", "[W] Mode"))
                     .SetValue(new StringList(new[] {"Regular", "On Immobilized", "Don't Use"}));
                 combomenu.AddItem(new MenuItem("useemode", "[E] Mode"))
-                    .SetValue(new StringList(new[] {"Beta Prediction", "Regular Prediction"}));
+                    .SetValue(new StringList(new[] {"Beta Prediction"}));
                 AddBool(combomenu, "Use [E]", "useecombo");
                 var rsettings = new Menu("[R] Settings", "[R] [S]ettings");
                 foreach (var hero in HeroManager.Enemies)

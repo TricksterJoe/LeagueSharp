@@ -8,7 +8,6 @@ using LeagueSharp.Common;
 using Prediction = LeagueSharp.Common.Prediction;
 using SharpDX;
 using Color = System.Drawing.Color;
-using SPrediction;
 
 namespace Slutty_Veigar
 {
@@ -42,7 +41,6 @@ namespace Slutty_Veigar
             W = new Spell(SpellSlot.W, 880);
             E = new Spell(SpellSlot.E, 700);
             R = new Spell(SpellSlot.R, 650);
-            SPrediction.Prediction.Initialize(Config);
             DamageToUnit = GetComboDamage;
 
             Q.SetSkillshot(0.25f, 70f, 2000f, false, SkillshotType.SkillshotLine);
@@ -54,9 +52,34 @@ namespace Slutty_Veigar
             Printmsg2("Don't Forget To " + "<font color='#00ff00'>[Upvote]</font> <font color='#FFFFFF'>" + "The Assembly In The Databse" + "</font>");
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
-           // GameObject.OnCreate += OnCreate;
-           // CustomEvents.Unit.OnDash += Ondash;
+            GameObject.OnCreate += OnCreate;
+            GameObject.OnDelete += OnDelete;
+            // GameObject.OnCreate += OnCreate;
+            // CustomEvents.Unit.OnDash += Ondash;
         }
+
+        private static void OnDelete(GameObject sender, EventArgs args)
+        {
+            if (sender.Name.Contains("Odin")) return;
+            Game.PrintChat(sender.Name);
+            if (sender.Name.ToLower().Contains("veigar_base_e_cage"))
+            {
+                Cage = null;
+            }
+        }
+
+        private static void OnCreate(GameObject sender, EventArgs args)
+        {
+           // Game.PrintChat(sender.Name);
+            if (sender.Name.ToLower().Contains("veigar_base_e_cage"))
+            {
+                Cage = sender;
+                if (Cage != null)
+                    newCircle = new Geometry.Polygon.Circle(Cage.Position, 450);
+            }
+            
+        }
+
 
         private static void Printmsg(string message)
         {
@@ -113,6 +136,13 @@ namespace Slutty_Veigar
         private static void OnUpdate(EventArgs args)
         {
             Orbwalker.SetAttack(true);
+            //if (Cage != null)
+            //{
+            //    if (newCircle.IsInside(Player))
+            //    {
+            //        Game.PrintChat("yes");
+            //    }
+            //}
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.Combo:
@@ -552,8 +582,7 @@ namespace Slutty_Veigar
             if (!GetBool(name, type)) return;
 
             if (!target.IsValidTarget(E.Range) || !E.IsReady()) return;
-
-            var epred = E.GetRingSPrediction(target, 375);
+            
             var pred = Prediction.GetPrediction(target, 0.2f, target.BoundingRadius);
             var pos = pred.UnitPosition;
             var extendpos = pos.Extend(Player.ServerPosition, 360);
@@ -561,10 +590,6 @@ namespace Slutty_Veigar
             {
                 case 0:
                     E.Cast(extendpos);
-                    break;
-
-                case 1:
-                    E.Cast(epred.CastPosition);
                     break;
             }
 
@@ -575,14 +600,14 @@ namespace Slutty_Veigar
             if (!target.IsValidTarget(W.Range) || !W.IsReady()) return;
             if ((!Player.HasBuffOfType(BuffType.Stun) && !Player.HasBuffOfType(BuffType.Taunt) &&
                  !Player.HasBuffOfType(BuffType.Snare)) && Environment.TickCount - laste < 1500) return;
-            var wpred = W.GetSPrediction(target);
+            var wpred = W.GetPrediction(target);
             switch (GetStringValue(name))
                 {
                     case 0:
                         W.Cast(wpred.CastPosition);
                         break;
                     case 1:
-                        if (target.HasBuffOfType(BuffType.Stun) || target.HasBuffOfType(BuffType.Snare) || target.HasBuffOfType(BuffType.Taunt))
+                        if (target.HasBuffOfType(BuffType.Stun) || target.HasBuffOfType(BuffType.Snare) || target.HasBuffOfType(BuffType.Taunt) || newCircle.IsInside(target))
                             W.Cast(target.Position);
                         break;
                     case 2:
@@ -596,6 +621,8 @@ namespace Slutty_Veigar
         private static int facing;
         private static int nofacing;
         private static GameObject Veigare;
+        private static GameObject Cage;
+        private static Geometry.Polygon.Circle newCircle;
         public static bool EnableDrawingDamage { get; set; }
         public static Color DamageFillColor { get; set; }
 
@@ -670,6 +697,11 @@ namespace Slutty_Veigar
             var draw = GetBool("displayrange", typeof(bool));
 
             if (!draw) return;
+
+            if (Cage != null && newCircle != null)
+            {
+                newCircle.Draw(Color.Blue);
+            }
 
             if (drawq)
                 Render.Circle.DrawCircle(Player.Position, R.Range, Color.Magenta);
