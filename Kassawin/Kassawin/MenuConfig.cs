@@ -24,6 +24,7 @@ namespace Kassawin
                 AddBools(combo, "Use [W]", "usew", "W Usage");
                 AddBools(combo, "Use [E]", "usee", "E Usage");
                 AddBools(combo, "Use [R]", "user", "R Usage");
+                AddBools(combo, "Don't [R] Under Turret", "usert", "Prevents you From R under turret");
                 AddBools(combo, "Use [Ignite]", "useignite", "Ignite Usage");
                 AddValue(combo, "Only [R] When Count Below", "rcount", 1, 1, 5, "50 = 1, 100 = 2, Etc");
             }

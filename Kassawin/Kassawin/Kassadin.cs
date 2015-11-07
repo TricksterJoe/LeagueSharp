@@ -26,6 +26,7 @@ namespace Kassawin
         private static readonly Color FillColor = Color.Blue;
         public static void OnLoad(EventArgs args)
         {
+            if (Player.ChampionName != "Kassadin") return;
             Q = new Spell(SpellSlot.Q, 650);
             W = new Spell(SpellSlot.W, 200);
             E = new Spell(SpellSlot.E, 700);
@@ -531,6 +532,7 @@ namespace Kassawin
             var useq = GetBool("useq", typeof (bool));
             var user = GetBool("user", typeof (bool));
             var usee = GetBool("usee", typeof (bool));
+            var userturret = GetBool("usert", typeof (bool));
             var ignite = GetBool("useignite", typeof (bool));
             if (Player.IsWindingUp) return;
 
@@ -553,7 +555,7 @@ namespace Kassawin
                 }
             }
 
-            if (E.IsReady() && usee && target.IsValidTarget(E.Range) && eCanCast())
+            if (E.IsReady() && usee && target.IsValidTarget(E.Range - 200) && eCanCast())
             {
                 if (Player.Distance(target) < Orbwalking.GetRealAutoAttackRange(target) && !W.IsReady())
                     E.Cast(target.Position);
@@ -564,9 +566,12 @@ namespace Kassawin
             }
 
             var rCount = GetValue("rcount");
+            var turret =
+                ObjectManager.Get<Obj_AI_Turret>().Where(x => !x.IsDead && x.Distance(target) < 600 && x.IsEnemy);
             var extendedposition = Player.Position.Extend(target.Position, 500);
             if (ForcePulseCount() < rCount && user && R.IsReady() && Player.IsFacing(target))
             {
+                if (turret.FirstOrDefault() != null && userturret) return;
                 if (Player.Mana >= Player.Spellbook.GetSpell(SpellSlot.R).ManaCost + Q.ManaCost)
                 {
                     if (Player.Distance(target) > Orbwalking.GetRealAutoAttackRange(target))
