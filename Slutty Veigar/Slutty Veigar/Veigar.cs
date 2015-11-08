@@ -61,7 +61,7 @@ namespace Slutty_Veigar
         private static void OnDelete(GameObject sender, EventArgs args)
         {
             if (sender.Name.Contains("Odin")) return;
-            Game.PrintChat(sender.Name);
+         //   Game.PrintChat(sender.Name);
             if (sender.Name.ToLower().Contains("veigar_base_e_cage"))
             {
                 Cage = null;
