@@ -256,7 +256,7 @@ namespace Lee_Sin
                     if (!GetBool("wardinsec", typeof(KeyBind))) return;
                     Player.IssueOrder(GameObjectOrder.MoveTo, target.ServerPosition);
                       Utility.DelayAction.Add(50, () =>  Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-    Insec(target, 260, true).To3D(
+    Insec(target, 100, false).To3D(
         )));
                 }
             }
