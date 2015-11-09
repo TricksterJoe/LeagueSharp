@@ -254,7 +254,7 @@ namespace Lee_Sin
                     if (target == null) return;
                     if (Steps != steps.Flash) return;
                     if (!GetBool("wardinsec", typeof(KeyBind))) return;
-                    Player.IssueOrder(GameObjectOrder.MoveTo, target.ServerPosition);
+                    Player.IssueOrder(GameObjectOrder.MoveTo, target);
                       Utility.DelayAction.Add(50, () =>  Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
     Insec(target, 100, false).To3D(
         )));
