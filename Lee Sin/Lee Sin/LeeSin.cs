@@ -252,7 +252,9 @@ namespace Lee_Sin
                     }
 
                     if (target == null) return;
+                    if (Steps != steps.Flash) return;
                     if (!GetBool("wardinsec", typeof(KeyBind))) return;
+                    Player.IssueOrder(GameObjectOrder.MoveTo, target.ServerPosition);
                       Utility.DelayAction.Add(50, () =>  Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
     Insec(target, 260, true).To3D(
         )));
@@ -1335,7 +1337,7 @@ namespace Lee_Sin
         {
             #region Target, Slots, Prediction
 
-                Orbwalking.MoveTo(Game.CursorPos);
+                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             var target = TargetSelector.GetTarget(Q.Range + 500, TargetSelector.DamageType.Physical);
             if (target != null)
             {
