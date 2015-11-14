@@ -202,11 +202,6 @@ namespace Lee_Sin
                 lastClickBool = false;
             }
 
-            if (GetBool("clickto", typeof (bool)))
-            {
-         //       SelectedAllyAiMinionv = Game.CursorPos;
-                clickCounts++;
-            }
             SelectedAllyAiMinion =
                 ObjectManager.Get<Obj_AI_Base>()
                     .Where(
@@ -424,12 +419,6 @@ namespace Lee_Sin
                         }
 
                     }
-                }
-                else
-                {
-                    return
-    SelectedAllyAiMinionv.Extend(target.ServerPosition,
-        SelectedAllyAiMinionv.Distance(target.ServerPosition) + extendvalue).To2D();
                 }
             }
             return new Vector2();
@@ -1431,8 +1420,7 @@ namespace Lee_Sin
             }
 
             if (_processw ||
-                (Steps == steps.Flash && target.Distance(Player) < 250) ||
-                Player.Distance(poss.To3D()) < 80) 
+                (Steps == steps.Flash && target.Distance(Player) < 400)) 
             {
                 if (R.IsReady())
                 R.Cast(target);
@@ -2117,6 +2105,7 @@ namespace Lee_Sin
             //            color = new ColorBGRA(100, 100, 100, 100);
             //            text = new Render.Text(pos, "Ward Here", 3, color);
 
+
             if (!GetBool("linebetween", typeof(bool))) return;
             var objAiHero = GetAllyHeroes(target, 1200).FirstOrDefault();
             if (SelectedAllyAiMinion == null && SelectedAllyAiMinionv == new Vector3())
@@ -2148,15 +2137,6 @@ namespace Lee_Sin
                 var pos3 = Drawing.WorldToScreen(target.Position);
                 var distance = target.Distance(SelectedAllyAiMinion);
                 var pos4 = Drawing.WorldToScreen(target.Position.Extend(SelectedAllyAiMinion.Position, distance));
-                Drawing.DrawLine(pos3, pos4, 3, Color.Red);
-                Drawing.DrawText(pos4.X, pos4.Y, Color.Black, "X");
-            }
-
-            if (SelectedAllyAiMinionv != new Vector3())
-            {
-                var pos3 = Drawing.WorldToScreen(target.Position);
-                var distance = target.Distance(SelectedAllyAiMinionv);
-                var pos4 = Drawing.WorldToScreen(target.Position.Extend(SelectedAllyAiMinionv, distance));
                 Drawing.DrawLine(pos3, pos4, 3, Color.Red);
                 Drawing.DrawText(pos4.X, pos4.Y, Color.Black, "X");
             }

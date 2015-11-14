@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7BA65FE7-6CB2-4195-A1F4-A24031738E6E}</ProjectGuid>
+    <ProjectGuid>{7770C950-8674-4B61-8E54-C4C1B984220C}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Lee_Sin</RootNamespace>
-    <AssemblyName>Lee Sin</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <RootNamespace>Slutty_Tristana</RootNamespace>
+    <AssemblyName>Slutty Tristana</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
     <PostBuildEvent />
     <OutputPath>bin\Release</OutputPath>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -55,12 +54,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Helper.cs" />
-    <Compile Include="LeeSin.cs" />
-    <Compile Include="Mathematics.cs" />
-    <Compile Include="MenuConfig.cs" />
+    <Compile Include="DamageHandler.cs" />
+    <Compile Include="DrawManager.cs" />
+    <Compile Include="MenuHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tristana.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

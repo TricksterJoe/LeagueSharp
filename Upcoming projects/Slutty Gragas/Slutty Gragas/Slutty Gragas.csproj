@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Release</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7BA65FE7-6CB2-4195-A1F4-A24031738E6E}</ProjectGuid>
+    <ProjectGuid>{F8D942BE-1F63-4183-AB2F-FC20221923F2}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Lee_Sin</RootNamespace>
-    <AssemblyName>Lee Sin</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <RootNamespace>Slutty_Gragas</RootNamespace>
+    <AssemblyName>Slutty Gragas</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
     <PostBuildEvent />
     <OutputPath>bin\Release</OutputPath>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -37,13 +36,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="LeagueSharp">
-      <HintPath>C:\LeagueSharp\System\LeagueSharp.dll</HintPath>
+      <HintPath>C:\Leaguesharp621\LeagueSharp\System\LeagueSharp.dll</HintPath>
     </Reference>
     <Reference Include="LeagueSharp.Common">
-      <HintPath>C:\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
+      <HintPath>C:\Leaguesharp621\LeagueSharp\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
     <Reference Include="SharpDX">
-      <HintPath>C:\LeagueSharp\System\SharpDX.dll</HintPath>
+      <HintPath>C:\Leaguesharp621\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -55,12 +54,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Gragas.cs" />
     <Compile Include="Helper.cs" />
-    <Compile Include="LeeSin.cs" />
-    <Compile Include="Mathematics.cs" />
     <Compile Include="MenuConfig.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RLogic.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
