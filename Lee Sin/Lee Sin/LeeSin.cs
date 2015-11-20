@@ -226,12 +226,6 @@ namespace Lee_Sin
 
         private static void OnSpellcast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-
-            //            if (args.SData.Name.ToLower().Contains("turret") && args.SData.Name.ToLower().Contains("attack")
-            //                && args.Target.NetworkId == Player.NetworkId)
-            //            {
-            //                Game.PrintChat("hi");
-            //            }
             if (sender.IsMe)
             {
                // Game.PrintChat(args.SData.Name);
@@ -249,9 +243,8 @@ namespace Lee_Sin
                     if (target == null) return;
                     if (Steps != steps.Flash) return;
                     if (!GetBool("wardinsec", typeof(KeyBind))) return;
-                    Player.IssueOrder(GameObjectOrder.MoveTo, target);
                       Utility.DelayAction.Add(50, () =>  Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-    Insec(target, 100, false).To3D(
+    Insec(target, 200, true).To3D(
         )));
                 }
             }
@@ -413,9 +406,8 @@ namespace Lee_Sin
                                 Player.Distance(target) + extendvalue).To2D();
                         if (flashcasting)
                         {
-                            return Playerpos.Extend(target.ServerPosition,
-                                Playerpos.Distance(target.ServerPosition) + 425 -
-                                Playerpos.Distance(target.ServerPosition)).To2D();
+                            return Player.ServerPosition.Extend(target.ServerPosition,
+                                Player.Distance(target) + extendvalue).To2D();
                         }
 
                     }
@@ -1202,11 +1194,17 @@ namespace Lee_Sin
             {
                 Player.Spellbook.CastSpell(Smite, target);
             }
-            //var poss = Player.ServerPosition.Extend(target.ServerPosition, Player.Distance(target) - 100);
-            //if (E.IsReady() && W.IsReady() && target.Distance(Player) > E.Range)
-            //    if (!GetBool("wardjumpcombo1", typeof(bool))) return;
-            //{ WardJump(poss, false); }
-
+            var poss = Player.ServerPosition.Extend(target.ServerPosition, 600);
+            if (E.IsReady() && W.IsReady() && target.Distance(Player) > E.Range)
+            {
+                if (!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 1000)
+                {
+                    if (!GetBool("wardjumpcombo1", typeof (bool))) return;
+                    {
+                        WardJump(poss, false);
+                    }
+                }
+            }
 
             #endregion
         }
@@ -1399,16 +1397,20 @@ namespace Lee_Sin
             }
 
 
-            var poss = Insec(target, 300, false);
+            var poss = Insec(target, 330, false);
 
             var wardtotargetpos = Player.ServerPosition.Extend(target.ServerPosition, Player.Distance(target) - 180);
             var wardFlashBool = GetBool("expwardflash", typeof (bool));
 
             if (slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 700 && R.IsReady() &&
-                wardFlashBool && ((!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 1000) || colbool))
+                wardFlashBool && ((!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 2000) || colbool) && collision.Count > 1)
             {
-                WardJump(wardtotargetpos, false);
-                Steps = steps.Flash;
+                if (Player.ServerPosition.Distance(target.ServerPosition) > 530 &&
+                    Player.ServerPosition.Distance(target.ServerPosition) < 680)
+                {
+                    WardJump(wardtotargetpos, false);
+                    Steps = steps.Flash;
+                }
             }
 
 
