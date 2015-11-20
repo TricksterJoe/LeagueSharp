@@ -241,7 +241,7 @@ namespace Lee_Sin
                     }
 
                     if (target == null) return;
-                    if (Steps != steps.Flash) return;
+                    if (Environment.TickCount - lastwcasted < 1500 && Player.Distance(Insec(target, 200, true)) > 150)
                     if (!GetBool("wardinsec", typeof(KeyBind))) return;
                       Utility.DelayAction.Add(50, () =>  Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
     Insec(target, 200, true).To3D(
@@ -1409,8 +1409,7 @@ namespace Lee_Sin
                     Player.ServerPosition.Distance(target.ServerPosition) < 680)
                 {
                     WardJump(wardtotargetpos, false);
-                    Steps = steps.Flash;
-                }
+                }               
             }
 
 
@@ -1422,7 +1421,7 @@ namespace Lee_Sin
             }
 
             if (_processw ||
-                (Steps == steps.Flash && target.Distance(Player) < 400)) 
+                (Steps == steps.Flash && target.Distance(Player) < 400) || Environment.TickCount - lastwcasted < 1500) 
             {
                 if (R.IsReady())
                 R.Cast(target);
@@ -1457,149 +1456,6 @@ namespace Lee_Sin
 
             #endregion
 
-
-            #region Ward Jump
-            //if (Steps == steps.WardJump)
-            //{
-            //    if (W.IsReady() && Player.Mana >= 50 && R.IsReady())
-            //    {
-
-            //        if (target.Distance(Player) > 600) return;
-            //        if (!_processw &&
-            //            Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
-            //        {
-            //            if (obj == null &&
-            //                W.IsReady() && slot != null && !_casted && slot.IsValidSlot() &&
-            //                Environment.TickCount - _lastward > 400 &&
-            //                Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
-            //            {
-            //                Player.Spellbook.CastSpell(slot.SpellSlot, poss.To3D());
-            //                _lastward = Environment.TickCount;
-            //            }
-            //            else if (GetBool("useobjects", typeof (bool)) && obj != null)
-            //            {
-            //                W.Cast(obj);
-            //            }
-            //            _lastwarr = Environment.TickCount;
-            //        }
-
-
-            //        if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
-            //        {
-            //            _lastwards = Environment.TickCount;
-            //        }
-            //    }
-            //}
-
-            #endregion
-
-            #region R Casting
-
-            ////if (_processw ||
-            ////    (Steps == steps.Flash &&
-            ////     Player.GetSpellSlot("summonerflash").IsReady()))
-            ////{
-            ////    R.Cast(target);
-            ////}
-
-            #endregion
-
-            #region General Q Casting
-
-            ////var champs =
-            ////    HeroManager.Enemies.FirstOrDefault(x => x.IsValidTarget(Q.Range) && x.NetworkId != target.NetworkId && x.Distance(target) < 500 &&
-            ////            !Q.GetPrediction(x).CollisionObjects.Any());
-
-            ////if (Q.IsReady() && target.IsValidTarget(Q.Range) && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" &&
-            ////    target.Distance(Player) > 300)
-            ////{
-            ////    if (col.Count == 1)
-            ////    {
-            ////        if (col.FirstOrDefault().Distance(Player) < 500 && Smite.IsReady() && !col.FirstOrDefault().IsChampion())
-            ////        {
-            ////            Player.Spellbook.CastSpell(Smite, col.FirstOrDefault());
-            ////        }
-            ////    }
-            ////    else if (!col.Any())
-            ////    {
-            ////        Q.Cast(qpred.CastPosition);
-            ////    }
-            ////}
-
-
-            ////if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne"
-            ////    && target.Distance(Player) > 500 && champs != null && col.Any())
-            ////{
-            ////    if (col.Count == 1 && !col.FirstOrDefault().IsChampion())
-            ////    {
-            ////        if (col.FirstOrDefault().Distance(Player) < 500 && Smite.IsReady() && !col.FirstOrDefault().IsChampion())
-            ////        {
-            ////            Player.Spellbook.CastSpell(Smite, col.FirstOrDefault());
-            ////        }
-            ////    }
-            ////    else if (!col.Any())
-            ////    {
-            ////        Q.Cast(qpred.CastPosition);
-            ////    }
-            ////}
-
-
-
-            ////if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
-            ////    target.Distance(Player) < 500 && Steps != steps.Flash
-            ////    && Player.Distance(Insec(target)) > 150 && R.IsReady())
-            ////{
-            ////    Steps = steps.WardJump;
-            ////    Playerposition = Player.Position;
-            ////}
-
-            ////if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && (target.Distance(Player) > 350))
-            ////{
-            ////    Utility.DelayAction.Add(200, () => Q.Cast());
-            ////}
-            ////if (Q.IsReady())
-            ////{
-            ////    //                var minions =
-            ////    //                    ObjectManager
-            ////    //                        .Get<Obj_AI_Base>(
-            ////    //                        ).Where(x => !x.IsAlly && (x.IsChampion() || x.IsMinion) && !x.IsDead && x.Distance(Insec(target)) < 400 &&
-            ////    //                                              x.Distance(Player) < Q.Range
-            ////    //                                              && !x.Name.ToLower().Contains("turret"));
-
-
-            ////    var qpredd = Q.GetPrediction(target);
-            ////    if (qpredd.Hitchance == HitChance.Collision || Player.Distance(target) > Q.Range)
-            ////    {
-            ////        foreach (var min in minion)
-            ////        {
-            ////            var objpreds = Q.GetPrediction(min);
-            ////            if (objpreds.Hitchance != HitChance.Collision)
-            ////                Render.Circle.DrawCircle(min.Position, 100, Color.Yellow);
-
-            ////            if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && Q.IsReady())
-            ////            {
-            ////                Q.Cast(min);
-            ////            }
-
-
-            ////            if (min.HasBuff("BlindMonkQOne"))
-            ////            {
-            ////                if (slot != null && Environment.TickCount - lastwardjump > 1000 && W.IsReady() &&
-            ////                    target.Distance(Player) > 300 && Steps != steps.Flash
-            ////                    && Player.Distance(Insec(target)) > 15 && R.IsReady())
-            ////                {
-            ////                    Q.Cast();
-            ////                    Steps = steps.WardJump;
-            ////                }
-
-            ////            }
-            ////        }
-
-            ////    }
-            ////}
-
-            #endregion
-
             #region Q Smite
 
             foreach (var collisions in collision)
@@ -1620,7 +1476,7 @@ namespace Lee_Sin
                     }
                 }
             }
-                    #endregion
+            #endregion
 
             #region Ward flash
 
@@ -1642,22 +1498,6 @@ namespace Lee_Sin
             //            _lastwards = Environment.TickCount;
             //        }
             //    }
-
-            //}
-
-            #endregion
-
-            #region Flash Casting
-
-            //if (Steps != steps.Flash) return;
-
-            //if (!_processroncast) return;
-            //if (Player.Spellbook.GetSpell(Player.GetSpellSlot("summonerflash")).IsReady())
-            //{
-            //    Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-            //        Insec(target).To3D());
-            //}
-
             #endregion
         }
 
