@@ -315,6 +315,11 @@ namespace Lee_Sin
                 lastprocessw = Environment.TickCount;
             }
 
+            if (args.Slot == SpellSlot.Q)
+            {
+                lastqcasted = Environment.TickCount;
+            }
+
 
             if (args.Slot == Player.GetSpellSlot("summonerflash") && GetBool("wardinsec", typeof(KeyBind)))
             {
@@ -553,7 +558,7 @@ namespace Lee_Sin
             //                    && !buff.Name.ToLower().Contains("mastery") && !buff.Name.ToLower().Contains("potion"))
             //                Game.PrintChat(buff.Name.ToString());
             //            }
-           // Game.PrintChat((Environment.TickCount - Q.LastCastAttemptT).ToString());
+          // Game.PrintChat((Environment.TickCount - lastqcasted).ToString());
             if (SelectedAllyAiMinion != null)
             {
                 if (SelectedAllyAiMinion.IsDead)
@@ -1403,7 +1408,7 @@ namespace Lee_Sin
             var wardFlashBool = GetBool("expwardflash", typeof (bool));
 
             if (slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 700 && R.IsReady() &&
-                wardFlashBool && (!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 3000))
+                wardFlashBool && ((Environment.TickCount - lastqcasted > 3000 && !Q.IsReady())))
             {
                 if (Player.ServerPosition.Distance(target.ServerPosition) > 550)
                 {
@@ -1579,6 +1584,7 @@ namespace Lee_Sin
         private static int lastcasted;
         private static int lastwcasted;
         private static bool wardjumpedtotarget;
+        private static int lastqcasted;
 
         private static void AutoSmite()
         {
