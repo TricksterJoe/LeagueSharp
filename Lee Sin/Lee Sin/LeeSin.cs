@@ -140,9 +140,10 @@ namespace Lee_Sin
                 if (Steps != steps.Flash && wardjumpedtotarget == false) return;
 
                 if (!GetBool("wardinsec", typeof(KeyBind))) return;
-                Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-                        Insec(target, 200, true).To3D(
-                            ));
+               Utility.DelayAction.Add(GetValue("rflashdelay"),
+                () =>  Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
+                Insec(target, 200, true).To3D(
+                            )));
             }
         }
 
