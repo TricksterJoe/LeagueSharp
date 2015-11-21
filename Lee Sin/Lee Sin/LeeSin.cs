@@ -1412,6 +1412,10 @@ namespace Lee_Sin
 
                 wardjumpedtotarget = true;
             }
+            else
+            {
+                wardjumpedtotarget = false;
+            }
 
 
 
