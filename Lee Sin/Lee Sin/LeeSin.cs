@@ -1402,7 +1402,7 @@ namespace Lee_Sin
             }
 
 
-            var poss = Insec(target, 330, false);
+            var poss = Insec(target, 300, false);
 
             var wardtotargetpos = Player.ServerPosition.Extend(target.ServerPosition, Player.Distance(target) - 180);
             var wardFlashBool = GetBool("expwardflash", typeof (bool));
