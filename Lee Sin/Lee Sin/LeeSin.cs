@@ -262,7 +262,9 @@ namespace Lee_Sin
                     }
 
                     if (target == null) return;
-                    if (Steps != steps.Flash && wardjumpedtotarget == false && Player.Distance(Insec(target, 200, true)) < 150) return;
+                    if (Steps != steps.Flash && wardjumpedtotarget == false) return;
+                    if (Player.Distance(Insec(target, 200, true)) < 150) return;
+                    if (2.ToString() == 3.ToString()) return;
 
                         if (!GetBool("wardinsec", typeof (KeyBind))) return;
                     Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"),
