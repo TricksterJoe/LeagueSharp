@@ -1428,7 +1428,7 @@ namespace Lee_Sin
 
             if (Steps == steps.WardJump && R.IsReady() && Player.Distance(poss.To3D()) > 80)
             {
-                if (target.Distance(Player) > 600) return;
+             //   if (target.Distance(Player) > 600) return;
                 WardJump(poss.To3D(), false);
             }
 
@@ -1451,7 +1451,7 @@ namespace Lee_Sin
                         Steps = steps.Flash;
                         lastflashstep = Environment.TickCount;
                     }
-                    else if (Environment.TickCount - lastflashstep > 2500 && wardjumpedtotarget != true)
+                    else if (Environment.TickCount - lastflashstep > 2500)
                     {
                         Steps = steps.WardJump;
                         lastwardjump = Environment.TickCount;
