@@ -261,9 +261,9 @@ namespace Lee_Sin
                 if (Steps == steps.Flash || Environment.TickCount - lastflashward < 2000)
                 {
                     if (!GetBool("wardinsec", typeof (KeyBind))) return;
-                    Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"),
-                        Insec(target, 200, true).To3D(
-                            ), true);
+                    var pos = Player.Position.Extend(target.Position, +target.Position.Distance(Player.Position) + 230);
+
+                    Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"), pos, true);
                 }
 
             }
@@ -428,11 +428,11 @@ namespace Lee_Sin
                     {
                         if (!flashcasting)
                             return Player.ServerPosition.Extend(target.ServerPosition,
-                                Player.Distance(target) + extendvalue).To2D();
+                               +Player.Distance(target) + extendvalue).To2D();
                         if (flashcasting)
                         {
                             return Player.ServerPosition.Extend(target.ServerPosition,
-                                Player.Distance(target) + extendvalue).To2D();
+                                +Player.Distance(target) + extendvalue).To2D();
                         }
 
                     }
