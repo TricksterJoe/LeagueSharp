@@ -120,7 +120,7 @@ namespace Lee_Sin
             Obj_AI_Base.OnProcessSpellCast += OnSpellcast;
             Spellbook.OnCastSpell += OnSpell;
             Game.OnWndProc += OnWndProc;
-            Obj_AI_Base.OnDoCast += OnDoCast;
+          //  Obj_AI_Base.OnDoCast += OnDoCast;
 
         }
 
@@ -255,9 +255,6 @@ namespace Lee_Sin
                // Game.PrintChat(args.SData.Name);
                 if (args.SData.Name == "BlindMonkRKick")
                 {
-                    _processroncast = true;
-                    _processroncastr = Environment.TickCount;
-                    Playerpos = Player.ServerPosition;
                     var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
                     if (target != null)
                     {
@@ -268,10 +265,9 @@ namespace Lee_Sin
                     if (Steps != steps.Flash && wardjumpedtotarget == false) return;
 
                         if (!GetBool("wardinsec", typeof (KeyBind))) return;
-                        //Utility.DelayAction.Add(GetValue("rflashdelay"),
-                            //() => Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-                            //    Insec(target, 200, true).To3D(
-                            //        )));
+                    Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"),
+                                Insec(target, 200, true).To3D(
+                                   ), true);
                     
                 }
             }
