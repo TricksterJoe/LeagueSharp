@@ -241,11 +241,14 @@ namespace Lee_Sin
                     }
 
                     if (target == null) return;
-                    if (Environment.TickCount - lastwcasted < 1500 && Player.Distance(Insec(target, 200, true)) > 150)
-                    if (!GetBool("wardinsec", typeof(KeyBind))) return;
-                      Utility.DelayAction.Add(50, () =>  Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-    Insec(target, 200, true).To3D(
-        )));
+                    if (Steps != steps.Flash || wardjumpedtotarget == false) return;
+
+                        if (!GetBool("wardinsec", typeof (KeyBind))) return;
+                        Utility.DelayAction.Add(50,
+                            () => Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
+                                Insec(target, 200, true).To3D(
+                                    )));
+                    
                 }
             }
             if (sender.IsMe || sender.IsAlly || !sender.IsChampion()) return;
@@ -1409,6 +1412,7 @@ namespace Lee_Sin
                     Player.ServerPosition.Distance(target.ServerPosition) < 680)
                 {
                     WardJump(wardtotargetpos, false);
+                    wardjumpedtotarget = true;
                 }               
             }
 
@@ -1595,6 +1599,7 @@ namespace Lee_Sin
         private static StringFormat stringf;
         private static int lastcasted;
         private static int lastwcasted;
+        private static bool wardjumpedtotarget;
 
         private static void AutoSmite()
         {
