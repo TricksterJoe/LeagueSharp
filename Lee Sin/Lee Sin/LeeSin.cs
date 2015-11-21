@@ -533,6 +533,7 @@ namespace Lee_Sin
             //                    && !buff.Name.ToLower().Contains("mastery") && !buff.Name.ToLower().Contains("potion"))
             //                Game.PrintChat(buff.Name.ToString());
             //            }
+           // Game.PrintChat((Environment.TickCount - Q.LastCastAttemptT).ToString());
             if (SelectedAllyAiMinion != null)
             {
                 if (SelectedAllyAiMinion.IsDead)
@@ -1406,7 +1407,7 @@ namespace Lee_Sin
             var wardFlashBool = GetBool("expwardflash", typeof (bool));
 
             if (slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 700 && R.IsReady() &&
-                wardFlashBool && (!Q.IsReady() || qpred.Hitchance < HitChance.High))
+                wardFlashBool && (!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 2000))
             {
                 if (Player.ServerPosition.Distance(target.ServerPosition) > 530 &&
                     Player.ServerPosition.Distance(target.ServerPosition) < 680)
