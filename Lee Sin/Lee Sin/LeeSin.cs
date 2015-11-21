@@ -120,8 +120,6 @@ namespace Lee_Sin
             Obj_AI_Base.OnProcessSpellCast += OnSpellcast;
             Spellbook.OnCastSpell += OnSpell;
             Game.OnWndProc += OnWndProc;
-          //  Obj_AI_Base.OnDoCast += OnDoCast;
-
         }
 
         private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -262,9 +260,9 @@ namespace Lee_Sin
                     }
 
                     if (target == null) return;
-                    if (Steps != steps.Flash && wardjumpedtotarget == false) return;
+                    if (Steps == steps.WardJump) return;
+                    
                     if (Player.Distance(Insec(target, 200, true)) < 150) return;
-                    if (2.ToString() == 3.ToString()) return;
 
                         if (!GetBool("wardinsec", typeof (KeyBind))) return;
                     Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"),
@@ -1405,10 +1403,9 @@ namespace Lee_Sin
             var wardFlashBool = GetBool("expwardflash", typeof (bool));
 
             if (slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 700 && R.IsReady() &&
-                wardFlashBool && (!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 2000))
+                wardFlashBool && (!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 3000))
             {
-                if (Player.ServerPosition.Distance(target.ServerPosition) > 550 &&
-                    Player.ServerPosition.Distance(target.ServerPosition) < 680)
+                if (Player.ServerPosition.Distance(target.ServerPosition) > 550)
                 {
                     WardJump(wardtotargetpos, false);
                 }
@@ -1443,7 +1440,7 @@ namespace Lee_Sin
                         Steps = steps.Flash;
                         lastflashstep = Environment.TickCount;
                     }
-                    else if (Environment.TickCount - lastflashstep > 2500)
+                    else if (Environment.TickCount - lastflashstep > 2500 && wardjumpedtotarget != true)
                     {
                         Steps = steps.WardJump;
                         lastwardjump = Environment.TickCount;
