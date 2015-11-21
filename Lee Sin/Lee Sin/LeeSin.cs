@@ -261,9 +261,11 @@ namespace Lee_Sin
                 if (Steps == steps.Flash || Environment.TickCount - lastflashward < 2000)
                 {
                     if (!GetBool("wardinsec", typeof (KeyBind))) return;
-                    var pos = Player.Position.Extend(target.Position, +target.Position.Distance(Player.Position) + 230);
-
-                    Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"), pos, true);
+                   // var pos = Player.Position.Extend(target.Position, +target.Position.Distance(Player.Position) + 230);
+                    var pos = InsecFlash(target, 230);
+                   // Utility.DelayAction.Add(100, () => 
+                    Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"), InsecFlash(target, 230), true);
+                    //);
                 }
 
             }
@@ -387,6 +389,46 @@ namespace Lee_Sin
                 }
             }
         }
+
+        #endregion
+
+        #region Insec Position Flash
+
+        public static Vector3 InsecFlash(Obj_AI_Hero target, int extendvalue)
+        {
+
+            var pos = Player.Position.Extend(target.Position, +target.Position.Distance(Player.Position) + 230);
+            if (SelectedAllyAiMinion != null)
+            {
+                    return
+                        SelectedAllyAiMinion.Position.Extend(target.Position,
+                            +target.Position.Distance(SelectedAllyAiMinion.Position) + extendvalue);
+
+            }
+
+            if (SelectedAllyAiMinion == null)
+            {
+                if (SelectedAllyAiMinionv == new Vector3() || !GetBool("clickto", typeof(bool)))
+                {
+                    var objAiHero = GetAllyHeroes(target, 1200).FirstOrDefault();
+                    if (GetBool("useobjectsallies", typeof(bool)) && objAiHero != null)
+                    {
+                        return
+                            objAiHero.Position.Extend(target.Position,
+                                +target.Position.Distance(objAiHero.Position) + extendvalue);
+                    }
+
+                    if (!GetBool("useobjectsallies", typeof(bool)) || objAiHero == null)
+                    {
+                            return Player.Position.Extend(target.Position,
+                               +target.Position.Distance(Player.Position) + extendvalue);
+
+                    }
+                }
+            }
+            return new Vector3();
+        }
+
 
         #endregion
 
