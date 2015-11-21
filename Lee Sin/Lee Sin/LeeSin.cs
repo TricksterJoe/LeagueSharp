@@ -241,7 +241,7 @@ namespace Lee_Sin
                     }
 
                     if (target == null) return;
-                    if (Steps != steps.Flash || wardjumpedtotarget == false) return;
+                    if (Steps != steps.Flash && wardjumpedtotarget == false) return;
 
                         if (!GetBool("wardinsec", typeof (KeyBind))) return;
                         Utility.DelayAction.Add(50,
@@ -1406,14 +1406,15 @@ namespace Lee_Sin
             var wardFlashBool = GetBool("expwardflash", typeof (bool));
 
             if (slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 700 && R.IsReady() &&
-                wardFlashBool && ((!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 2000) || colbool) && collision.Count > 1)
+                wardFlashBool && (!Q.IsReady() || qpred.Hitchance < HitChance.High))
             {
                 if (Player.ServerPosition.Distance(target.ServerPosition) > 530 &&
                     Player.ServerPosition.Distance(target.ServerPosition) < 680)
                 {
                     WardJump(wardtotargetpos, false);
-                    wardjumpedtotarget = true;
-                }               
+                }
+
+                wardjumpedtotarget = true;
             }
 
 
