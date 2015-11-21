@@ -260,15 +260,15 @@ namespace Lee_Sin
                     }
 
                     if (target == null) return;
-                    if (Steps == steps.WardJump) return;
-                    
-                    if (Player.Distance(Insec(target, 200, true)) < 150) return;
 
+                    if (Steps == steps.Flash)
+                    {
                         if (!GetBool("wardinsec", typeof (KeyBind))) return;
-                    Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"),
-                                Insec(target, 200, true).To3D(
-                                   ), true);
-                    
+                        Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"),
+                            Insec(target, 200, true).To3D(
+                                ), true);
+                    }
+
                 }
             }
             if (sender.IsMe || sender.IsAlly || !sender.IsChampion()) return;
@@ -1414,6 +1414,8 @@ namespace Lee_Sin
                 {
                     WardJump(wardtotargetpos, false);
                 }
+
+                Steps = steps.Flash;
 
                 wardjumpedtotarget = true;
             }
