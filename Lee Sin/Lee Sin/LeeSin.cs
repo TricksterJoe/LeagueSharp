@@ -120,7 +120,30 @@ namespace Lee_Sin
             Obj_AI_Base.OnProcessSpellCast += OnSpellcast;
             Spellbook.OnCastSpell += OnSpell;
             Game.OnWndProc += OnWndProc;
+            Obj_AI_Base.OnDoCast += OnDoCast;
 
+        }
+
+        private static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (!sender.IsMe) return;
+            Game.PrintChat(args.SData.Name);
+            if (args.SData.Name.Equals("BlindMonkRKick"))
+            {
+                var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
+                if (target != null)
+                {
+                    target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
+                }
+
+                if (target == null) return;
+                if (Steps != steps.Flash && wardjumpedtotarget == false) return;
+
+                if (!GetBool("wardinsec", typeof(KeyBind))) return;
+                Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
+                        Insec(target, 200, true).To3D(
+                            ));
+            }
         }
 
         private static void Printmsg(string message)
@@ -244,10 +267,10 @@ namespace Lee_Sin
                     if (Steps != steps.Flash && wardjumpedtotarget == false) return;
 
                         if (!GetBool("wardinsec", typeof (KeyBind))) return;
-                        Utility.DelayAction.Add(50,
-                            () => Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
-                                Insec(target, 200, true).To3D(
-                                    )));
+                        //Utility.DelayAction.Add(GetValue("rflashdelay"),
+                            //() => Player.Spellbook.CastSpell(Player.GetSpellSlot("summonerflash"),
+                            //    Insec(target, 200, true).To3D(
+                            //        )));
                     
                 }
             }
@@ -612,30 +635,6 @@ namespace Lee_Sin
             }
 
          //   AutoUlt();
-
-            #region Soontm
-
-            //            if (GetBool("wardinsec", typeof(KeyBind)) || GetBool("starcombo", typeof(KeyBind)) ||
-            //                Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
-            //            {
-            //                if (!Q.IsReady() || Player.Spellbook.GetSpell(SpellSlot.Q).Name != "BlindMonkQOne") return;
-            //                if (!Smite.IsReady()) return;
-            //                var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
-            //                if (target == null) return;
-            //
-            //                var prediction = Prediction.GetPrediction(target, Q.Delay);
-            //
-            //                var collision = Q.GetCollision(Player.Position.To2D(),
-            //                    new List<Vector2> {prediction.UnitPosition.To2D()});
-            //
-            //                if (collision.Count == 1 && collision[0].IsMinion && collision[0].Health < SmiteDamage(collision[0]) &&
-            //                    collision[0].Distance(Player) < 500 && Smite.IsReady() && target.Distance(Player) < Q.Range - 300)
-            //                {
-            //                    Player.Spellbook.CastSpell(Smite, collision[0]);
-            //                }
-            //            }
-
-            #endregion
         }
 
         #endregion
@@ -1393,7 +1392,7 @@ namespace Lee_Sin
                     {
                         Q.Cast(objects);
                     }
-                    if (Q2())
+                    if (Q2() && Player.Distance(target) > 400)
                     {
                         Q.Cast();
                     }
@@ -1409,7 +1408,7 @@ namespace Lee_Sin
             if (slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 700 && R.IsReady() &&
                 wardFlashBool && (!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 2000))
             {
-                if (Player.ServerPosition.Distance(target.ServerPosition) > 530 &&
+                if (Player.ServerPosition.Distance(target.ServerPosition) > 550 &&
                     Player.ServerPosition.Distance(target.ServerPosition) < 680)
                 {
                     WardJump(wardtotargetpos, false);
