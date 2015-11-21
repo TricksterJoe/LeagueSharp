@@ -262,7 +262,7 @@ namespace Lee_Sin
                     }
 
                     if (target == null) return;
-                    if (Steps != steps.Flash && wardjumpedtotarget == false) return;
+                    if (Steps != steps.Flash && wardjumpedtotarget == false && Player.Distance(Insec(target, 200, true)) < 150) return;
 
                         if (!GetBool("wardinsec", typeof (KeyBind))) return;
                     Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"),
@@ -1478,28 +1478,6 @@ namespace Lee_Sin
                     }
                 }
             }
-            #endregion
-
-            #region Ward flash
-
-            //if (collision.Count > 1 && W.IsReady() && Player.GetSpellSlot("summonerflash").IsReady()
-            //    && slot != null && GetBool("expwardflash", typeof (bool)) && R.IsReady())
-            //{
-            //    if (Player.ServerPosition.Distance(target.ServerPosition) > 530 &&
-            //        Player.ServerPosition.Distance(target.ServerPosition) < 680)
-            //    {
-            //        var pos = target.ServerPosition.Extend(Player.ServerPosition, 200);
-
-            //        if (Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" && Environment.TickCount - _lastwarr > 500)
-            //        {
-            //            Player.Spellbook.CastSpell(slot.SpellSlot, pos);
-            //            _lastwarr = Environment.TickCount;
-            //        }
-            //        if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
-            //        {
-            //            _lastwards = Environment.TickCount;
-            //        }
-            //    }
             #endregion
         }
 

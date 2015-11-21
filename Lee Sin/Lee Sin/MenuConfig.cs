@@ -37,7 +37,7 @@ namespace Lee_Sin
                 AddBool(combos, "Prioritize Flash Over Ward", "prioflash");
                 AddBool(combos, "Ward -> Flash Insec", "expwardflash", false);
                 AddBool(combos, "Use Smite In Insec", "UseSmite");
-                AddValue(combos, "R Flash Delay", "rflashdelay", 80, 0, 500);
+               // AddValue(combos, "R Flash Delay", "rflashdelay", 80, 0, 500);
             }
 
             var combo = new Menu("Combo Settings", "Combo Settings");
