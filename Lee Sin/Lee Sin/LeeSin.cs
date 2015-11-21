@@ -248,29 +248,26 @@ namespace Lee_Sin
 
         private static void OnSpellcast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsMe)
+            if (args.SData.Name == "BlindMonkRKick")
             {
-               // Game.PrintChat(args.SData.Name);
-                if (args.SData.Name == "BlindMonkRKick")
+                var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
+                if (target != null)
                 {
-                    var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
-                    if (target != null)
-                    {
-                        target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
-                    }
-
-                    if (target == null) return;
-
-                    if (Steps == steps.Flash)
-                    {
-                        if (!GetBool("wardinsec", typeof (KeyBind))) return;
-                        Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"),
-                            Insec(target, 200, true).To3D(
-                                ), true);
-                    }
-
+                    target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
                 }
+
+                if (target == null) return;
+
+                if (Steps == steps.Flash || Environment.TickCount - lastflashward < 2000)
+                {
+                    if (!GetBool("wardinsec", typeof (KeyBind))) return;
+                    Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"),
+                        Insec(target, 200, true).To3D(
+                            ), true);
+                }
+
             }
+
             if (sender.IsMe || sender.IsAlly || !sender.IsChampion()) return;
 
             switch (args.SData.Name)
@@ -1410,14 +1407,15 @@ namespace Lee_Sin
             if (slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 700 && R.IsReady() &&
                 wardFlashBool && ((Environment.TickCount - lastqcasted > 3000 && !Q.IsReady())))
             {
+
+                Steps = steps.Flash;
+
                 if (Player.ServerPosition.Distance(target.ServerPosition) > 550)
                 {
                     WardJump(wardtotargetpos, false);
                 }
-
-                Steps = steps.Flash;
-
                 wardjumpedtotarget = true;
+                lastflashward = Environment.TickCount;
             }
             else
             {
@@ -1587,6 +1585,7 @@ namespace Lee_Sin
         private static int lastwcasted;
         private static bool wardjumpedtotarget;
         private static int lastqcasted;
+        private static int lastflashward;
 
         private static void AutoSmite()
         {
