@@ -19,11 +19,24 @@ namespace Anti_Rengar
         public static void OnLoad(EventArgs args)
         {
 
-            Game.PrintChat("<font color='#6f00ff'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "To Enable, Type w on, To Disable, Type w off" + "</font>");
+          //  Game.PrintChat("<font color='#6f00ff'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "To Enable, Type w on, To Disable, Type w off" + "</font>");
 
             Game.OnUpdate += OnUpdate;
             GameObject.OnCreate += OnCreateObject;
             Obj_AI_Base.OnProcessSpellCast += OnProcess;
+            GameObject.OnDelete += OnDeleteObject;
+         
+        }
+
+        private static void OnDeleteObject(GameObject sender, EventArgs args)
+        {
+         //   if (sender.Name.ToLower().Contains("rengar"))
+           // Game.PrintChat(sender.Name);
+
+            if (sender.Name == "Rengar_LeapSound.troy")
+            {
+                Utility.DelayAction.Add(300, () => _rengo = null);
+            }
         }
 
         private static void OnProcess(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -32,16 +45,17 @@ namespace Anti_Rengar
             {
                 if (args.Target.IsAlly || args.Target.IsMe)
                 {
-                    _target = (Obj_AI_Hero) args.Target;
+                    _target = (Obj_AI_Hero)args.Target;
                 }
             }
         }
 
         private static void OnUpdate(EventArgs args)
         {
-
-            Game.OnUpdate += OnUpdate;
-            if (_rengo.IsDead || Environment.TickCount - lastcasted > 8*10*10*10)
+//
+        //   Game.PrintChat(Player.Buffs.FirstOrDefault().Name);
+            if (_rengo == null) return;
+            if ((_rengo.IsDead) || Environment.TickCount - lastcasted > 8 * 10 * 10 * 10)
             {
                 _rengo = null;
             }
@@ -51,25 +65,33 @@ namespace Anti_Rengar
             switch (Player.ChampionName.ToLower())
             {
                 case "vayne":
-                    ReadyCast(500, SpellSlot.E, default(Vector3), true);
-                    if (!Ready(SpellSlot.E))
+
                     ReadyCast(Player.AttackRange, SpellSlot.Q, BackWardsCast(500));
+
+                    if (!Ready(SpellSlot.Q) || Player.Spellbook.GetSpell(SpellSlot.Q).State == SpellState.Surpressed)
+                       ReadyCast(500, SpellSlot.E, default(Vector3), true);
+                    if (Player.Spellbook.GetSpell(SpellSlot.Q).State == SpellState.Surpressed)
+                    Player.IssueOrder(GameObjectOrder.AttackTo, _rengo);
                     break;
 
                 case "ahri":
-                    ReadyCast(500, SpellSlot.E, default(Vector3));
+                    if (!Player.HasBuff("AhriTumble"))
+                    ReadyCast(500, SpellSlot.R, BackWardsCast(430));
+                    if (Player.HasBuff("AhriTumble") || !Player.Spellbook.GetSpell(SpellSlot.R).IsReady())
+                   Utility.DelayAction.Add(200, () => ReadyCast(500, SpellSlot.E, default(Vector3)));
                     break;
 
                 case "alistar":
-                    SelfCast(500, SpellSlot.Q);
-                    break;
-
-                case "anivia":
-                    ReadyCast(500, SpellSlot.W, _target.Position.Extend(_rengo.Position, 150));
+                    SelfCast(1000, SpellSlot.Q);
+                    if (!Player.Spellbook.GetSpell(SpellSlot.Q).IsReady())
+                    {
+                        Utility.DelayAction.Add(200, () =>
+                            ReadyCast(500, SpellSlot.W, default(Vector3), true));
+                    }
                     break;
 
                 case "caitlyn":
-                    ReadyCast(1000, SpellSlot.W, _target.Position);
+                    ReadyCast(500, SpellSlot.E, BackWardsCast2(430));
                     break;
 
                 case "annie":
@@ -78,11 +100,11 @@ namespace Anti_Rengar
                     break;
 
                 case "ashe":
-                    ReadyCast(500, SpellSlot.R, default(Vector3), true);
+                    Utility.DelayAction.Add(200, () => ReadyCast(1000, SpellSlot.R, default(Vector3)));
                     break;
 
                 case "azir":
-                    ReadyCast(700, SpellSlot.R, _target.Position.Extend(_rengo.Position, Player.BoundingRadius + 100));
+                    ReadyCast(700, SpellSlot.R, Player.Position.Extend(_rengo.Position, Player.BoundingRadius + 100));
                     break;
 
                 case "blitzcrank":
@@ -90,20 +112,20 @@ namespace Anti_Rengar
                     break;
 
                 case "chogath":
-                    ReadyCast(300, SpellSlot.Q, _target.Position);
-                    ReadyCast(500, SpellSlot.W, default(Vector3), true);
+                    ReadyCast(800, SpellSlot.Q, Player.Position);
+                    ReadyCast(800, SpellSlot.W, default(Vector3), true);
                     break;
 
-                case "Diana":
+                case "diana":
                     SelfCast(500, SpellSlot.E);
                     break;
 
-                case "Draven":
-                    ReadyCast(600, SpellSlot.E, default(Vector3), true);
+                case "draven":
+                   Utility.DelayAction.Add(300, () => ReadyCast(600, SpellSlot.E, _rengo.Position));
                     break;
 
                 case "elise":
-                    ReadyCast(600, SpellSlot.E, default(Vector3), true);
+                    Utility.DelayAction.Add(200, () => ReadyCast(500, SpellSlot.E, default(Vector3)));
                     break;
 
                 case "ezreal":
@@ -120,15 +142,19 @@ namespace Anti_Rengar
                     break;
 
                 case "garen":
-                    if(_target.IsMe)
-                    SelfCast(Player.AttackRange, SpellSlot.Q);
+                        SelfCast(Player.AttackRange, SpellSlot.Q);
+                    if (Player.Spellbook.GetSpell(SpellSlot.Q).State == SpellState.Surpressed &&
+                        _rengo.Position.Distance(Player.Position) < Player.AttackRange + Player.BoundingRadius + _rengo.BoundingRadius  ) 
+                    {
+                        Player.IssueOrder(GameObjectOrder.AttackTo, _rengo);
+                    }
                     break;
 
                 case "gragas":
                     ReadyCast(700, SpellSlot.E, default(Vector3), true);
                     break;
 
-                   case "irelia":
+                case "irelia":
                     ReadyCast(400, SpellSlot.E, default(Vector3), true);
                     break;
 
@@ -141,7 +167,7 @@ namespace Anti_Rengar
                     break;
 
                 case "jinx":
-                    ReadyCast(500, SpellSlot.E, _target.Position);
+                    ReadyCast(500, SpellSlot.E, Player.Position);
                     break;
 
                 case "leblanc":
@@ -153,11 +179,11 @@ namespace Anti_Rengar
                     break;
 
                 case "lux":
-                    ReadyCast(300, SpellSlot.Q, default(Vector3), true);
+                    ReadyCast(600, SpellSlot.Q, default(Vector3), true);
                     break;
 
                 case "nami":
-                    ReadyCast(400, SpellSlot.Q, _target.Position);
+                   Utility.DelayAction.Add(300, () => ReadyCast(400, SpellSlot.Q, rengopos));
                     break;
 
                 case "quinn":
@@ -166,23 +192,23 @@ namespace Anti_Rengar
                     break;
 
                 case "riven":
-                    SelfCast(500, SpellSlot.W);
+                    SelfCast(1000, SpellSlot.W);
                     break;
 
                 case "shaco":
-                    SelfCast(300, SpellSlot.Q);
+                    ReadyCast(Player.AttackRange, SpellSlot.Q, BackWardsCast(500));
                     break;
 
                 case "soraka":
-                    ReadyCast(500, SpellSlot.E, _target.Position);
+                    Utility.DelayAction.Add(200, () => ReadyCast(1000, SpellSlot.E, _rengo.Position));
                     break;
 
                 case "swain":
-                    ReadyCast(500, SpellSlot.E, _target.Position);
+                    Utility.DelayAction.Add(200, () => ReadyCast(1000, SpellSlot.E, _rengo.Position));
                     break;
 
                 case "thresh":
-                    ReadyCast(400, SpellSlot.E, BackWardsCast(100));
+                    Utility.DelayAction.Add(200, () => ReadyCast(1000, SpellSlot.E, _rengo.Position));
                     break;
 
                 case "tristana":
@@ -190,11 +216,11 @@ namespace Anti_Rengar
                     break;
 
                 case "velkoz":
-                    ReadyCast(600, SpellSlot.E, _target.Position);
+                    Utility.DelayAction.Add(200, () => ReadyCast(1000, SpellSlot.E, Player.Position));
                     break;
 
                 case "viktor":
-                    ReadyCast(700, SpellSlot.W, _target.Position);
+                    ReadyCast(1000, SpellSlot.W, Player.Position);
                     break;
 
                 case "monkeyking":
@@ -209,7 +235,7 @@ namespace Anti_Rengar
                     ReadyCast(800, SpellSlot.E, _rengo.Position);
                     break;
 
-                
+
             }
         }
 
@@ -227,16 +253,28 @@ namespace Anti_Rengar
 
         public static Vector3 BackWardsCast(float range)
         {
+            if (_rengo == null) return new Vector3();
+            
             var rengopos = _rengo.Position;
-            return rengopos.Extend(Player.Position, range);
+            return rengopos.Extend(Player.Position, + _rengo.Position.Distance(Player.Position) + range);
         }
+
+        public static Vector3 BackWardsCast2(float range)
+        {
+            if (_rengo == null) return new Vector3();
+
+            var rengopos = _rengo.Position;
+            return Player.Position.Extend(rengopos, +_rengo.Position.Distance(Player.Position) + range);
+        }
+
 
         public static void ReadyCast(float range, SpellSlot slot, Vector3 position = new Vector3(), bool targetted = false)
         {
             var spellbook = Player.Spellbook;
             var spell = spellbook.GetSpell(slot);
             if (!spell.IsReady()) return;
-            if (_rengo.Distance(_target) > range) return;
+            if (_rengo == null) return;
+            if (_rengo.Position.Distance(Player.Position) > range) return;
 
             if (!targetted)
                 spellbook.CastSpell(slot, position);
@@ -271,7 +309,7 @@ namespace Anti_Rengar
             foreach (var enemy in
                 HeroManager.Enemies.Where(hero => hero.IsValidTarget(1500) && hero.ChampionName == "Rengar"))
             {
-                _rengo = (Obj_AI_Hero) enemy;
+                _rengo = (Obj_AI_Hero)enemy;
                 lastcasted = Environment.TickCount;
             }
         }
