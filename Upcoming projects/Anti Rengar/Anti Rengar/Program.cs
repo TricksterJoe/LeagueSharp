@@ -7,9 +7,9 @@ using LeagueSharp.Common;
 
 namespace Anti_Rengar
 {
-    class Program
+    internal  class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             CustomEvents.Game.OnGameLoad += AntiRengar.OnLoad;
         }

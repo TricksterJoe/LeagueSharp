@@ -9,7 +9,7 @@ using SharpDX;
 
 namespace Anti_Rengar
 {
-    class AntiRengar
+    internal class AntiRengar
     {
 
         public static Obj_AI_Hero Player = ObjectManager.Player;
@@ -18,15 +18,12 @@ namespace Anti_Rengar
 
         public static void OnLoad(EventArgs args)
         {
-            foreach (var champs in Champlist)
-            {
-                if(Player.ChampionName != champs)
-                    return;               
-            }
 
+            Game.PrintChat("<font color='#6f00ff'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "To Enable, Type w on, To Disable, Type w off" + "</font>");
+
+            Game.OnUpdate += OnUpdate;
             GameObject.OnCreate += OnCreateObject;
             Obj_AI_Base.OnProcessSpellCast += OnProcess;
-            Game.OnUpdate += OnUpdate;
         }
 
         private static void OnProcess(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
@@ -42,11 +39,12 @@ namespace Anti_Rengar
 
         private static void OnUpdate(EventArgs args)
         {
+
+            Game.OnUpdate += OnUpdate;
             if (_rengo.IsDead || Environment.TickCount - lastcasted > 8*10*10*10)
             {
                 _rengo = null;
             }
-
             if (_rengo == null) return;
             var rengopos = _rengo.Position;
             var spellbook = Player.Spellbook;
