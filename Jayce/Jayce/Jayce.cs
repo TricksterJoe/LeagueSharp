@@ -12,16 +12,17 @@ namespace Jayce
 {
     internal class Jayce : Helper
     {
-        public static Spell Q, W, E, R, Qm, Wm, Em;
+        public static Spell Q, W, E, R, Qm, Wm, Em, Qe;
 
         public static void OnLoad(EventArgs args)
         {
                if (Player.ChampionName != "Jayce") return;
             MenuConfig.OnLoad();
             //ranged
-            Q = new Spell(SpellSlot.Q, 1500);
+            Q = new Spell(SpellSlot.Q, 1050);
+            Qe = new Spell(SpellSlot.Q, 1470);
             W = new Spell(SpellSlot.W, int.MaxValue);
-            E = new Spell(SpellSlot.E, 600);
+            E = new Spell(SpellSlot.E, 650);
 
             //   melee
             Qm = new Spell(SpellSlot.Q, 600);
@@ -30,7 +31,8 @@ namespace Jayce
             R = new Spell(SpellSlot.R, int.MaxValue);
 
 
-            Q.SetSkillshot(0.3f, 80f, 1500, true, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0f, 70f, 1200, true, SkillshotType.SkillshotLine);
+            Qe.SetSkillshot(0f, 70f, 2350, true, SkillshotType.SkillshotLine);
             Qm.SetTargetted(0.25f, float.MaxValue);
             Em.SetTargetted(0.25f, float.MaxValue);
             Game.OnUpdate += OnUpdate;
@@ -41,10 +43,27 @@ namespace Jayce
             Obj_AI_Base.OnDoCast += OnDoCastMelee;
             Obj_AI_Base.OnDoCast += LaneClear;
             CustomEvents.Unit.OnDash += OnDash;
+          // Obj_AI_Base.OnProcessSpellCast += OnProcessCast;
             AntiGapcloser.OnEnemyGapcloser += OnGapClose;
             Interrupter2.OnInterruptableTarget += OnInterrupt;
+           // GameObject.OnCreate += OnCreate;
 
         }
+
+        //private static void OnProcessCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        //{
+        //    if (args.Slot == SpellSlot.Q)
+        //    {
+        //        Game.PrintChat(args.SData.DelayCastOffsetPercent.ToString());
+        //    }
+        //}
+
+        //private static void OnCreate(GameObject sender, EventArgs args)
+        //{
+        //        var sen = (MissileClient) sender;
+        //    if (sen == null) return;
+        //        Game.PrintChat(sen.SData.LineMissileTimePulseBetweenCollisionSpellHits.ToString());
+        //}
 
         private static void OnInterrupt(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
@@ -414,7 +433,7 @@ namespace Jayce
                 {
                     var aarange = Orbwalking.GetRealAutoAttackRange(target);
                     if (((!Q.IsReady() || (SpellTimer["Qm"] > 1.3f) && !E.IsReady()) ||
-                         Player.Distance(target) > aarange + 50))
+                         Player.Distance(target) < aarange + 150))
                     Em.Cast(target);
 
                     if (target.Health < EMeleeDamage(target) + 200)
@@ -464,7 +483,8 @@ namespace Jayce
         {
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
             if (target == null) return;
-           var pred =  Q.GetPrediction(target);
+           var prede =  Q.GetPrediction(target);
+            var pred = Qe.GetPrediction(target);
             if (pred.CollisionObjects.Count > 1) return;
             if (Q.IsReady() && E.IsReady() && GetBool("useqcr", typeof (bool)) &&
                 Player.Mana >
@@ -473,13 +493,12 @@ namespace Jayce
                 Q.Cast(pred.CastPosition);
             }
 
-            if (!Q.IsReady() || E.IsReady() || Player.Mana >
-                Player.Spellbook.GetSpell(SpellSlot.E).ManaCost + Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost) 
-                return;
-
-            if (Player.Distance(target) < 1050 && GetBool("useqcr", typeof(bool))) 
+            if (Q.IsReady() && !E.IsReady())
             {
-                Q.Cast(pred.CastPosition);
+                if (Player.Distance(target) < 1050 && GetBool("useqcr", typeof (bool)))
+                {
+                    Q.Cast(prede.CastPosition);
+                }
             }
         }
 
@@ -489,14 +508,14 @@ namespace Jayce
             var y = Drawing.WorldToScreen(Player.Position).Y;
             if (Ismelee())
             {
-                if (GetBool("drawtimers", typeof (bool)))
+                if (GetBool("drawtimers", typeof(bool)))
                 {
                     Drawing.DrawText(x + 50, y, Color.Red,
-                        "[Q] " + ((int) SpellTimer["Q"]).ToString(CultureInfo.InvariantCulture));
+                        "[Q] " + ((int)SpellTimer["Q"]).ToString(CultureInfo.InvariantCulture));
                     Drawing.DrawText(x - 20, y, Color.Red,
-                        "[E] " + ((int) SpellTimer["E"]).ToString(CultureInfo.InvariantCulture));
+                        "[E] " + ((int)SpellTimer["E"]).ToString(CultureInfo.InvariantCulture));
                     Drawing.DrawText(x - 80, y, Color.Red,
-                        "[W] " + ((int) SpellTimer["W"]).ToString(CultureInfo.InvariantCulture));
+                        "[W] " + ((int)SpellTimer["W"]).ToString(CultureInfo.InvariantCulture));
                 }
 
                 if (Q.Level >= 1 && GetBool("drawq", typeof(bool)))
@@ -512,14 +531,14 @@ namespace Jayce
 
             if (!Ismelee())
             {
-                if (GetBool("drawtimers", typeof (bool)))
+                if (GetBool("drawtimers", typeof(bool)))
                 {
                     Drawing.DrawText(x + 50, y, Color.Red,
-                        "[Qm] " + ((int) SpellTimer["Qm"]).ToString(CultureInfo.InvariantCulture));
+                        "[Qm] " + ((int)SpellTimer["Q"]).ToString(CultureInfo.InvariantCulture));
                     Drawing.DrawText(x - 20, y, Color.Red,
-                        "[Em] " + ((int) SpellTimer["Em"]).ToString(CultureInfo.InvariantCulture));
+                        "[Em] " + ((int)SpellTimer["E"]).ToString(CultureInfo.InvariantCulture));
                     Drawing.DrawText(x - 80, y, Color.Red,
-                        "[Wm] " + ((int) SpellTimer["Wm"]).ToString(CultureInfo.InvariantCulture));
+                        "[Wm] " + ((int)SpellTimer["W"]).ToString(CultureInfo.InvariantCulture));
                 }
                 //if (minionscircle != null)
                 //{
@@ -536,7 +555,7 @@ namespace Jayce
                 }
             }
 
-            
+
         }
 
         public static bool Ismelee()
