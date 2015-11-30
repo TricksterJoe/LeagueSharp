@@ -11,16 +11,52 @@ namespace Anti_Rengar
 {
     internal class AntiRengar
     {
+        public static string[] Champlist =
+{
+            "Vayne", "Ahri", "Alistar", "Anivia", "Caitlyn", "Annie"
+            , "Ashe", "Azir", "Bitzcrank", "Chogath", "Diana", "Draven",
+            "Elise", "Ezreal", "Fiddlesticks", "Fizz", "Garen", "Gragas", "Irelia", "Janna"
+            , "Jayce", "Jinx", "LeBlanc", "Leesin", "Leona", "Lulu", "Lux", "Nami"
+            , "Quinn", "Riven", "Shaco", "Sivir", "Soraka", "Swain", "Syndra", "Thresh"
+            , "Tristana", "Velkoz", "Viktor", "MonkeyKing", "Zyra", "Xerath"
+        };
 
         public static Obj_AI_Hero Player = ObjectManager.Player;
         private static Obj_AI_Hero _rengo;
         private static int lastcasted;
+        public static Menu Config;
+        public const string Menuname = "Anti Rengar";
+        public static void AddBool(Menu menu, string displayName, string name, bool value = true)
+        {
+            menu.AddItem(new MenuItem(name, displayName).SetValue(value));
+        }
 
         public static void OnLoad(EventArgs args)
         {
+            if (!Champlist.Contains(Player.ChampionName)) return;
+            Config = new Menu(Menuname, Menuname, true);
+            AddBool(Config, "Enable", "enable");
+          
 
-          //  Game.PrintChat("<font color='#6f00ff'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "To Enable, Type w on, To Disable, Type w off" + "</font>");
+            // important on/off
+            switch (Player.ChampionName)
+            {
+                case "Vayne":
+                    AddBool(Config, "Use E", "usee");
+                    AddBool(Config, "Use Q", "useq");
+                    break;
+                case "Ahri":
+                    AddBool(Config, "Use R", "user");
+                    break;
+                case "Alistar":
+                    AddBool(Config, "Use W", "usew");
+                    break;
 
+            }
+
+            Config.AddToMainMenu();
+
+            
             Game.OnUpdate += OnUpdate;
             GameObject.OnCreate += OnCreateObject;
             Obj_AI_Base.OnProcessSpellCast += OnProcess;
@@ -54,6 +90,8 @@ namespace Anti_Rengar
         {
 //
         //   Game.PrintChat(Player.Buffs.FirstOrDefault().Name);
+            if (!Config.Item("enable").GetValue<bool>()) return;
+
             if (_rengo == null) return;
             if ((_rengo.IsDead) || Environment.TickCount - lastcasted > 8 * 10 * 10 * 10)
             {
@@ -65,27 +103,36 @@ namespace Anti_Rengar
             switch (Player.ChampionName.ToLower())
             {
                 case "vayne":
-
+                    if (Config.Item("useq").GetValue<bool>())
                     ReadyCast(Player.AttackRange, SpellSlot.Q, BackWardsCast(500));
 
                     if (!Ready(SpellSlot.Q) || Player.Spellbook.GetSpell(SpellSlot.Q).State == SpellState.Surpressed)
-                       ReadyCast(500, SpellSlot.E, default(Vector3), true);
+                    {
+                        if (Config.Item("usee").GetValue<bool>())
+                            ReadyCast(500, SpellSlot.E, default(Vector3), true);
+                    }
+
                     if (Player.Spellbook.GetSpell(SpellSlot.Q).State == SpellState.Surpressed)
                     Player.IssueOrder(GameObjectOrder.AttackTo, _rengo);
                     break;
 
                 case "ahri":
                     if (!Player.HasBuff("AhriTumble"))
-                    ReadyCast(500, SpellSlot.R, BackWardsCast(430));
+                    {
+                        if (Config.Item("user").GetValue<bool>())
+                            ReadyCast(500, SpellSlot.R, BackWardsCast(430));
+                    }
                     if (Player.HasBuff("AhriTumble") || !Player.Spellbook.GetSpell(SpellSlot.R).IsReady())
                    Utility.DelayAction.Add(200, () => ReadyCast(500, SpellSlot.E, default(Vector3)));
                     break;
 
                 case "alistar":
-                    SelfCast(1000, SpellSlot.Q);
+                        SelfCast(1000, SpellSlot.Q);
+
                     if (!Player.Spellbook.GetSpell(SpellSlot.Q).IsReady())
                     {
-                        Utility.DelayAction.Add(200, () =>
+                        if (Config.Item("usew").GetValue<bool>())
+                            Utility.DelayAction.Add(200, () =>
                             ReadyCast(500, SpellSlot.W, default(Vector3), true));
                     }
                     break;
@@ -238,17 +285,6 @@ namespace Anti_Rengar
 
             }
         }
-
-        public static string[] Champlist =
-        {
-            "Vayne", "Ahri", "Alistar", "Anivia", "Caitlyn", "Annie"
-            , "Ashe", "Azir", "Bitzcrank", "Chogath", "Diana", "Draven",
-            "Elise", "Ezreal", "Fiddlesticks", "Fizz", "Garen", "Gragas", "Irelia", "Janna"
-            , "Jayce", "Jinx", "LeBlanc", "Leesin", "Leona", "Lulu", "Lux", "Nami"
-            , "Quinn", "Riven", "Shaco", "Sivir", "Soraka", "Swain", "Syndra", "Thresh"
-            , "Tristana", "Velkoz", "Viktor", "MonkeyKing", "Zyra", "Xerath"
-        };
-
         private static Obj_AI_Hero _target;
 
         public static Vector3 BackWardsCast(float range)
