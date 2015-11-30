@@ -33,7 +33,7 @@ namespace Anti_Rengar
 
         public static void OnLoad(EventArgs args)
         {
-            if (!Champlist.Contains(Player.ChampionName)) return;
+         //   if (!Champlist.Contains(Player.ChampionName)) return;
             Config = new Menu(Menuname, Menuname, true);
             AddBool(Config, "Enable", "enable");
           
