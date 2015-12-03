@@ -12,51 +12,24 @@ namespace BushWard
     internal class Ward
     {
       //  private static bool getiton;
+        public static Menu Config;
         private static int lastwarded;
         
         public static void OnLoad(EventArgs args)
         {
+            Config = new Menu("Auto Ward Bush", "Auto Ward Bush");
+            Config.AddItem(new MenuItem("Enable", "Enable")).SetValue(true);
+            Config.AddToMainMenu();
             Game.OnUpdate += OnUpdate;
-            Game.OnChat += OnChat; //this is me being lazy
-            Game.PrintChat("<font color='#6f00ff'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "To Enable, Type w on, To Disable, Type w off" + "</font>");
+            Game.PrintChat("<font color='#6f00ff'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "Make sure to upvote in Database :)" + "</font>");
 
         }
 
-        private static void OnChat(GameChatEventArgs args)
-        {
-
-            if (!args.Sender.IsMe) return;
-           
-            if (args.Message.Equals("w on"))
-            {
-
-                if (!getiton)
-                    Utility.DelayAction.Add(200, () => Game.PrintChat("<font color='#04B404'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "On" + "</font>"));
-                else
-                {
-                    Utility.DelayAction.Add(200, () => Game.PrintChat("<font color='#04B404'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "Already On" + "</font>"));
-                }
-                getiton = true;
-            }
-
-            if (args.Message.Equals("w off"))
-            {
-                if (getiton)
-                   Utility.DelayAction.Add(200, () =>  Game.PrintChat("<font color='#FF0000'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "Off" + "</font>"));
-                else
-                {
-                    Utility.DelayAction.Add(200, () => Game.PrintChat("<font color='#FF0000'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "Already Off" + "</font>"));
-                }
-                getiton = false;
-            }
-        }
-
-        public static bool getiton { get; set; }
-
+        
 
         private static void OnUpdate(EventArgs args)
         {
-            if (!getiton) return;
+            if (!Config.Item("Enable").GetValue<bool>()) return;
 
            var random = WeightedRandom.Next(200, 700);
             
