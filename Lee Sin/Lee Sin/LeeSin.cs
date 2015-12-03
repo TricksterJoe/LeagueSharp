@@ -179,7 +179,7 @@ namespace Lee_Sin
                 return;
 
             if (sender.Name.ToLower().Contains("ward") && W.IsReady() && sender.IsAlly)
-            {
+            { 
                 var ward = (Obj_AI_Base) sender;
                 if (ward.IsMe) return;
                 W.Cast(ward);
@@ -1434,20 +1434,19 @@ namespace Lee_Sin
                      wardFlashBool &&
                      ((Environment.TickCount - lastqcasted > 1500 && !Q.IsReady()) ||
                       (col.Count > 1 && !Q2() && Environment.TickCount - lastqcasted > 2000))) ||
-                    Environment.TickCount - lastflashward < 1500)
+                    Environment.TickCount - lastflashward < 1000)
                 {
-                 //   Game.PrintChat("WArd Flash");
-                    Steps = steps.Flash;
 
                     if (Environment.TickCount - wardjumpedto > 1000 && R.IsReady() &&
-                        Player.ServerPosition.Distance(target.ServerPosition) > 350) 
+                        Player.ServerPosition.Distance(target.ServerPosition) > 350)
                     {
                         WardJump(wardtotargetpos, false, false);
                         wardjumpedto = Environment.TickCount;
+
+                        wardjumpedtotarget = true;
+                        lastflashward = Environment.TickCount;
                         Steps = steps.Flash;
                     }
-                    wardjumpedtotarget = true;
-                    lastflashward = Environment.TickCount;
                 }
                 else if (Environment.TickCount - lastflashward > 900)
                 {
