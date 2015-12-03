@@ -583,7 +583,7 @@ namespace Lee_Sin
 
         private static void OnUpdate(EventArgs args)
         {
-            Game.PrintChat(HasFlash().ToString());
+            
             if (SelectedAllyAiMinion != null)
             {
                 if (SelectedAllyAiMinion.IsDead)
