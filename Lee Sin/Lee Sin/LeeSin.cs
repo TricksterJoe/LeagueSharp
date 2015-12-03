@@ -1407,7 +1407,7 @@ namespace Lee_Sin
                                 !x.IsDead
                                 && Q.GetPrediction(x).CollisionObjects.Count == 0)) 
             {
-                Render.Circle.DrawCircle(min.Position, 80, Color.Red, 5, true);
+                Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
                 if (col.Count > 0)
                 {
                     if (Q1())
@@ -1473,7 +1473,7 @@ namespace Lee_Sin
                         Steps = steps.Flash;
                         lastflashstep = Environment.TickCount;
                     }
-                    else if (target.Distance(target) < 600 )
+                    else if (target.Distance(Player) < 600 )
                     {
                         Steps = steps.WardJump;
                       //  Game.PrintChat("It's Ward time");
