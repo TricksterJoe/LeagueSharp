@@ -257,15 +257,12 @@ namespace Lee_Sin
                 {
                     if (!GetBool("wardinsec", typeof (KeyBind)) && !GetBool("starcombo", typeof (KeyBind))) return;
                     var pos = InsecFlash(target, 230);
-                    if (!GetBool("wardinsec", typeof (KeyBind)))
-                        Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"), pos, true);
-                    else
-                    {
-                        var poss = Player.Position.Extend(target.Position,
-                               +target.Position.Distance(Player.Position) + 230);
-                        Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"), poss, true);
-                    }
-            }
+                    var poss = Player.Position.Extend(target.Position,
+       +target.Position.Distance(Player.Position) + 230);
+
+                    Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"),
+                        !GetBool("wardinsec", typeof (KeyBind)) ? poss : pos, true);
+                }
 
             }
 
@@ -396,7 +393,7 @@ namespace Lee_Sin
         public static Vector3 InsecFlash(Obj_AI_Hero target, int extendvalue)
         {
 
-            var pos = Player.Position.Extend(target.Position, +target.Position.Distance(Player.Position) + 230);
+          //  var pos = Player.Position.Extend(target.Position, +target.Position.Distance(Player.Position) + 230);
             if (SelectedAllyAiMinion != null)
             {
                     return
@@ -586,6 +583,7 @@ namespace Lee_Sin
 
         private static void OnUpdate(EventArgs args)
         {
+            Game.PrintChat(HasFlash().ToString());
             if (SelectedAllyAiMinion != null)
             {
                 if (SelectedAllyAiMinion.IsDead)
@@ -1353,7 +1351,8 @@ namespace Lee_Sin
         {
             #region Target, Slots, Prediction
 
-                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+          Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+    
             var target = TargetSelector.GetTarget(Q.Range + 500, TargetSelector.DamageType.Physical);
             if (target != null)
             {
@@ -1361,24 +1360,14 @@ namespace Lee_Sin
             }
 
 
-            var slot = Items.GetWardSlot();
-
-
 
             if (target == null) return;
+
             var qpred = Q.GetPrediction(target);
 
-            var col = Q.GetPrediction(target).CollisionObjects;
+            var col = qpred.CollisionObjects;
 
-
-            var prediction = Prediction.GetPrediction(target, Q.Delay);
-
-            var collision = Q.GetCollision(Player.Position.To2D(),
-                new List<Vector2> {prediction.UnitPosition.To2D()});
-            foreach (var collisions in collision)
-            {
-                colbool = collision.Count > 1;
-            }
+            var slot = Items.GetWardSlot();
 
             #endregion
 
@@ -1402,21 +1391,22 @@ namespace Lee_Sin
                     )
                     .FirstOrDefault(
                         x =>
-                            x.IsValid && (x.Distance(target) < 300 || x.Distance(Insec(target, 500, false)) < 200) && x.IsEnemy && !x.IsDead && x.NetworkId != target.NetworkId
-&&                            !x.Name.ToLower().Contains("turret") && x.Health > Q.GetDamage(x) + 40);
+                            x.IsValid && (x.Distance(target) < 300 || x.Distance(Insec(target, 500, false)) < 200) &&
+                            x.IsEnemy && !x.IsDead && x.NetworkId != target.NetworkId
+                            && !x.Name.ToLower().Contains("turret") && x.Health > GetQDamage(x) + 40
+                            && Q.GetPrediction(x).CollisionObjects.Count == 0);
 
-            foreach (var collisions in collision)
+            if (col.Count > 0)
             {
-                if (collision.Count >= 1)
+                if (objects == null) return;
+                var objpredss = Q.GetPrediction(objects);
+                if (objpredss.CollisionObjects.Count == 0)
                 {
-                    if (objects == null) return;
-                    var objpredss = Q.GetPrediction(objects);
-                  //  if (objpredss.Hitchance != HitChance.Collision)
-                        Render.Circle.DrawCircle(objects.Position, 100, Color.Yellow);
+                    Render.Circle.DrawCircle(objects.Position, 100, Color.Yellow);
 
                     if (Q1())
                     {
-                        Q.Cast(objpredss.CastPosition);
+                        Q.Cast(objects);
                     }
                     if (Q2() && Player.Distance(target) > 400)
                     {
@@ -1426,13 +1416,14 @@ namespace Lee_Sin
             }
 
 
+
             var poss = Insec(target, 300, false);
 
             var wardtotargetpos = Player.ServerPosition.Extend(target.ServerPosition, Player.Distance(target) - 180);
             var wardFlashBool = GetBool("expwardflash", typeof (bool));
 
-            if (slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 780 && R.IsReady() &&
-                wardFlashBool && ((Environment.TickCount - lastqcasted > 2000 && !Q.IsReady()) || (colbool && !Q2())))
+            if ((slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 780 && R.IsReady() &&
+                wardFlashBool && ((Environment.TickCount - lastqcasted > 1000 && !Q.IsReady()) || (colbool && !Q2()))) || Environment.TickCount - lastflashward < 1500)
             {
 
                 Steps = steps.Flash;
@@ -1444,21 +1435,21 @@ namespace Lee_Sin
                 wardjumpedtotarget = true;
                 lastflashward = Environment.TickCount;
             }
-            else
+            else if (Environment.TickCount - lastflashward > 900)
             {
                 wardjumpedtotarget = false;
             }
 
 
 
-            if (Steps == steps.WardJump && R.IsReady() && Player.Distance(poss.To3D()) > 80)
+            if (Steps == steps.WardJump && R.IsReady() && Player.Distance(poss.To3D()) > 80 && slot != null && W.IsReady())
             {
-             //   if (target.Distance(Player) > 600) return;
+                if (target.Distance(Player) > 600) return;
                 WardJump(poss.To3D(), false);
             }
 
             if (_processw ||
-                (Steps == steps.Flash && target.Distance(Player) < 400) || Environment.TickCount - lastwcasted < 1500) 
+                (Steps == steps.Flash && target.Distance(Player) < 400)) 
             {
                 if (R.IsReady())
                 R.Cast(target);
@@ -1495,11 +1486,16 @@ namespace Lee_Sin
 
             #region Q Smite
 
+            var prediction = Prediction.GetPrediction(target, Q.Delay);
+
+            var collision = Q.GetCollision(Player.Position.To2D(),
+                new List<Vector2> { prediction.UnitPosition.To2D() });
+
             foreach (var collisions in collision)
             {
                 if (collision.Count == 1 && collision[0].IsMinion)
                 {
-                    if (!GetBool("UseSmite", typeof (bool))) return;
+                    if (!GetBool("UseSmite", typeof(bool))) return;
                     if (Q.IsReady())
                     {
                         if (collision[0].Distance(Player) < 500)
