@@ -9,6 +9,7 @@ using Color = System.Drawing.Color;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using ItemData = LeagueSharp.Common.Data.ItemData;
 using Version = System.Version;
 
 namespace Lee_Sin
@@ -177,9 +178,11 @@ namespace Lee_Sin
                 Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkwtwo")
                 return;
 
-            if (sender.Name.ToLower().Contains("ward") && W.IsReady() && sender.IsAlly && !sender.IsMe)
+            if (sender.Name.ToLower().Contains("ward") && W.IsReady() && sender.IsAlly)
             {
-                W.Cast((Obj_AI_Base)sender);
+                var ward = (Obj_AI_Base) sender;
+                if (ward.IsMe) return;
+                W.Cast(ward);
                 created = true;
                 lastwcasted = Environment.TickCount;
             }
@@ -578,12 +581,12 @@ namespace Lee_Sin
         }
 
         #endregion
-
+        private static Items.Item _tearoftheGoddess = new Items.Item(3070, 0);
         #region On Update
 
         private static void OnUpdate(EventArgs args)
         {
-          //  Game.PrintChat(HasFlash().ToString());
+            //  Game.PrintChat(HasFlash().ToString());
             if (SelectedAllyAiMinion != null)
             {
                 if (SelectedAllyAiMinion.IsDead)
@@ -630,6 +633,7 @@ namespace Lee_Sin
             }
             if (GetBool("wardjump", typeof(KeyBind)))
             {
+                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                 WardJump(Player.Position.Extend(Game.CursorPos, 590), true);
             }
 
@@ -1363,6 +1367,8 @@ namespace Lee_Sin
 
             if (target == null) return;
 
+           // Game.PrintChat(Steps.ToString());
+
             var qpred = Q.GetPrediction(target);
 
             var col = qpred.CollisionObjects;
@@ -1370,6 +1376,14 @@ namespace Lee_Sin
             var slot = Items.GetWardSlot();
 
             #endregion
+            var poss = Insec(target, 320, true);
+            if (Steps == steps.WardJump && slot != null && W.IsReady() && R.IsReady())
+            {
+                if (target.Distance(Player) < 600)
+                {
+                    WardJump(poss.To3D(), false, false);
+                }
+            }
 
             if (Player.Distance(target) > 500)
             {
@@ -1379,76 +1393,70 @@ namespace Lee_Sin
                 }
             }
 
-            if (Q1() && Player.Distance(target) <= Q.Range)
+            if (Q1() && Player.Distance(target) <= Q.Range && col.Count == 0)
             {
                 Q.Cast(qpred.CastPosition);
             }
 
-
-            var objects =
-                ObjectManager
-                    .Get<Obj_AI_Base>(
-                        ).FirstOrDefault(x =>
-                            x.IsEnemy && !x.IsDead
-                            && !x.Name.ToLower().Contains("turret") && x.Health > GetQDamage(x) + 40
-                            && Q.GetPrediction(x).CollisionObjects.Count == 0);
-
+            foreach (
+                var min in
+                    MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy)
+                        .Where(
+                            x =>
+                                x.Health > GetQDamage(x) + 5 && (x.Distance(target) < 400 || x.Distance(poss) < 400) &&
+                                !x.IsDead
+                                && Q.GetPrediction(x).CollisionObjects.Count == 0)) 
+            {
+                Render.Circle.DrawCircle(min.Position, 80, Color.Red, 5, true);
                 if (col.Count > 0)
                 {
-                    if (objects == null) return;
-                    if (objects.Distance(target) > 500) return;
-                    var objpredss = Q.GetPrediction(objects);
-                    if (objpredss.CollisionObjects.Count == 0)
+                    if (Q1())
                     {
-                        Render.Circle.DrawCircle(objects.Position, 100, Color.Yellow);
-
-                        if (Q1())
-                        {
-                            Q.Cast(objects);
-                        }
-                        if (Q2() && Player.Distance(target) > 400)
-                        {
-                            Q.Cast();
-                        }
+                        Q.Cast(min);
                     }
+
+                    if (Q2() && min.HasBuff("blindmonkqtwo"))
+                    {
+                        Q.Cast();
+                    }
+                }
+            }
+
+
+
+                var wardtotargetpos = Player.ServerPosition.Extend(target.ServerPosition, Player.Distance(target) - 180);
+            var wardFlashBool = GetBool("expwardflash", typeof (bool));
+
+
+                if ((slot != null && HasFlash() && W.IsReady() &&
+                     Player.ServerPosition.Distance(target.ServerPosition) > 350 && target.Distance(Player) < 780 &&
+                     R.IsReady() &&
+                     wardFlashBool &&
+                     ((Environment.TickCount - lastqcasted > 1500 && !Q.IsReady()) ||
+                      (col.Count > 1 && !Q2() && Environment.TickCount - lastqcasted > 2000))) ||
+                    Environment.TickCount - lastflashward < 1500)
+                {
+                 //   Game.PrintChat("WArd Flash");
+                    Steps = steps.Flash;
+
+                    if (Environment.TickCount - wardjumpedto > 1000 && R.IsReady() &&
+                        Player.ServerPosition.Distance(target.ServerPosition) > 350) 
+                    {
+                        WardJump(wardtotargetpos, false, false);
+                        wardjumpedto = Environment.TickCount;
+                        Steps = steps.Flash;
+                    }
+                    wardjumpedtotarget = true;
+                    lastflashward = Environment.TickCount;
+                }
+                else if (Environment.TickCount - lastflashward > 900)
+                {
+                    wardjumpedtotarget = false;
                 }
             
 
 
-
-            var poss = Insec(target, 300, false);
-
-            var wardtotargetpos = Player.ServerPosition.Extend(target.ServerPosition, Player.Distance(target) - 180);
-            var wardFlashBool = GetBool("expwardflash", typeof (bool));
-
-            if ((slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 780 && R.IsReady() &&
-                wardFlashBool && ((Environment.TickCount - lastqcasted > 1000 && !Q.IsReady()) || (colbool && !Q2()))) || Environment.TickCount - lastflashward < 1000)
-            {
-
-                Steps = steps.Flash;
-
-                if (Player.ServerPosition.Distance(target.ServerPosition) > 350 && Environment.TickCount - wardjumpedto > 1000)
-                {
-                    WardJump(wardtotargetpos, false);
-                    wardjumpedto = Environment.TickCount;
-                }
-                wardjumpedtotarget = true;
-                lastflashward = Environment.TickCount;
-            }
-            else if (Environment.TickCount - lastflashward > 900)
-            {
-                wardjumpedtotarget = false;
-            }
-
-
-
-            if (Steps == steps.WardJump && R.IsReady() && Player.Distance(poss.To3D()) > 80 && slot != null && W.IsReady())
-            {
-                if (target.Distance(Player) > 600) return;
-                WardJump(poss.To3D(), false);
-            }
-
-            if (_processw ||
+            if (Environment.TickCount - lastprocessw < 1500 ||
                 (Steps == steps.Flash && target.Distance(Player) < 400)) 
             {
                 if (R.IsReady())
@@ -1458,57 +1466,58 @@ namespace Lee_Sin
 
             #region Determine if we want to flash or ward jump
 
-            if (R.IsReady())
+           if (R.IsReady())
             {
-                if (slot != null && W.IsReady() && slot.IsValidSlot())
+                if (slot != null && (W.IsReady()  || Environment.TickCount - lastprocessw < 2000 )&& slot.IsValidSlot())
                 {
                     if (GetBool("prioflash", typeof(bool)) && Player.GetSpellSlot("summonerflash").IsReady())
                     {
                         Steps = steps.Flash;
                         lastflashstep = Environment.TickCount;
                     }
-                    else if (Environment.TickCount - lastflashstep > 2500)
+                    else
                     {
                         Steps = steps.WardJump;
+                      //  Game.PrintChat("It's Ward time");
                         lastwardjump = Environment.TickCount;
                     }
                 }
                 else if (GetBool("useflash", typeof(bool)) &&
                          target.Distance(Player) < 300 &&
                          Player.GetSpellSlot("summonerflash").IsReady() &&
-                         (slot == null || !W.IsReady()) && Environment.TickCount - lastwardjump > 2000)
+                         (slot == null || !W.IsReady()))
                 {
                     Steps = steps.Flash;
                 }
-            }
+           }
 
             #endregion
 
             #region Q Smite
 
-            var prediction = Prediction.GetPrediction(target, Q.Delay);
+            //var prediction = Prediction.GetPrediction(target, Q.Delay);
 
-            var collision = Q.GetCollision(Player.Position.To2D(),
-                new List<Vector2> { prediction.UnitPosition.To2D() });
+            //var collision = Q.GetCollision(Player.Position.To2D(),
+            //    new List<Vector2> { prediction.UnitPosition.To2D() });
 
-            foreach (var collisions in collision)
-            {
-                if (collision.Count == 1 && collision[0].IsMinion)
-                {
-                    if (!GetBool("UseSmite", typeof(bool))) return;
-                    if (Q.IsReady())
-                    {   
-                        if (collision[0].Distance(Player) < 500)
-                        {
-                            if (collision[0].Health <= GetFuckingSmiteDamage() && Smite.IsReady())
-                            {
-                                Q.Cast(prediction.CastPosition);
-                                Player.Spellbook.CastSpell(Smite, collision[0]);
-                            }
-                        }
-                    }
-                }
-            }
+            //foreach (var collisions in collision)
+            //{
+            //    if (collision.Count == 1 && collision[0].IsMinion)
+            //    { 
+            //        if (!GetBool("UseSmite", typeof(bool))) return;
+            //        if (Q.IsReady())
+            //        {   
+            //            if (collision[0].Distance(Player) < 500)
+            //            {
+            //                if (collision[0].Health <= GetFuckingSmiteDamage() && Smite.IsReady())
+            //                {
+            //                    Q.Cast(prediction.CastPosition);
+            //                    Player.Spellbook.CastSpell(Smite, collision[0]);
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
             #endregion
         }
 
@@ -1527,10 +1536,9 @@ namespace Lee_Sin
 
         }
 
-        public static void WardJump(Vector3 position, bool objectuse)
+        public static void WardJump(Vector3 position, bool objectuse, bool use = true)
         {
-
-                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+           
                 var pos = position; 
                 var objects =
                     ObjectManager
@@ -1540,23 +1548,26 @@ namespace Lee_Sin
                             x =>
                                 x.IsValid && x.Distance(pos) < 200 && x.IsAlly && !x.IsDead &&
                                 !x.Name.ToLower().Contains("turret"));
-            if (objectuse)
-            {
-                foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
+                if (objectuse)
                 {
-                    if (W.IsReady() && W1() && !W2() &&
-                        (objects != null))
+                    foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
                     {
-                        W.Cast(objects);
+                        if (W.IsReady() && W1() && !W2() &&
+                            (objects != null))
+                        {
+                            W.Cast(objects);
+                        }
                     }
                 }
-            }
+            
 
             var ward = Items.GetWardSlot();
             if (!W.IsReady() || ward == null || _casted || !ward.IsValidSlot() ||
-                Environment.TickCount - _lastward <= 400 || !W1() || objects != null) return;
-            Player.Spellbook.CastSpell(ward.SpellSlot, position);
-            _lastward = Environment.TickCount;
+                Environment.TickCount - _lastward <= 400 || !W1() || (objects != null && objectuse)) return;
+            {
+                Player.Spellbook.CastSpell(ward.SpellSlot, position);
+                _lastward = Environment.TickCount;
+            }
         }
 
         #endregion
