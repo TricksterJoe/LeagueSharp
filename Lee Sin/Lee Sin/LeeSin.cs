@@ -583,7 +583,7 @@ namespace Lee_Sin
 
         private static void OnUpdate(EventArgs args)
         {
-            Game.PrintChat(HasFlash().ToString());
+          //  Game.PrintChat(HasFlash().ToString());
             if (SelectedAllyAiMinion != null)
             {
                 if (SelectedAllyAiMinion.IsDead)
@@ -1351,8 +1351,8 @@ namespace Lee_Sin
         {
             #region Target, Slots, Prediction
 
-          Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-    
+            Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+
             var target = TargetSelector.GetTarget(Q.Range + 500, TargetSelector.DamageType.Physical);
             if (target != null)
             {
@@ -1388,32 +1388,31 @@ namespace Lee_Sin
             var objects =
                 ObjectManager
                     .Get<Obj_AI_Base>(
-                    )
-                    .FirstOrDefault(
-                        x =>
-                            x.IsValid && (x.Distance(target) < 300 || x.Distance(Insec(target, 500, false)) < 200) &&
-                            x.IsEnemy && !x.IsDead && x.NetworkId != target.NetworkId
+                        ).FirstOrDefault(x =>
+                            x.IsEnemy && !x.IsDead
                             && !x.Name.ToLower().Contains("turret") && x.Health > GetQDamage(x) + 40
                             && Q.GetPrediction(x).CollisionObjects.Count == 0);
 
-            if (col.Count > 0)
-            {
-                if (objects == null) return;
-                var objpredss = Q.GetPrediction(objects);
-                if (objpredss.CollisionObjects.Count == 0)
+                if (col.Count > 0)
                 {
-                    Render.Circle.DrawCircle(objects.Position, 100, Color.Yellow);
+                    if (objects == null) return;
+                    if (objects.Distance(target) > 500) return;
+                    var objpredss = Q.GetPrediction(objects);
+                    if (objpredss.CollisionObjects.Count == 0)
+                    {
+                        Render.Circle.DrawCircle(objects.Position, 100, Color.Yellow);
 
-                    if (Q1())
-                    {
-                        Q.Cast(objects);
-                    }
-                    if (Q2() && Player.Distance(target) > 400)
-                    {
-                        Q.Cast();
+                        if (Q1())
+                        {
+                            Q.Cast(objects);
+                        }
+                        if (Q2() && Player.Distance(target) > 400)
+                        {
+                            Q.Cast();
+                        }
                     }
                 }
-            }
+            
 
 
 
@@ -1423,14 +1422,15 @@ namespace Lee_Sin
             var wardFlashBool = GetBool("expwardflash", typeof (bool));
 
             if ((slot != null && HasFlash() && W.IsReady() && target.Distance(Player) < 780 && R.IsReady() &&
-                wardFlashBool && ((Environment.TickCount - lastqcasted > 1000 && !Q.IsReady()) || (colbool && !Q2()))) || Environment.TickCount - lastflashward < 1500)
+                wardFlashBool && ((Environment.TickCount - lastqcasted > 1000 && !Q.IsReady()) || (colbool && !Q2()))) || Environment.TickCount - lastflashward < 1000)
             {
 
                 Steps = steps.Flash;
 
-                if (Player.ServerPosition.Distance(target.ServerPosition) > 350)
+                if (Player.ServerPosition.Distance(target.ServerPosition) > 350 && Environment.TickCount - wardjumpedto > 1000)
                 {
                     WardJump(wardtotargetpos, false);
+                    wardjumpedto = Environment.TickCount;
                 }
                 wardjumpedtotarget = true;
                 lastflashward = Environment.TickCount;
@@ -1497,7 +1497,7 @@ namespace Lee_Sin
                 {
                     if (!GetBool("UseSmite", typeof(bool))) return;
                     if (Q.IsReady())
-                    {
+                    {   
                         if (collision[0].Distance(Player) < 500)
                         {
                             if (collision[0].Health <= GetFuckingSmiteDamage() && Smite.IsReady())
@@ -1609,6 +1609,7 @@ namespace Lee_Sin
         private static bool wardjumpedtotarget;
         private static int lastqcasted;
         private static int lastflashward;
+        private static int wardjumpedto;
 
         private static void AutoSmite()
         {
