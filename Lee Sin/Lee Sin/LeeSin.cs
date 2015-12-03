@@ -1447,9 +1447,10 @@ namespace Lee_Sin
                         lastflashward = Environment.TickCount;
                     }
                 }
-                else if (Environment.TickCount - lastflashward > 1500)
+                else
                 {
                     wardjumpedtotarget = false;
+                    Steps = steps.WardJump; 
                 }
             
 
@@ -1473,7 +1474,7 @@ namespace Lee_Sin
                         Steps = steps.Flash;
                         lastflashstep = Environment.TickCount;
                     }
-                    else if (target.Distance(Player) < 600 )
+                    else
                     {
                         Steps = steps.WardJump;
                       //  Game.PrintChat("It's Ward time");
