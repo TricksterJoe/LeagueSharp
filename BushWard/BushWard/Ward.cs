@@ -19,6 +19,7 @@ namespace BushWard
         {
             Config = new Menu("Auto Ward Bush", "Auto Ward Bush");
             Config.AddItem(new MenuItem("Enable", "Enable")).SetValue(true);
+            Config.AddItem(new MenuItem("Enable Humanizer", "EnableHumanizer")).SetValue(true);
             Config.AddToMainMenu();
             Game.OnUpdate += OnUpdate;
             Game.PrintChat("<font color='#6f00ff'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "Make sure to upvote in Database :)" + "</font>");
@@ -31,7 +32,7 @@ namespace BushWard
         {
             if (!Config.Item("Enable").GetValue<bool>()) return;
 
-           var random = WeightedRandom.Next(200, 700);
+           var random = Config.Item("EnableHumanizer").GetValue<bool>() ? WeightedRandom.Next(200, 700) : 0;
             
             var combo = Orbwalking.Orbwalker.Instances.Find(x => x.ActiveMode == Orbwalking.OrbwalkingMode.Combo);
 
