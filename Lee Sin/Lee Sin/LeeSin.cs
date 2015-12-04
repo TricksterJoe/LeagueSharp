@@ -1437,8 +1437,8 @@ namespace Lee_Sin
                      R.IsReady() &&
                      wardFlashBool &&
                      ((Environment.TickCount - lastqcasted > 2000 && !Q.IsReady()) ||
-                      (col.Count > 1 && !Q2() && Environment.TickCount - lastqcasted > 2000 && !Q.IsReady()))) ||
-                    Environment.TickCount - lastflashward < 1000)
+                      (col.Count > 1 && !Q2() && Environment.TickCount - lastqcasted > 2000 && !Q.IsReady()) ||
+                    Environment.TickCount - lastflashward < 1000)))
                 {
 
                     if (Environment.TickCount - wardjumpedto > 1000 && R.IsReady() &&
