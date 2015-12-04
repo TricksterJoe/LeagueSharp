@@ -14,12 +14,16 @@ namespace BushWard
       //  private static bool getiton;
         public static Menu Config;
         private static int lastwarded;
-        
+        public static void AddBool(Menu menu, string displayName, string name, bool value = true)
+        {
+            menu.AddItem(new MenuItem(name, displayName).SetValue(value));
+        }
         public static void OnLoad(EventArgs args)
         {
-            Config = new Menu("Auto Ward Bush", "Auto Ward Bush");
-            Config.AddItem(new MenuItem("Enable", "Enable")).SetValue(true);
-            Config.AddItem(new MenuItem("Enable Humanizer", "EnableHumanizer")).SetValue(true);
+            Config = new Menu("Auto Ward Bush", "Auto Ward Bush", true);
+            AddBool(Config, "Enable", "enable");
+            AddBool(Config, "Enable Humanizer", "EnableHumanizer");
+                
             Config.AddToMainMenu();
             Game.OnUpdate += OnUpdate;
             Game.PrintChat("<font color='#6f00ff'>[Ward Bush]:</font> <font color='#FFFFFF'>" + "Make sure to upvote in Database :)" + "</font>");
@@ -30,7 +34,7 @@ namespace BushWard
 
         private static void OnUpdate(EventArgs args)
         {
-            if (!Config.Item("Enable").GetValue<bool>()) return;
+            if (!Config.Item("enable").GetValue<bool>()) return;
 
            var random = Config.Item("EnableHumanizer").GetValue<bool>() ? WeightedRandom.Next(200, 700) : 0;
             
@@ -38,7 +42,7 @@ namespace BushWard
 
             if (combo == null)
             {
-                return;
+                return; 
             }
 
             foreach (var heros in HeroManager.Enemies.Where(x => !x.IsDead && x.Distance(ObjectManager.Player) < 1000))
