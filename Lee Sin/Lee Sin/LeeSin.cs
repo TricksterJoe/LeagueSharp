@@ -1418,6 +1418,9 @@ namespace Lee_Sin
                 if (Environment.TickCount - wardjumpedto > 1000 && R.IsReady() &&
                     Player.ServerPosition.Distance(target.ServerPosition) > 350)
                 {
+                    if (Steps != steps.WardJump)
+                        Steps = steps.Flash;
+
                     WardJump(wardtotargetpos, false, false);
                     wardjumpedto = Environment.TickCount;
                     wardjumpedtotarget = true;
