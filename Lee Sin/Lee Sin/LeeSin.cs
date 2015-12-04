@@ -1391,33 +1391,34 @@ namespace Lee_Sin
                 Q.Cast(qpred.CastPosition);
             }
 
-            //foreach (
-            //    var min in
-            //        MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy)
-            //            .Where(
-            //                x =>
-            //                    x.Health > GetQDamage(x) + 5 && (x.Distance(target) < 400 || x.Distance(poss) < 400) &&
-            //                    !x.IsDead
-            //                    && Q.GetPrediction(x).CollisionObjects.Count == 0)) 
-            //{
-            //    Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
-            //    if (col.Count > 0)
-            //    {
-            //        if (Q1() && Q.IsReady())
-            //        {
-            //            Q.Cast(min);
-            //        }
+            foreach (
+                var min in
+                    MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy)
+                        .Where(
+                            x =>
+                                x.Health > GetQDamage(x) + 5 && (x.Distance(target) < 400 || x.Distance(poss) < 400) &&
+                                !x.IsDead
+                                && Q.GetPrediction(x).CollisionObjects.Count == 0)) 
+            {
+                Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
+                if (col.Count > 0)
+                {
+                    if (Q1() && Q.IsReady())
+                    {
+                        Q.Cast(min);
+                    }
 
-            //        if (Q2() && min.HasBuff("blindmonkqtwo"))
-            //        {
-            //            Q.Cast();
-            //        }
-            //    }
-            //}
+                    if (Q2() && min.HasBuff("blindmonkqtwo"))
+                    {
+                        Q.Cast();
+                    }
+                }
+            }
 
             var poss = Insec(target, 320, true);
 
-            if (Steps == steps.WardJump && slot != null && W.IsReady() && R.IsReady())
+            if ((Steps == steps.WardJump || Environment.TickCount - lastwardjump < 1500
+                )&& slot != null && W.IsReady() && R.IsReady())
             {
                 if (target.Distance(Player) < 600)
                 {
@@ -1443,7 +1444,6 @@ namespace Lee_Sin
                     {
                         WardJump(wardtotargetpos, false, false);
                         wardjumpedto = Environment.TickCount;
-
                         wardjumpedtotarget = true;
                         lastflashward = Environment.TickCount;
                     }
@@ -1468,7 +1468,7 @@ namespace Lee_Sin
 
            if (R.IsReady())
             {
-                if (slot != null && (W.IsReady()  || Environment.TickCount - lastprocessw < 2000 )  )
+                if (slot != null && W.IsReady())
                 {
                     if (GetBool("prioflash", typeof(bool)) && Player.GetSpellSlot("summonerflash").IsReady())
                     {
@@ -1483,6 +1483,7 @@ namespace Lee_Sin
                 }
                 else if (GetBool("useflash", typeof(bool)) &&
                          target.Distance(Player) < 300 &&
+                          Environment.TickCount - lastwardjump > 1500 &&
                          Player.GetSpellSlot("summonerflash").IsReady() &&
                          (slot == null || !W.IsReady()))
                 {
