@@ -1424,7 +1424,7 @@ namespace Lee_Sin
                 Game.PrintChat("Hi2");
                 if (target.Distance(Player) < 600)
                 {
-                    WardJump(poss.To3D(), false, false);
+                    WardJump(poss.To3D(), true, false);
                 }
             }
 
@@ -1566,7 +1566,7 @@ namespace Lee_Sin
 
             var ward = Items.GetWardSlot();
             if (!W.IsReady() || ward == null || _casted || !ward.IsValidSlot() ||
-                Environment.TickCount - _lastward <= 400 || !W1() || (objects != null && objectuse)) return;
+                Environment.TickCount - _lastward <= 400 || !W1() || objects != null) return;
             {
                 Player.Spellbook.CastSpell(ward.SpellSlot, position);
                 _lastward = Environment.TickCount;
