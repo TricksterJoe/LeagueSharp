@@ -1410,27 +1410,29 @@ namespace Lee_Sin
             if (slot != null && HasFlash() && W.IsReady() &&
                 Player.ServerPosition.Distance(target.ServerPosition) > 350 && target.Distance(Player) < 780 &&
                 R.IsReady() &&
-                wardFlashBool &&
-                ((Environment.TickCount - lastqcasted > 2000 && !Q.IsReady()) ||
-                 (col.Count > 1 && !Q2() && Environment.TickCount - lastqcasted > 2000 && !Q.IsReady()) ||
-                 Environment.TickCount - lastflashward < 1000))
+                wardFlashBool)
             {
-                if (Environment.TickCount - wardjumpedto > 1000 && R.IsReady() &&
-                    Player.ServerPosition.Distance(target.ServerPosition) > 350)
+                if ((Environment.TickCount - lastqcasted > 2000 && !Q.IsReady()) ||
+                    (col.Count > 1 && !Q2() && Environment.TickCount - lastqcasted > 2000 && !Q.IsReady()) ||
+                    (Environment.TickCount - lastflashward < 1500))
                 {
-                    if (Steps != steps.WardJump)
-                        Steps = steps.Flash;
+                    if (Environment.TickCount - wardjumpedto > 1000 && R.IsReady() &&
+                        Player.ServerPosition.Distance(target.ServerPosition) > 350)
+                    {
+                        if (Steps != steps.WardJump)
+                            Steps = steps.Flash;
 
-                    WardJump(wardtotargetpos, false, false);
-                    wardjumpedto = Environment.TickCount;
-                    wardjumpedtotarget = true;
-                    lastflashward = Environment.TickCount;
+                        WardJump(wardtotargetpos, false, false);
+                        wardjumpedto = Environment.TickCount;
+                        wardjumpedtotarget = true;
+                        lastflashward = Environment.TickCount;
+                    }
                 }
-            }
-            else
-            {
-                wardjumpedtotarget = false;
-                Steps = steps.WardJump;
+                else
+                {
+                    wardjumpedtotarget = false;
+                    Steps = steps.WardJump;
+                }
             }
 
 
