@@ -256,7 +256,7 @@ namespace Lee_Sin
 
                 if (target == null) return;
 
-                if (Steps == steps.Flash || Environment.TickCount - lastflashward < 2000)
+                if (Steps == steps.Flash || (Environment.TickCount - lastflashward < 2000 && wardjumpedtotarget))
                 {
                     if (!GetBool("wardinsec", typeof (KeyBind)) && !GetBool("starcombo", typeof (KeyBind))) return;
                     var pos = InsecFlash(target, 230);
@@ -1377,6 +1377,7 @@ namespace Lee_Sin
 
             #endregion
 
+            Game.PrintChat(Steps.ToString());
 
             if (Player.Distance(target) > 500)
             {
@@ -1398,7 +1399,7 @@ namespace Lee_Sin
                             x =>
                                 x.Health > GetQDamage(x) + 5 && (x.Distance(target) < 400 || x.Distance(poss) < 400) &&
                                 !x.IsDead
-                                && Q.GetPrediction(x).CollisionObjects.Count == 0)) 
+                                && Q.GetPrediction(x).CollisionObjects.Count == 0))
             {
                 Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
                 if (col.Count > 0)
@@ -1415,11 +1416,12 @@ namespace Lee_Sin
                 }
             }
 
-           
+
 
             if ((Steps == steps.WardJump || Environment.TickCount - lastwardjump < 1500
                 )&& slot != null && W.IsReady() && R.IsReady())
             {
+                Game.PrintChat("Hi2");
                 if (target.Distance(Player) < 600)
                 {
                     WardJump(poss.To3D(), false, false);
@@ -1434,8 +1436,8 @@ namespace Lee_Sin
                      Player.ServerPosition.Distance(target.ServerPosition) > 350 && target.Distance(Player) < 780 &&
                      R.IsReady() &&
                      wardFlashBool &&
-                     ((Environment.TickCount - lastqcasted > 1500 && !Q.IsReady()) ||
-                      (col.Count > 1 && !Q2() && Environment.TickCount - lastqcasted > 2000))) ||
+                     ((Environment.TickCount - lastqcasted > 2000 && !Q.IsReady()) ||
+                      (col.Count > 1 && !Q2() && Environment.TickCount - lastqcasted > 2000 && !Q.IsReady()))) ||
                     Environment.TickCount - lastflashward < 1000)
                 {
 
@@ -1468,7 +1470,7 @@ namespace Lee_Sin
 
            if (R.IsReady())
             {
-                if (slot != null && W.IsReady())
+                if (slot != null && (W.IsReady() || Environment.TickCount - lastprocessw < 2000 ) )
                 {
                     if (GetBool("prioflash", typeof(bool)) && Player.GetSpellSlot("summonerflash").IsReady())
                     {
@@ -1477,21 +1479,18 @@ namespace Lee_Sin
                     }
                     else
                     {
+                        Game.PrintChat("Hi");
                         Steps = steps.WardJump;
                         lastwardjump = Environment.TickCount;
                     }
                 }
                 else if (GetBool("useflash", typeof (bool)) &&
                          target.Distance(Player) < 300 &&
-                         Environment.TickCount - lastwardjump > 1500 &&
+                         Environment.TickCount - lastprocessw > 1500 &&
                          Player.GetSpellSlot("summonerflash").IsReady() &&
                          (slot == null || !W.IsReady()))
                 {
                     Steps = steps.Flash;
-                }
-                else
-                {
-                    Steps = steps.WardJump;
                 }
            }
 
