@@ -117,7 +117,6 @@ namespace Lee_Sin
             Drawing.OnDraw += OnCamps;
             Drawing.OnDraw += OnSpells;
             GameObject.OnCreate += OnCreate;
-            CustomEvents.Unit.OnDash += OnDash;
             Obj_AI_Base.OnProcessSpellCast += OnSpellcast;
             Spellbook.OnCastSpell += OnSpell;
             Game.OnWndProc += OnWndProc;
@@ -284,21 +283,6 @@ namespace Lee_Sin
         #endregion
 
         #region On Dash
-
-        private static void OnDash(Obj_AI_Base sender, Dash.DashItem args)
-        {
-            //            if (sender.IsMe || !sender.IsChampion() || sender.IsAlly) return;
-            //
-            //            if (args.EndPos.Distance(Player) < 200)
-            //            {
-            //                Jump(args.EndPos.Extend(Player.Position.To2D(), args.EndPos.Distance(Player.Position) + 300).To3D2());
-            //            }
-            //
-            //            if (sender.Distance(Player) < 250 && R.IsReady())
-            //            {
-            //                R.Cast(sender);
-            //            }
-        }
 
         #endregion
 
@@ -581,7 +565,7 @@ namespace Lee_Sin
         }
 
         #endregion
-        private static Items.Item _tearoftheGoddess = new Items.Item(3070, 0);
+
         #region On Update
 
         private static void OnUpdate(EventArgs args)
@@ -665,7 +649,7 @@ namespace Lee_Sin
                     break;
             }
 
-         //   AutoUlt();
+            AutoUlt();
         }
 
         #endregion
@@ -1567,7 +1551,7 @@ namespace Lee_Sin
             var ward = Items.GetWardSlot();
             if (!W.IsReady() || ward == null || _casted || !ward.IsValidSlot() ||
                 Environment.TickCount - _lastward <= 400 || !W1() || objects != null) return;
-            {
+            {   
                 Player.Spellbook.CastSpell(ward.SpellSlot, position);
                 _lastward = Environment.TickCount;
             }
