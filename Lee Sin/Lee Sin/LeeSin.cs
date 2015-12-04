@@ -1390,7 +1390,7 @@ namespace Lee_Sin
             {
                 Q.Cast(qpred.CastPosition);
             }
-
+            var poss = Insec(target, 320, true);
             foreach (
                 var min in
                     MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy)
@@ -1415,7 +1415,7 @@ namespace Lee_Sin
                 }
             }
 
-            var poss = Insec(target, 320, true);
+           
 
             if ((Steps == steps.WardJump || Environment.TickCount - lastwardjump < 1500
                 )&& slot != null && W.IsReady() && R.IsReady())
