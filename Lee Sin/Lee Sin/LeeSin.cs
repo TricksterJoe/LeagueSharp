@@ -1244,7 +1244,7 @@ namespace Lee_Sin
 
             Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
 
-            var target = TargetSelector.GetTarget(Q.Range + 500, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(Q.Range + 800, TargetSelector.DamageType.Physical);
             if (target != null)
             {
                 target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
@@ -1394,7 +1394,7 @@ namespace Lee_Sin
             var slot = Items.GetWardSlot();
 
             return slot != null && HasFlash() && W.IsReady() && Player.Distance(target) > 350 &&
-                   R.IsReady() && wardFlashBool;
+                   R.IsReady() && wardFlashBool ;
         }
 
         public static
