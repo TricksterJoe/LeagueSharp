@@ -1305,7 +1305,7 @@ namespace Lee_Sin
 
             if (R.IsReady())
             {
-                if (slot != null && ((W.IsReady() && W1())))
+                if (slot != null && W.IsReady())
                 {
                     if (GetBool("prioflash", typeof (bool)) && Player.GetSpellSlot("summonerflash").IsReady())
                     {
