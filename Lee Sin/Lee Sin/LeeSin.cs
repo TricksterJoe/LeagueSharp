@@ -310,6 +310,10 @@ namespace Lee_Sin
                 _lastqcasted = Environment.TickCount;
             }
 
+            if (args.Slot == SpellSlot.Q && Q1())
+            {
+                _lastqcasted1 = Environment.TickCount;
+            }
 
             if (args.Slot == Player.GetSpellSlot("summonerflash") && GetBool("wardinsec", typeof(KeyBind)))
             {
@@ -1294,7 +1298,7 @@ namespace Lee_Sin
                 canwardflash = true;
             }
 
-            if (Environment.TickCount - _lastqcasted > 800 && !Q.IsReady())
+            if (Environment.TickCount - _lastqcasted1 > 800 && !Q.IsReady())
             {
                 canwardflash = true;
             }
@@ -1478,6 +1482,7 @@ namespace Lee_Sin
         private static int _junglelaste;
         private static int lastflashed;
         private static bool canwardflash;
+        private static int _lastqcasted1;
 
         private static void AutoSmite()
         {
