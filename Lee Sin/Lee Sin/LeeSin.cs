@@ -1347,17 +1347,10 @@ namespace Lee_Sin
                 (col.Count <= 0 || Q2() || Environment.TickCount - _lastqcasted <= 1000 || Q.IsReady()) &&
                 (Environment.TickCount - _lastflashward >= 1500)) return;
 
-          var minion =  MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAllyForEnemy)
-                    .Where(
-                        x =>
-                            x != null && x.Health > Q.GetDamage(x) + 5 &&
-                            ((x.Distance(target) < 400 || x.Distance(poss) < 400) ||
-                             (CanWardFlash(target) && x.Distance(target) < 800)) && !x.IsDead &&
-                            Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range).OrderByDescending(x => x.Distance(target)))
 
             if (Environment.TickCount - _wardjumpedto > 1000 &&
                 ((Player.Position.Distance(target.Position) > 600) ||
-                 (minion.FirstOrDefault() != null && minion.FirstOrDefault().Distance(Player) > 600 && minion.FirstOrDefault().HasBuff("blindmonkqtwo"))))
+                 (minions != null && minions.Distance(Player) > 600)))
             {
                 WardJump(wardtotargetpos, false, false);
 
