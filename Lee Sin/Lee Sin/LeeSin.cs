@@ -1270,8 +1270,9 @@ namespace Lee_Sin
                             x != null && x.Health > Q.GetDamage(x) + 5 &&
                             ((x.Distance(target) < 400 || x.Distance(poss) < 400) ||
                              (CanWardFlash(target) && x.Distance(target) < 800)) && !x.IsDead &&
-                            Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range)) 
+                            Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range).OrderByDescending(x => x.Distance(target)))
             {
+                
                 Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
                 //if (col.Count <= 0 && min.Type != GameObjectType.NeutralMinionCamp) continue;
                 if (Q1() && Q.IsReady())
