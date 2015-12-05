@@ -1283,10 +1283,10 @@ namespace Lee_Sin
             
             if ((Steps == steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady())
             {
+                canwardflash = false;
                 if (target.Position.Distance(Player.Position) < 600)
                 {
                     WardJump(poss.To3D(), false, false);
-                    canwardflash = false;
                 }
             }
             else
