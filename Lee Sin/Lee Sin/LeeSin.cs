@@ -1272,7 +1272,7 @@ namespace Lee_Sin
                              (CanWardFlash(target) && x.Distance(target) < 800)) && !x.IsDead &&
                             Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range).OrderByDescending(x => x.Distance(target)))
             {
-                minionss = (Obj_AI_Base) min;
+             //   minionss = (Obj_AI_Base) min;
               //  if (min == null) continue;
                 Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
                 if (Q1() && Q.IsReady())
