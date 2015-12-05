@@ -1305,7 +1305,7 @@ namespace Lee_Sin
                         _lastwardjump = Environment.TickCount;
                     }
                 }
-                else if (GetBool("useflash", typeof (bool)) && target.Distance(Player) < 400 && Environment.TickCount - _lastprocessw > 1400 && Player.GetSpellSlot("SummonerFlash").IsReady() && (slot == null || !W.IsReady() || E2))
+                else if (GetBool("useflash", typeof (bool)) && target.Distance(Player) < 400&& Player.GetSpellSlot("SummonerFlash").IsReady() && (slot == null || !W.IsReady() || E2))
                 {
                     Steps = steps.Flash;
                 }
@@ -1328,10 +1328,6 @@ namespace Lee_Sin
                 _wardjumpedto = Environment.TickCount;
                 _wardjumpedtotarget = true;
                 _lastflashward = Environment.TickCount;
-            }
-            else
-            {
-                Steps = steps.WardJump;
             }
 
             #endregion
