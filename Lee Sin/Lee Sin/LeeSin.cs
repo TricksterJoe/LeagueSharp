@@ -1298,7 +1298,11 @@ namespace Lee_Sin
                 canwardflash = true;
             }
 
-            if (Environment.TickCount - _lastqcasted1 > 800 && !Q.IsReady())
+            if (target.HasBuff("blindmonkqtwo") || Environment.TickCount - _lastqcasted1 < 1500)
+            {
+                canwardflash = false;
+            }
+            else
             {
                 canwardflash = true;
             }
