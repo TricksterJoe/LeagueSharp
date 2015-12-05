@@ -1272,7 +1272,7 @@ namespace Lee_Sin
                              (CanWardFlash(target) && x.Distance(target) < 800)) && !x.IsDead &&
                             Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range).OrderByDescending(x => x.Distance(target)))
             {
-                minions = min;
+                minions = (Obj_AI_Base) min;
                 if (min == null) continue;
                 Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
                 if (Q1() && Q.IsReady())
@@ -1343,29 +1343,27 @@ namespace Lee_Sin
                 !(Player.ServerPosition.Distance(target.ServerPosition) > 350) || !(target.Distance(Player) < 1000) ||
                  !wardFlashBool || !canwardflash) return;
 
-            if ((Environment.TickCount - _lastqcasted > 1000) || (col.Count > 0 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
-            {
-                foreach (var min in
-                    MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAllyForEnemy)
-                        .Where(
-                            x =>
-                                x != null && x.Health > Q.GetDamage(x) + 5 &&
-                                ((x.Distance(target) < 400 || x.Distance(poss) < 400) ||
-                                 (CanWardFlash(target) && x.Distance(target) < 800)) && !x.IsDead &&
-                                Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range)
-                        .OrderByDescending(x => x.Distance(target)))
-                {
-                    if (Environment.TickCount - _wardjumpedto > 1000 &&
-                        ((Player.Position.Distance(target.Position) > 600) ||
-                         (min != null && minions.Distance(Player) > 600 && min.HasBuff("blindmonkqtwo"))))
-                    {
-                        WardJump(wardtotargetpos, false, false);
+            if ((Environment.TickCount - _lastqcasted <= 1000) &&
+                (col.Count <= 0 || Q2() || Environment.TickCount - _lastqcasted <= 1000 || Q.IsReady()) &&
+                (Environment.TickCount - _lastflashward >= 1500)) return;
 
-                        _wardjumpedto = Environment.TickCount;
-                        _wardjumpedtotarget = true;
-                        _lastflashward = Environment.TickCount;
-                    }
-                }
+          var minion =  MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAllyForEnemy)
+                    .Where(
+                        x =>
+                            x != null && x.Health > Q.GetDamage(x) + 5 &&
+                            ((x.Distance(target) < 400 || x.Distance(poss) < 400) ||
+                             (CanWardFlash(target) && x.Distance(target) < 800)) && !x.IsDead &&
+                            Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range).OrderByDescending(x => x.Distance(target)))
+
+            if (Environment.TickCount - _wardjumpedto > 1000 &&
+                ((Player.Position.Distance(target.Position) > 600) ||
+                 (minion.FirstOrDefault() != null && minion.FirstOrDefault().Distance(Player) > 600 && minion.FirstOrDefault().HasBuff("blindmonkqtwo"))))
+            {
+                WardJump(wardtotargetpos, false, false);
+
+                _wardjumpedto = Environment.TickCount;
+                _wardjumpedtotarget = true;
+                _lastflashward = Environment.TickCount;
             }
 
             #endregion
