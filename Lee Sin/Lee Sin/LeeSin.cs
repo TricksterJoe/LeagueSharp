@@ -1272,7 +1272,7 @@ namespace Lee_Sin
                              (CanWardFlash(target) && x.Distance(target) < 800)) && !x.IsDead &&
                             Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range).OrderByDescending(x => x.Distance(target)))
             {
-                
+                minions = min;
                 Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
                 //if (col.Count <= 0 && min.Type != GameObjectType.NeutralMinionCamp) continue;
                 if (Q1() && Q.IsReady())
@@ -1346,7 +1346,7 @@ namespace Lee_Sin
             //if ((Environment.TickCount - _lastqcasted > 1000) || (col.Count > 0 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
             //{
                 if (Environment.TickCount - _wardjumpedto <= 1000 || !R.IsReady() ||
-                    !(Player.ServerPosition.Distance(target.ServerPosition) > 400)) return;
+                    !(Player.Position.Distance(target.Position) > 800 && minions.Distance(Player) > 800 && !minions.HasBuff("blindmonkqtwo"))) return;
 
                 WardJump(wardtotargetpos, false, false);
 
@@ -1488,6 +1488,7 @@ namespace Lee_Sin
         private static int lastflashed;
         private static bool canwardflash;
         private static int _lastqcasted1;
+        private static Obj_AI_Base minions;
 
         private static void AutoSmite()
         {
