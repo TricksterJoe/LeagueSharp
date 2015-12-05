@@ -1282,10 +1282,18 @@ namespace Lee_Sin
             }
 
 
+            bool canwardflash;
             if ((Steps == steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady())
             {
                 if (target.Position.Distance(Player.Position) < 600)
+                {
                     WardJump(poss.To3D(), false, false);
+                    canwardflash = false;
+                }
+            }
+            else
+            {
+                canwardflash = true;
             }
 
 
@@ -1322,7 +1330,7 @@ namespace Lee_Sin
 
             if (slot == null || !HasFlash() || !W.IsReady() ||
                 !(Player.ServerPosition.Distance(target.ServerPosition) > 350) || !(target.Distance(Player) < 1000) ||
-                !R.IsReady() || !wardFlashBool) return;
+                !R.IsReady() || !wardFlashBool || !canwardflash ) return;
 
             //if ((Environment.TickCount - _lastqcasted > 1000) || (col.Count > 0 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
             //{
