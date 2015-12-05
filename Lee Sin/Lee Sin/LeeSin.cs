@@ -1324,7 +1324,7 @@ namespace Lee_Sin
                 !(Player.ServerPosition.Distance(target.ServerPosition) > 350) || !(target.Distance(Player) < 780) ||
                 !R.IsReady() || !wardFlashBool) return;
 
-            if ((Environment.TickCount - _lastqcasted > 2000 && !Q.IsReady()) || (col.Count > 1 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
+            if ((Environment.TickCount - _lastqcasted > 1000) || (col.Count > 0 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
             {
                 if (Environment.TickCount - _wardjumpedto <= 1000 || !R.IsReady() ||
                     !(Player.ServerPosition.Distance(target.ServerPosition) > 350)) return;
