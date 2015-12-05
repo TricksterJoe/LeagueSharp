@@ -1280,9 +1280,7 @@ namespace Lee_Sin
                     Q.Cast();
                 }
             }
-
-
-            bool canwardflash;
+            
             if ((Steps == steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady())
             {
                 if (target.Position.Distance(Player.Position) < 600)
@@ -1330,7 +1328,7 @@ namespace Lee_Sin
 
             if (slot == null || !HasFlash() || !W.IsReady() ||
                 !(Player.ServerPosition.Distance(target.ServerPosition) > 350) || !(target.Distance(Player) < 1000) ||
-                !R.IsReady() || !wardFlashBool || !canwardflash ) return;
+                !R.IsReady() || !wardFlashBool || !canwardflash) return;
 
             //if ((Environment.TickCount - _lastqcasted > 1000) || (col.Count > 0 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
             //{
@@ -1475,6 +1473,7 @@ namespace Lee_Sin
         private static int _junglelastw;
         private static int _junglelaste;
         private static int lastflashed;
+        private static bool canwardflash;
 
         private static void AutoSmite()
         {
