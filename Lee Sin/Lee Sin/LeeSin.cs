@@ -1272,17 +1272,26 @@ namespace Lee_Sin
                              (CanWardFlash(target) && x.Distance(target) < 800)) && !x.IsDead &&
                             Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range).OrderByDescending(x => x.Distance(target)))
             {
-                minions = min;
-                Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
-                //if (col.Count <= 0 && min.Type != GameObjectType.NeutralMinionCamp) continue;
-                if (Q1() && Q.IsReady())
+                if (min != null)s
                 {
-                    Q.Cast(min);
+                    minions = min;
                 }
-
-                if (Q2() && min.HasBuff("blindmonkqtwo"))
+                else
                 {
-                    Q.Cast();
+                    minions = null;
+                }
+                if (min != null)
+                {
+                    Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
+                    if (Q1() && Q.IsReady())
+                    {
+                        Q.Cast(min);
+                    }
+
+                    if (Q2() && min.HasBuff("blindmonkqtwo"))
+                    {
+                        Q.Cast();
+                    }
                 }
             }
             
@@ -1343,20 +1352,20 @@ namespace Lee_Sin
                 !(Player.ServerPosition.Distance(target.ServerPosition) > 350) || !(target.Distance(Player) < 1000) ||
                  !wardFlashBool || !canwardflash) return;
 
-            //if ((Environment.TickCount - _lastqcasted > 1000) || (col.Count > 0 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
-            //{
-            //if (Environment.TickCount - _wardjumpedto > 1000 && R.IsReady() &&
-            //    ((Player.Position.Distance(target.Position) > 600) ||
-            //     (minions != null && minions.Distance(Player) > 600 && minions.HasBuff("blindmonkqtwo")))) 
-            //{
-            //    WardJump(wardtotargetpos, false, false);
+            if ((Environment.TickCount - _lastqcasted > 1000) || (col.Count > 0 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
+            {
+                if (Environment.TickCount - _wardjumpedto > 1000 &&
+                    ((Player.Position.Distance(target.Position) > 600) ||
+                     (minions != null && minions.Distance(Player) > 600 && minions.HasBuff("blindmonkqtwo"))))
+                {
+                    WardJump(wardtotargetpos, false, false);
 
-            //    _wardjumpedto = Environment.TickCount;
-            //    _wardjumpedtotarget = true;
-            //    _lastflashward = Environment.TickCount;
-            //}
+                    _wardjumpedto = Environment.TickCount;
+                    _wardjumpedtotarget = true;
+                    _lastflashward = Environment.TickCount;
+                }
 
-            //     }
+            }
 
             #endregion
 
