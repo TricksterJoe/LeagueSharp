@@ -379,34 +379,26 @@ namespace Lee_Sin
         public static Vector3 InsecFlash(Obj_AI_Hero target, int extendvalue)
         {
 
-          //  var pos = Player.Position.Extend(target.Position, +target.Position.Distance(Player.Position) + 230);
+            //  var pos = Player.Position.Extend(target.Position, +target.Position.Distance(Player.Position) + 230);
             if (SelectedAllyAiMinion != null)
             {
-                    return
-                        SelectedAllyAiMinion.Position.Extend(target.Position,
-                            +target.Position.Distance(SelectedAllyAiMinion.Position) + extendvalue);
+                return
+                    SelectedAllyAiMinion.Position.Extend(target.Position,
+                        +target.Position.Distance(SelectedAllyAiMinion.Position) + extendvalue);
 
             }
-
-            if (SelectedAllyAiMinion == null)
+            var objAiHero = GetAllyHeroes(target, 1200).FirstOrDefault();
+            if (GetBool("useobjectsallies", typeof (bool)) && objAiHero != null)
             {
-                if (SelectedAllyAiMinionv == new Vector3() || !GetBool("clickto", typeof(bool)))
-                {
-                    var objAiHero = GetAllyHeroes(target, 1200).FirstOrDefault();
-                    if (GetBool("useobjectsallies", typeof(bool)) && objAiHero != null)
-                    {
-                        return
-                            objAiHero.Position.Extend(target.Position,
-                                +target.Position.Distance(objAiHero.Position) + extendvalue);
-                    }
+                return
+                    objAiHero.Position.Extend(target.Position,
+                        +target.Position.Distance(objAiHero.Position) + extendvalue);
+            }
 
-                    if (!GetBool("useobjectsallies", typeof(bool)) || objAiHero == null)
-                    {
-                            return Player.Position.Extend(target.Position,
-                               +target.Position.Distance(Player.Position) + extendvalue);
-
-                    }
-                }
+            if (!GetBool("useobjectsallies", typeof (bool)) || objAiHero == null)
+            {
+                return Player.Position.Extend(target.Position,
+                    +target.Position.Distance(Player.Position) + extendvalue);
             }
             return new Vector3();
         }
@@ -425,7 +417,7 @@ namespace Lee_Sin
 
         public static Vector2 Insec(Obj_AI_Hero target, int extendvalue, bool flashcasting)
         {
-            
+
 
             if (SelectedAllyAiMinion != null)
             {
@@ -434,33 +426,23 @@ namespace Lee_Sin
                         SelectedAllyAiMinion.Distance(target) + extendvalue).To2D();
 
             }
-
-            if (SelectedAllyAiMinion == null)
+            else
             {
-                if (SelectedAllyAiMinionv == new Vector3() || !GetBool("clickto", typeof(bool)))
+                var objAiHero = GetAllyHeroes(target, 1200).FirstOrDefault();
+                if (GetBool("useobjectsallies", typeof (bool)) && objAiHero != null)
                 {
-                    var objAiHero = GetAllyHeroes(target, 1200).FirstOrDefault();
-                    if (GetBool("useobjectsallies", typeof (bool)) && objAiHero != null)
-                    {
-                        return
-                            objAiHero.ServerPosition.Extend(target.ServerPosition,
-                                objAiHero.Distance(target) + extendvalue).To2D();
-                    }
+                    return
+                        objAiHero.ServerPosition.Extend(target.ServerPosition,
+                            objAiHero.Distance(target) + extendvalue).To2D();
+                }
 
-                    if (!GetBool("useobjectsallies", typeof (bool)) || objAiHero == null)
-                    {
-                        if (!flashcasting)
-                            return Player.ServerPosition.Extend(target.ServerPosition,
-                               +Player.Distance(target) + extendvalue).To2D();
-                        if (flashcasting)
-                        {
-                            return Player.ServerPosition.Extend(target.ServerPosition,
-                                +Player.Distance(target) + extendvalue).To2D();
-                        }
-
-                    }
+                if (!GetBool("useobjectsallies", typeof (bool)) || objAiHero == null)
+                {
+                    return Player.ServerPosition.Extend(target.ServerPosition,
+                        Player.Distance(target) + extendvalue).To2D();
                 }
             }
+
             return new Vector2();
         }
 
@@ -1294,9 +1276,9 @@ namespace Lee_Sin
             }
 
 
-            if ((Steps == steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady())
+            if ((Steps == steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady() && E1)
             {
-                if (target.Distance(Player) < 400)
+                if (target.ServerPosition.Distance(Player.ServerPosition) < 400)
                     WardJump(poss.To3D(), false, false);
             }
 
@@ -1311,7 +1293,7 @@ namespace Lee_Sin
 
             if (R.IsReady())
             {
-                if (slot != null && ((W.IsReady() && !E2) || Environment.TickCount - _lastwardjump < 1000))
+                if (slot != null && ((W.IsReady() && !E2)))
                 {
                     if (GetBool("prioflash", typeof (bool)) && Player.GetSpellSlot("summonerflash").IsReady())
                     {
@@ -1323,7 +1305,7 @@ namespace Lee_Sin
                         _lastwardjump = Environment.TickCount;
                     }
                 }
-                else if (GetBool("useflash", typeof (bool)) && target.Distance(Player) < 280 && Environment.TickCount - _lastprocessw > 1400 && Player.GetSpellSlot("summonerflash").IsReady() && (slot == null || !W.IsReady() || E2))
+                else if (GetBool("useflash", typeof (bool)) && target.Distance(Player) < 400 && Environment.TickCount - _lastprocessw > 1400 && Player.GetSpellSlot("SummonerFlash").IsReady() && (slot == null || !W.IsReady() || E2))
                 {
                     Steps = steps.Flash;
                 }
@@ -1332,26 +1314,24 @@ namespace Lee_Sin
             var wardtotargetpos = Player.ServerPosition.Extend(target.ServerPosition, Player.Distance(target) - 180);
             var wardFlashBool = GetBool("expwardflash", typeof (bool));
 
-            if (slot != null && HasFlash() && W.IsReady() && Player.ServerPosition.Distance(target.ServerPosition) > 350 && target.Distance(Player) < 780 && R.IsReady() && wardFlashBool)
-            {
-                if ((Environment.TickCount - _lastqcasted > 2000 && !Q.IsReady()) || (col.Count > 1 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
-                {
-                    if (Environment.TickCount - _wardjumpedto > 1000 && R.IsReady() && Player.ServerPosition.Distance(target.ServerPosition) > 350)
-                    {
-                        if (Steps != steps.WardJump)
-                            Steps = steps.Flash;
+            if (slot == null || !HasFlash() || !W.IsReady() ||
+                !(Player.ServerPosition.Distance(target.ServerPosition) > 350) || !(target.Distance(Player) < 780) ||
+                !R.IsReady() || !wardFlashBool) return;
 
-                        WardJump(wardtotargetpos, false, false);
-                        _wardjumpedto = Environment.TickCount;
-                        _wardjumpedtotarget = true;
-                        _lastflashward = Environment.TickCount;
-                    }
-                }
-                else
-                {
-                    _wardjumpedtotarget = false;
-                    Steps = steps.WardJump;
-                }
+            if ((Environment.TickCount - _lastqcasted > 2000 && !Q.IsReady()) || (col.Count > 1 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
+            {
+                if (Environment.TickCount - _wardjumpedto <= 1000 || !R.IsReady() ||
+                    !(Player.ServerPosition.Distance(target.ServerPosition) > 350)) return;
+
+                WardJump(wardtotargetpos, false, false);
+
+                _wardjumpedto = Environment.TickCount;
+                _wardjumpedtotarget = true;
+                _lastflashward = Environment.TickCount;
+            }
+            else
+            {
+                Steps = steps.WardJump;
             }
 
             #endregion
@@ -1412,25 +1392,36 @@ namespace Lee_Sin
 
         public static void WardJump(Vector3 position, bool objectuse, bool use = true)
         {
-            var pos = position;
-            var objects = ObjectManager.Get<Obj_AI_Base>().FirstOrDefault(x => x.IsValid && x.Distance(pos) < 200 && x.IsAlly && !x.IsDead && !x.Name.ToLower().Contains("turret"));
-            if (objectuse)
-            {
-                foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
-                {
-                    if (W.IsReady() && W1() && !W2() && (objects != null))
-                    {
-                        W.Cast(objects);
-                    }
-                }
-            }
-            var objectss = ObjectManager.Get<Obj_AI_Base>().FirstOrDefault(x => x.IsValid && x.Distance(pos) < 200 && x.IsAlly && !x.IsDead && x.Name.ToLower().Contains("ward"));
+            var objectss =
+                ObjectManager.Get<Obj_AI_Base>()
+                    .FirstOrDefault(
+                        x =>
+                            x.IsValid && x.Distance(position) < 200 && x.IsAlly && !x.IsDead &&
+                            x.Name.ToLower().Contains("ward"));
 
             var ward = Items.GetWardSlot();
-            if (!W.IsReady() || ward == null || Environment.TickCount - _lastward <= 400 || !W1() || objectss != null) return;
-                Player.Spellbook.CastSpell(ward.SpellSlot, position);
-                _lastward = Environment.TickCount;
-            
+            if (W.IsReady() && ward != null && Environment.TickCount - _lastward > 400 && W1() && objectss == null)
+            {
+                {
+                    Player.Spellbook.CastSpell(ward.SpellSlot, position);
+                    _lastward = Environment.TickCount;
+                }
+            }
+
+            var objects =
+                ObjectManager.Get<Obj_AI_Base>()
+                    .FirstOrDefault(
+                        x =>
+                            x.IsValid && x.Distance(position) < 200 && x.IsAlly && !x.IsDead &&
+                            !x.Name.ToLower().Contains("turret"));
+            if (!objectuse) return;
+            foreach (
+                var wards in
+                    ObjectManager.Get<Obj_AI_Base>()
+                        .Where(wards => W.IsReady() && W1() && !W2() && (objects != null)))
+            {
+                W.Cast(objects);
+            }
         }
 
         #endregion
