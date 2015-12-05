@@ -1294,6 +1294,10 @@ namespace Lee_Sin
                 canwardflash = true;
             }
 
+            if (Environment.TickCount - _lastqcasted > 800 && !Q.IsReady())
+            {
+                canwardflash = true;
+            }
 
             if (Environment.TickCount - _lastprocessw < 1500 || Steps == steps.Flash)
             {
