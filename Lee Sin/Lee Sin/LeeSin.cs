@@ -1269,7 +1269,7 @@ namespace Lee_Sin
                             Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range)) 
             {
                 Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
-                if (col.Count <= 0 && min.Type != GameObjectType.NeutralMinionCamp) continue;
+                //if (col.Count <= 0 && min.Type != GameObjectType.NeutralMinionCamp) continue;
                 if (Q1() && Q.IsReady())
                 {
                     Q.Cast(min);
