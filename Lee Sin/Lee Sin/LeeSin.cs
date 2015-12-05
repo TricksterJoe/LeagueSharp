@@ -1272,7 +1272,7 @@ namespace Lee_Sin
                              (CanWardFlash(target) && x.Distance(target) < 800)) && !x.IsDead &&
                             Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range).OrderByDescending(x => x.Distance(target)))
             {
-                minions = (Obj_AI_Base) min;
+                minionss = (Obj_AI_Base) min;
                 if (min == null) continue;
                 Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
                 if (Q1() && Q.IsReady())
@@ -1346,11 +1346,11 @@ namespace Lee_Sin
             if ((Environment.TickCount - _lastqcasted <= 1000) &&
                 (col.Count <= 0 || Q2() || Environment.TickCount - _lastqcasted <= 1000 || Q.IsReady()) &&
                 (Environment.TickCount - _lastflashward >= 1500)) return;
-
+                
 
             if (Environment.TickCount - _wardjumpedto > 1000 &&
                 ((Player.Position.Distance(target.Position) > 600) ||
-                 (minions != null && minions.Distance(Player) > 600)))
+                 (minionss != null && minionss.Distance(Player) > 600)))
             {
                 WardJump(wardtotargetpos, false, false);
 
@@ -1389,6 +1389,8 @@ namespace Lee_Sin
 
             #endregion
         }
+
+        public static Obj_AI_Base minionss { get; set; }
 
         public static bool CanWardFlash(Obj_AI_Hero target)
         {
