@@ -1283,7 +1283,7 @@ namespace Lee_Sin
             }
 
 
-            if (Environment.TickCount - _lastprocessw < 1500 || (Steps == steps.Flash && target.Distance(Player) < 400))
+            if (Environment.TickCount - _lastprocessw < 1500 || Steps == steps.Flash)
             {
                 if (R.IsReady())
                     R.Cast(target);
@@ -1293,7 +1293,7 @@ namespace Lee_Sin
 
             if (R.IsReady())
             {
-                if (slot != null && ((W.IsReady() && !E2)))
+                if (slot != null && ((W.IsReady() && W1())))
                 {
                     if (GetBool("prioflash", typeof (bool)) && Player.GetSpellSlot("summonerflash").IsReady())
                     {
