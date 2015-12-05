@@ -1346,7 +1346,7 @@ namespace Lee_Sin
             //if ((Environment.TickCount - _lastqcasted > 1000) || (col.Count > 0 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
             //{
             if (Environment.TickCount - _wardjumpedto > 1000 && R.IsReady() &&
-                ((Player.Position.Distance(target.Position) > 600) || (minions.Distance(Player) > 600 && minions.HasBuff("blindmonkqtwo"))))
+                ((Player.Position.Distance(target.Position) > 600) || (minions != null && minions.Distance(Player) > 600 && minions.HasBuff("blindmonkqtwo"))))
             {
                 WardJump(wardtotargetpos, false, false);
 
