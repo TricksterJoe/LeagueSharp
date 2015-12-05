@@ -1260,7 +1260,13 @@ namespace Lee_Sin
             var poss = Insec(target, GetValue("fixedwardrange"), true);
 
             foreach (var min in
-                MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy).Where(x => x != null && x.Health > Q.GetDamage(x) + 5 && (x.Distance(target) < 400 || x.Distance(poss) < 400 || CanWardFlash(target)) && !x.IsDead && Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range))
+                MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAllyForEnemy)
+                    .Where(
+                        x =>
+                            x != null && x.Health > Q.GetDamage(x) + 5 &&
+                            ((x.Distance(target) < 400 || x.Distance(poss) < 400) ||
+                             (CanWardFlash(target) && x.Distance(target) < 800)) && !x.IsDead &&
+                            Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range)) 
             {
                 Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
                 if (col.Count <= 0) continue;
@@ -1278,7 +1284,7 @@ namespace Lee_Sin
 
             if ((Steps == steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady() && W1())
             {
-                //if (target.Position.Distance(Player.Position) < 600)
+                if (target.Position.Distance(Player.Position) < 600)
                     WardJump(poss.To3D(), false, false);
             }
 
