@@ -1282,7 +1282,7 @@ namespace Lee_Sin
             }
 
 
-            if ((Steps == steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady() && W1())
+            if ((Steps == steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady())
             {
                 if (target.Position.Distance(Player.Position) < 600)
                     WardJump(poss.To3D(), false, false);
