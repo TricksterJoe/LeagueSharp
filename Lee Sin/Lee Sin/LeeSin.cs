@@ -1257,7 +1257,7 @@ namespace Lee_Sin
             }
 
 
-            var poss = Insec(target, 270, true);
+            var poss = Insec(target, GetValue("fixedwardrange"), true);
 
             foreach (var min in
                 MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy).Where(x => x != null && x.Health > Q.GetDamage(x) + 5 && (x.Distance(target) < 400 || x.Distance(poss) < 400 || CanWardFlash(target)) && !x.IsDead && Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range))
