@@ -1305,7 +1305,7 @@ namespace Lee_Sin
                         _lastwardjump = Environment.TickCount;
                     }
                 }
-                else if (GetBool("useflash", typeof (bool)) && target.Distance(Player) < 400&& Player.GetSpellSlot("SummonerFlash").IsReady() && (slot == null || !W.IsReady() || E2))
+                else if (GetBool("useflash", typeof (bool)) && target.Distance(Player) < 400&& Player.GetSpellSlot("SummonerFlash").IsReady() && (slot == null || !W.IsReady() || W2()) &&  Environment.TickCount - _lastwcasted > 1000)
                 {
                     Steps = steps.Flash;
                 }
