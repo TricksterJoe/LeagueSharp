@@ -1275,30 +1275,28 @@ namespace Lee_Sin
             }
 
 
-            var poss = Insec(target, 320, true);
+            var poss = Insec(target, 270, true);
 
             foreach (var min in
-                MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy).Where(x => x != null && x.Health > Q.GetDamage(x) + 5 && (x.Distance(target) < 400 || x.Distance(poss) < 400) && !x.IsDead && Q.GetPrediction(x).CollisionObjects.Count == 0))
+                MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy).Where(x => x != null && x.Health > Q.GetDamage(x) + 5 && (x.Distance(target) < 400 || x.Distance(poss) < 400 || CanWardFlash(target)) && !x.IsDead && Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range))
             {
                 Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
-                if (col.Count > 0)
+                if (col.Count <= 0) continue;
+                if (Q1() && Q.IsReady())
                 {
-                    if (Q1() && Q.IsReady())
-                    {
-                        Q.Cast(min);
-                    }
+                    Q.Cast(min);
+                }
 
-                    if (Q2() && min.HasBuff("blindmonkqtwo"))
-                    {
-                        Q.Cast();
-                    }
+                if (Q2() && min.HasBuff("blindmonkqtwo"))
+                {
+                    Q.Cast();
                 }
             }
 
 
             if ((Steps == steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady())
             {
-                if (target.Distance(Player) < 600)
+                if (target.Distance(Player) < 400)
                     WardJump(poss.To3D(), false, false);
             }
 
@@ -1313,7 +1311,7 @@ namespace Lee_Sin
 
             if (R.IsReady())
             {
-                if (slot != null && (W.IsReady() || Environment.TickCount - _lastwardjump < 2000) && Environment.TickCount - lastflashed > 1500)
+                if (slot != null && ((W.IsReady() && !E2) || Environment.TickCount - _lastwardjump < 1000))
                 {
                     if (GetBool("prioflash", typeof (bool)) && Player.GetSpellSlot("summonerflash").IsReady())
                     {
@@ -1325,7 +1323,7 @@ namespace Lee_Sin
                         _lastwardjump = Environment.TickCount;
                     }
                 }
-                else if (GetBool("useflash", typeof (bool)) && target.Distance(Player) < 300 && Environment.TickCount - _lastprocessw > 2000 && Player.GetSpellSlot("summonerflash").IsReady() && (slot == null || !W.IsReady()))
+                else if (GetBool("useflash", typeof (bool)) && target.Distance(Player) < 280 && Environment.TickCount - _lastprocessw > 1400 && Player.GetSpellSlot("summonerflash").IsReady() && (slot == null || !W.IsReady() || E2))
                 {
                     Steps = steps.Flash;
                 }
@@ -1336,7 +1334,7 @@ namespace Lee_Sin
 
             if (slot != null && HasFlash() && W.IsReady() && Player.ServerPosition.Distance(target.ServerPosition) > 350 && target.Distance(Player) < 780 && R.IsReady() && wardFlashBool)
             {
-                if ((Environment.TickCount - _lastqcasted > 2000 && !Q.IsReady()) || (col.Count > 1 && !Q2() && Environment.TickCount - _lastqcasted > 2000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
+                if ((Environment.TickCount - _lastqcasted > 2000 && !Q.IsReady()) || (col.Count > 1 && !Q2() && Environment.TickCount - _lastqcasted > 1000 && !Q.IsReady()) || (Environment.TickCount - _lastflashward < 1500))
                 {
                     if (Environment.TickCount - _wardjumpedto > 1000 && R.IsReady() && Player.ServerPosition.Distance(target.ServerPosition) > 350)
                     {
@@ -1387,7 +1385,20 @@ namespace Lee_Sin
             #endregion
         }
 
-        public static bool Colbool { get; set; }
+        public static bool CanWardFlash(Obj_AI_Hero target)
+        {
+            var qpred = Q.GetPrediction(target);
+
+            var col = qpred.CollisionObjects;
+            var wardFlashBool = GetBool("expwardflash", typeof(bool));
+            var slot = Items.GetWardSlot();
+
+            return slot != null && HasFlash() && W.IsReady() && Player.Distance(target) > 350 &&
+                   R.IsReady() && wardFlashBool;
+        }
+
+        public static
+            bool Colbool { get; set; }
 
         #endregion
 
