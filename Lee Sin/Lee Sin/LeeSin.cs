@@ -184,10 +184,10 @@ namespace Lee_Sin
             if (_processW2 || !W.IsReady() || Player.GetSpell(SpellSlot.W).Name != "BlindMonkWOne" ||
                 Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkwtwo")
                 return;
-            _lastwcasted = Environment.TickCount;
+            
             if (sender.Name.ToLower().Contains("ward") && W.IsReady() && sender.IsAlly)
             {
-                
+                _lastwcasted = Environment.TickCount;
                 var ward = (Obj_AI_Base) sender;
                 if (ward.IsMe) return;
                 W.Cast(ward);
@@ -1338,7 +1338,7 @@ namespace Lee_Sin
             {
 
                 if (R.IsReady())
-                {
+                {   
                     Steps = steps.Flash;
                     R.Cast(target);
                 }
@@ -1384,7 +1384,7 @@ namespace Lee_Sin
                 || !CanWardFlash(target))
                 return;
 
-            if ((!Q.IsReady() && Environment.TickCount - _lastqcasted > 1300) || col.Count > 0)
+            if ((!Q.IsReady() && Environment.TickCount - _lastqcasted > 800) || col.Count > 0)
             {
                 if (Player.Distance(target) < 500) return;
 
