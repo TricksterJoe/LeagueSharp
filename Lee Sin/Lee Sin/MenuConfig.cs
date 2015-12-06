@@ -29,7 +29,7 @@ namespace Lee_Sin
             {
                 AddKeyBind(combos, "StarCombo", "starcombo", 'Z', KeyBindType.Press);
                 AddKeyBind(combos, "Ward Jump", "wardjump", 'A', KeyBindType.Press);
-                AddKeyBind(combos, "Use Insec", "wardinsec", 'G', KeyBindType.Press);
+                AddKeyBind(combos, "Use Insec", "wardinsec", 'Y', KeyBindType.Press); // why y
                 AddValue(combos, "Fixed Ward range", "fixedwardrange", 270, 0, 600);
                 AddBool(combos, "Use Flash In Insec", "useflash");
                 AddBool(combos, "Use Objects In Insec", "useobjects");
