@@ -181,10 +181,10 @@ namespace Lee_Sin
             if (_processW2 || !W.IsReady() || Player.GetSpell(SpellSlot.W).Name != "BlindMonkWOne" ||
                 Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkwtwo")
                 return;
-
+            _lastwcasted = Environment.TickCount;
             if (sender.Name.ToLower().Contains("ward") && W.IsReady() && sender.IsAlly)
             {
-                _lastwcasted = Environment.TickCount;
+                
                 var ward = (Obj_AI_Base) sender;
                 if (ward.IsMe) return;
                 W.Cast(ward);
@@ -1070,11 +1070,10 @@ namespace Lee_Sin
             {
                 if (Environment.TickCount - _lastqc > 300 && Environment.TickCount - _laste > 300 && Environment.TickCount - _lastwcombo > 300)
                 {
-                   var qpred = Q.GetPrediction(target);
-                    //&& (qpred.Hitchance >= HitChance.High || qpred.Hitchance == HitChance.Immobile)
-                    if (Q.IsReady() && !qpred.CollisionObjects.Any() && Q1())
+                    var qpred = Q.GetPrediction(target);
+                    if (Q.IsReady() && !qpred.CollisionObjects.Any() && Q1() && (qpred.Hitchance >= HitChance.High || qpred.Hitchance == HitChance.Immobile))
                     {
-                        Q.Cast(target);
+                        Q.Cast(qpred.CastPosition);
                         _lastqc = Environment.TickCount;
                     }
 
@@ -1275,9 +1274,9 @@ namespace Lee_Sin
                 }
             }
 
-            if (Q1() && Player.Distance(target) <= Q.Range && col.Count == 0)
+            if (Q1() && Player.Distance(target) <= Q.Range)
             {
-                Q.Cast(target);
+                Q.Cast(qpred.CastPosition);
             }
 
 
