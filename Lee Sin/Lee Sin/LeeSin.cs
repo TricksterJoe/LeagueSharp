@@ -1326,7 +1326,15 @@ namespace Lee_Sin
                 }
             }
 
-            if (Environment.TickCount - _lastprocessw < 1500 || Steps == steps.Flash || Environment.TickCount - _lastwcasted < 1500)
+            if (Environment.TickCount - _lastprocessw < 1500 || Steps == steps.Flash ||
+                Environment.TickCount - _lastwcasted < 1500) 
+            {
+                if (R.IsReady())
+                    R.Cast(target);
+            }
+
+            if ((!W.IsReady() || W2()) && Steps == steps.WardJump && Environment.TickCount - _junglelastw > 1500 &&
+                Environment.TickCount - _lastwcasted > 2000) 
             {
                 if (R.IsReady())
                     R.Cast(target);
