@@ -1334,10 +1334,14 @@ namespace Lee_Sin
             }
 
             if ((!W.IsReady() || W2()) && Steps == steps.WardJump && Environment.TickCount - _junglelastw > 1500 &&
-                Environment.TickCount - _lastwcasted > 2000) 
+                Environment.TickCount - _lastwcasted > 2000)
             {
+
                 if (R.IsReady())
+                {
+                    Steps = steps.Flash;
                     R.Cast(target);
+                }
             }
 
             #region Determine if we want to flash or ward jump
