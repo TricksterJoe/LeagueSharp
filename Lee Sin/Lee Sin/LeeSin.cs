@@ -85,7 +85,7 @@ namespace Lee_Sin
         {
             if (Player.ChampionName != "LeeSin") return;
             MenuConfig.OnLoad();
-            Q = new Spell(SpellSlot.Q, 1100);
+            Q = new Spell(SpellSlot.Q, 1050);
             W = new Spell(SpellSlot.W, 700);
             E = new Spell(SpellSlot.E, 350);
             R = new Spell(SpellSlot.R, 375);
@@ -1074,9 +1074,9 @@ namespace Lee_Sin
                 if (Environment.TickCount - _lastqc > 300 && Environment.TickCount - _laste > 300 && Environment.TickCount - _lastwcombo > 300)
                 {
                     var qpred = Q.GetPrediction(target);
-                    if (Q.IsReady() && !qpred.CollisionObjects.Any() && Q1() && (qpred.Hitchance >= HitChance.High || qpred.Hitchance == HitChance.Immobile))
+                    if (Q.IsReady() && Q1() && qpred.Hitchance >= HitChance.High)
                     {
-                        Q.Cast(qpred.CastPosition);
+                        Q.Cast(target);
                         _lastqc = Environment.TickCount;
                     }
 
@@ -1257,7 +1257,7 @@ namespace Lee_Sin
             {
                 target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
             }
-
+            if (!R.IsReady() && Environment.TickCount - lastr > 2000) return;
 
             if (target == null) return;
 
@@ -1277,9 +1277,9 @@ namespace Lee_Sin
                 }
             }
 
-            if (Q1() && Player.Distance(target) <= Q.Range)
+            if (Q1() && Player.Distance(target) <= Q.Range && qpred.Hitchance >= HitChance.High)
             {
-                Q.Cast(qpred.CastPosition);
+                Q.Cast(target);
             }
 
 
@@ -1288,12 +1288,18 @@ namespace Lee_Sin
             foreach (var min in
                 MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly)
                     .Where(
-                        x => (x.Distance(target) < 420 || (x.Distance(poss) < 600 || (canwardflash && x.Distance(target) < 800))
+                        x =>
+                            (x.Distance(target) < 380 ||
+                             x.Distance(poss) < 530 || (canwardflash && x.Distance(target) < 800))
                              && x.Health > Q.GetDamage(x) + 50 && !x.IsDead &&
-                            Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range)))
+                             Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range))
             {
-                minionss =  min;
+                minionss = min;
                 Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
+                if (Q1() && Q.IsReady())
+                {
+                    Q.Cast(min.Position);
+                }
                 if (Q1() && Q.IsReady())
                 {
                     Q.Cast(min.Position);
@@ -1304,8 +1310,6 @@ namespace Lee_Sin
                     Q.Cast();
                 }
             }
-
-          //  Game.PrintChat((col.Count > 0).ToString());
 
             if ((Steps == steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady())
             {
