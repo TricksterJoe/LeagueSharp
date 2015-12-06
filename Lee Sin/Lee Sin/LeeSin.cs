@@ -273,6 +273,7 @@ namespace Lee_Sin
                         break;
                 }
             }
+
             if (args.SData.Name == "BlindMonkRKick")
             {
                 lastr = Environment.TickCount;
@@ -1257,7 +1258,7 @@ namespace Lee_Sin
             {
                 target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
             }
-            if (!R.IsReady() && Environment.TickCount - lastr > 2000) return;
+           // if (!R.IsReady() && Environment.TickCount - lastr > 2000) return;
 
             if (target == null) return;
 
