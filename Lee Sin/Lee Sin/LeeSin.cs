@@ -819,11 +819,12 @@ namespace Lee_Sin
             if (Player.Mana < min) return;
             var lh = GetBool("useqlh", typeof (bool));
             if (!lh) return;
-            foreach (var minions in minion)
+
+            foreach (var minionlh in minion)
             {
-                if (minions.Health < Q.GetDamage(minions))
+                if (minionlh.Health < Q.GetDamage(minionlh))
                 {
-                    Q.Cast(minions);
+                    Q.Cast(minionlh);
                 }
             }
         }
