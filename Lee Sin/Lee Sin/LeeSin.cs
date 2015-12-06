@@ -89,7 +89,7 @@ namespace Lee_Sin
             W = new Spell(SpellSlot.W, 700);
             E = new Spell(SpellSlot.E, 350);
             R = new Spell(SpellSlot.R, 375);
-            Q.SetSkillshot(0.25f, 65f, 1800f, true, SkillshotType.SkillshotLine);
+
             _flashSlot = ObjectManager.Player.GetSpellSlot("summonerflash");
 
             foreach (var spell in Player.Spellbook.Spells)
@@ -101,6 +101,9 @@ namespace Lee_Sin
             Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
             Printmsg2("Don't Forget To " + "<font color='#00ff00'>[Upvote]</font> <font color='#FFFFFF'>" + "The Assembly In The Databse" + "</font>");
             UpdateCheck();
+
+            Q.SetSkillshot(0.25f, 65f, 1800f, true, SkillshotType.SkillshotLine);
+
             Game.OnUpdate += OnUpdate;
             Drawing.OnDraw += OnDraw;
             Drawing.OnDraw += OnCamps;
