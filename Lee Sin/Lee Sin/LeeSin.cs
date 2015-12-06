@@ -1070,10 +1070,11 @@ namespace Lee_Sin
             {
                 if (Environment.TickCount - _lastqc > 300 && Environment.TickCount - _laste > 300 && Environment.TickCount - _lastwcombo > 300)
                 {
-                    var qpred = Q.GetPrediction(target);
-                    if (Q.IsReady() && !qpred.CollisionObjects.Any() && Q1() && (qpred.Hitchance >= HitChance.High || qpred.Hitchance == HitChance.Immobile))
+                   var qpred = Q.GetPrediction(target);
+                    //&& (qpred.Hitchance >= HitChance.High || qpred.Hitchance == HitChance.Immobile)
+                    if (Q.IsReady() && !qpred.CollisionObjects.Any() && Q1())
                     {
-                        Q.Cast(qpred.CastPosition);
+                        Q.Cast(target);
                         _lastqc = Environment.TickCount;
                     }
 
@@ -1276,7 +1277,7 @@ namespace Lee_Sin
 
             if (Q1() && Player.Distance(target) <= Q.Range && col.Count == 0)
             {
-                Q.Cast(qpred.CastPosition);
+                Q.Cast(target);
             }
 
 
