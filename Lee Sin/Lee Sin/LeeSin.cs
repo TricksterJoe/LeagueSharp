@@ -1184,7 +1184,7 @@ namespace Lee_Sin
                     if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
                     {
                         _lastwards = Environment.TickCount;
-                        _lastflashward = Environment.TickCount;
+                     //   _lastflashward = Environment.TickCount;
                     }
                 }
             }
