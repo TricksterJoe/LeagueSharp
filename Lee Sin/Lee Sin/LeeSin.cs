@@ -83,7 +83,7 @@ namespace Lee_Sin
 
         internal static void Load(EventArgs args)
         {
-            if (Player.ChampionName != "LeeSin") return;
+       //     if (Player.ChampionName != "LeeSin") return;
             MenuConfig.OnLoad();
             Q = new Spell(SpellSlot.Q, 1050);
             W = new Spell(SpellSlot.W, 700);
@@ -285,11 +285,14 @@ namespace Lee_Sin
 
                 if (target != null)
                 {
-                    if (Steps == steps.Flash || (Environment.TickCount - _lastflashward < 2000 && _wardjumpedtotarget))
+                    var pos = InsecFlash(target, 230);
+                    if (Player.Distance(pos) < 100) return;
+                    if (Steps == steps.Flash || (Environment.TickCount - _lastflashward < 2000 && _wardjumpedtotarget) ||
+                        Environment.TickCount - lastflashoverprio < 3000) 
                     {
                         if (GetBool("wardinsec", typeof (KeyBind)) || GetBool("starcombo", typeof (KeyBind)))
                         {
-                            var pos = InsecFlash(target, 230);
+                           
                             var poss = Player.Position.Extend(target.Position,
                                 +target.Position.Distance(Player.Position) + 230);
 
@@ -920,7 +923,7 @@ namespace Lee_Sin
 
             var useq = GetBool("useqh", typeof (bool));
             var usee = GetBool("useeh", typeof (bool));
-            var useQ2 = GetBool("useQ2()h", typeof (bool));
+            var useQ2 = GetBool("useq2h", typeof (bool));
             var delay = GetValue("secondqdelayh");
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
             if (!target.IsValidTarget())
@@ -931,15 +934,16 @@ namespace Lee_Sin
                 if (Environment.TickCount - _lastqh > 100 && Environment.TickCount - _lasteh > 300)
                 {
                     var qpred = Q.GetPrediction(target);
-                    if (Q.IsReady() && Player.Spellbook.GetSpell(SpellSlot.Q).Name == "BlindMonkQOne" && (qpred.Hitchance >= HitChance.High || qpred.Hitchance == HitChance.Immobile || qpred.Hitchance == HitChance.Dashing))
+                    if (Q.IsReady() && Q1() &&
+                        (qpred.Hitchance >= HitChance.High)) 
                     {
-                        Q.Cast(qpred.CastPosition);
+                        Q.Cast(target);
                         _lastqh = Environment.TickCount;
                     }
 
                     if (!useQ2) return;
 
-                    if (Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkqtwo" && Q.IsReady() && Environment.TickCount - _lastqc > delay)
+                    if (Q2() && Q.IsReady() && Environment.TickCount - _lastqc > delay)
                     {
                         Q.Cast();
                         _lastqh = Environment.TickCount;
@@ -951,12 +955,15 @@ namespace Lee_Sin
                 {
                     if (Environment.TickCount - _lastqh > 300 && Environment.TickCount - _lasteh > 300)
                     {
-                        if (target.Distance(Player) <= E.Range && Player.GetSpell(SpellSlot.E).Name == "BlindMonkEOne")
+                        if (target.Distance(Player) <= E.Range && Q1())
                         {
                             E.Cast();
                             _lasteh = Environment.TickCount;
                         }
-                        if ((Player.Distance(target) > Player.AttackRange + Player.BoundingRadius + target.BoundingRadius + 100 || Environment.TickCount - _laste > 2700) && Player.GetSpell(SpellSlot.E).Name == "blindmonketwo")
+                        if ((Player.Distance(target) >
+                             Player.AttackRange + Player.BoundingRadius + target.BoundingRadius + 100 ||
+                             Environment.TickCount - _laste > 2700) &&
+                            Q2()) 
                         {
                             E.Cast();
                             _lasteh = Environment.TickCount;
@@ -1247,6 +1254,27 @@ namespace Lee_Sin
 
         #region Ward Insec
 
+        public static bool LastQ(Obj_AI_Hero target, bool includeMinions = true)
+        {
+            if (target == null) return false;
+            
+            if (buff)
+            {
+                lastq = Environment.TickCount;
+                buff = false;
+            }
+
+            if (target.HasBuff("blindmonkqtwo") && Q2() && Environment.TickCount - lastq > 2000)
+            {
+                buff = true;
+            }
+
+            if (minionss.IsValidTarget() && minionss.HasBuff("blindmonkqtwo") && includeMinions)
+            return Environment.TickCount - lastq > 2000 && minionss.Distance(Player) > 400;
+            else
+            return Environment.TickCount - lastq > 2000;
+        }
+
         private static void Wardinsec()
         {
             #region Target, Slots, Prediction
@@ -1267,7 +1295,7 @@ namespace Lee_Sin
             var col = qpred.CollisionObjects;
 
             var slot = Items.GetWardSlot();
-
+            Game.PrintChat(LastQ(target).ToString());
             #endregion
 
             if (Player.Distance(target) > 500)
@@ -1333,15 +1361,11 @@ namespace Lee_Sin
                     R.Cast(target);
             }
 
-            if ((!W.IsReady() || W2()) && Steps == steps.WardJump && Environment.TickCount - _junglelastw > 1500 &&
-                Environment.TickCount - _lastwcasted > 2000)
+            if ((!W.IsReady() || W2()) && !GetBool("prioflash", typeof(bool)) &&
+                Environment.TickCount - _lastwcasted > 1000 && LastQ(target))
             {
-
-                if (R.IsReady())
-                {   
-                    Steps = steps.Flash;
+                lastflashoverprio = Environment.TickCount;
                     R.Cast(target);
-                }
             }
 
             #region Determine if we want to flash or ward jump
@@ -1384,7 +1408,7 @@ namespace Lee_Sin
                 || !CanWardFlash(target))
                 return;
 
-            if ((!Q.IsReady() && Environment.TickCount - _lastqcasted > 800) || col.Count > 0)
+            if (LastQ(target) || col.Count > 0)
             {
                 if (Player.Distance(target) < 500) return;
 
@@ -1533,6 +1557,9 @@ namespace Lee_Sin
         private static Obj_AI_Base minions;
         private static int wardlastcasted;
         private static int lastr;
+        private static int lastq;
+        private static bool buff;
+        private static int lastflashoverprio;
 
         private static void AutoSmite()
         {
