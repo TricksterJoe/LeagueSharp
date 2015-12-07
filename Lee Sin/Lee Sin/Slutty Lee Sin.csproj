@@ -55,16 +55,37 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveModes\ComboMode.cs" />
+    <Compile Include="ActiveModes\Harass.cs" />
+    <Compile Include="ActiveModes\JungleClear.cs" />
+    <Compile Include="ActiveModes\LaneClear.cs" />
+    <Compile Include="ActiveModes\Smite.cs" />
+    <Compile Include="ActiveModes\Star.cs" />
+    <Compile Include="Drawings\OnChamp.cs" />
+    <Compile Include="Drawings\OnInsec.cs" />
+    <Compile Include="Drawings\OnJungle.cs" />
+    <Compile Include="EventHandler.cs" />
     <Compile Include="Helper.cs" />
+    <Compile Include="InsecPos\FlashInsecPosition.cs" />
+    <Compile Include="InsecPos\WardJumpInsecPosition.cs" />
+    <Compile Include="Insec\InsecTo.cs" />
     <Compile Include="LeeSin.cs" />
     <Compile Include="Mathematics.cs" />
     <Compile Include="MenuConfig.cs" />
+    <Compile Include="Misc\AutoUlt.cs" />
+    <Compile Include="Misc\Notifciations.cs" />
+    <Compile Include="Misc\VersionCheck.cs" />
+    <Compile Include="OnLoad.cs" />
+    <Compile Include="OnUpdate.cs" />
+    <Compile Include="ProcessHandler.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WardManager\WardJump.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
