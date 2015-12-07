@@ -457,7 +457,7 @@ namespace Lee_Sin
             }
             else
             {
-                var objAiHero = GetAllyHeroes(target, 1200).FirstOrDefault();
+                var objAiHero = GetAllyHeroes(target, 2300).FirstOrDefault();
                 if (GetBool("useobjectsallies", typeof (bool)) && objAiHero != null)
                 {
                     return
@@ -1315,9 +1315,9 @@ namespace Lee_Sin
             var poss = Insec(target, GetValue("fixedwardrange"), true);
 
             foreach (var min in
-                MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly)
+                ObjectManager.Get<Obj_AI_Base>()
                     .Where(
-                        x =>
+                        x => (x.IsEnemy || x.Type == GameObjectType.NeutralMinionCamp) &&
                             (x.Distance(target) < 380 ||
                              x.Distance(poss) < 530 || (canwardflash && x.Distance(target) < 800))
                              && x.Health > Q.GetDamage(x) + 50 && !x.IsDead &&
@@ -1489,9 +1489,15 @@ namespace Lee_Sin
                             x.Name.ToLower().Contains("ward"));
 
             var ward = Items.GetWardSlot();
-            if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 1000 && W1())
+            if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 1000 && W1() && !use)
             {
                 Player.Spellbook.CastSpell(ward.SpellSlot, position);
+            }
+
+            if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 1000 && W1() && use && Environment.TickCount - wardlastcasted > 400)
+            {
+                Player.Spellbook.CastSpell(ward.SpellSlot, position);
+                wardlastcasted = Environment.TickCount;
             }
 
             var objects =
@@ -1506,8 +1512,7 @@ namespace Lee_Sin
                     ObjectManager.Get<Obj_AI_Base>()
                         .Where(wards => W.IsReady() && Environment.TickCount - wardlastcasted > 400 && W1() && !W2() && (objects != null)))
             {
-                W.Cast(objects);
-                wardlastcasted = Environment.TickCount;
+                W.Cast(objects);                
             }
         }
 
