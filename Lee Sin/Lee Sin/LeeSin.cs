@@ -627,7 +627,7 @@ namespace Lee_Sin
             if (GetBool("wardjump", typeof(KeyBind)))
             {
                 Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                WardJump(Player.Position.Extend(Game.CursorPos, 590), true);
+                WardJump(Player.Position.Extend(Game.CursorPos, 590), true, true);
             }
 
             if (GetBool("wardinsec", typeof(KeyBind)))
@@ -1295,7 +1295,7 @@ namespace Lee_Sin
             var col = qpred.CollisionObjects;
 
             var slot = Items.GetWardSlot();
-            
+         //   Game.PrintChat(LastQ(target).ToString());
             #endregion
 
             if (Player.Distance(target) > 500)
