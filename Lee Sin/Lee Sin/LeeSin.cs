@@ -1494,10 +1494,9 @@ namespace Lee_Sin
                 Player.Spellbook.CastSpell(ward.SpellSlot, position);
             }
 
-            if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 1000 && W1() && use && Environment.TickCount - wardlastcasted > 400)
+            if (W.IsReady() && ward != null  && W1() && use && Environment.TickCount - wardlastcasted > 400)
             {
                 Player.Spellbook.CastSpell(ward.SpellSlot, position);
-                wardlastcasted = Environment.TickCount;
             }
 
             var objects =
