@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
@@ -117,6 +118,14 @@ namespace Slutty_ryze
         {
             try // lazy
             {
+            //    var data = GetHero.Buffs.FirstOrDefault(b => b.DisplayName == "RyzePassiveStack");
+                //foreach (var buffs in GlobalManager.GetHero.Buffs)
+                //{
+                //    Game.PrintChat(buffs.Name);
+                //}
+              //  Game.PrintChat(GlobalManager.GetPassiveBuff.ToString());
+                        
+                       
                 if (GlobalManager.Config.Item("test").GetValue<KeyBind>().Active)
                 {
                     GlobalManager.GetHero.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);

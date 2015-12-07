@@ -341,7 +341,7 @@ namespace Slutty_ryze
                     CastQn(target, false);
                     if (eSpell)
                     CastE(target, false);
-                    if (rSpell)
+                    if (rSpell) 
                     CastR(target, false);
                 }
 
