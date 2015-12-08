@@ -57,6 +57,16 @@ namespace Lee_Sin
             }
 
             AutoUlt.AutoUlti();
+
+            var target = TargetSelector.GetTarget(Q.Range + 800, TargetSelector.DamageType.Physical);
+            if (target != null)
+            {
+                target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
+            }
+            // if (!R.IsReady() && Environment.TickCount - lastr > 2000) return;
+
+            if (target == null) return;
+            LastQ(target);
         }
     }
 }

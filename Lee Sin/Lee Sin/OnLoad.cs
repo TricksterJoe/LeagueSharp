@@ -14,7 +14,7 @@ namespace Lee_Sin
     {
         public static void OnLoaded()
         {
-                if (Player.ChampionName != "LeeSin") return;
+            //    if (Player.ChampionName != "LeeSin") return;
             MenuConfig.OnLoad();
             Q = new Spell(SpellSlot.Q, 1050);
             W = new Spell(SpellSlot.W, 700);

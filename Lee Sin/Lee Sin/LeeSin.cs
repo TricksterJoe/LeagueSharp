@@ -77,6 +77,7 @@ namespace Lee_Sin
         public static bool buff;
         public static int lastflashoverprio;
         protected static int Lastcastedw;
+        protected static int _lastq2casted;
 
         static LeeSin()
         {
@@ -206,15 +207,17 @@ namespace Lee_Sin
                 buff = false;
             }
 
-            if (target.HasBuff("blindmonkqtwo") && Q2() && Environment.TickCount - lastq > 2000)
+            if ((target.HasBuff("blindmonkqtwo") ||
+                 (minionss.HasBuff("blindmonkqtwo") && minionss.IsValidTarget() && includeMinions)) && Environment.TickCount - _lastq2casted < 200 &&
+                Environment.TickCount - lastq > 2500) 
             {
                 buff = true;
             }
 
             if (minionss.IsValidTarget() && minionss.HasBuff("blindmonkqtwo") && includeMinions)
-            return Environment.TickCount - lastq > 2000 && minionss.Distance(Player) > 400;
+            return Environment.TickCount - lastq > 2500 && minionss.Distance(Player) > 400;
             else
-            return Environment.TickCount - lastq > 2000;
+            return Environment.TickCount - lastq > 2500;
         }
 
 

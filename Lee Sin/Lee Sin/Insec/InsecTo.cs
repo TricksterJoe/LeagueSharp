@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
+using SharpDX;
+using Color = System.Drawing.Color;
 
 namespace Lee_Sin.Insec
 {
@@ -144,7 +145,7 @@ namespace Lee_Sin.Insec
                 || !CanWardFlash(target))
                 return;
 
-            if (LastQ(target) || col.Count > 0)
+            if (LastQ(target))
             {
                 if (Player.Distance(target) < 500) return;
 
@@ -164,29 +165,32 @@ namespace Lee_Sin.Insec
 
             #region Q Smite
 
-            //var prediction = Prediction.GetPrediction(target, Q.Delay);
+            var prediction = Prediction.GetPrediction(target, Q.Delay);
 
-            //var collision = Q.GetCollision(Player.Position.To2D(),
-            //    new List<Vector2> { prediction.UnitPosition.To2D() });
+            var collision = Q.GetCollision(Player.Position.To2D(),
+                new List<Vector2> { prediction.UnitPosition.To2D() });
 
-            //foreach (var collisions in collision)
-            //{
-            //    if (collision.Count == 1 && collision[0].IsMinion)
-            //    { 
-            //        if (!GetBool("UseSmite", typeof(bool))) return;
-            //        if (Q.IsReady())
-            //        {   
-            //            if (collision[0].Distance(Player) < 500)
-            //            {
-            //                if (collision[0].Health <= GetFuckingSmiteDamage() && Smite.IsReady())
-            //                {
-            //                    Q.Cast(prediction.CastPosition);
-            //                    Player.Spellbook.CastSpell(Smite, collision[0]);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
+            foreach (var collisions in collision)
+            {
+                if (collision.Count == 1)
+                {
+                    if (collision[0].IsMinion && collision[0].IsEnemy)
+                    {
+                        if (!GetBool("UseSmite", typeof (bool))) return;
+                        if (Q.IsReady())
+                        {
+                            if (collision[0].Distance(Player) < 500)
+                            {
+                                if (collision[0].Health <= ActiveModes.Smite.GetFuckingSmiteDamage() && Smite.IsReady())
+                                {
+                                    Q.Cast(prediction.CastPosition);
+                                    Player.Spellbook.CastSpell(Smite, collision[0]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 
             #endregion
         }

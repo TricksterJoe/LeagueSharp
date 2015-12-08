@@ -41,8 +41,7 @@ namespace Lee_Sin
             {
                 return;
             }
-
-            //Credits to jQuery's ElLeeSin
+            
             var asec = ObjectManager.Get<Obj_AI_Hero>().Where(a => a.IsEnemy && a.Distance(Game.CursorPos) < 200 && a.IsValid && !a.IsDead);
             if (asec.Any())
             {
@@ -108,6 +107,11 @@ namespace Lee_Sin
                         _junglelaste = Environment.TickCount;
                         break;
                 }
+            }
+
+            if (args.SData.Name == "blindmonkqtwo")
+            {
+                LeeSin._lastq2casted = Environment.TickCount;
             }
 
             if (args.SData.Name == "BlindMonkRKick")
