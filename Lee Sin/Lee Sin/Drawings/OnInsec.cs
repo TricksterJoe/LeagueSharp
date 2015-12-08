@@ -54,8 +54,8 @@ namespace Lee_Sin.Drawings
             if (!GetBool("spellsdraw", typeof(bool))) return;
             if (!GetBool("targetexpos", typeof(bool))) return;
             if (!GetBool("ovdrawings", typeof(bool))) return;
-           // if (Player.Level < 6) return;
-           // if (!R.IsReady()) return;
+            if (Player.Level < 6) return;
+            if (!R.IsReady()) return;
 
             if (SelectedAllyAiMinion != null)
             {
