@@ -207,16 +207,12 @@ namespace Lee_Sin
                 buff = false;
             }
 
-            if ((target.HasBuff("blindmonkqtwo") ||
-                 (minionss.HasBuff("blindmonkqtwo") && minionss.IsValidTarget() && includeMinions)) && Environment.TickCount - _lastq2casted < 200 &&
+            if ((target.HasBuff("blindmonkqtwo")) && Environment.TickCount - _lastq2casted < 200 &&
                 Environment.TickCount - lastq > 2500) 
             {
                 buff = true;
             }
-
-            if (minionss.IsValidTarget() && minionss.HasBuff("blindmonkqtwo") && includeMinions)
-            return Environment.TickCount - lastq > 2500 && minionss.Distance(Player) > 400;
-            else
+            
             return Environment.TickCount - lastq > 2500;
         }
 
