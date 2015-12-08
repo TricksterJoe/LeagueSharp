@@ -171,10 +171,10 @@ namespace Lee_Sin.ActiveModes
             {
                 if (Q.GetDamage(target) + 70 < target.Health)
                 {
-                    Game.PrintChat("firstcheck");
+                   // Game.PrintChat("firstcheck");
                     if (target.Health > Player.GetAutoAttackDamage(target) + 30)
                     {
-                        Game.PrintChat("secondCheck");
+                     //   Game.PrintChat("secondCheck");
                         if (Q.IsReady() &&
                             target.Health <=
                             R.GetDamage(target) + GetQDamage(target) + Player.GetAutoAttackDamage(target) &&
