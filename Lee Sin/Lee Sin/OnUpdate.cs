@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Lee_Sin
         public static void OnUpdated(EventArgs args)
         {
             ProcessHandler.ProcessHandlers();
-
+            
             if (Player.IsRecalling() || MenuGUI.IsChatOpen) return;
 
             if (GetBool("smiteenable", typeof(KeyBind)))
@@ -55,8 +56,12 @@ namespace Lee_Sin
                     LaneClear.LastHit();
                     break;
             }
-
+          //  BubbaKush.AutoWardUlt();
             AutoUlt.AutoUlti();
+
+            //LeeSin.LastQ();
+            //Game.PrintChat("Last Q1 : {0}", (Environment.TickCount - lastq12).ToString());
+            //Game.PrintChat("Last Q2 : {0}", (Environment.TickCount - _lastq2casted).ToString());
 
             var target = TargetSelector.GetTarget(Q.Range + 800, TargetSelector.DamageType.Physical);
             if (target != null)
@@ -66,7 +71,14 @@ namespace Lee_Sin
             // if (!R.IsReady() && Environment.TickCount - lastr > 2000) return;
 
             if (target == null) return;
-            LastQ(target);
+
+              LastQ(target);
+            //foreach (var buffs in target.Buffs)
+            //{
+            //    Game.PrintChat(buffs.Name);
+            //}
+            //Game.PrintChat(LastQ(target).ToString());
+
         }
     }
 }

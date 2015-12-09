@@ -73,6 +73,7 @@
     <Compile Include="Mathematics.cs" />
     <Compile Include="MenuConfig.cs" />
     <Compile Include="Misc\AutoUlt.cs" />
+    <Compile Include="Misc\BubbaKush.cs" />
     <Compile Include="Misc\Notifciations.cs" />
     <Compile Include="Misc\VersionCheck.cs" />
     <Compile Include="OnLoad.cs" />

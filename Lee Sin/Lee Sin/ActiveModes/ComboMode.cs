@@ -133,7 +133,7 @@ namespace Lee_Sin.ActiveModes
                     Environment.TickCount - _lastwcombo > 300)
                 {
                     var qpred = Q.GetPrediction(target);
-                    if (Q.IsReady() && Q1() && qpred.Hitchance >= HitChance.High)
+                    if (Q.IsReady() && Q1() && qpred.Hitchance >= HitChance.High && qpred.Hitchance != HitChance.Collision)
                     {
                         Q.Cast(target);
                         _lastqc = Environment.TickCount;
@@ -204,7 +204,7 @@ namespace Lee_Sin.ActiveModes
             if (!E.IsReady() || !W.IsReady() || !(target.Distance(Player) > E.Range)) return;
             if (!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 1000)
             {
-                WardManager.WardJump.WardJumped(poss, false);
+                WardManager.WardJump.WardJumped(poss, true, true);
             }
 
             #endregion

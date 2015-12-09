@@ -14,6 +14,7 @@ namespace Lee_Sin
 
         public static void OnCreate(GameObject sender, EventArgs args)
         {
+
             if (!GetBool("wardinsec", typeof(KeyBind)) && !GetBool("starcombo", typeof(KeyBind)) &&
                 Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo)
                 return;
@@ -109,9 +110,14 @@ namespace Lee_Sin
                 }
             }
 
-            if (args.SData.Name == "blindmonkqtwo")
+            if (args.SData.Name.ToLower() == "blindmonkqtwo")
             {
                 LeeSin._lastq2casted = Environment.TickCount;
+            }
+
+            if (args.SData.Name.ToLower() == "blindmonkqone")
+            {
+                LeeSin._lastq1casted = Environment.TickCount;
             }
 
             if (args.SData.Name == "BlindMonkRKick")
@@ -220,6 +226,16 @@ namespace Lee_Sin
         }
 
         #endregion
-    
+
+        public static void OnDoCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
+        {
+            if (sender.IsMe)
+            {
+                if (args.SData.Name == "blindmonkqtwo" && args.Target.Type == GameObjectType.obj_AI_Hero)
+                {
+                    
+                }
+            }
+        }
     }
 }

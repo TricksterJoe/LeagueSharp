@@ -31,7 +31,7 @@ namespace Lee_Sin
             Notifciations.Messages();
             Misc.VersionCheck.UpdateCheck();
 
-            Q.SetSkillshot(0.25f, 65f, 1800f, true, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.25f, 58f, 1800f, true, SkillshotType.SkillshotLine);
 
             Game.OnUpdate += OnUpdate.OnUpdated;
             Drawing.OnDraw += OnInsec.OnDraw;
@@ -41,6 +41,7 @@ namespace Lee_Sin
             Obj_AI_Base.OnProcessSpellCast += EventHandler.OnSpellcast;
             Spellbook.OnCastSpell += EventHandler.OnSpell;
             Game.OnWndProc += EventHandler.OnWndProc;
+           // Obj_AI_Base.OnDoCast += EventHandler.OnDoCast;
         }
     }
 }

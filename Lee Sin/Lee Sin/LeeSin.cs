@@ -73,11 +73,15 @@ namespace Lee_Sin
         public static Obj_AI_Base minions;
         public static int wardlastcasted;
         public static int lastr;
-        public static int lastq;
-        public static bool buff;
+        public static int lastq { get; set; }
+        public static bool buff { get; set; }
         public static int lastflashoverprio;
         protected static int Lastcastedw;
         protected static int _lastq2casted;
+        protected static int _lastq1casted;
+        public static int lastbuff { get; set; }
+        public static int lastq12 { get; set; }
+        public static Obj_AI_Base minionss { get; set; }
 
         static LeeSin()
         {
@@ -196,28 +200,41 @@ namespace Lee_Sin
 
         #endregion
         
-
-        public static bool LastQ(Obj_AI_Hero target, bool includeMinions = true)
+        
+        public static bool LastQ(Obj_AI_Hero target)
         {
             if (target == null) return false;
-            
+
             if (buff)
             {
-                lastq = Environment.TickCount;
-                buff = false;
+                lastq12 = Environment.TickCount;
+                 buff = false;
             }
 
-            if ((target.HasBuff("blindmonkqtwo")) && Environment.TickCount - _lastq2casted < 200 &&
-                Environment.TickCount - lastq > 2500) 
+            var poss = InsecPos.WardJumpInsecPosition.InsecPos(target, GetValue("fixedwardrange"), true);
+
+            foreach (var obj in ObjectManager.Get<Obj_AI_Base>()
+                .Where(
+                    x => x.IsEnemy &&
+                         (x.Distance(target) < 350 || x.Distance(poss) < 450) &&
+                         x.Buffs.Any(a => a.Name.ToLower().Contains("blindmonkqone"))
+                )) 
+            {
+                if (!buff)
+                        lastbuff = Environment.TickCount;
+            }
+
+            if (Environment.TickCount - _lastq2casted < 100 &&
+                Environment.TickCount - lastq12 > 3000 && Environment.TickCount - lastbuff < 100)
             {
                 buff = true;
             }
-            
-            return Environment.TickCount - lastq > 2500;
+
+            return Environment.TickCount - lastq12  > 3000;
         }
 
+        public static Obj_AI_Base objs { get; set; }
 
-        public static Obj_AI_Base minionss { get; set; }
 
         public static bool CanWardFlash(Obj_AI_Hero target)
         {

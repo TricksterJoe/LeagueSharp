@@ -38,11 +38,14 @@ namespace Lee_Sin.ActiveModes
                         {
                             if ((SmiteDamages(mob) >= mob.Health && Q.IsReady()))
                             {
+                                if (Q1())
                                 Q.Cast(mob);
+
                                 if (mob.HasBuff("blindmonkqtwo"))
                                 {
                                     Player.Spellbook.CastSpell(Smite, mob);
                                 }
+                                if (Q2())
                                 Q.Cast();
                             }
 
