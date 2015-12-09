@@ -30,6 +30,7 @@ namespace Lee_Sin.Drawings
                 if (getresults.Count > 1)
                 {
                     var getposition = BubbaKush.SelectBest(getresults, Player);
+                 
                     Render.Circle.DrawCircle(getposition, 100, Color.Red, 3, true);
                 }
             }
