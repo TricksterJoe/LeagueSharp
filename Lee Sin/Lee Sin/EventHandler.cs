@@ -91,7 +91,7 @@ namespace Lee_Sin
 
         public static void OnSpellcast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            var getresults = BubbaKush.GetPositions(Player, 1125, 2, HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
+            var getresults = BubbaKush.GetPositions(Player, 1125,(byte) GetValue("enemiescount"), HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
             if (getresults.Count > 1)
             {
                 var getposition = BubbaKush.SelectBest(getresults, Player);
