@@ -94,6 +94,9 @@ namespace Lee_Sin
             var getresults = BubbaKush.GetPositions(Player, 1125,(byte) GetValue("enemiescount"), HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
             if (getresults.Count > 1)
             {
+                if (GetBool("wardinsec", typeof (KeyBind)) || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                    return;
+
                 var getposition = BubbaKush.SelectBest(getresults, Player);
                 if (args.SData.Name == "BlindMonkRKick")
                 {
