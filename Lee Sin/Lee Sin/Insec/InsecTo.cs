@@ -28,7 +28,7 @@ namespace Lee_Sin.Insec
             if (target == null) return;
 
             LastQ(target);
-           Game.PrintChat(LastQ(target).ToString());
+        //   Game.PrintChat(LastQ(target).ToString());
          //   Game.PrintChat((Environment.TickCount - lastq12).ToString());
 
             var qpred = Q.GetPrediction(target);

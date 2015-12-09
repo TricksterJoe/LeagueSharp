@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Lee_Sin.Misc;
 using SharpDX;
 using Color = System.Drawing.Color;
 
@@ -25,10 +26,10 @@ namespace Lee_Sin.Drawings
 
             if (GetBool("counthitr", typeof(bool)))
             {
-                var getresults = Mathematics.GetPositions(Player, 1125, (byte)3, HeroManager.Enemies);
+                var getresults = BubbaKush.GetPositions(Player, 1125, (byte)3, HeroManager.Enemies);
                 if (getresults.Count > 1)
                 {
-                    var getposition = Mathematics.SelectBest(getresults, Player);
+                    var getposition = BubbaKush.SelectBest(getresults, Player);
                     Render.Circle.DrawCircle(getposition, 100, Color.Red, 3, true);
                 }
             }
