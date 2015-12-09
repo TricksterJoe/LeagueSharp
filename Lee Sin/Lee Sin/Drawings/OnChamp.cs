@@ -26,7 +26,7 @@ namespace Lee_Sin.Drawings
 
             if (GetBool("counthitr", typeof(bool)))
             {
-                var getresults = BubbaKush.GetPositions(Player, 1125, (byte)3, HeroManager.Enemies);
+                var getresults = BubbaKush.GetPositions(Player, 1125, 2 , HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
                 if (getresults.Count > 1)
                 {
                     var getposition = BubbaKush.SelectBest(getresults, Player);
