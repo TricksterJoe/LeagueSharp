@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Lee_Sin.Misc;
 using SharpDX;
+using Color = System.Drawing.Color;
 
 namespace Lee_Sin
 {
@@ -89,6 +91,17 @@ namespace Lee_Sin
 
         public static void OnSpellcast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
+            var getresults = BubbaKush.GetPositions(Player, 1125, 2, HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
+            if (getresults.Count > 1)
+            {
+                var getposition = BubbaKush.SelectBest(getresults, Player);
+                if (args.SData.Name == "BlindMonkRKick")
+                {
+                    var poss = getposition;
+
+                    Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"), poss, true);
+                }
+            }
             if (sender.IsMe)
             {
                 switch (args.SData.Name)
