@@ -24,7 +24,7 @@ namespace Lee_Sin.Misc
             if (GetBool("counthitr", typeof(bool)))
             {
                 var getresults = BubbaKush.GetPositions(Player, 1125, (byte)GetValue("enemiescount"), HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
-                if (getresults.Count > 1)
+                if (getresults.Count > 1 && R.IsReady())
                 {
                     var getposition = BubbaKush.SelectBest(getresults, Player);
                    Render.Circle.DrawCircle(getposition, 100, Color.Red, 3, true);
