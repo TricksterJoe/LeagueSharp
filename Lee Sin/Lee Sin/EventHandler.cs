@@ -176,7 +176,7 @@ namespace Lee_Sin
 
             if (args.SData.Name == "BlindMonkRKick")
             {
-                if (Environment.TickCount - BubbaKush.lastthingy < 2000)
+                if (Environment.TickCount - BubbaKush.lastthingy < 2000 && GetBool("activatebubba", typeof(KeyBind)))
                 {
                     var getresults = BubbaKush.GetPositions(Player, 600, (byte) GetValue("enemiescount"),
                         HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
