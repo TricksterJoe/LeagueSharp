@@ -65,8 +65,7 @@ namespace Lee_Sin
         {
             ProcessHandler.ProcessHandlers();
             BubbaKush.DrawRect();
-
-            //   Game.PrintChat(Insec.InsecTo.canwardflash.ToString());
+            
             if (Player.IsRecalling() || MenuGUI.IsChatOpen) return;
 
             if (GetBool("smiteenable", typeof (KeyBind)))
