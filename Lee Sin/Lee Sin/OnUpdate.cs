@@ -105,11 +105,9 @@ namespace Lee_Sin
                     break;
             }
             AutoUlt.AutoUlti();
-            if (GetBool("activatebubba", typeof (KeyBind)))
-            {
-                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+
                 BubbaKush.DrawRect();
-            }
+            
             var target = TargetSelector.GetTarget(Q.Range + 800, TargetSelector.DamageType.Physical);
             if (target != null)
             {

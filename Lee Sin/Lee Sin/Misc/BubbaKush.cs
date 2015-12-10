@@ -18,6 +18,11 @@ namespace Lee_Sin.Misc
 
         public static void DrawRect()
         {
+
+            if (GetBool("activatebubba", typeof(KeyBind)))
+            {
+                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            }
             for (var a = 0; a < 360f; a++)
             {
                 foreach (var t in HeroManager.Enemies)
@@ -40,11 +45,19 @@ namespace Lee_Sin.Misc
                             Drawing.DrawText(Drawing.WorldToScreen(Player.Position).X,
                                 Drawing.WorldToScreen(Player.Position).Y - 70, Color.DarkTurquoise,
                                 "Press Bubba Key to knockup {0}", targets.Count());
-                            WardJump.WardJumped(extended.To3D(), true);
+
+                            if (GetBool("activatebubba", typeof (KeyBind)))
+                            {
+                                WardJump.WardJumped(extended.To3D(), true);
+                            }
+
                         }
-                        if (Player.Distance(extended) < 80)
+                        if (GetBool("activatebubba", typeof (KeyBind)))
                         {
-                            R.Cast(t);
+                            if (Player.Distance(extended) < 80)
+                            {
+                                R.Cast(t);
+                            }
                         }
                     }
                 }
