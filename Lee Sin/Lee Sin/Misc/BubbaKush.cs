@@ -19,10 +19,10 @@ namespace Lee_Sin.Misc
         public static void DrawRect()
         {
 
-            if (GetBool("activatebubba", typeof(KeyBind)))
-            {
-                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-            }
+            //if (GetBool("activatebubba", typeof(KeyBind)))
+            //{
+            //    Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
+            //}
           //  const int limiter = 300;
             for (var a = 0; a < 360f; a++)
             {
@@ -38,8 +38,7 @@ namespace Lee_Sin.Misc
                     var s = new Geometry.Polygon.Rectangle(t.ServerPosition, extend, t.BoundingRadius);
                     var targets = HeroManager.Enemies.Where(x => s.IsInside(x.ServerPosition));
 
-                    if (targets.Count() >= GetValue("enemiescount") &&
-                        GetValue("enemiescount") <= Player.GetEnemiesInRange(1100).Count())
+                    if (targets.Count() >= GetValue("enemiescount"))
                     {
                         if (Player.Distance(extended) < 500)
                         {
