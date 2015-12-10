@@ -23,7 +23,7 @@ namespace Lee_Sin.Misc
             {
                 Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             }
-            for (var a = 0; a < 360f; a++)
+            for (var a = 0; a < 360f; a+= 30)
             {
                 foreach (var t in HeroManager.Enemies)
                 {
