@@ -133,9 +133,9 @@ namespace Lee_Sin.ActiveModes
                     Environment.TickCount - _lastwcombo > 300)
                 {
                     var qpred = Q.GetPrediction(target);
-                    if (Q.IsReady() && Q1() && qpred.Hitchance >= HitChance.High && qpred.Hitchance != HitChance.Collision)
+                    if (Q.IsReady() && Q1())
                     {
-                        Q.Cast(target);
+                        OnUpdate.CastSpell(Q, target);
                         _lastqc = Environment.TickCount;
                     }
 
@@ -201,7 +201,7 @@ namespace Lee_Sin.ActiveModes
             var poss = Player.ServerPosition.Extend(target.ServerPosition, 600);
             if (!GetBool("wardjumpcombo1", typeof(bool))) return;
 
-            if (!E.IsReady() || !W.IsReady() || !(target.Distance(Player) > E.Range)) return;
+            if (!E.IsReady() || !W.IsReady() || !(target.Distance(Player) > E.Range) || !LastQ(target)) return;
             if (!Q.IsReady() && Environment.TickCount - Q.LastCastAttemptT > 1000)
             {
                 WardManager.WardJump.WardJumped(poss, true, true);

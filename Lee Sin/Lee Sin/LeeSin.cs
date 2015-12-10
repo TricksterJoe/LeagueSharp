@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Lee_Sin.Misc;
 using ItemData = LeagueSharp.Common.Data.ItemData;
+using Rectangle = SharpDX.Rectangle;
 using Version = System.Version;
 
 namespace Lee_Sin
@@ -68,7 +69,7 @@ namespace Lee_Sin
         public static int _junglelastw;
         public static int _junglelaste;
         public static int lastflashed;
-        public static bool canwardflash;
+        public static bool canwardflash = true;
         public static int _lastqcasted1;
         public static Obj_AI_Base minions;
         public static int wardlastcasted;
@@ -79,6 +80,11 @@ namespace Lee_Sin
         protected static int Lastcastedw;
         protected static int _lastq2casted;
         protected static int _lastq1casted;
+        protected static int lastwardmanager;
+        protected static int lastwardjumpd;
+        protected static int sightwardcreated;
+        protected static int lastcanjump;
+        protected static int lsatcanjump1;
         public static int lastbuff { get; set; }
         public static int lastq12 { get; set; }
         public static Obj_AI_Base minionss { get; set; }
@@ -216,12 +222,15 @@ namespace Lee_Sin
             foreach (var obj in ObjectManager.Get<Obj_AI_Base>()
                 .Where(
                     x => x.IsEnemy &&
-                         (x.Distance(target) < 350 || x.Distance(poss) < 450) &&
                          x.Buffs.Any(a => a.Name.ToLower().Contains("blindmonkqone"))
                 )) 
             {
-                if (!buff)
+                if (obj.Distance(target) < 350 || obj.Distance(poss) < 450 ||
+                    (CanWardFlash(target) && obj.Distance(target) < 900))
+                {
+                    if (!buff)
                         lastbuff = Environment.TickCount;
+                }
             }
 
             if (Environment.TickCount - _lastq2casted < 100 &&
@@ -241,8 +250,7 @@ namespace Lee_Sin
             var wardFlashBool = GetBool("expwardflash", typeof(bool));
             var slot = Items.GetWardSlot();
 
-            return slot != null && HasFlash() && W.IsReady() &&
-                   R.IsReady() && wardFlashBool && Environment.TickCount - lastr > 2000;
+            return slot != null && HasFlash() && R.IsReady() && W.IsReady() && wardFlashBool && Environment.TickCount - lastr > 2000;
         }
 
         public static bool Colbool { get; set; }

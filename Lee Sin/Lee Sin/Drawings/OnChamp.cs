@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
 using Lee_Sin.Misc;
+using Lee_Sin.WardManager;
 using SharpDX;
 using Color = System.Drawing.Color;
 
@@ -13,7 +14,11 @@ namespace Lee_Sin.Drawings
 {
     class OnChamp : LeeSin
     {
-        public static void OnSpells(EventArgs args)
+        public  static List<Geometry.Polygon.Rectangle> _toList;
+
+        public static List<Geometry.Polygon.Rectangle> NewPoly { get; set; }
+
+        public static void OnSpells(EventArgs args) 
         {
             if (Player.IsDead) return;
 
@@ -22,18 +27,21 @@ namespace Lee_Sin.Drawings
                 UltPoly.Draw(Color.Red);
             }
 
+           // DrawRect();
+          
+
             if (_rCombo != null && GetBool("rpolygon", typeof(bool))) Render.Circle.DrawCircle((Vector3)_rCombo, 100, Color.Red, 5, true);
 
-            if (GetBool("counthitr", typeof(bool)))
-            {
-                var getresults = BubbaKush.GetPositions(Player, 1125, 2 , HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
-                if (getresults.Count > 1)
-                {
-                    var getposition = BubbaKush.SelectBest(getresults, Player);
+            //if (GetBool("counthitr", typeof(bool)))
+            //{
+            //    var getresults = BubbaKush.GetPositions(Player, 1125, (byte)GetValue("enemiescount"), HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
+            //    if (getresults.Count > 1)
+            //    {
+            //        var getposition = BubbaKush.SelectBest(getresults, Player);
                  
-                    Render.Circle.DrawCircle(getposition, 100, Color.Red, 3, true);
-                }
-            }
+            //     //   Render.Circle.DrawCircle(getposition, 100, Color.Red, 3, true);
+            //    }
+            //}
 
 
             if (!GetBool("spellsdraw", typeof(bool))) return;
@@ -77,5 +85,6 @@ namespace Lee_Sin.Drawings
                 Drawing.DrawText(Drawing.WorldToScreen(Player.Position).X - 50, Drawing.WorldToScreen(Player.Position).Y + 30, Color.Magenta, "Ult Will Hit " + counts);
             }
         }
+        
     }
 }

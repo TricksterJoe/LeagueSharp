@@ -31,7 +31,7 @@ namespace Lee_Sin
             Notifciations.Messages();
             Misc.VersionCheck.UpdateCheck();
 
-            Q.SetSkillshot(0.25f, 58f, 1800f, true, SkillshotType.SkillshotLine);
+            Q.SetSkillshot(0.25f, 58f, 1800f, true, LeagueSharp.Common.SkillshotType.SkillshotLine);
 
             Game.OnUpdate += OnUpdate.OnUpdated;
             Drawing.OnDraw += OnInsec.OnDraw;

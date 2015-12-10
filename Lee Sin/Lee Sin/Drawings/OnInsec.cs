@@ -72,8 +72,7 @@ namespace Lee_Sin.Drawings
 
             if (target == null || target.IsDead || !target.IsVisible) return;
             
-
-            if (!GetBool("linebetween", typeof(bool))) return;
+            
             var objAiHero = InsecPos.WardJumpInsecPosition.GetAllyHeroes(target, 1200).FirstOrDefault();
             if (SelectedAllyAiMinion == null)
             {

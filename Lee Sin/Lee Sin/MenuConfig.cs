@@ -24,7 +24,8 @@ namespace Lee_Sin
             TargetSelector.AddToMenu(targetSelectorMenu);
             Config.AddSubMenu(targetSelectorMenu);
             Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
-
+            Config.AddItem(new MenuItem("PredictionMode", "PredictionMode"))
+                .SetValue(new StringList(new[] {"OktwPrediction", "Common Prediction"}));
             var combos = new Menu("Key Binds", "Key Binds");
             {
                 AddKeyBind(combos, "StarCombo", "starcombo", 'Z', KeyBindType.Press);
@@ -33,12 +34,10 @@ namespace Lee_Sin
                 AddValue(combos, "Fixed Ward range", "fixedwardrange", 270, 0, 600);
                 AddBool(combos, "Use Flash In Insec", "useflash");
                 AddBool(combos, "Use Objects In Insec", "useobjects");
-                AddBool(combos, "Click To Insec", "clickto");
                 AddBool(combos, "Insec Towards Allies/Turrets", "useobjectsallies");
-                AddBool(combos, "Prioritize Flash Over Ward", "prioflash");
+                AddBool(combos, "Prioritize Flash Over Ward", "prioflash", false);
                 AddBool(combos, "Ward -> Flash Insec", "expwardflash", false);
-                AddBool(combos, "Use Smite In Insec", "UseSmite");
-               // AddValue(combos, "R Flash Delay", "rflashdelay", 80, 0, 500);
+                AddBool(combos, "Use Smite In Insec", "UseSmite", false);
             }
 
             var combo = new Menu("Combo Settings", "Combo Settings");
@@ -48,16 +47,17 @@ namespace Lee_Sin
                 AddValue(combo, "Use Second [Q] Delay", "secondqdelay", 500, 0, 2500);
                 AddBool(combo, "Use [E]", "usee");
                 AddBool(combo, "Use [R]", "user");
-                AddValue(combo, "Auto [R] On X targets", "autoron", 1, 0, 5);
-                var rmenu = new Menu("Auto R on X Enemies", "autorxenemies");
+                AddValue(combo, "Auto [R] On X targets", "autoron", 3, 0, 5);
+                var rmenu = new Menu("Bubba Kush", "autorxenemies");
                 {
+                    AddKeyBind(rmenu, "Activate", "activatebubba", 'T', KeyBindType.Press);
                     AddBool(rmenu, "Use ward", "xeward");
-                    AddBool(rmenu, "Use flash", "xeflash");
-                    AddValue(rmenu, "Min enemies hit", "enemiescount", 3, 0, 5);
+                    AddBool(rmenu, "Use flash", "xeflash", false);
+                    AddValue(rmenu, "Min enemies hit", "enemiescount", 3, 1, 5);
                     combo.AddSubMenu(rmenu);
                 }
-                AddBool(combo, "Use [W]", "wardjumpcombo");
-                AddBool(combo, "Use [W]ard Jump", "wardjumpcombo1");
+                AddBool(combo, "Use [W]", "wardjumpcombo", false);
+                AddBool(combo, "Use [W]ard Jump", "wardjumpcombo1", false);
                 AddBool(combo, "Use [Smite]", "usessmite");
                 var items = new Menu("Use Items", "Use Items");
                 {
@@ -131,17 +131,15 @@ namespace Lee_Sin
                     AddBool(spells, "Show Drawings", "spellsdraw");
                     AddBool(spells, "Show Expected Target Position After Insec", "targetexpos");
                     AddBool(spells, "[Q] Range", "qrange");
-                    AddBool(spells, "[W] Range", "wrange");
-                    AddBool(spells, "[E] Range", "erange");
-                    AddBool(spells, "[R] Range", "rrange");
+                    AddBool(spells, "[W] Range", "wrange", false);
+                    AddBool(spells, "[E] Range", "erange", false);
+                    AddBool(spells, "[R] Range", "rrange", false);
                 }
                 var misc = new Menu("Misc Drawings", "Misc Drawings");
                 {
                     AddBool(misc, "Show Expected Target Position After Insec", "targetexpos");
-                    AddBool(misc, "Show Ward Position", "wardpositionshow");
-                    AddBool(misc, "Display [R] Polygon", "rpolygon");
-                    AddBool(misc, "Show target count hit by R", "counthitr");
-                    AddBool(misc, "Show Line Between Objects", "linebetween");
+                    AddBool(misc, "Display [R] Polygon", "rpolygon", false);
+                    AddBool(misc, "Show target count hit by R", "counthitr", false);
                 }
                 drawings.AddSubMenu(misc);
                 drawings.AddSubMenu(spells);

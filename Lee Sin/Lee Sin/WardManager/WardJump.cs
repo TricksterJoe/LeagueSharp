@@ -25,27 +25,25 @@ namespace Lee_Sin.WardManager
             {
                 if (objects == null)
                 {
-                    if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 1000 && W1() && !use)
+                    if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 200 && W1() && !use)
                     {
                         Player.Spellbook.CastSpell(ward.SpellSlot, position);
                     }
-                    if (W.IsReady() && ward != null && W1() && use && Environment.TickCount - Lastcastedw > 400)
+                    if (W.IsReady() && ward != null && W1() && use && Environment.TickCount - Lastcastedw > 200)
                     {
                         Player.Spellbook.CastSpell(ward.SpellSlot, position);
-                        LeeSin.Lastcastedw = Environment.TickCount;
                     }
                 }
             }
             else
             {
-                if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 1000 && W1() && !use)
+                if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 200 && W1() && !use)
                 {
                     Player.Spellbook.CastSpell(ward.SpellSlot, position);
                 }
-                if (W.IsReady() && ward != null && W1() && use && Environment.TickCount - Lastcastedw > 400)
+                if (W.IsReady() && ward != null && W1() && use && Environment.TickCount - Lastcastedw > 200)
                 {
                     Player.Spellbook.CastSpell(ward.SpellSlot, position);
-
                 }
             }
 

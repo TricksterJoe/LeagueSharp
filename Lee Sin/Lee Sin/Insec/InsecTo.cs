@@ -7,6 +7,7 @@ using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
 using Color = System.Drawing.Color;
+using Prediction = Lee_Sin.Prediction;
 
 namespace Lee_Sin.Insec
 {
@@ -24,71 +25,69 @@ namespace Lee_Sin.Insec
                 target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
             }
             // if (!R.IsReady() && Environment.TickCount - lastr > 2000) return;
-            
+
             if (target == null) return;
-
-            LastQ(target);
-        //   Game.PrintChat(LastQ(target).ToString());
-         //   Game.PrintChat((Environment.TickCount - lastq12).ToString());
-
+            
             var qpred = Q.GetPrediction(target);
 
             var col = qpred.CollisionObjects;
 
             var slot = Items.GetWardSlot();
-            //   Game.PrintChat(LastQ(target).ToString());
             #endregion
 
             if (Player.Distance(target) > 500)
             {
-                if (Q2() && Q.IsReady() && (R.IsReady() || Environment.TickCount - lastr < 5000))
+                if (Q2() && Q.IsReady() && (R.IsReady() || Environment.TickCount - lastr < 4000))
                 {
                     Utility.DelayAction.Add(400, () => Q.Cast());
                 }
             }
 
-            if (Q1() && Player.Distance(target) <= Q.Range && qpred.Hitchance >= HitChance.High)
+            if (Q1() && Player.Distance(target) <= Q.Range)
             {
-                Q.Cast(target);
+                OnUpdate.CastSpell(Q, target);
             }
 
 
             var poss = InsecPos.WardJumpInsecPosition.InsecPos(target, GetValue("fixedwardrange"), true);
 
             foreach (var min in
-                ObjectManager.Get<Obj_AI_Base>()
+                MinionManager.GetMinions(Player.Position, Q.Range + 900, MinionTypes.All, MinionTeam.NotAlly)
                     .Where(
-                        x => (!x.IsAlly || x.Type == GameObjectType.NeutralMinionCamp) && !x.Name.ToLower().Contains("turret") &&
-                            (x.Distance(target) < 380 ||
-                             x.Distance(poss) < 530 || (canwardflash && x.Distance(target) < 800))
+                        x => !x.Name.ToLower().Contains("turret") && !x.Name.ToLower().Contains("tower")
                              && x.Health > Q.GetDamage(x) + 50 && !x.IsDead &&
                              Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range))
             {
-               // minionss = min;
-               Render.Circle.DrawCircle(min.Position, 80, Color.Yellow, 5, true);
-                if (Q1() && Q.IsReady())
+                if (min.Distance(target) < 500 ||
+                    min.Distance(poss) < 530 || (CanWardFlash(target) && min.Distance(target) < 800))
                 {
-                    Q.Cast(min.Position);
-                }
-                if (Q1() && Q.IsReady())
-                {
-                    Q.Cast(min.Position);
-                }
+                    if (col.Count > 0 || target.Distance(Player) > Q.Range)
+                    {
+                        if (Q1() && Q.IsReady())
+                        {
+                            Q.Cast(min.Position);
+                        }
+                        if (Q1() && Q.IsReady())
+                        {
+                            Q.Cast(min.Position);
+                        }
 
-                if (Q2() && min.HasBuff("blindmonkqtwo"))
-                {
-                    Q.Cast();
+                        if (Q2() && min.HasBuff("blindmonkqtwo"))
+                        {
+                            Q.Cast();
+                        }
+                    }
                 }
             }
 
             if ((Steps == LeeSin.steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady())
             {
-                
-                if (target.Position.Distance(Player.Position) < 600)
+
+                if (GetValue("fixedwardrange") + Player.ServerPosition.Distance(target.ServerPosition) < 1000)
                 {
                     WardManager.WardJump.WardJumped(poss.To3D(), false, false);
+                    LeeSin.lastwardjumpd = Environment.TickCount;
                     canwardflash = false;
-                    
                 }
                 else if (CanWardFlash(target))
                 {
@@ -104,63 +103,11 @@ namespace Lee_Sin.Insec
             }
 
             if ((!W.IsReady() || W2()) && !GetBool("prioflash", typeof(bool)) &&
-                Environment.TickCount - _lastwcasted > 1000 && LastQ(target))
+                Environment.TickCount - _lastwcasted > 1500 && LastQ(target))
             {
                 lastflashoverprio = Environment.TickCount;
                 R.Cast(target);
             }
-
-            #region Determine if we want to flash or ward jump
-
-            if (R.IsReady())
-            {
-                if (slot != null && (W.IsReady() && Environment.TickCount - _lastprocessw > 1500))
-                {
-                    if (GetBool("prioflash", typeof(bool)) && Player.GetSpellSlot("summonerflash").IsReady())
-                    {
-                        Steps = LeeSin.steps.Flash;
-                    }
-                    else if (Player.Distance(target) < 700)
-                    {
-                        Steps = LeeSin.steps.WardJump;
-                        if (Environment.TickCount - _lastqcasted1 < 600)
-                        {
-                            canwardflash = false;
-                        }
-                        else if (CanWardFlash(target))
-                        {
-                            canwardflash = true;
-                        }
-                        _lastwardjump = Environment.TickCount;
-                    }
-                }
-                else if (GetBool("useflash", typeof(bool)) && target.Distance(Player) < 400 &&
-                         Player.GetSpellSlot("SummonerFlash").IsReady() && (slot == null || !W.IsReady() || W2()) &&
-                         (Environment.TickCount - _lastwcasted > 1500 || Environment.TickCount - _lastprocessw > 1500))
-                {
-                    Steps = LeeSin.steps.Flash;
-                }
-            }
-
-            var wardtotargetpos = Player.Position.Extend(target.Position, Player.Distance(target) - 250);
-
-            if (!canwardflash) return;
-
-            if (Player.ServerPosition.Distance(target.ServerPosition) < 250 || target.Distance(Player) > 750
-                || !CanWardFlash(target) || Environment.TickCount - _lastq1casted < 200 || target.Buffs.Any(x => x.Name.ToLower().Contains("blindmonkqone")))
-                return;
-
-            if (LastQ(target))
-            {
-                    WardManager.WardJump.WardJumped(wardtotargetpos, false, false);
-
-                    _wardjumpedto = Environment.TickCount;
-                    _wardjumpedtotarget = true;
-                    _lastflashward = Environment.TickCount;  
-            }
-
-            #endregion
-
             #region Q Smite
 
             var prediction = Prediction.GetPrediction(target, Q.Delay);
@@ -174,7 +121,7 @@ namespace Lee_Sin.Insec
                 {
                     if (collision[0].IsMinion && collision[0].IsEnemy)
                     {
-                        if (!GetBool("UseSmite", typeof (bool))) return;
+                        if (!GetBool("UseSmite", typeof(bool))) return;
                         if (Q.IsReady())
                         {
                             if (collision[0].Distance(Player) < 500)
@@ -188,6 +135,57 @@ namespace Lee_Sin.Insec
                         }
                     }
                 }
+            }
+
+            #endregion
+            #region Determine if we want to flash or ward jump
+
+            if (R.IsReady())
+            {
+                if (slot != null && (W.IsReady() || Environment.TickCount - _lastprocessw < 1500))
+                {
+                    if (GetBool("prioflash", typeof(bool)) && Player.GetSpellSlot("summonerflash").IsReady())
+                    {
+                        Steps = LeeSin.steps.Flash;
+                    }
+                    else if (GetValue("fixedwardrange") + Player.ServerPosition.Distance(target.ServerPosition) < 1000)
+                    {
+                        Steps = LeeSin.steps.WardJump;
+                        canwardflash = true;
+                        //if (Environment.TickCount - _lastqcasted < 600)
+                        //{
+                        //    canwardflash = false;
+                        //}
+                        //else if (CanWardFlash(target))
+                        //{
+                        //    canwardflash = true;
+                        //}
+                        //_lastwardjump = Environment.TickCount;
+                    }
+                }
+                else if (GetBool("useflash", typeof(bool)) && target.Distance(Player) < 400 &&
+                         Player.GetSpellSlot("SummonerFlash").IsReady() && (slot == null || !W.IsReady() || W2()) &&
+                         (Environment.TickCount - _lastwcasted > 2000 || Environment.TickCount - _lastprocessw > 2000))
+                {
+                    Steps = LeeSin.steps.Flash;
+                }
+            }
+
+            var wardtotargetpos = Player.Position.Extend(target.Position, Player.Distance(target) - 200);
+
+        //   if (!canwardflash) return;
+
+            if (Player.ServerPosition.Distance(target.ServerPosition) < 450  || target.Distance(Player) > 900 ||
+                Environment.TickCount - _lastq1casted < 200
+                || !CanWardFlash(target) || Environment.TickCount - LeeSin.lsatcanjump1 < 3000 || target.Buffs.Any(x => x.Name.ToLower().Contains("blindmonkqone"))) 
+                return;
+           
+           if (LastQ(target))
+            {
+                WardManager.WardJump.WardJumped(wardtotargetpos, true, false);
+                _wardjumpedto = Environment.TickCount;
+                _wardjumpedtotarget = true;
+                _lastflashward = Environment.TickCount;
             }
 
             #endregion

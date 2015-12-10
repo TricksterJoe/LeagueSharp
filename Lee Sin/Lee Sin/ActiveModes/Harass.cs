@@ -27,7 +27,7 @@ namespace Lee_Sin.ActiveModes
                 {
                     var qpred = Q.GetPrediction(target);
                     if (Q.IsReady() && Q1() &&
-                        (qpred.Hitchance >= HitChance.High))
+                        (qpred.Hitchance >= LeagueSharp.Common.HitChance.High))
                     {
                         Q.Cast(target);
                         _lastqh = Environment.TickCount;

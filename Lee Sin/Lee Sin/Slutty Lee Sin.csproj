@@ -75,6 +75,7 @@
     <Compile Include="Misc\BubbaKush.cs" />
     <Compile Include="Misc\Notifciations.cs" />
     <Compile Include="Misc\VersionCheck.cs" />
+    <Compile Include="OKTWPrediction.cs" />
     <Compile Include="OnLoad.cs" />
     <Compile Include="OnUpdate.cs" />
     <Compile Include="ProcessHandler.cs" />

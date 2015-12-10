@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Lee_Sin.WardManager;
 using SharpDX;
 using Color = System.Drawing.Color;
 
@@ -15,75 +16,61 @@ namespace Lee_Sin.Misc
     {
 
 
-        public static void AutoWardUlt()
+        public static void DrawRect()
         {
-            var distance = MaxTravelDistance();
-            var enemiescount = GetValue("enemiescount");
-           
-            var enemies = Player.GetEnemiesInRange(2800);
-            if (enemies.Count <= 0) return;
-            var wardflashpos = GetWardFlashPositions(distance, Player, (byte)enemiescount, enemies);
-            var wardJumpPos = MoveVector(Player.Position, wardflashpos);
-            Drawing.DrawCircle(wardflashpos, 100, Color.Blue);
-            var enemies1 = HeroManager.Enemies.Where(x => !x.IsDead && x.Distance(Player) < 1125).ToList();
-            if (enemies1.Count <= 0) return;
-            var getresults = GetPositions(Player, 1125, (byte)enemiescount, enemies1);
-            var items = Items.GetWardSlot();
-            if (getresults.Count > 1)
+            for (var a = 0; a < 360f; a++)
             {
-                var getposition = SelectBest(getresults, Player);
-               
-                if (Player.Distance(getposition) < 600 && W.IsReady() && items != null)
+                foreach (var t in HeroManager.Enemies)
                 {
-                    var pos = getposition;
-                    foreach (var wards in ObjectManager.Get<Obj_AI_Base>())
+                    var direction = t.Direction.To2D().Perpendicular();
+                    var angle = Geometry.DegreeToRadian(a);
+                    var rotatedPosition = t.ServerPosition.To2D() + 300*direction.Rotated(angle);
+                    var extended = rotatedPosition.Extend(t.ServerPosition.To2D(),
+                        rotatedPosition.Distance(t.ServerPosition) + 300);
+                    var extend = t.ServerPosition.Extend(rotatedPosition.To3D(), 1100);
+
+                    var s = new Geometry.Polygon.Rectangle(t.ServerPosition, extend, t.BoundingRadius);
+                    var targets = HeroManager.Enemies.Where(x => s.IsInside(x.ServerPosition + x.BoundingRadius));
+
+                    if (targets.Count() >= GetValue("enemiescount") &&
+                        GetValue("enemiescount") <= Player.GetEnemiesInRange(1100).Count)
                     {
-                        if (!_processW2 && W.IsReady() && Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne" &&
-                            Player.Spellbook.GetSpell(SpellSlot.Q).Name != "blindmonkwtwo"
-                            && ((wards.Name.ToLower().Contains("ward") && wards.IsAlly)))
+                        if (Player.Distance(extended) < 500)
                         {
-                            W.Cast(wards);
-                            _lastcasted = Environment.TickCount;
+                            Drawing.DrawText(Drawing.WorldToScreen(Player.Position).X,
+                                Drawing.WorldToScreen(Player.Position).Y - 70, Color.DarkTurquoise,
+                                "Press Bubba Key to knockup {0}", targets.Count());
+                            WardJump.WardJumped(extended.To3D(), true);
+                        }
+                        if (Player.Distance(extended) < 80)
+                        {
+                            R.Cast(t);
                         }
                     }
-
-                    var ward = Items.GetWardSlot();
-                    if (W.IsReady() && ward != null && ward.IsValidSlot() &&
-                        Environment.TickCount - _lastward > 400 &&
-                        Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne"
-                        )
-                    {
-                        Player.Spellbook.CastSpell(ward.SpellSlot, pos);
-                        _lastward = Environment.TickCount;
-                    }
                 }
-            }
-            if (enemies1.FirstOrDefault() == null) return;
-            if (Environment.TickCount - _lastcasted < 1000)
-            {
-                R.Cast(enemies1.FirstOrDefault());
             }
         }
 
         /// <summary>
-        /// Gets the best possible destination where the max amount of enemies will be hit.
-        /// </summary>
-        /// <param name="maxTravelDistance">
-        /// The max travel distance of lee sin.
-        /// </param>
-        /// <param name="player">
-        /// The player obj.
-        /// </param>
-        /// <param name="minHitRequirement">
-        /// The min hit requirement, min amount of enemies to be hit.
-        /// </param>
-        /// <param name="enemies">
-        /// The enemies.
-        /// </param>
-        /// <returns>
-        /// The <see cref="Vector3"/>, position that is where lee should be to cast r, eg the destination.
-        /// </returns>
-        public static Vector3 GetWardFlashPositions(float maxTravelDistance, Obj_AI_Hero player, byte minHitRequirement, List<Obj_AI_Hero> enemies)
+                /// Gets the best possible destination where the max amount of enemies will be hit.
+                /// </summary>
+                /// <param name="maxTravelDistance">
+                /// The max travel distance of lee sin.
+                /// </param>
+                /// <param name="player">
+                /// The player obj.
+                /// </param>
+                /// <param name="minHitRequirement">
+                /// The min hit requirement, min amount of enemies to be hit.
+                /// </param>
+                /// <param name="enemies">
+                /// The enemies.
+                /// </param>
+                /// <returns>
+                /// The <see cref="Vector3"/>, position that is where lee should be to cast r, eg the destination.
+                /// </returns>
+            public static
+            Vector3 GetWardFlashPositions(float maxTravelDistance, Obj_AI_Hero player, byte minHitRequirement, List<Obj_AI_Hero> enemies)
         {
             var destination = SelectBest(GetPositions(player, maxTravelDistance, minHitRequirement, enemies), player);
             return destination;
