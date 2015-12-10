@@ -19,7 +19,8 @@ namespace Lee_Sin
             
 
             if (!GetBool("wardinsec", typeof(KeyBind)) && !GetBool("starcombo", typeof(KeyBind)) &&
-                Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo && Environment.TickCount - lastcanjump > 2000)
+                Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo && Environment.TickCount - lastcanjump > 2000
+                && Environment.TickCount - BubbaKush.lastthingy > 2000)
                 return;
 
             if (_processW2 || !W.IsReady() || Player.GetSpell(SpellSlot.W).Name != "BlindMonkWOne" ||

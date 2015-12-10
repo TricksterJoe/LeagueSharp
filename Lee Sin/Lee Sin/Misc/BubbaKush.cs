@@ -14,75 +14,95 @@ namespace Lee_Sin.Misc
     /// </summary>
     class BubbaKush : LeeSin
     {
+        public static int lastthingy;
 
 
         public static void DrawRect()
         {
 
+
+            if (GetBool("counthitr", typeof(bool)))
+            {
+                var getresults = BubbaKush.GetPositions(Player, 1125, (byte)GetValue("enemiescount"), HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
+                if (getresults.Count > 1)
+                {
+                    var getposition = BubbaKush.SelectBest(getresults, Player);
+                   Render.Circle.DrawCircle(getposition, 100, Color.Red, 3, true);
+                   WardJump.WardJumped(getresults.FirstOrDefault(), true);
+                    lastthingy = Environment.TickCount;
+                }
+                if (Environment.TickCount - lastthingy < 2000)
+                {
+                    var hero =
+                        HeroManager.Enemies.Where(x => x.Distance(Player) < R.Range).OrderBy(x => x.Distance(Player));
+                    if (hero.FirstOrDefault() != null)
+                        R.Cast(hero.FirstOrDefault());
+                }
+            }
+
             //if (GetBool("activatebubba", typeof(KeyBind)))
             //{
             //    Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             //}
-          //  const int limiter = 300;
-            for (var a = 0; a < 360f; a++)
-            {
-                foreach (var t in HeroManager.Enemies)
-                {
+            //  const int limiter = 300;
+            //for (var a = 0; a < 360f; a++)
+            //{
+            //    foreach (var t in HeroManager.Enemies.Where(x => x.Distance(Player) < 1700))
+            //    {
 
-                    var direction = t.Direction.To2D().Perpendicular();
-                    var angle = Geometry.DegreeToRadian(a);
-                    var rotatedPosition = t.ServerPosition.To2D() + 300*direction.Rotated(angle);
-                    var extended = rotatedPosition.Extend(t.ServerPosition.To2D(),
-                        rotatedPosition.Distance(t.ServerPosition) + 300);
-                    var extend = t.ServerPosition.Extend(rotatedPosition.To3D(), 1100);
-                    var s = new Geometry.Polygon.Rectangle(t.ServerPosition, extend, t.BoundingRadius);
-                    var targets = HeroManager.Enemies.Where(x => s.IsInside(x.ServerPosition));
+            //        var direction = t.Direction.To2D().Perpendicular();
+            //        var angle = Geometry.DegreeToRadian(a);
+            //        var rotatedPosition = t.ServerPosition.To2D() + 300*direction.Rotated(angle);
+            //        var extended = rotatedPosition.Extend(t.ServerPosition.To2D(),
+            //            rotatedPosition.Distance(t.ServerPosition) + 300);
+            //        var extend = t.ServerPosition.Extend(rotatedPosition.To3D(), 1100);
+            //        var s = new Geometry.Polygon.Rectangle(t.ServerPosition, extend, t.BoundingRadius);
+            //        var targets = HeroManager.Enemies.Where(x => s.IsInside(x.Position));
 
-                    if (targets.Count() >= GetValue("enemiescount"))
-                    {
-                        if (Player.Distance(extended) < 500)
-                        {
-                            Drawing.DrawText(Drawing.WorldToScreen(Player.Position).X,
-                                Drawing.WorldToScreen(Player.Position).Y - 70, Color.DarkTurquoise,
-                                "Press Bubba Key to knockup {0}", targets.Count());
+            //        if (targets.Count() >= GetValue("enemiescount"))
+            //        {
+            //          //  if (Player.Distance(extended) < 500)
+            //            {
+            //                Drawing.DrawText(Drawing.WorldToScreen(Player.Position).X,
+            //                    Drawing.WorldToScreen(Player.Position).Y - 70, Color.DarkTurquoise,
+            //                    "Press Bubba Key to knockup {0}", targets.Count());
 
-                            if (GetBool("activatebubba", typeof (KeyBind)))
-                            {
-                                WardJump.WardJumped(extended.To3D(), true);
-                            }
 
-                        }
-                        if (GetBool("activatebubba", typeof (KeyBind)))
-                        {
-                            if (Player.Distance(extended) < 80)
-                            {
-                                R.Cast(t);
-                            }
-                        }
-                    }
-                }
-            }
+            //            }
+            //            if (GetBool("activatebubba", typeof (KeyBind)))
+            //            {
+            //                if (Player.Distance(extended) < 80)
+            //                {
+            //                    R.Cast(t);
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+
+
+
         }
 
         /// <summary>
-                /// Gets the best possible destination where the max amount of enemies will be hit.
-                /// </summary>
-                /// <param name="maxTravelDistance">
-                /// The max travel distance of lee sin.
-                /// </param>
-                /// <param name="player">
-                /// The player obj.
-                /// </param>
-                /// <param name="minHitRequirement">
-                /// The min hit requirement, min amount of enemies to be hit.
-                /// </param>
-                /// <param name="enemies">
-                /// The enemies.
-                /// </param>
-                /// <returns>
-                /// The <see cref="Vector3"/>, position that is where lee should be to cast r, eg the destination.
-                /// </returns>
-            public static
+        /// Gets the best possible destination where the max amount of enemies will be hit.
+        /// </summary>
+        /// <param name="maxTravelDistance">
+        /// The max travel distance of lee sin.
+        /// </param>
+        /// <param name="player">
+        /// The player obj.
+        /// </param>
+        /// <param name="minHitRequirement">
+        /// The min hit requirement, min amount of enemies to be hit.
+        /// </param>
+        /// <param name="enemies">
+        /// The enemies.
+        /// </param>
+        /// <returns>
+        /// The <see cref="Vector3"/>, position that is where lee should be to cast r, eg the destination.
+        /// </returns>
+        public static
             Vector3 GetWardFlashPositions(float maxTravelDistance, Obj_AI_Hero player, byte minHitRequirement, List<Obj_AI_Hero> enemies)
         {
             var destination = SelectBest(GetPositions(player, maxTravelDistance, minHitRequirement, enemies), player);
@@ -92,7 +112,7 @@ namespace Lee_Sin.Misc
         // Lazy kappa
         public static Vector3 SelectBest(List<Vector3> getPositionsResults, Obj_AI_Hero player)
         {
-            if (getPositionsResults.Count <= 0)
+            if (getPositionsResults.Count <= 0 )
             {
                 return new Vector3(null);
             }

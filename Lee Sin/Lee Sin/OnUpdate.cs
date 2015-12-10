@@ -105,7 +105,7 @@ namespace Lee_Sin
                     break;
             }
             AutoUlt.AutoUlti();
-            if (Environment.TickCount - g > 250)
+            if (Environment.TickCount - g > 500)
             {
                 BubbaKush.DrawRect();
                 g = Environment.TickCount;
