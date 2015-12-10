@@ -174,18 +174,20 @@ namespace Lee_Sin.Insec
             var wardtotargetpos = Player.Position.Extend(target.Position, Player.Distance(target) - 200);
 
         //   if (!canwardflash) return;
-
+            
             if (Player.ServerPosition.Distance(target.ServerPosition) < 450  || target.Distance(Player) > 900 ||
-                Environment.TickCount - _lastq1casted < 200
+                Environment.TickCount - _lastq1casted < 500
                 || !CanWardFlash(target) || Environment.TickCount - LeeSin.lsatcanjump1 < 3000 || target.Buffs.Any(x => x.Name.ToLower().Contains("blindmonkqone"))) 
                 return;
-           
-           if (LastQ(target))
+           if (!Q.IsReady() || (col.Count >= 1 && !Q2()))
             {
-                WardManager.WardJump.WardJumped(wardtotargetpos, true, false);
-                _wardjumpedto = Environment.TickCount;
-                _wardjumpedtotarget = true;
-                _lastflashward = Environment.TickCount;
+                if (LastQ(target))
+                {
+                    WardManager.WardJump.WardJumped(wardtotargetpos, true, false);
+                    _wardjumpedto = Environment.TickCount;
+                    _wardjumpedtotarget = true;
+                    _lastflashward = Environment.TickCount;
+                }
             }
 
             #endregion

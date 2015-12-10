@@ -169,7 +169,7 @@ namespace Lee_Sin
 
                 if (target != null)
                 {
-                   if (Environment.TickCount - LeeSin.lsatcanjump1 > 3000)
+                   if (Environment.TickCount - LeeSin.lsatcanjump1 > 4000)
                     {                    
                         if (Steps == LeeSin.steps.Flash ||
                             (Environment.TickCount - _lastflashward < 2000 && _wardjumpedtotarget) ||
