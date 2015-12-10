@@ -64,7 +64,9 @@ namespace Lee_Sin
             void OnUpdated(EventArgs args)
         {
             ProcessHandler.ProcessHandlers();
-         //   Game.PrintChat(Insec.InsecTo.canwardflash.ToString());
+            BubbaKush.DrawRect();
+
+            //   Game.PrintChat(Insec.InsecTo.canwardflash.ToString());
             if (Player.IsRecalling() || MenuGUI.IsChatOpen) return;
 
             if (GetBool("smiteenable", typeof (KeyBind)))
@@ -105,8 +107,6 @@ namespace Lee_Sin
                     break;
             }
             AutoUlt.AutoUlti();
-
-             //   BubbaKush.DrawRect();
 
 
             var target = TargetSelector.GetTarget(Q.Range + 800, TargetSelector.DamageType.Physical);

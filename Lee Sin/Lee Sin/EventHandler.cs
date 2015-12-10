@@ -176,6 +176,20 @@ namespace Lee_Sin
 
             if (args.SData.Name == "BlindMonkRKick")
             {
+                if (Environment.TickCount - BubbaKush.lastthingy < 2000)
+                {
+                    var getresults = BubbaKush.GetPositions(Player, 600, (byte) GetValue("enemiescount"),
+                        HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
+                    if (getresults.Count > 1)
+                    {
+                        var getposition = BubbaKush.SelectBest(getresults, Player);
+
+                        var poss = getposition;
+
+                        Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"), poss, true);
+                    }
+                }   
+
                 lastr = Environment.TickCount;
                 var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
                 if (target != null)
@@ -190,9 +204,11 @@ namespace Lee_Sin
                         if (Steps == LeeSin.steps.Flash ||
                             (Environment.TickCount - _lastflashward < 2000 && _wardjumpedtotarget) ||
                             Environment.TickCount - lastflashoverprio < 3000 ||
-                            Environment.TickCount - _wardjumpedto < 2000) 
+                            Environment.TickCount - _wardjumpedto < 2000
+                            ||  Environment.TickCount - BubbaKush.lastthingy < 2000) 
                         {
-                            if (GetBool("wardinsec", typeof (KeyBind)) || GetBool("starcombo", typeof (KeyBind)))
+                            if (GetBool("wardinsec", typeof (KeyBind)) || GetBool("starcombo", typeof (KeyBind))
+                                || Environment.TickCount - BubbaKush.lastthingy < 2000)
                             {
                                 var pos = InsecPos.FlashInsecPosition.InsecPos(target, 230);
                                 var poss = Player.Position.Extend(target.Position,
