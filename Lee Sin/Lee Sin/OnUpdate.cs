@@ -105,11 +105,9 @@ namespace Lee_Sin
                     break;
             }
             AutoUlt.AutoUlti();
-            if (Environment.TickCount - g > 500)
-            {
-                BubbaKush.DrawRect();
-                g = Environment.TickCount;
-            }
+
+             //   BubbaKush.DrawRect();
+
 
             var target = TargetSelector.GetTarget(Q.Range + 800, TargetSelector.DamageType.Physical);
             if (target == null) return;
