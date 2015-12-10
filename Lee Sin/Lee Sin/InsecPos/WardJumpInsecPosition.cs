@@ -15,7 +15,7 @@ namespace Lee_Sin.InsecPos
         {
             return
                 ObjectManager.Get<Obj_AI_Hero>()
-                    .Where(hero => hero.IsAlly && !hero.IsMe && !hero.IsDead && hero.Distance(unit) < range).OrderBy(x => x.Distance(Player))
+                    .Where(hero => hero.IsAlly && !hero.IsMe && !hero.IsDead && hero.Distance(unit) < range).OrderByDescending(x => x.Distance(Player))
                     .ToList();
         }
 

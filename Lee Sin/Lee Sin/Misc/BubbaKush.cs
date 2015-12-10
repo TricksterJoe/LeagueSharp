@@ -23,23 +23,23 @@ namespace Lee_Sin.Misc
             {
                 Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
             }
-            const int limiter = 30;
-            for (var a = 0; a < 360f; a+= limiter)
+          //  const int limiter = 300;
+            for (var a = 0; a < 360f; a++)
             {
                 foreach (var t in HeroManager.Enemies)
                 {
+
                     var direction = t.Direction.To2D().Perpendicular();
                     var angle = Geometry.DegreeToRadian(a);
                     var rotatedPosition = t.ServerPosition.To2D() + 300*direction.Rotated(angle);
                     var extended = rotatedPosition.Extend(t.ServerPosition.To2D(),
                         rotatedPosition.Distance(t.ServerPosition) + 300);
                     var extend = t.ServerPosition.Extend(rotatedPosition.To3D(), 1100);
-
                     var s = new Geometry.Polygon.Rectangle(t.ServerPosition, extend, t.BoundingRadius);
                     var targets = HeroManager.Enemies.Where(x => s.IsInside(x.ServerPosition));
 
                     if (targets.Count() >= GetValue("enemiescount") &&
-                        GetValue("enemiescount") <= Player.GetEnemiesInRange(1100).Count)
+                        GetValue("enemiescount") <= Player.GetEnemiesInRange(1100).Count())
                     {
                         if (Player.Distance(extended) < 500)
                         {
@@ -103,7 +103,7 @@ namespace Lee_Sin.Misc
 
         public static List<Vector3> GetPositions(Obj_AI_Hero player, float maxTravelDistance, byte minHitRequirement, List<Obj_AI_Hero> enemies)
         {
-            if (enemies.Count < 0) return new List<Vector3>(0); 
+            if (enemies.Count <= 0) return new List<Vector3>(0); 
             var polygons = GeneratePolygons(enemies);
             var removedDuplicates = RemoveDuplicates(polygons);
             var minHitFiltered = MinHitFilter(removedDuplicates, enemies, minHitRequirement);

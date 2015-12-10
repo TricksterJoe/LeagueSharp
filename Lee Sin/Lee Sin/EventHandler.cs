@@ -109,24 +109,39 @@ namespace Lee_Sin
 
         public static void OnSpellcast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            var getresults = BubbaKush.GetPositions(Player, 1125, (byte)GetValue("enemiescount"), HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
-            if (getresults.Count > 1)
-            {
-                if (GetBool("xeflash", typeof (bool)))
-                {
-                    if (GetBool("wardinsec", typeof (KeyBind)) ||
-                        Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
-                        return;
+            //var en = HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList();
+            //var getresults = BubbaKush.GetPositions(Player, 1125, (byte)GetValue("enemiescount"), en);
+            //if (getresults.Count > 1)
+            //{
+            //    Game.PrintChat("JUSTDOIT");
+            //    if (R.IsReady() && GetBool("xeflash", typeof(bool)))
+            //    {
+            //        for (int[] i = {0}; i[0] < getresults.Count; i[0]++)
+            //        {
+            //            var order =
+            //                en.Where(a => a.Distance(Player) < R.Range).OrderBy(x => x.Distance(getresults[i[0]]));
 
-                    var getposition = BubbaKush.SelectBest(getresults, Player);
-                    if (args.SData.Name == "BlindMonkRKick")
-                    {
-                        var poss = getposition;
+            //            if (order.FirstOrDefault() != null)
+            //            R.Cast(order.FirstOrDefault());
+            //        }
+            //    }
+                    
+            //    if (GetBool("xeflash", typeof (bool)))
+            //    {
+            //        if (R.IsReady())
+            //        if (GetBool("wardinsec", typeof (KeyBind)) ||
+            //            Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            //            return;
 
-                        Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"), poss, true);
-                    }
-                }
-            }
+            //        var getposition = BubbaKush.SelectBest(getresults, Player);
+            //        if (args.SData.Name == "BlindMonkRKick")
+            //        {
+            //            var poss = getposition;
+
+            //            Player.Spellbook.CastSpell(Player.GetSpellSlot("SummonerFlash"), poss, true);
+            //        }
+            //    }
+            //}
             if (sender.IsMe)
             {
                 switch (args.SData.Name)

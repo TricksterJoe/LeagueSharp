@@ -15,7 +15,7 @@ namespace Lee_Sin
 {
     class OnUpdate : LeeSin
     {
-
+        private static float g;
 
 
         public static void CastSpell(Spell QWER, Obj_AI_Base target)
@@ -105,18 +105,19 @@ namespace Lee_Sin
                     break;
             }
             AutoUlt.AutoUlti();
-
-                BubbaKush.DrawRect();
-            
-            var target = TargetSelector.GetTarget(Q.Range + 800, TargetSelector.DamageType.Physical);
-            if (target != null)
+            if (Environment.TickCount - g > 250)
             {
-                target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
-
-                if (target == null) return;
-                LastQ(target);
-                CanWardFlash(target);
+                BubbaKush.DrawRect();
+                g = Environment.TickCount;
             }
+
+            var target = TargetSelector.GetTarget(Q.Range + 800, TargetSelector.DamageType.Physical);
+            if (target == null) return;
+            target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
+
+            if (target == null) return;
+            LastQ(target);
+            CanWardFlash(target);
         }
     }
 }
