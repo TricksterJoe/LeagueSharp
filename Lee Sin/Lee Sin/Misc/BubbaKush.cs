@@ -21,8 +21,9 @@ namespace Lee_Sin.Misc
         {
 
 
-            if (GetBool("counthitr", typeof (bool)))
+            if (GetBool("activatebubba", typeof (KeyBind)))
             {
+                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                 var getresults = BubbaKush.GetPositions(Player, 600, (byte) GetValue("enemiescount"),
                     HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
                 if (getresults.Count > 1)
