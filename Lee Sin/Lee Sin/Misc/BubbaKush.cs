@@ -35,7 +35,7 @@ namespace Lee_Sin.Misc
                     var extend = t.ServerPosition.Extend(rotatedPosition.To3D(), 1100);
 
                     var s = new Geometry.Polygon.Rectangle(t.ServerPosition, extend, t.BoundingRadius);
-                    var targets = HeroManager.Enemies.Where(x => s.IsInside(x.ServerPosition + x.BoundingRadius));
+                    var targets = HeroManager.Enemies.Where(x => s.IsInside(x.ServerPosition));
 
                     if (targets.Count() >= GetValue("enemiescount") &&
                         GetValue("enemiescount") <= Player.GetEnemiesInRange(1100).Count)
