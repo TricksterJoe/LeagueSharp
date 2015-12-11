@@ -51,32 +51,30 @@ namespace Lee_Sin.Insec
 
             var poss = InsecPos.WardJumpInsecPosition.InsecPos(target, GetValue("fixedwardrange"), true);
 
-            foreach (var min in
-                MinionManager.GetMinions(Player.Position, Q.Range + 900, MinionTypes.All, MinionTeam.NotAlly)
-                    .Where(
-                        x => !x.Name.ToLower().Contains("turret") && !x.Name.ToLower().Contains("tower")
-                             && x.Health > Q.GetDamage(x) + 50 && !x.IsDead &&
-                             Q.GetPrediction(x).CollisionObjects.Count == 0))
+            foreach (var min in MinionManager.GetMinions(Player.Position, Q.Range + 900, MinionTypes.All, MinionTeam.NotAlly)
+                .Where(
+                    x => !x.Name.ToLower().Contains("turret") && !x.Name.ToLower().Contains("tower")
+                         && x.Health > Q.GetDamage(x) + 50 && !x.IsDead &&
+                         Q.GetPrediction(x).CollisionObjects.Count == 0).Where(min =>
+                         {
+                             return min.Distance(target) < 500 ||
+                                    min.Distance(poss) < 530 ||
+                                    (CanWardFlash(target) &&
+                                     min.Distance(target) < 800);
+                         }).Where(min => col.Count > 0 || target.Distance(Player) > Q.Range))
             {
-                if (min.Distance(target) < 500 ||
-                    min.Distance(poss) < 530 || (CanWardFlash(target) && min.Distance(target) < 800))
+                if (Q1() && Q.IsReady())
                 {
-                    if (col.Count > 0 || target.Distance(Player) > Q.Range)
-                    {
-                        if (Q1() && Q.IsReady())
-                        {
-                            Q.Cast(min.Position);
-                        }
-                        if (Q1() && Q.IsReady())
-                        {
-                            Q.Cast(min.Position);
-                        }
+                    Q.Cast(min.Position);
+                }
+                if (Q1() && Q.IsReady())
+                {
+                    Q.Cast(min.Position);
+                }
 
-                        if (Q2() && min.HasBuff("blindmonkqtwo"))
-                        {
-                            Q.Cast();
-                        }
-                    }
+                if (Q2() && min.HasBuff("blindmonkqtwo"))
+                {
+                    Q.Cast();
                 }
             }
 
