@@ -50,7 +50,7 @@ namespace Lee_Sin
                 AddValue(combo, "Auto [R] On X targets", "autoron", 3, 0, 5);
                 var rmenu = new Menu("Bubba Kush", "autorxenemies");
                 {
-                    AddKeyBind(rmenu, "Activate", "activatebubba", 'T', KeyBindType.Press);
+                    AddKeyBind(rmenu, "Activate", "activatebubba", 'T', KeyBindType.Toggle);
                   //  AddBool(rmenu, "Use ward", "xeward");
                     AddBool(rmenu, "Use flash", "xeflash", false);
                     AddValue(rmenu, "Min enemies hit", "enemiescount", 3, 2, 5);

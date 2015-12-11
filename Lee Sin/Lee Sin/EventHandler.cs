@@ -37,7 +37,7 @@ namespace Lee_Sin
 
                 if (target == null) return;
                 var poss = InsecPos.WardJumpInsecPosition.InsecPos(target, GetValue("fixedwardrange"), true);
-                if (sender.Position.Distance(poss.To3D()) < 200)
+                if (sender.Position.Distance(poss.To3D()) < 100)
                 {
                     lsatcanjump1 = Environment.TickCount;
                 }
@@ -199,7 +199,7 @@ namespace Lee_Sin
 
                 if (target != null)
                 {
-                   if (Environment.TickCount - LeeSin.lsatcanjump1 > 4000)
+                   if (Environment.TickCount - LeeSin.lsatcanjump1 > 3000)
                     {                    
                         if (Steps == LeeSin.steps.Flash ||
                             (Environment.TickCount - _lastflashward < 2000 && _wardjumpedtotarget) ||

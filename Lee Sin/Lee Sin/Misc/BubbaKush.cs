@@ -23,7 +23,6 @@ namespace Lee_Sin.Misc
 
             if (GetBool("activatebubba", typeof (KeyBind)))
             {
-                Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
                 var getresults = BubbaKush.GetPositions(Player, 600, (byte) GetValue("enemiescount"),
                     HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
                 if (getresults.Count > 1)
@@ -51,7 +50,7 @@ namespace Lee_Sin.Misc
                             lastthingy = Environment.TickCount;
                         }
                     }
-                    if (Player.Distance(getposition) < 30 && heros.FirstOrDefault() != null)
+                    if (Player.Distance(getposition) < 30 && heros.FirstOrDefault() != null && R.IsReady())
                     {
                         R.Cast(heros.FirstOrDefault());
                     }
