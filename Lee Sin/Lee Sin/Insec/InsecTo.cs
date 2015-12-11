@@ -56,7 +56,7 @@ namespace Lee_Sin.Insec
                     .Where(
                         x => !x.Name.ToLower().Contains("turret") && !x.Name.ToLower().Contains("tower")
                              && x.Health > Q.GetDamage(x) + 50 && !x.IsDead &&
-                             Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range))
+                             Q.GetPrediction(x).CollisionObjects.Count == 0))
             {
                 if (min.Distance(target) < 500 ||
                     min.Distance(poss) < 530 || (CanWardFlash(target) && min.Distance(target) < 800))
