@@ -197,7 +197,7 @@ namespace Lee_Sin
                     target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
                 }
 
-                if (target != null)
+                if (target != null && HasFlash())
                 {
                    if (Environment.TickCount - LeeSin.lsatcanjump1 > 3000)
                     {                    
