@@ -187,11 +187,11 @@ namespace Lee_Sin.Insec
                 }
             }
 
-            var wardtotargetpos = Player.Position.Extend(target.Position, Player.Distance(target) - 200);
+            var wardtotargetpos = Player.Position.Extend(target.Position, Player.Distance(target) - 150);
 
            if (!canwardflash) return;
             
-            if (Player.ServerPosition.Distance(target.ServerPosition) < 500  || target.Distance(Player) > 900 ||
+            if (Player.ServerPosition.Distance(target.ServerPosition) < 500  || target.Distance(Player) > 800 ||
                 Environment.TickCount - _lastq1casted < 500 || (Q.IsReady() && col.Count == 0)
                 || !CanWardFlash(target) || Environment.TickCount - LeeSin.lsatcanjump1 < 3000 || target.Buffs.Any(x => x.Name.ToLower().Contains("blindmonkqone"))) 
                 return;
