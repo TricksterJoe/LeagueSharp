@@ -194,7 +194,7 @@ namespace Lee_Sin.Misc
             List<Geometry.Polygon.Rectangle> list = new List<Geometry.Polygon.Rectangle>();
             foreach (var enemy in enemies)
             {
-                foreach (var end in enemies.Where(e => e != enemy))
+                foreach (var end in enemies.Where(e => e != enemy && !e.IsDead))
                     list.Add(SGeneratePolygon(enemy.ServerPosition, end.ServerPosition, (enemy.BoundingRadius + end.BoundingRadius)/2));
             }
             return list;

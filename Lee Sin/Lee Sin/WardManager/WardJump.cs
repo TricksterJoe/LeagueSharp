@@ -20,18 +20,19 @@ namespace Lee_Sin.WardManager
                             x.IsValid && x.Distance(position) < 200 && x.IsAlly && !x.IsDead &&
                             !x.Name.ToLower().Contains("turret"));
 
-            var ward = Items.GetWardSlot();
+            var ward = WardSorter.Wards();
             if (objectuse)
             {
                 if (objects == null)
                 {
                     if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 200 && W1() && !use)
                     {
-                        Player.Spellbook.CastSpell(ward.SpellSlot, position);
+                        Items.UseItem(ward.Id, position);
                     }
                     if (W.IsReady() && ward != null && W1() && use && Environment.TickCount - Lastcastedw > 200)
                     {
-                        Player.Spellbook.CastSpell(ward.SpellSlot, position);
+                      //  Player.Spellbook.CastSpell(ward., position);
+                        Items.UseItem(ward.Id, position);
                     }
                 }
             }
@@ -39,11 +40,15 @@ namespace Lee_Sin.WardManager
             {
                 if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 200 && W1() && !use)
                 {
-                    Player.Spellbook.CastSpell(ward.SpellSlot, position);
+                    // Player.Spellbook.CastSpell(ward.SpellSlot, position);
+                    Items.UseItem(ward.Id, position);
+
                 }
                 if (W.IsReady() && ward != null && W1() && use && Environment.TickCount - Lastcastedw > 200)
                 {
-                    Player.Spellbook.CastSpell(ward.SpellSlot, position);
+                 //   Player.Spellbook.CastSpell(ward.SpellSlot, position);
+                    Items.UseItem(ward.Id, position);
+
                 }
             }
 

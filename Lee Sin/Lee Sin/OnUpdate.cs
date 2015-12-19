@@ -9,6 +9,7 @@ using LeagueSharp.Common;
 using Lee_Sin.ActiveModes;
 using Lee_Sin.Drawings;
 using Lee_Sin.Misc;
+using Lee_Sin.WardManager;
 using Prediction = Lee_Sin.Prediction;
 
 namespace Lee_Sin
@@ -65,7 +66,10 @@ namespace Lee_Sin
         {
             ProcessHandler.ProcessHandlers();
             BubbaKush.DrawRect();
-            
+            //WardSorter.HasPoachers();
+           // WardSorter.Wards();
+          //  Game.PrintChat(WardSorter.HasPoachers().ToString());
+          //  Game.PrintChat(ItemReady(3711).ToString());
             if (Player.IsRecalling() || MenuGUI.IsChatOpen) return;
 
             if (GetBool("smiteenable", typeof (KeyBind)))

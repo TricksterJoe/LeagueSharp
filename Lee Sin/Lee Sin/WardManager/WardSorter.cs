@@ -38,34 +38,45 @@ namespace Lee_Sin.WardManager
 
         public static bool HasPoachers()
         {
-            return HasItem(Poachers) || HasItem(Poachers1) || HasItem(Poachers2) || HasItem(Poachers3) ||
-                   HasItem(Poachers4);
+            return (HasItem(Poachers) && ItemReady(Poachers));
+
+            /*
+             || (HasItem(Poachers1) && ItemReady(Poachers1)) ||
+                   (HasItem(Poachers2) && ItemReady(Poachers2)) || (HasItem(Poachers3) && ItemReady(Poachers3)) ||
+                   (HasItem(Poachers4) && ItemReady(Poachers4)); 
+                   */
+
         }
         public static Items.Item Wards()
         {
             if (HasPoachers())
             {
-                return HasItem(Poachers)
-                    ? new Items.Item(Poachers)
-                    : HasItem(Poachers1)
-                        ? new Items.Item(Poachers1)
-                        : HasItem(Poachers2)
-                            ? new Items.Item(Poachers2)
-                            : HasItem(Poachers3) ? new Items.Item(Poachers3) : new Items.Item(Poachers4);
+                return new Items.Item(Poachers);
+                //return HasItem(Poachers)
+                //    ? new Items.Item(Poachers)
+                //    : HasItem(Poachers1)
+                //        ? new Items.Item(Poachers1)
+                //        : HasItem(Poachers2)
+                //            ? new Items.Item(Poachers2)
+                //            : HasItem(Poachers3) ? new Items.Item(Poachers3) : new Items.Item(Poachers4);
             }
 
-            if ((HasItem(SightStone) || HasItem(RubySightStone)) && !HasPoachers())
+            if (((HasItem(SightStone) && ItemReady(SightStone)) ||
+                 (HasItem(RubySightStone) && ItemReady(RubySightStone))) && !HasPoachers()) 
             {
                 return HasItem(SightStone) ? new Items.Item(SightStone) : new Items.Item(RubySightStone);
             }
 
-            if (HasItem(WardingTotem) && !HasPoachers() && !HasItem(SightStone) && !HasItem(RubySightStone))
+            if (HasItem(WardingTotem) && ItemReady(WardingTotem) && !HasPoachers() &&
+                (!HasItem(SightStone) || !ItemReady(SightStone)) &&
+                (!HasItem(RubySightStone) || !ItemReady(RubySightStone))) 
             {
                 return new Items.Item(WardingTotem);
             }
 
-            if (!HasItem(WardingTotem) && !HasItem(SightStone) && !HasItem(RubySightStone) && !HasPoachers() &&
-                HasItem(VisionWard))
+            if ((!HasItem(WardingTotem) || !ItemReady(WardingTotem)) && (!HasItem(SightStone) || !ItemReady(SightStone)) &&
+                (!HasItem(RubySightStone) | !ItemReady(RubySightStone)) && !HasPoachers() &&
+                HasItem(VisionWard)) 
             {
                 return new Items.Item(VisionWard);
             }

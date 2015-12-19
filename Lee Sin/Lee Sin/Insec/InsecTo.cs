@@ -53,36 +53,33 @@ namespace Lee_Sin.Insec
             if (!GetBool("laggy", typeof(bool)))
             { 
             var min =
-                MinionManager.GetMinions(Player.Position, Q.Range + 900, MinionTypes.All, MinionTeam.NotAlly)
+                MinionManager.GetMinions(poss.To3D(), 800, MinionTypes.All, MinionTeam.NotAlly)
                     .Where(
                         x => !x.Name.ToLower().Contains("turret") && !x.Name.ToLower().Contains("tower")
                              && x.Health > Q.GetDamage(x) + 50 && !x.IsDead &&
-                             Q.GetPrediction(x).CollisionObjects.Count == 0);
-                {
-                    foreach (var mins in min)
+                             Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range);
+                    foreach (var mins in min.Where(mins => mins.Distance(target) < 500 ||
+                                                           mins.Distance(poss.To3D()) < 530 ||
+                                                           (CanWardFlash(target) &&
+                                                            mins.Distance(target) < 600)))
+                        
                     {
-                        if (mins.ServerPosition.Distance(target.ServerPosition) < 500 ||
-                            mins.ServerPosition.Distance(poss.To3D()) < 530 || (CanWardFlash(target) && mins.ServerPosition.Distance(target.ServerPosition) < 600))
+                       // Render.Circle.DrawCircle(mins.Position, 100, Color.AliceBlue, 3);
+                        if (col.Count <= 0 && !(target.Distance(Player) > Q.Range)) continue;
+                        if (Q1() && Q.IsReady())
                         {
-                            Render.Circle.DrawCircle(mins.Position, 100, Color.AliceBlue, 3);
-                            if (col.Count > 0 || target.Distance(Player) > Q.Range)
-                            {
-                                if (Q1() && Q.IsReady())
-                                {
-                                    Q.Cast(mins);
-                                }
-                                if (Q1() && Q.IsReady())
-                                {
-                                    Q.Cast(mins);
-                                }
-
-                                if (Q2() && mins.HasBuff("blindmonkqtwo"))
-                                {
-                                    Q.Cast();
-                                }
-                            }
+                            Q.Cast(mins);
                         }
-                    }
+                        if (Q1() && Q.IsReady())
+                        {
+                            Q.Cast(mins);
+                        }
+
+                        if (Q2() && mins.HasBuff("blindmonkqtwo"))
+                        {
+                            Q.Cast();
+                        }
+                    
                 }
             }
 
@@ -102,7 +99,7 @@ namespace Lee_Sin.Insec
             }
 
             if (Environment.TickCount - _lastprocessw < 1500 || (Steps == LeeSin.steps.Flash && HasFlash()) ||
-                Environment.TickCount - _lastwcasted < 1500)
+                Environment.TickCount - _lastwcasted < 1500 || Player.Distance(poss) < 50)
             {
                 if (R.IsReady())
                     R.Cast(target);
