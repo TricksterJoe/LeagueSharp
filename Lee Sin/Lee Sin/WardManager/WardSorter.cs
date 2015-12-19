@@ -30,35 +30,31 @@ namespace Lee_Sin.WardManager
             RubySightStone = (int)ItemId.Ruby_Sightstone;
             VisionWard = (int) ItemId.Vision_Ward;
             Poachers = 3711;
-            Poachers1 = 3711;
-            Poachers2 = 3711;
-            Poachers3 = 3711;
-            Poachers4 = 3711;
+            Poachers1 = 1408;
+            Poachers2 = 1409;
+            Poachers3 = 1410;
+            Poachers4 = 1411;
         }
 
         public static bool HasPoachers()
         {
-            return (HasItem(Poachers) && ItemReady(Poachers));
-
-            /*
-             || (HasItem(Poachers1) && ItemReady(Poachers1)) ||
+            return (HasItem(Poachers) && ItemReady(Poachers)) || (HasItem(Poachers1) && ItemReady(Poachers1)) ||
                    (HasItem(Poachers2) && ItemReady(Poachers2)) || (HasItem(Poachers3) && ItemReady(Poachers3)) ||
                    (HasItem(Poachers4) && ItemReady(Poachers4)); 
-                   */
+                   
 
         }
         public static Items.Item Wards()
         {
             if (HasPoachers())
             {
-                return new Items.Item(Poachers);
-                //return HasItem(Poachers)
-                //    ? new Items.Item(Poachers)
-                //    : HasItem(Poachers1)
-                //        ? new Items.Item(Poachers1)
-                //        : HasItem(Poachers2)
-                //            ? new Items.Item(Poachers2)
-                //            : HasItem(Poachers3) ? new Items.Item(Poachers3) : new Items.Item(Poachers4);
+                return HasItem(Poachers)
+                    ? new Items.Item(Poachers)
+                    : HasItem(Poachers1)
+                        ? new Items.Item(Poachers1)
+                        : HasItem(Poachers2)
+                            ? new Items.Item(Poachers2)
+                            : HasItem(Poachers3) ? new Items.Item(Poachers3) : new Items.Item(Poachers4);
             }
 
             if (((HasItem(SightStone) && ItemReady(SightStone)) ||
