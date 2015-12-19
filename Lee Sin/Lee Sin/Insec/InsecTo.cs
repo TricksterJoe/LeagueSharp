@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Lee_Sin.WardManager;
 using SharpDX;
 using Color = System.Drawing.Color;
 using Prediction = Lee_Sin.Prediction;
@@ -32,7 +33,7 @@ namespace Lee_Sin.Insec
 
             var col = qpred.CollisionObjects;
 
-            var slot = Items.GetWardSlot();
+            var slot = WardSorter.Wards();
             #endregion
 
             if (Player.Distance(target) > 500)

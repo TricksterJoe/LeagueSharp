@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
+using Lee_Sin.WardManager;
 
 namespace Lee_Sin.ActiveModes
 {
@@ -34,7 +35,7 @@ namespace Lee_Sin.ActiveModes
 
                     _rCombo = pos;
 
-                    var slot = Items.GetWardSlot();
+                    var slot = WardSorter.Wards();
                     if (unit.Distance(Player) > 500)
                     {
                         _rCombo = null;
@@ -43,15 +44,7 @@ namespace Lee_Sin.ActiveModes
                     if (W.IsReady() && R.IsReady() && Player.ServerPosition.Distance(unit.ServerPosition) < 500 &&
                         slot != null)
                     {
-                        if (!_processw && Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
-                        {
-                            Player.Spellbook.CastSpell(slot.SpellSlot, pos);
-                            _lastwarr = Environment.TickCount;
-                        }
-                        if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
-                        {
-                            _lastwards = Environment.TickCount;
-                        }
+                        WardJump.WardJumped(pos, false, true);
                     }
                 }
 
