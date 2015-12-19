@@ -341,13 +341,11 @@ namespace Lee_Sin
             //Check for collision
             if (checkCollision && input.Collision && result.Hitchance > HitChance.Impossible)
             {
-                var positions = new List<Vector3> { result.CastPosition, result.UnitPosition };
+                var positions = new List<Vector3> { result.CastPosition };
 
                 result.CollisionObjects = Collision.GetCollision(positions, input);
                 result.Hitchance = result.CollisionObjects.Count > 0 ? HitChance.Collision : result.Hitchance;
             }
-
-
             return result;
         }
 
@@ -391,9 +389,12 @@ namespace Lee_Sin
             float totalDelay = speedDelay + input.Delay;
             float moveArea = input.Unit.MoveSpeed * totalDelay;
             float fixRange = moveArea * 0.5f;
-            double angleMove = 30 + (input.Radius / 13) - (totalDelay * 2);
+            double angleMove = 30 + (input.Radius / 17) - (totalDelay * 2);
             float backToFront = moveArea * 1.5f;
-            float pathMinLen = 700f;
+            float pathMinLen = 900f;
+
+            if (angleMove < 31)
+                angleMove = 31;
 
             if (UnitTracker.GetLastNewPathTime(input.Unit) < 0.1d)
             {
@@ -472,7 +473,7 @@ namespace Lee_Sin
                     result.Hitchance = HitChance.VeryHigh;
                 else
                     result.Hitchance = HitChance.High;
-                
+
                 return result;
             }
 
@@ -493,7 +494,7 @@ namespace Lee_Sin
                         result.Hitchance = HitChance.High;
                     else
                         result.Hitchance = HitChance.VeryHigh;
-                    
+
                     return result;
                 }
             }
@@ -502,7 +503,7 @@ namespace Lee_Sin
 
             if (input.Type == SkillshotType.SkillshotLine && input.Unit.Path.Count() > 0 && input.Unit.IsMoving)
             {
-                if (GetAngle(input.From, input.Unit) < angleMove && distanceUnitToWaypoint > moveArea * 0.6)
+                if (UnitTracker.GetLastNewPathTime(input.Unit) < 0.1d && GetAngle(input.From, input.Unit) < angleMove && distanceUnitToWaypoint > moveArea * 0.6)
                 {
                     result.Hitchance = HitChance.VeryHigh;
                     return result;
@@ -1059,21 +1060,9 @@ namespace Lee_Sin
 
     public static class Collision
     {
-        private static int _wallCastT;
-        private static Vector2 _yasuoWallCastedPos;
-
         static Collision()
         {
-            Obj_AI_Base.OnProcessSpellCast += Obj_AI_Hero_OnProcessSpellCast;
-        }
 
-        private static void Obj_AI_Hero_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
-        {
-            if (sender.IsValid && sender.Team != ObjectManager.Player.Team && args.SData.Name == "YasuoWMovingWall")
-            {
-                _wallCastT = Utils.TickCount;
-                _yasuoWallCastedPos = sender.ServerPosition.To2D();
-            }
         }
 
         /// <summary>
@@ -1093,22 +1082,20 @@ namespace Lee_Sin
                                             minion.IsValidTarget(Math.Min(input.Range + input.Radius + 100, 2000), true, input.From)))
                             {
                                 input.Unit = minion;
-                                if (minion.Path.Count() > 0)
-                                {
-                                    var minionPrediction = Prediction.GetPrediction(input, true, false);
 
-                                    if (minionPrediction.CastPosition.To2D().Distance(input.From.To2D(), position.To2D(), true, true) <= Math.Pow((input.Radius + 20 + minion.Path.Count() * minion.BoundingRadius), 2))
-                                    {
-                                        result.Add(minion);
-                                    }
-                                }
+                                if (minion.ServerPosition.To2D().Distance(input.From.To2D()) < input.Radius)
+                                    result.Add(minion);
                                 else
                                 {
-                                    var bonus = 30;
-                                    if (minion.ServerPosition.To2D().Distance(input.From.To2D()) < input.Radius)
-                                        result.Add(minion);
-                                    else if (minion.ServerPosition.To2D().Distance(input.From.To2D(), position.To2D(), true, true) <=
-                                        Math.Pow((input.Radius + bonus + minion.BoundingRadius), 2))
+                                    var minionPos = minion.ServerPosition;
+                                    int bonusRadius = 20;
+                                    if (minion.IsMoving)
+                                    {
+                                        minionPos = Prediction.GetPrediction(input, false, false).CastPosition;
+                                        bonusRadius = 100;
+                                    }
+
+                                    if (minionPos.To2D().Distance(input.From.To2D(), position.To2D(), true, true) <= Math.Pow((input.Radius + bonusRadius + minion.BoundingRadius), 2))
                                     {
                                         result.Add(minion);
                                     }
@@ -1237,7 +1224,7 @@ namespace Lee_Sin
 
         private static void Obj_AI_Hero_OnNewPath(Obj_AI_Base sender, GameObjectNewPathEventArgs args)
         {
-            if (sender.IsMinion || !(sender is Obj_AI_Hero)) return;
+            if (sender.Type != GameObjectType.obj_AI_Hero) return;
 
             var info = UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId);
             info.NewPathTick = Utils.TickCount;
@@ -1250,7 +1237,7 @@ namespace Lee_Sin
 
         private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
-            if (sender.IsMinion || !sender.IsValid<Obj_AI_Hero>()) return;
+            if (sender.Type != GameObjectType.obj_AI_Hero) return;
 
             if (args.SData.IsAutoAttack())
                 UnitTrackerInfoList.Find(x => x.NetworkId == sender.NetworkId).AaTick = Utils.TickCount;

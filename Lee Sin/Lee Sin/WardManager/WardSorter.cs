@@ -12,6 +12,7 @@ namespace Lee_Sin.WardManager
     class WardSorter : LeeSin
     {
         //note: i know it's not poachers, will be changed in a few minutes.
+        //Poachers id will get changed.
         public static int WardingTotem,
             SightStone,
             RubySightStone,
@@ -28,11 +29,11 @@ namespace Lee_Sin.WardManager
             SightStone = (int) ItemId.Sightstone;
             RubySightStone = (int)ItemId.Ruby_Sightstone;
             VisionWard = (int) ItemId.Vision_Ward;
-            Poachers = (int) ItemId.Poachers_Knife;
-            Poachers1 = (int)ItemId.Poachers_Knife_Enchantment_Devourer;
-            Poachers2 = (int)ItemId.Poachers_Knife_Enchantment_Juggernaut;
-            Poachers3 = (int)ItemId.Poachers_Knife_Enchantment_Magus;
-            Poachers4 = (int)ItemId.Poachers_Knife_Enchantment_Warrior;
+            Poachers = 3711;
+            Poachers1 = 3711;
+            Poachers2 = 3711;
+            Poachers3 = 3711;
+            Poachers4 = 3711;
         }
 
         public static bool HasPoachers()
@@ -53,14 +54,14 @@ namespace Lee_Sin.WardManager
                             : HasItem(Poachers3) ? new Items.Item(Poachers3) : new Items.Item(Poachers4);
             }
 
-            if (HasItem(WardingTotem) && !HasPoachers())
-            {
-                return new Items.Item(WardingTotem);
-            }
-
-            if (!HasItem(WardingTotem) && !HasPoachers() && (HasItem(SightStone) || HasItem(RubySightStone)))
+            if ((HasItem(SightStone) || HasItem(RubySightStone)) && !HasPoachers())
             {
                 return HasItem(SightStone) ? new Items.Item(SightStone) : new Items.Item(RubySightStone);
+            }
+
+            if (HasItem(WardingTotem) && !HasPoachers() && !HasItem(SightStone) && !HasItem(RubySightStone))
+            {
+                return new Items.Item(WardingTotem);
             }
 
             if (!HasItem(WardingTotem) && !HasItem(SightStone) && !HasItem(RubySightStone) && !HasPoachers() &&
