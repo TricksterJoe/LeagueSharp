@@ -149,9 +149,6 @@ namespace Lee_Sin.ActiveModes
 
             if (usee)
             {
-                if (Environment.TickCount - _lastqc > 300 && Environment.TickCount - _laste > 300 &&
-                    Environment.TickCount - _lastwcombo > 300)
-                {
                     if (target.Distance(Player) <= E.Range && E1())
                     {
                         E.Cast();
@@ -164,7 +161,7 @@ namespace Lee_Sin.ActiveModes
                         E.Cast();
                         _laste = Environment.TickCount;
                     }
-                }
+                
             }
 
             if (user && target.IsValidTarget(R.Range) && R.IsReady())
