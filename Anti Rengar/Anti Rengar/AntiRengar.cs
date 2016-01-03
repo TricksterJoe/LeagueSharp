@@ -102,9 +102,57 @@ namespace Anti_Rengar
             var spellbook = Player.Spellbook;
             switch (Player.ChampionName.ToLower())
             {
+                case "aatrox":
+                    {
+                        ReadyCast(400, SpellSlot.Q, BackWardsCast(500));
+                    }
+                    break;
+                case "akali":
+                    {
+                        ReadyCast(1200, SpellSlot.W, Player.Position, false);
+                    }
+                    break;
+
+                case "braum":
+                    {
+                        ReadyCast(1200, SpellSlot.R, default(Vector3), true);
+                    }
+                    break;
+
+                case "cassiopeia":
+                    {
+                        ReadyCast(1200, SpellSlot.R, default(Vector3), true); 
+                    }
+                    break;
+
+                case "corki":
+                    {
+                        ReadyCast(500, SpellSlot.W, BackWardsCast(600));
+                    }
+                    break;
+
+                case "galio":
+                    {
+                        ReadyCast(1200, SpellSlot.R, default(Vector3), false);
+                    }
+                    break;
+
+                case "graves":
+                    {
+                        ReadyCast(500, SpellSlot.E, BackWardsCast(500));
+                    }
+                    break;
+
+                case "hecarim":
+                    {
+                        ReadyCast(300, SpellSlot.E, default(Vector3), true);
+                    }
+                    break;
+
+                    case ""
                 case "vayne":
                     if (Config.Item("useq").GetValue<bool>())
-                    ReadyCast(Player.AttackRange, SpellSlot.Q, BackWardsCast(500));
+                    ReadyCast(500, SpellSlot.Q, BackWardsCast(500));
 
                     if (!Ready(SpellSlot.Q) || Player.Spellbook.GetSpell(SpellSlot.Q).State == SpellState.Surpressed)
                     {
