@@ -64,6 +64,8 @@ namespace Lee_Sin
         public static
             void OnUpdated(EventArgs args)
         {
+            
+          //  Console.WriteLine(Environment.TickCount - LeeSin.lasttotarget);
             ProcessHandler.ProcessHandlers();
             BubbaKush.DrawRect();
             //WardSorter.HasPoachers();
@@ -117,6 +119,8 @@ namespace Lee_Sin
             target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
 
             if (target == null) return;
+
+            //Console.WriteLine(target.Buffs.Where(x => x.Name.ToLower().Contains("blindmonkqone")).Any());
             LastQ(target);
             CanWardFlash(target);
         }

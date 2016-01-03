@@ -64,7 +64,7 @@ namespace Lee_Sin.WardManager
             {
                 return HasItem(SightStone) ? new Items.Item(SightStone) : new Items.Item(RubySightStone);
             }
-
+            
             if (HasItem(WardingTotem) && ItemReady(WardingTotem) && !HasPoachers() &&
                 (!HasItem(SightStone) || !ItemReady(SightStone)) &&
                 (!HasItem(RubySightStone) || !ItemReady(RubySightStone))) 

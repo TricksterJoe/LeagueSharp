@@ -264,5 +264,6 @@ namespace Lee_Sin
         public static Render.Text Text { get; set; }
 
         public static ColorBGRA color { get; set; }
+        public static int lasttotarget { get; protected set; }
     }
 }

@@ -14,6 +14,29 @@ namespace Lee_Sin.Insec
 {
     class InsecTo : LeeSin
     {
+        public static bool setbool;
+        private static int starttimer;
+
+        public static bool checkno1(Obj_AI_Base target)
+        {
+           if (target.Buffs.Where(x => x.Name.ToLower().Contains("blindmonkqone")).Any())
+            {
+                setbool = true;
+            }
+
+           if (setbool && !target.Buffs.Where(x => x.Name.ToLower().Contains("blindmonkqone")).Any())
+            {
+                starttimer = Environment.TickCount;
+                setbool = false;
+            }
+
+            return Environment.TickCount - starttimer > 2500;
+
+        }
+        public static bool CanQ2()
+        {
+            return Environment.TickCount - lasttotarget > 3000;
+        }
         public static void insec()
         {
             #region Target, Slots, Prediction
@@ -28,7 +51,7 @@ namespace Lee_Sin.Insec
             // if (!R.IsReady() && Environment.TickCount - lastr > 2000) return;
 
             if (target == null) return;
-            
+            Console.WriteLine(checkno1(target));
             var qpred = Q.GetPrediction(target);
 
             var col = qpred.CollisionObjects;
@@ -40,6 +63,7 @@ namespace Lee_Sin.Insec
             {
                 if (Q2() && Q.IsReady() && (R.IsReady() || Environment.TickCount - lastr < 4000))
                 {
+                    if (CanQ2())
                     Utility.DelayAction.Add(400, () => Q.Cast());
                 }
             }
@@ -78,11 +102,13 @@ namespace Lee_Sin.Insec
 
                         if (Q2() && mins.HasBuff("blindmonkqtwo"))
                         {
+                         if (CanQ2()) 
                             Q.Cast();
                         }
                     
                 }
             }
+
 
             if ((Steps == LeeSin.steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady())
             {
@@ -191,8 +217,10 @@ namespace Lee_Sin.Insec
             
             if (Player.ServerPosition.Distance(target.ServerPosition) < 500  || target.Distance(Player) > 800 ||
                 Environment.TickCount - _lastq1casted < 500 || (Q.IsReady() && col.Count == 0)
-                || !CanWardFlash(target) || Environment.TickCount - LeeSin.lsatcanjump1 < 3000 || target.Buffs.Any(x => x.Name.ToLower().Contains("blindmonkqone"))) 
+                || !CanWardFlash(target) || Environment.TickCount - LeeSin.lsatcanjump1 < 3000 || target.Buffs.Where(x => x.Name.ToLower().Contains("blindmonkqone")).Any()) 
                 return;
+
+         //   if (!checkno1(target)) return;
             if ( Q2()) return;
             if (!HasFlash()) return;
             if (LastQ(target))

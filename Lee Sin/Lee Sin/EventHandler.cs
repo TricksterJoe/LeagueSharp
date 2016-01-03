@@ -37,9 +37,14 @@ namespace Lee_Sin
 
                 if (target == null) return;
                 var poss = InsecPos.WardJumpInsecPosition.InsecPos(target, GetValue("fixedwardrange"), true);
+                var distancepos = Player.Position.Extend(target.Position, Player.Distance(target) - 150); 
                 if (sender.Position.Distance(poss.To3D()) < 100)
                 {
                     lsatcanjump1 = Environment.TickCount;
+                }
+                if (sender.Position.Distance(distancepos) < 150)
+                {
+                    LeeSin.lasttotarget = Environment.TickCount;
                 }
             }
             if (sender.Name.ToLower().Contains("ward") && W.IsReady() && sender.IsAlly)
@@ -110,6 +115,10 @@ namespace Lee_Sin
 
         public static void OnSpellcast(Obj_AI_Base sender, GameObjectProcessSpellCastEventArgs args)
         {
+            //if (sender.IsMe)
+            //{
+            //    Game.PrintChat(args.SData.Name);
+            //}
             //var en = HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList();
             //var getresults = BubbaKush.GetPositions(Player, 1125, (byte)GetValue("enemiescount"), en);
             //if (getresults.Count > 1)
@@ -240,6 +249,7 @@ namespace Lee_Sin
 
         public static void OnSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
         {
+            
             if (args.Slot == SpellSlot.W &&
                 (GetBool("wardinsec", typeof(KeyBind)) || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo ||
                 Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear))
