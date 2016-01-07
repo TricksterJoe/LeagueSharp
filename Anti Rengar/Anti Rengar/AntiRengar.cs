@@ -149,7 +149,6 @@ namespace Anti_Rengar
                     }
                     break;
 
-                    case ""
                 case "vayne":
                     if (Config.Item("useq").GetValue<bool>())
                     ReadyCast(500, SpellSlot.Q, BackWardsCast(500));

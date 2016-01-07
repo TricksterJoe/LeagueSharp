@@ -217,6 +217,8 @@ namespace Lee_Sin
                  buff = false;
             }
 
+
+
             var poss = InsecPos.WardJumpInsecPosition.InsecPos(target, GetValue("fixedwardrange"), true);
 
             foreach (var obj in ObjectManager.Get<Obj_AI_Base>()
