@@ -50,7 +50,6 @@ namespace Lee_Sin.Insec
             }
 
             if (target == null) return;
-            Console.WriteLine(checkno1(target));
             var qpred = Q.GetPrediction(target);
 
             var col = qpred.CollisionObjects;
@@ -77,7 +76,7 @@ namespace Lee_Sin.Insec
             if (!GetBool("laggy", typeof(bool)))
             { 
             var min =
-                MinionManager.GetMinions(poss.To3D(), 800, MinionTypes.All, MinionTeam.NotAllyForEnemy)
+                MinionManager.GetMinions(poss.To3D(), 800, MinionTypes.All, MinionTeam.NotAlly)
                     .Where(
                         x => !x.Name.ToLower().Contains("turret") && !x.Name.ToLower().Contains("tower")
                              && x.Health > Q.GetDamage(x) + 50 && !x.IsDead &&
