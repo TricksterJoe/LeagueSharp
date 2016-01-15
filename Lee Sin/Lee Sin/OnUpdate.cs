@@ -64,7 +64,10 @@ namespace Lee_Sin
         public static
             void OnUpdated(EventArgs args)
         {
-            
+            //if (Player.HasBuff("blindmonkqtwodash"))
+            //{
+            //    Game.PrintChat("dash");
+            //}
           //  Console.WriteLine(Environment.TickCount - LeeSin.lasttotarget);
             ProcessHandler.ProcessHandlers();
             BubbaKush.DrawRect();

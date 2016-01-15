@@ -48,7 +48,6 @@ namespace Lee_Sin.Insec
             {
                 target = TargetSelector.GetSelectedTarget() == null ? target : TargetSelector.SelectedTarget;
             }
-            // if (!R.IsReady() && Environment.TickCount - lastr > 2000) return;
 
             if (target == null) return;
             Console.WriteLine(checkno1(target));
@@ -78,11 +77,12 @@ namespace Lee_Sin.Insec
             if (!GetBool("laggy", typeof(bool)))
             { 
             var min =
-                MinionManager.GetMinions(poss.To3D(), 800, MinionTypes.All, MinionTeam.NotAlly)
+                MinionManager.GetMinions(poss.To3D(), 800, MinionTypes.All, MinionTeam.NotAllyForEnemy)
                     .Where(
                         x => !x.Name.ToLower().Contains("turret") && !x.Name.ToLower().Contains("tower")
                              && x.Health > Q.GetDamage(x) + 50 && !x.IsDead &&
                              Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range);
+
                     foreach (var mins in min.Where(mins => mins.Distance(target) < 500 ||
                                                            mins.Distance(poss.To3D()) < 530 ||
                                                            (CanWardFlash(target) &&
@@ -214,9 +214,10 @@ namespace Lee_Sin.Insec
             var wardtotargetpos = Player.Position.Extend(target.Position, Player.Distance(target) - 150);
 
            if (!canwardflash) return;
+            if (Player.HasBuff("blindmonkqtwodash")) return;
             
-            if (Player.ServerPosition.Distance(target.ServerPosition) < 500  || target.Distance(Player) > 800 ||
-                Environment.TickCount - _lastq1casted < 500 || (Q.IsReady() && col.Count == 0)
+                if (Player.ServerPosition.Distance(target.ServerPosition) < 500  || target.Distance(Player) > 800 ||
+                Environment.TickCount - _lastq1casted < 500
                 || !CanWardFlash(target) || Environment.TickCount - LeeSin.lsatcanjump1 < 3000 || target.Buffs.Where(x => x.Name.ToLower().Contains("blindmonkqone")).Any()) 
                 return;
 
