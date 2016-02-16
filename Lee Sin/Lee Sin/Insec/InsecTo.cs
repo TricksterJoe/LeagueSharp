@@ -100,7 +100,6 @@ namespace Lee_Sin.Insec
 
                         if (Q2() && mins.HasBuff("blindmonkqtwo"))
                         {
-                         if (CanQ2()) 
                             Q.Cast();
                         }
                     
@@ -188,14 +187,9 @@ namespace Lee_Sin.Insec
                             canwardflash = true;
                         }       
                     }
-                    else if (GetValue("fixedwardrange") + Player.ServerPosition.Distance(target.ServerPosition) < 700)
+                    else if (GetValue("fixedwardrange") + Player.ServerPosition.Distance(target.ServerPosition) < 900)
                     {
-                        Steps = LeeSin.steps.WardJump;
-                        if (Environment.TickCount - _lastqcasted < 600)
-                        {
-                            canwardflash = false;
-                        }
-                        else if (CanWardFlash(target))
+                        if (CanWardFlash(target))
                         {
                             canwardflash = true;
                         }
@@ -212,10 +206,10 @@ namespace Lee_Sin.Insec
 
             var wardtotargetpos = Player.Position.Extend(target.Position, Player.Distance(target) - 150);
 
-          if (!canwardflash) return;
-           if (Player.HasBuff("blindmonkqtwodash")) return;
+            if (!canwardflash) return;
+            if (Player.HasBuff("blindmonkqtwodash")) return;
 
-            if (Player.ServerPosition.Distance(target.ServerPosition) < 400 || target.Distance(Player) > 900 ||
+            if (Player.Distance(target) < 350 || target.Distance(Player) > 900 ||
                 Environment.TickCount - _lastq1casted < 500
                 || !CanWardFlash(target) || Environment.TickCount - LeeSin.lsatcanjump1 < 3000 ||
                 target.Buffs.Any(x => x.Name.ToLower().Contains("blindmonkqone")))
@@ -223,9 +217,9 @@ namespace Lee_Sin.Insec
 
 
 
-         //   if (!checkno1(target)) return;
+        if (!checkno1(target)) return;
           // if ( Q2()) return;
-           if (!HasFlash()) return;
+         //  if (!HasFlash()) return;
             if (LastQ(target)
                 && Environment.TickCount - LastTeleported > 500)
             {

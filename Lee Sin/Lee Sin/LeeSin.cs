@@ -252,7 +252,7 @@ namespace Lee_Sin
             var wardFlashBool = GetBool("expwardflash", typeof(bool));
             var slot = Items.GetWardSlot();
 
-            return slot != null && HasFlash() && R.IsReady() && W.IsReady() && wardFlashBool && Environment.TickCount - lastr > 2000;
+            return slot != null && HasFlash() && R.IsReady() && W.IsReady() && wardFlashBool && Environment.TickCount - lastr > 1000;
         }
 
         public static bool Colbool { get; set; }
