@@ -76,20 +76,19 @@ namespace Lee_Sin.Insec
             if (!GetBool("laggy", typeof(bool)))
             { 
             var min =
-                MinionManager.GetMinions(poss.To3D(), 800, MinionTypes.All, MinionTeam.NotAlly)
+                MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAlly)
                     .Where(
-                        x => !x.Name.ToLower().Contains("turret") && !x.Name.ToLower().Contains("tower")
-                             && x.Health > Q.GetDamage(x) + 50 && !x.IsDead &&
-                             Q.GetPrediction(x).CollisionObjects.Count == 0 && x.Distance(Player) < Q.Range);
+                        x => x.Health > Q.GetDamage(x) + 30 && !x.IsDead);
 
-                    foreach (var mins in min.Where(mins => mins.Distance(target) < 500 ||
+                    foreach (var mins in min.Where(mins => mins.Distance(target) < 800 ||
                                                            mins.Distance(poss.To3D()) < 530 ||
                                                            (CanWardFlash(target) &&
                                                             mins.Distance(target) < 600)))
                         
                     {
                        // Render.Circle.DrawCircle(mins.Position, 100, Color.AliceBlue, 3);
-                        if (col.Count <= 0 && !(target.Distance(Player) > Q.Range)) continue;
+                       // if (col.Count <= 0 && !(mins.Distance(Player) > Q.Range)) continue;
+                      //  if (col.Count <= 0) continue;
                         if (Q1() && Q.IsReady())
                         {
                             Q.Cast(mins);
@@ -112,7 +111,8 @@ namespace Lee_Sin.Insec
             if ((Steps == LeeSin.steps.WardJump || Environment.TickCount - _lastwardjump < 1500) && slot != null && W.IsReady() && R.IsReady())
             {
 
-                if (GetValue("fixedwardrange") + Player.ServerPosition.Distance(target.ServerPosition) < 700)
+                if (GetValue("fixedwardrange") + Player.ServerPosition.Distance(target.ServerPosition) < 700
+                    && Environment.TickCount - LastTeleported > 500)
                 {
                     WardManager.WardJump.WardJumped(poss.To3D(), false, false);
                     LeeSin.lastwardjumpd = Environment.TickCount;
@@ -212,18 +212,22 @@ namespace Lee_Sin.Insec
 
             var wardtotargetpos = Player.Position.Extend(target.Position, Player.Distance(target) - 150);
 
-           if (!canwardflash) return;
-            if (Player.HasBuff("blindmonkqtwodash")) return;
-            
-                if (Player.ServerPosition.Distance(target.ServerPosition) < 500  || target.Distance(Player) > 800 ||
+          if (!canwardflash) return;
+           if (Player.HasBuff("blindmonkqtwodash")) return;
+
+            if (Player.ServerPosition.Distance(target.ServerPosition) < 400 || target.Distance(Player) > 900 ||
                 Environment.TickCount - _lastq1casted < 500
-                || !CanWardFlash(target) || Environment.TickCount - LeeSin.lsatcanjump1 < 3000 || target.Buffs.Where(x => x.Name.ToLower().Contains("blindmonkqone")).Any()) 
+                || !CanWardFlash(target) || Environment.TickCount - LeeSin.lsatcanjump1 < 3000 ||
+                target.Buffs.Any(x => x.Name.ToLower().Contains("blindmonkqone")))
                 return;
 
+
+
          //   if (!checkno1(target)) return;
-            if ( Q2()) return;
-            if (!HasFlash()) return;
-            if (LastQ(target))
+          // if ( Q2()) return;
+           if (!HasFlash()) return;
+            if (LastQ(target)
+                && Environment.TickCount - LastTeleported > 500)
             {
                 WardManager.WardJump.WardJumped(wardtotargetpos, true, false);
                 _wardjumpedto = Environment.TickCount;

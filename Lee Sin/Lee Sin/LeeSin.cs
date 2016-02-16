@@ -267,5 +267,6 @@ namespace Lee_Sin
 
         public static ColorBGRA color { get; set; }
         public static int lasttotarget { get; protected set; }
+        public static int LastTeleported { get; set; }
     }
 }

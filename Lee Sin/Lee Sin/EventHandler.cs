@@ -155,6 +155,8 @@ namespace Lee_Sin
             //}
             if (sender.IsMe)
             {
+                if (args.SData.Name.Contains("flash"))
+                    LeeSin.LastTeleported = Environment.TickCount;
                 switch (args.SData.Name)
                 {
                     case "BlindMonkQOne":
