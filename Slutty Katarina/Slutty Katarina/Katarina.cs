@@ -21,6 +21,7 @@ namespace Slutty_Katarina
         public static Spell Q, W, E, R;
         public static void OnGameLoad(EventArgs args)
         {
+            if (Player.ChampionName != "Katarina") return;
             MenuConfig.OnLoad();
             Ignite = Player.GetSpellSlot("SummonerDot");
             Q = new Spell(SpellSlot.Q, 670);
@@ -41,16 +42,6 @@ namespace Slutty_Katarina
             Game.OnWndProc += OnWndProc;
             Obj_AI_Base.OnIssueOrder += OnOrder;
             Spellbook.OnCastSpell += OnCastSpell;
-            //var menu = Menu.GetMenu("ezEvade", "ezEvade");
-            //if (menu == null) return;
-            //menu.Item("DodgeSkillShots").ValueChanged += (sender, arg) =>
-            //{
-            //    if (IsChanneling)
-            //    {
-            //        arg.
-            //    }
-            //    Game.PrintChat("Disabling Evade.");
-            //};
         }
 
 
@@ -150,6 +141,7 @@ namespace Slutty_Katarina
         private static int lastq;
         private static int laste;
         private static int _lastwcasted;
+        private static int lastnoenemies;
 
 
         private static void OnDelete1(GameObject sender, EventArgs args)
@@ -317,7 +309,9 @@ namespace Slutty_Katarina
                 WardJump.WardJumped(Player.Position.Extend(Game.CursorPos, 590));
             }
 
-            if (Player.CountEnemiesInRange(R.Range + 70) == 0 && IsChanneling)
+          //  Game.PrintChat((Environment.TickCount - lastnoenemies).ToString());
+            
+            if (Player.CountEnemiesInRange(R.Range + 30) == 0 && IsChanneling)
             {
                 IsChanneling = false;
                 LetSpellcancel = true;
@@ -346,6 +340,14 @@ namespace Slutty_Katarina
 
             }
 
+            if (Player.CountEnemiesInRange(R.Range + 30) == 0 && IsChanneling && (E.IsReady() || SpellUpSoon(SpellSlot.E) < 0.2))
+            {
+                lastnoenemies = Environment.TickCount;
+                IsChanneling = false;
+                LetSpellcancel = true;
+
+            }
+
             foreach (var enemies in HeroManager.Enemies.Where(x => !x.IsDead && x.Distance(Player) <= Q.Range))
             {
                 var ks = GetBool("ks", typeof(bool));
@@ -356,7 +358,7 @@ namespace Slutty_Katarina
                 if (!ks) return;
 
 
-                if ((Q.IsReady() && enemies.Health < Q.GetDamage(enemies) && qks) ||
+                if ((Q.IsReady() && enemies.Health < Q.GetDamage(enemies) && qks && enemies.Distance(Player) < Q.Range) ||
                     (W.IsReady() && enemies.Health < W.GetDamage(enemies) && enemies.Distance(Player) < W.Range && wks) ||
                     (E.IsReady() && enemies.Health < E.GetDamage(enemies) && enemies.Distance(Player) < E.Range && eks))
                 {
@@ -386,50 +388,9 @@ namespace Slutty_Katarina
                 }
 
 
-                if (!Player.IsChannelingImportantSpell())
-                {
-                    IsChanneling = false;
-                    LetSpellcancel = true;
-                }
-                else
-                {
-                    if (CanKill(W, enemies) && wks) return;
 
-                    if (CanKill(E, enemies) &&
-                        Player.Health < E
-                        .GetDamage(enemies) + Player.GetAutoAttackDamage(enemies) && eks)
-                        return;
-                    if (CanKill(Q, enemies)) return;
-
-                    if ((Q.IsReady() && enemies.Health < Q.GetDamage(enemies) && qks) ||
-                        (W.IsReady() && enemies.Health < W.GetDamage(enemies) && enemies.Distance(Player) < W.Range &&
-                         wks) ||
-                        (E.IsReady() && enemies.Health < E.GetDamage(enemies) && enemies.Distance(Player) < E.Range &&
-                         eks))
-                        return;
-
-                    if (E.IsReady() && (W.IsReady() || SpellUpSoon(SpellSlot.Q) < 1.4) &&
-                        enemies.Distance(Player) < W.Range &&
-                        enemies.Health < W.GetDamage(enemies) + E.GetDamage(enemies) && qks) return;
-
-                        if (Player.CountEnemiesInRange(R.Range + 70) == 0) return;
 
                     if (Q.IsReady() && E.IsReady() && enemies.Distance(Player) < E.Range &&
-                        enemies.Health < E.GetDamage(enemies) + Q.GetDamage(enemies) && qks && eks) return;
-
-                    if (Q.IsReady() && E.IsReady() && enemies.Distance(Player) < E.Range &&
-                        enemies.Health < E.GetDamage(enemies) + Q.GetDamage(enemies) + W.GetDamage(enemies) &&
-                        SpellUpSoon(SpellSlot.Q) < 1.4 && qks && eks) return;
-
-                    if (Q.IsReady() && W.IsReady() && enemies.Distance(Player) < W.Range &&
-                        enemies.Health < W.GetDamage(enemies) + Q.GetDamage(enemies) && eks && qks) return;
-
-                        IsChanneling = true;
-                        LetSpellcancel = false;
-                }
-
-
-                if (Q.IsReady() && E.IsReady() && enemies.Distance(Player) < E.Range &&
                     enemies.Health < E.GetDamage(enemies) + Q.GetDamage(enemies) && qks && eks)
                 {
                     IsChanneling = false;
@@ -465,6 +426,53 @@ namespace Slutty_Katarina
                     LetSpellcancel = true;
                     E.Cast(enemies);
                     W.Cast();
+                }
+
+
+                if (!Player.IsChannelingImportantSpell())
+                {
+                    IsChanneling = false;
+                    LetSpellcancel = true;
+                }
+                else
+                {
+                    if (CanKill(W, enemies) && wks) return;
+
+                    if (CanKill(E, enemies) &&
+                        Player.Health < E
+                        .GetDamage(enemies) + Player.GetAutoAttackDamage(enemies) && eks)
+                        return;
+                    if (CanKill(Q, enemies)) return;
+
+                    if ((Q.IsReady() && enemies.Health < Q.GetDamage(enemies) && qks) ||
+                        (W.IsReady() && enemies.Health < W.GetDamage(enemies) && enemies.Distance(Player) < W.Range &&
+                         wks) ||
+                        (E.IsReady() && enemies.Health < E.GetDamage(enemies) && enemies.Distance(Player) < E.Range &&
+                         eks))
+                        return;
+
+                    if (E.IsReady() && (W.IsReady() || SpellUpSoon(SpellSlot.Q) < 1.4) &&
+                        enemies.Distance(Player) < W.Range &&
+                        enemies.Health < W.GetDamage(enemies) + E.GetDamage(enemies) && qks)
+                        return;
+
+                    if (Player.CountEnemiesInRange(R.Range + 70) == 0) return;
+
+                    if (Q.IsReady() && E.IsReady() && enemies.Distance(Player) < E.Range &&
+                        enemies.Health < E.GetDamage(enemies) + Q.GetDamage(enemies) && qks && eks)
+                        return;
+
+                    if (Q.IsReady() && E.IsReady() && enemies.Distance(Player) < E.Range &&
+                        enemies.Health < E.GetDamage(enemies) + Q.GetDamage(enemies) + W.GetDamage(enemies) &&
+                        SpellUpSoon(SpellSlot.Q) < 1.4 && qks && eks)
+                        return;
+
+                    if (Q.IsReady() && W.IsReady() && enemies.Distance(Player) < W.Range &&
+                        enemies.Health < W.GetDamage(enemies) + Q.GetDamage(enemies) && eks && qks)
+                        return;
+
+                    IsChanneling = true;
+                    LetSpellcancel = false;
                 }
             }
 
@@ -579,10 +587,16 @@ namespace Slutty_Katarina
             switch (GetStringValue("combomode"))
             {
                 case 0:
-                    if (Q.IsReady())
+                    if (E.IsReady() && Environment.TickCount - lastnoenemies < 1500 && target.IsValidTarget(E.Range) && target.Distance(Player) > R.Range - 230)
+                    {
+                        E.Cast(target);
+                    }
+
+                    if (Q.IsReady() && Environment.TickCount - lastnoenemies > 1000)
                     {
                         Q.Cast(target);
                     }
+
                     if (_blade != null && _enemy != null && GetBool("usee", typeof(bool)))
                     {
                         if (GetTravelTime(_blade, _enemy) < 500)
@@ -590,6 +604,7 @@ namespace Slutty_Katarina
                             Player.Spellbook.CastSpell(SpellSlot.E, _enemy);
                         }
                     }
+
 
                     if (Environment.TickCount - lastq > 1500 && E.IsReady() && !Q.IsReady() 
                         && target.Distance(Player) > Orbwalking.GetRealAutoAttackRange(target) + 30 && GetBool("usee", typeof(bool)))
@@ -614,32 +629,9 @@ namespace Slutty_Katarina
                     //}
 
                     if (R.IsReady() && !E.IsReady() && !Q.IsReady() && !W.IsReady() &&
-                        target.IsValidTarget(R.Range - 190) && target.Health < (R.GetDamage(target, 1) * 10) / 8)
+                        target.IsValidTarget(R.Range - 150) && target.Health < (R.GetDamage(target, 1) * 10) / 8)
                     {
                         R.Cast();
-                    }
-                    break;
-
-                case 1:
-                    if (E.IsReady() && target.Distance(Player) > Orbwalking.GetRealAutoAttackRange(target) + 30)
-                    {
-                        E.Cast(target);
-                    }
-                    if (!E.IsReady() || laste > 1500 && Q.IsReady() && !E.IsReady())
-                    {
-                        Q.Cast(target);
-                    }
-                    if (W.IsReady() && target.IsValidTarget(W.Range) && Environment.TickCount - laste > 350)
-                    {
-                        W.Cast();
-                    }
-                    if (CanKill(Q, target)) return;
-                    if (CanKill(W, target)) return;
-                    if (CanKill(E, target)) return;
-
-                    if ((R.GetDamage(target, 1) * 9) / 10 > target.Health && target.Distance(Player) < R.Range) 
-                    {
-                        R.Cast(target);
                     }
                     break;
             }

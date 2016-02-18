@@ -21,7 +21,7 @@ namespace Slutty_Katarina
             var combo = new Menu("Combo Settings", "Combo Settings");
             {
                 combo.AddItem(new MenuItem("combomode", "[Combo] Mode"))
-                    .SetValue(new StringList(new[] {"QEW", "EQW"}));
+                    .SetValue(new StringList(new[] {"QEW"}));
                 AddBools(combo, "Use [Q]", "useq", "Q Usage");
                 AddBools(combo, "Use [W]", "usew", "W Usage");
                 AddBools(combo, "Use [E]", "usee", "E Usage");
