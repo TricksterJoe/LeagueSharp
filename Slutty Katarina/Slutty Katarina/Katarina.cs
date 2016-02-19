@@ -555,10 +555,6 @@ namespace Slutty_Katarina
                 W.Cast();
             }
 
-            if (E.IsReady() && GetBool("useeh", typeof(bool)) && target.IsValidTarget(E.Range))
-            {
-                E.Cast(target);
-            }
 
         }
         private static float IgniteDamage(Obj_AI_Hero target)

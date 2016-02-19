@@ -35,7 +35,6 @@ namespace Slutty_Katarina
             var harass = new Menu("Mixed Settings", "Mixed Settings");
             {
                 AddBools(harass, "Use [Q]", "useqh", "Use Q");
-                AddBools(harass, "Use [E]", "useeh", "Use E");
                 AddBools(harass, "Use [W]", "usewh", "Use W");
             }
             Config.AddSubMenu(harass);
