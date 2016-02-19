@@ -307,7 +307,7 @@ namespace Slutty_Katarina
             if (GetBool("wardjump", typeof (KeyBind)))
             {
                 Player.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                WardJump.WardJumped(Player.Position.Extend(Game.CursorPos, 590));
+                WardJump.WardJumped(Player.Position.Extend(Game.CursorPos, 600));
             }
 
           //  Game.PrintChat((Environment.TickCount - lastnoenemies).ToString());
