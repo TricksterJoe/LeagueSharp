@@ -26,7 +26,7 @@ namespace Slutty_Katarina
                 AddBools(combo, "Use [W]", "usew", "W Usage");
                 AddBools(combo, "Use [E]", "usee", "E Usage");
                 AddBools(combo, "Use [R]", "user", "R Usage");
-                AddBools(combo, "Don't [E] Under Turret", "useet", "Prevents you From E under turret");
+              //  AddBools(combo, "Don't [E] Under Turret", "useet", "Prevents you From E under turret");
                 AddBools(combo, "Use [Ignite]", "useignite", "Ignite Usage");
                 AddValue(combo, "Only [R] When Enemy Count >", "rcount", 1, 1, 4);
             }
