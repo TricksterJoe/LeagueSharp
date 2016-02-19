@@ -615,6 +615,7 @@ namespace Slutty_Katarina
                     if (CanKill(Q, target)) return;
                     if (CanKill(W, target)) return;
                     if (CanKill(E, target)) return;
+
                     if ((R.GetDamage(target, 1) * 10) / 10 > target.Health && target.Distance(Player) < R.Range - 150)
                     {
                         R.Cast();
@@ -626,7 +627,7 @@ namespace Slutty_Katarina
                     //}
 
                     if (R.IsReady() && !E.IsReady() && !Q.IsReady() && !W.IsReady() &&
-                        target.IsValidTarget(R.Range - 150) && target.Health < (R.GetDamage(target, 1) * 10) / 8)
+                        target.IsValidTarget(R.Range - 200) && target.Health < (R.GetDamage(target, 1) * 10) / 9)
                     {
                         R.Cast();
                     }
