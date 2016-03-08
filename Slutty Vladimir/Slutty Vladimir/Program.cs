@@ -97,7 +97,20 @@ namespace Slutty_Vladimir
             Drawing.OnDraw += Drawing_OnDraw;
             Game.OnUpdate += Game_OnUpdate;
             AntiGapcloser.OnEnemyGapcloser += AntiGapcloser_OnEnemyGapcloser;
+            Spellbook.OnCastSpell += OnCastSpell;
         }
+
+        private static void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
+        {
+            if (args.Slot == SpellSlot.Q)
+            {
+                lastq = Environment.TickCount;
+            }
+
+            // then do, if(Environment.TickCount - lastq < 100) {setvalue = off; }
+            
+        }
+
         private static void Game_OnUpdate(EventArgs args)
         {
             if (Player.IsDead)

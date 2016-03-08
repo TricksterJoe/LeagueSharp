@@ -9,13 +9,13 @@ namespace Slutty_ryze
 {
     internal class Program
     {
-        readonly static Random Seeder = new Random();
+        static readonly Random Seeder = new Random();
         private static bool _casted;
         private static int _lastw;
         #region onload
         private static void Main(string[] args)
         {
-            if (args == null) throw new ArgumentNullException("args");
+            if (args == null) throw new ArgumentNullException(nameof(args));
             // So you can test if it in VS wihout crahses
 #if !DEBUG
             CustomEvents.Game.OnGameLoad += OnLoad;
@@ -44,7 +44,7 @@ namespace Slutty_ryze
             Console.WriteLine(@"Loading Your Slutty Menu...");
             GlobalManager.Config = MenuManager.GetMenu();
             GlobalManager.Config.AddToMainMenu();
-            Printmsg("Ryze Assembly Loaded");
+            Printmsg("Ryze Assembly Loaded! Make sure to test new combo!");
             Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
             Printmsg2("Don't Forget To " + "<font color='#00ff00'>[Upvote]</font> <font color='#FFFFFF'>" + "The Assembly In The Databse" + "</font>");
             //Other damge inficators in MenuManager ????
