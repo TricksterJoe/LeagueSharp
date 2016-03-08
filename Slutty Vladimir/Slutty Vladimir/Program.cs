@@ -104,7 +104,7 @@ namespace Slutty_Vladimir
         {
             if (args.Slot == SpellSlot.Q)
             {
-                lastq = Environment.TickCount;
+               // lastq = Environment.TickCount;
             }
 
             // then do, if(Environment.TickCount - lastq < 100) {setvalue = off; }
