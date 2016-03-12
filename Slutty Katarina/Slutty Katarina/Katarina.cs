@@ -289,6 +289,7 @@ namespace Slutty_Katarina
         private static void OnUpdate(EventArgs args)
         {
         //  SetEvade();
+            AutoHarass();
             switch (Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.LastHit:
@@ -478,6 +479,29 @@ namespace Slutty_Katarina
             }
 
 
+        }
+
+        private static void AutoHarass()
+        {
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
+            if (!target.IsValidTarget()) return;
+
+            var toggle = GetBool("onofftoggle", typeof (KeyBind));
+            var useq = GetBool("useqha", typeof (Bool));
+            var usew = GetBool("usewha", typeof(Bool));
+
+            if (toggle == false) return;
+
+            if (useq && Q.IsReady())
+            {
+                Q.Cast(target);
+            }
+
+            if (usew && W.IsReady() && target.IsValidTarget(W.Range))
+            {
+                W.Cast();
+            }
         }
 
         private static void LastHit()

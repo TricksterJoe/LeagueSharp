@@ -39,6 +39,14 @@ namespace Slutty_Katarina
             }
             Config.AddSubMenu(harass);
 
+            var autoharass = new Menu("Auto Harass Settings", "Auto Harass Settings");
+            {
+                AddKeyBind(autoharass, "Toggle", "onofftoggle", 'T', KeyBindType.Toggle);
+                AddBools(autoharass, "Use [Q]", "useqha", "Use Q");
+                AddBools(autoharass, "Use [W]", "usewha", "Use W");
+            }
+            Config.AddSubMenu(autoharass);
+
             var laneclear = new Menu("Lane Clear Settings", "Lane Clear Settings");
             {
                 AddBools(laneclear, "Last Hit [Q]", "qlasthitlane", "Last Hit With Q In Lane Clear");
