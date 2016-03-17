@@ -21,73 +21,73 @@ namespace Lee_Sin
         #region vars, enums, misc
         public static bool CanFlash = false;
        public static  bool CanWard = false;
-        public static Spell Q, W, E, R;
-        public static SpellSlot _flashSlot;
-        public static int _lastward;
+        public static Spell Q, W, E, R, Rnormal;
+        public static SpellSlot FlashSlot;
+        public static int Lastward;
         public static steps? Steps;
-        public static int _laste;
-        public static int _lastqc;
-        public static int _lastelane;
-        public static bool _processw;
-        public static int _lastwj;
-        public static int _lastej;
+        public static int Laste;
+        public static int Lastqc;
+        public static int Lastelane;
+        public static bool Processw;
+        public static int Lastwj;
+        public static int Lastej;
         public static SpellSlot Smite;
         public static readonly int Hydra;
         public static readonly int Tiamat;
         public static readonly int Youm;
         public static readonly int Omen;
         public static Obj_AI_Base SelectedAllyAiMinion;
-        public static int _lastwards;
-        public static int _lastprocessw;
-        public static int _lastwardjump;
-        public static bool _processr;
-        public static int _lastprocessr;
-        public static bool _processr2;
-        public static int _clickCount;
-        public static bool _lastClickBool;
-        public static Vector3 _lastClickPos;
-        public static bool _b;
-        public static bool _processW2;
-        public static int _lastwcombo;
-        public static int _lastwarr;
-        public static int _processr2T;
-        public static int _lastqh;
-        public static int _lasteh;
-        public static bool _processroncast;
-        public static int _processroncastr;
-        public static Geometry.Polygon.Rectangle _ultPolyExpectedPos;
-        public static bool _created;
-        public static Vector3? _rCombo;
-        public static StringFormat _stringf;
-        public static int _lastcasted;
-        public static int _lastwcasted;
-        public static bool _wardjumpedtotarget;
-        public static int _lastqcasted;
-        public static int _lastflashward;
-        public static int _wardjumpedto;
-        public static int _junglelastq;
-        public static int _junglelastw;
-        public static int _junglelaste;
-        public static int lastflashed;
-        public static bool canwardflash = true;
-        public static int _lastqcasted1;
-        public static Obj_AI_Base minions;
-        public static int wardlastcasted;
-        public static int lastr;
-        public static int lastq { get; set; }
-        public static bool buff { get; set; }
-        public static int lastflashoverprio;
+        public static int Lastwards;
+        public static int Lastprocessw;
+        public static int Lastwardjump;
+        public static bool Processr;
+        public static int Lastprocessr;
+        public static bool Processr2;
+        public static int ClickCount;
+        public static bool LastClickBool;
+        public static Vector3 LastClickPos;
+        public static bool B;
+        public static bool ProcessW2;
+        public static int Lastwcombo;
+        public static int Lastwarr;
+        public static int Processr2T;
+        public static int Lastqh;
+        public static int Lasteh;
+        public static bool Processroncast;
+        public static int Processroncastr;
+        public static Geometry.Polygon.Rectangle UltPolyExpectedPos;
+        public static bool Created;
+        public static Vector3? RCombo;
+        public static StringFormat Stringf;
+        public static int Lastcasted;
+        public static int Lastwcasted;
+        public static bool Wardjumpedtotarget;
+        public static int Lastqcasted;
+        public static int Lastflashward;
+        public static int Wardjumpedto;
+        public static int Junglelastq;
+        public static int Junglelastw;
+        public static int Junglelaste;
+        public static int Lastflashed;
+        public static bool Canwardflash = true;
+        public static int Lastqcasted1;
+        public static Obj_AI_Base Minions;
+        public static int Wardlastcasted;
+        public static int Lastr;
+        public static int Lastq { get; set; }
+        public static bool Buff { get; set; }
+        public static int Lastflashoverprio;
         protected static int Lastcastedw;
-        protected static int _lastq2casted;
-        protected static int _lastq1casted;
-        protected static int lastwardmanager;
-        protected static int lastwardjumpd;
-        protected static int sightwardcreated;
-        protected static int lastcanjump;
-        protected static int lsatcanjump1;
-        public static int lastbuff { get; set; }
-        public static int lastq12 { get; set; }
-        public static Obj_AI_Base minionss { get; set; }
+        protected static int Lastq2Casted;
+        protected static int Lastq1Casted;
+        protected static int Lastwardmanager;
+        protected static int Lastwardjumpd;
+        protected static int Sightwardcreated;
+        protected static int Lastcanjump;
+        protected static int Lsatcanjump1;
+        public static int Lastbuff { get; set; }
+        public static int Lastq12 { get; set; }
+        public static Obj_AI_Base Minionss { get; set; }
 
         static LeeSin()
         {
@@ -128,13 +128,13 @@ namespace Lee_Sin
         #endregion
 
 
-        public static bool spellweave
+        public static bool Spellweave
         {
             get
             {
-                return Environment.TickCount - _junglelastq > Game.Ping + 250 &&
-                       Environment.TickCount - _junglelastw > Game.Ping + 250
-                       && Environment.TickCount - _junglelaste > Game.Ping + 250;
+                return Environment.TickCount - Junglelastq > Game.Ping + 250 &&
+                       Environment.TickCount - Junglelastw > Game.Ping + 250
+                       && Environment.TickCount - Junglelaste > Game.Ping + 250;
             }
         }
 
@@ -143,13 +143,13 @@ namespace Lee_Sin
             switch (spellSlot)
             {
                 case SpellSlot.Q:
-                    return !HasPassive() && spellweave && Player.Spellbook.GetSpell(SpellSlot.Q).IsReady()
+                    return !HasPassive() && Spellweave && Player.Spellbook.GetSpell(SpellSlot.Q).IsReady()
                         && !W2() && !E2();
                 case SpellSlot.W:
-                    return !HasPassive() && spellweave && Player.Spellbook.GetSpell(SpellSlot.W).IsReady()
+                    return !HasPassive() && Spellweave && Player.Spellbook.GetSpell(SpellSlot.W).IsReady()
                         && !Q2() && !E2();
                 case SpellSlot.E:
-                    return !HasPassive() && spellweave && Player.Spellbook.GetSpell(SpellSlot.E).IsReady()
+                    return !HasPassive() && Spellweave && Player.Spellbook.GetSpell(SpellSlot.E).IsReady()
                         && !Q2() && !W2();
             }
             return false;
@@ -211,10 +211,10 @@ namespace Lee_Sin
         {
             if (target == null) return false;
 
-            if (buff)
+            if (Buff)
             {
-                lastq12 = Environment.TickCount;
-                 buff = false;
+                Lastq12 = Environment.TickCount;
+                 Buff = false;
             }
 
 
@@ -230,21 +230,21 @@ namespace Lee_Sin
                 if (obj.Distance(target) < 350 || obj.Distance(poss) < 450 ||
                     (CanWardFlash(target) && obj.Distance(target) < 900))
                 {
-                    if (!buff)
-                        lastbuff = Environment.TickCount;
+                    if (!Buff)
+                        Lastbuff = Environment.TickCount;
                 }
             }
 
-            if (Environment.TickCount - _lastq2casted < 100 &&
-                Environment.TickCount - lastq12 > 3000 && Environment.TickCount - lastbuff < 100)
+            if (Environment.TickCount - Lastq2Casted < 100 &&
+                Environment.TickCount - Lastq12 > 3000 && Environment.TickCount - Lastbuff < 100)
             {
-                buff = true;
+                Buff = true;
             }
 
-            return Environment.TickCount - lastq12  > 3000;
+            return Environment.TickCount - Lastq12  > 3000;
         }
 
-        public static Obj_AI_Base objs { get; set; }
+        public static Obj_AI_Base Objs { get; set; }
 
 
         public static bool CanWardFlash(Obj_AI_Hero target)
@@ -252,7 +252,7 @@ namespace Lee_Sin
             var wardFlashBool = GetBool("expwardflash", typeof(bool));
             var slot = Items.GetWardSlot();
 
-            return slot != null && HasFlash() && R.IsReady() && W.IsReady() && wardFlashBool && Environment.TickCount - lastr > 1000;
+            return slot != null && HasFlash() && R.IsReady() && W.IsReady() && wardFlashBool && Environment.TickCount - Lastr > 1000;
         }
 
         public static bool Colbool { get; set; }
@@ -266,7 +266,7 @@ namespace Lee_Sin
         public static Render.Text Text { get; set; }
 
         public static ColorBGRA color { get; set; }
-        public static int lasttotarget { get; protected set; }
+        public static int Lasttotarget { get; protected set; }
         public static int LastTeleported { get; set; }
     }
 }

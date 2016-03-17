@@ -16,10 +16,10 @@ namespace Lee_Sin
 {
     class OnUpdate : LeeSin
     {
-        private static float g;
+        private static float _g;
 
 
-        public static void CastSpell(Spell QWER, Obj_AI_Base target)
+        public static void CastSpell(Spell qwer, Obj_AI_Base target)
         {
             switch (GetStringValue("PredictionMode"))
             {
@@ -29,12 +29,12 @@ namespace Lee_Sin
 
                     var predInput2 = new PredictionInput
                     {
-                        Collision = QWER.Collision,
-                        Speed = QWER.Speed,
-                        Delay = QWER.Delay,
-                        Range = QWER.Range,
+                        Collision = qwer.Collision,
+                        Speed = qwer.Speed,
+                        Delay = qwer.Delay,
+                        Range = qwer.Range,
                         From = Player.ServerPosition,
-                        Radius = QWER.Width,
+                        Radius = qwer.Width,
                         Unit = target,
                         Type = coreType2
                     };
@@ -43,7 +43,7 @@ namespace Lee_Sin
                     if (poutput2.Hitchance >= HitChance.High || poutput2.Hitchance == HitChance.Immobile ||
                         poutput2.Hitchance == HitChance.Dashing)
                     {
-                        QWER.Cast(poutput2.CastPosition);
+                        qwer.Cast(poutput2.CastPosition);
                     }
                     break;
                 }
@@ -70,7 +70,7 @@ namespace Lee_Sin
             //}
           //  Console.WriteLine(Environment.TickCount - LeeSin.lasttotarget);
             ProcessHandler.ProcessHandlers();
-            BubbaKush.DrawRect();
+            Misc.BubbaKush.DrawRect();
             //WardSorter.HasPoachers();
            // WardSorter.Wards();
           //  Game.PrintChat(WardSorter.HasPoachers().ToString());
@@ -89,7 +89,7 @@ namespace Lee_Sin
 
             if (GetBool("wardinsec", typeof (KeyBind)))
             {
-                Insec.InsecTo.insec();
+                Insec.InsecTo.Insec();
             }
 
             if (GetBool("starcombo", typeof (KeyBind)))

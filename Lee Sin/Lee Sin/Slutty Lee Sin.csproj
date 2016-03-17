@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Lee_Sin</RootNamespace>
     <AssemblyName>Lee Sin</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <PreBuildEvent />
     <PostBuildEvent />
@@ -42,6 +42,9 @@
     <Reference Include="LeagueSharp.Common">
       <HintPath>C:\LeagueSharp3\System\LeagueSharp.Common.dll</HintPath>
     </Reference>
+    <Reference Include="SebbyLib">
+      <HintPath>..\..\..\..\..\..\..\LeagueSharp3\System\SebbyLib.dll</HintPath>
+    </Reference>
     <Reference Include="SharpDX">
       <HintPath>C:\LeagueSharp3\System\SharpDX.dll</HintPath>
     </Reference>
@@ -61,6 +64,7 @@
     <Compile Include="ActiveModes\LaneClear.cs" />
     <Compile Include="ActiveModes\Smite.cs" />
     <Compile Include="ActiveModes\Star.cs" />
+    <Compile Include="BubbaKushPos\ResolveBubbaPosition.cs" />
     <Compile Include="Drawings\OnChamp.cs" />
     <Compile Include="Drawings\OnInsec.cs" />
     <Compile Include="Drawings\OnJungle.cs" />

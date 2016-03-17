@@ -12,6 +12,7 @@ namespace Lee_Sin
 {
     class OnLoad : LeeSin
     {
+        public static SebbyLib.Prediction.PredictionInput PredictionRnormal;
         public static void OnLoaded()
         {
                if (Player.ChampionName != "LeeSin") return;
@@ -20,9 +21,19 @@ namespace Lee_Sin
             W = new Spell(SpellSlot.W, 700);
             E = new Spell(SpellSlot.E, 350);
             R = new Spell(SpellSlot.R, 375);
-
-            _flashSlot = ObjectManager.Player.GetSpellSlot("summonerflash");
-
+            Rnormal = new Spell(SpellSlot.R, 700);
+            FlashSlot = ObjectManager.Player.GetSpellSlot("summonerflash");
+            Rnormal.SetSkillshot(0f, 70f, 1500f, false,(LeagueSharp.Common.SkillshotType) SkillshotType.SkillshotLine);
+            PredictionRnormal = new SebbyLib.Prediction.PredictionInput
+            {
+                Aoe = true,
+                Collision = false,
+                Speed = Rnormal.Speed,
+                Delay = Rnormal.Delay,
+                Range = Rnormal.Range,
+                Radius = Rnormal.Width,
+                Type = SebbyLib.Prediction.SkillshotType.SkillshotLine
+            };
             foreach (var spell in Player.Spellbook.Spells.Where(spell => spell.Name.ToLower().Contains("smite")))
             {
                 Smite = spell.Slot;

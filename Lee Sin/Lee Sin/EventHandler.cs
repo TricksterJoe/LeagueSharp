@@ -19,11 +19,11 @@ namespace Lee_Sin
             
 
             if (!GetBool("wardinsec", typeof(KeyBind)) && !GetBool("starcombo", typeof(KeyBind)) &&
-                Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo && Environment.TickCount - lastcanjump > 2000
-                && Environment.TickCount - BubbaKush.lastthingy > 2000)
+                Orbwalker.ActiveMode != Orbwalking.OrbwalkingMode.Combo && Environment.TickCount - Lastcanjump > 2000
+                && Environment.TickCount - Misc.BubbaKush.Lastthingy > 2000)
                 return;
 
-            if (_processW2 || !W.IsReady() || Player.GetSpell(SpellSlot.W).Name != "BlindMonkWOne" ||
+            if (ProcessW2 || !W.IsReady() || Player.GetSpell(SpellSlot.W).Name != "BlindMonkWOne" ||
                 Player.Spellbook.GetSpell(SpellSlot.Q).Name == "blindmonkwtwo")
                 return;
             if (sender.Name.ToLower().Contains("ward"))
@@ -40,22 +40,22 @@ namespace Lee_Sin
                 var distancepos = Player.Position.Extend(target.Position, Player.Distance(target) - 150); 
                 if (sender.Position.Distance(poss.To3D()) < 100)
                 {
-                    lsatcanjump1 = Environment.TickCount;
+                    Lsatcanjump1 = Environment.TickCount;
                 }
                 if (sender.Position.Distance(distancepos) < 150)
                 {
-                    LeeSin.lasttotarget = Environment.TickCount;
+                    LeeSin.Lasttotarget = Environment.TickCount;
                 }
             }
             if (sender.Name.ToLower().Contains("ward") && W.IsReady() && sender.IsAlly)
             {
                
-                _lastwcasted = Environment.TickCount;
+                Lastwcasted = Environment.TickCount;
                 var ward = (Obj_AI_Base)sender;
 
                 if (ward.IsMe) return;
                 W.Cast(ward);
-                _created = true;
+                Created = true;
             }
         }
 
@@ -75,11 +75,11 @@ namespace Lee_Sin
             {
                 return;
             }
-            if (!_lastClickBool || _clickCount == 0)
+            if (!LastClickBool || ClickCount == 0)
             {
-                _clickCount++;
-                _lastClickPos = Game.CursorPos;
-                _lastClickBool = true;
+                ClickCount++;
+                LastClickPos = Game.CursorPos;
+                LastClickBool = true;
                 SelectedAllyAiMinion = null;
                 SelectedAllyAiMinionv = new Vector3();
                 return;
@@ -91,10 +91,10 @@ namespace Lee_Sin
             }
 
 
-            if (_lastClickBool && _lastClickPos.Distance(Game.CursorPos) < 100)
+            if (LastClickBool && LastClickPos.Distance(Game.CursorPos) < 100)
             {
-                _clickCount++;
-                _lastClickBool = false;
+                ClickCount++;
+                LastClickBool = false;
             }
 
             SelectedAllyAiMinion =
@@ -161,40 +161,40 @@ namespace Lee_Sin
                 {
                     case "BlindMonkQOne":
                     case "blinkmonkqtwo":
-                        _junglelastq = Environment.TickCount;
+                        Junglelastq = Environment.TickCount;
                         break;
 
                     case "BlindMonkWOne":
                     case "blindmonkwtwo":
-                        _junglelastw = Environment.TickCount;
+                        Junglelastw = Environment.TickCount;
                         break;
 
                     case "BlindMonkEOne":
                     case "blindmonketwo":
-                        _junglelaste = Environment.TickCount;
+                        Junglelaste = Environment.TickCount;
                         break;
                 }
             }
 
             if (args.SData.Name.ToLower() == "blindmonkqtwo")
             {
-                LeeSin._lastq2casted = Environment.TickCount;
+                LeeSin.Lastq2Casted = Environment.TickCount;
             }
 
             if (args.SData.Name== "BlindMonkQOne")
             {
-                LeeSin._lastq1casted = Environment.TickCount;
+                LeeSin.Lastq1Casted = Environment.TickCount;
             }
 
             if (args.SData.Name == "BlindMonkRKick")
             {
-                if (Environment.TickCount - BubbaKush.lastthingy < 2000 && GetBool("activatebubba", typeof(KeyBind)))
+                if (Environment.TickCount - Misc.BubbaKush.Lastthingy < 2000 && GetBool("activatebubba", typeof(KeyBind)))
                 {
-                    var getresults = BubbaKush.GetPositions(Player, 600, (byte) GetValue("enemiescount"),
+                    var getresults = Misc.BubbaKush.GetPositions(Player, 600, (byte) GetValue("enemiescount"),
                         HeroManager.Enemies.Where(x => x.Distance(Player) < 1200).ToList());
                     if (getresults.Count > 1)
                     {
-                        var getposition = BubbaKush.SelectBest(getresults, Player);
+                        var getposition = Misc.BubbaKush.SelectBest(getresults, Player);
 
                         var poss = getposition;
 
@@ -202,7 +202,7 @@ namespace Lee_Sin
                     }
                 }   
 
-                lastr = Environment.TickCount;
+                Lastr = Environment.TickCount;
                 var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Physical);
                 if (target != null)
                 {
@@ -211,16 +211,16 @@ namespace Lee_Sin
 
                 if (target != null && HasFlash())
                 {
-                   if (Environment.TickCount - LeeSin.lsatcanjump1 > 3000)
+                   if (Environment.TickCount - LeeSin.Lsatcanjump1 > 3000)
                     {                    
                         if (Steps == LeeSin.steps.Flash ||
-                            (Environment.TickCount - _lastflashward < 2000 && _wardjumpedtotarget) ||
-                            Environment.TickCount - lastflashoverprio < 3000 ||
-                            Environment.TickCount - _wardjumpedto < 2000
-                            ||  Environment.TickCount - BubbaKush.lastthingy < 2000) 
+                            (Environment.TickCount - Lastflashward < 2000 && Wardjumpedtotarget) ||
+                            Environment.TickCount - Lastflashoverprio < 3000 ||
+                            Environment.TickCount - Wardjumpedto < 2000
+                            ||  Environment.TickCount - Misc.BubbaKush.Lastthingy < 2000) 
                         {
                             if (GetBool("wardinsec", typeof (KeyBind)) || GetBool("starcombo", typeof (KeyBind))
-                                || Environment.TickCount - BubbaKush.lastthingy < 2000)
+                                || Environment.TickCount - Misc.BubbaKush.Lastthingy < 2000)
                             {
                                 var pos = InsecPos.FlashInsecPosition.InsecPos(target, 230);
                                 var poss = Player.Position.Extend(target.Position,
@@ -257,45 +257,45 @@ namespace Lee_Sin
                 (GetBool("wardinsec", typeof(KeyBind)) || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo ||
                 Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear))
             {
-                _processw = true;
-                _lastprocessw = Environment.TickCount;
+                Processw = true;
+                Lastprocessw = Environment.TickCount;
             }
 
             if (args.Slot == SpellSlot.Q)
             {
-                _lastqcasted = Environment.TickCount;
+                Lastqcasted = Environment.TickCount;
             }
 
             if (args.Slot == SpellSlot.Q && Q2())
             {
-                _lastqcasted1 = Environment.TickCount;
+                Lastqcasted1 = Environment.TickCount;
             }
 
 
             if (args.Slot == Player.GetSpellSlot("summonerflash") && GetBool("wardinsec", typeof(KeyBind)))
             {
-                _processr = true;
-                _lastprocessr = Environment.TickCount;
-                lastflashed = Environment.TickCount;
+                Processr = true;
+                Lastprocessr = Environment.TickCount;
+                Lastflashed = Environment.TickCount;
             }
 
             if (args.Slot == SpellSlot.R && GetBool("wardinsec", typeof(KeyBind)))
             {
 
-                _processr2 = true;
-                _processr2T = Environment.TickCount;
+                Processr2 = true;
+                Processr2T = Environment.TickCount;
                 Playerpos = Player.Position;
             }
 
             if (args.Slot == SpellSlot.W && (GetBool("wardinsec", typeof(KeyBind)) || Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear))
             {
-                _processW2 = true;
+                ProcessW2 = true;
             }
 
             if (args.Slot == SpellSlot.R && GetBool("wardinsec", typeof(KeyBind)))
             {
-                _processr2 = true;
-                _processr2T = Environment.TickCount;
+                Processr2 = true;
+                Processr2T = Environment.TickCount;
 
             }
 
