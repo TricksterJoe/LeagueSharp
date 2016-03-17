@@ -18,35 +18,35 @@ namespace Lee_Sin
                     SelectedAllyAiMinion = null;
                 }
             }
-            if (_created)
+            if (Created)
             {
-                Utility.DelayAction.Add(500, () => _created = false);
+                Utility.DelayAction.Add(500, () => Created = false);
             }
 
 
-            if (_processw && Environment.TickCount - _lastprocessw > 500)
+            if (Processw && Environment.TickCount - Lastprocessw > 500)
             {
-                Utility.DelayAction.Add(500, () => _processw = false);
+                Utility.DelayAction.Add(500, () => Processw = false);
             }
 
-            if (_processroncast && Environment.TickCount - _processroncastr > 500)
+            if (Processroncast && Environment.TickCount - Processroncastr > 500)
             {
-                Utility.DelayAction.Add(2500, () => _processroncast = false);
+                Utility.DelayAction.Add(2500, () => Processroncast = false);
             }
 
-            if (_processW2)
+            if (ProcessW2)
             {
-                Utility.DelayAction.Add(2500, () => _processW2 = false);
+                Utility.DelayAction.Add(2500, () => ProcessW2 = false);
             }
 
-            if (_processr && Environment.TickCount - _lastprocessr > 100)
+            if (Processr && Environment.TickCount - Lastprocessr > 100)
             {
-                Utility.DelayAction.Add(400, () => _processr = false);
+                Utility.DelayAction.Add(400, () => Processr = false);
             }
 
-            if (_processr2 && Environment.TickCount - _processr2T > 100)
+            if (Processr2 && Environment.TickCount - Processr2T > 100)
             {
-                Utility.DelayAction.Add(400, () => _processr = false);
+                Utility.DelayAction.Add(400, () => Processr = false);
             }
         }
     }

@@ -33,12 +33,12 @@ namespace Lee_Sin.ActiveModes
                     var pos = prediction.UnitPosition.Extend(unit.ServerPosition,
                         prediction.UnitPosition.Distance(unit.ServerPosition) + 250);
 
-                    _rCombo = pos;
+                    RCombo = pos;
 
                     var slot = WardSorter.Wards();
                     if (unit.Distance(Player) > 500)
                     {
-                        _rCombo = null;
+                        RCombo = null;
                     }
 
                     if (W.IsReady() && R.IsReady() && Player.ServerPosition.Distance(unit.ServerPosition) < 500 &&
@@ -51,7 +51,7 @@ namespace Lee_Sin.ActiveModes
                 if (Player.IsDead)
                 {
                     UltPoly = null;
-                    _ultPolyExpectedPos = null;
+                    UltPolyExpectedPos = null;
                     return;
                 }
 
@@ -63,7 +63,7 @@ namespace Lee_Sin.ActiveModes
                         x => x.Distance(Player) < 1100 && x.IsValidTarget(1100) && x.Health < R.GetDamage(x))
                         .Count(h => h.NetworkId != unit.NetworkId && UltPoly.IsInside(h.ServerPosition));
 
-                if (counts >= 1 && R.IsReady() && _created && R.IsReady())
+                if (counts >= 1 && R.IsReady() && Created && R.IsReady())
                 {
                     R.Cast(unit);
                 }
@@ -104,13 +104,13 @@ namespace Lee_Sin.ActiveModes
             }
             if (usew)
             {
-                if (Environment.TickCount - _lastqc > 300 && Environment.TickCount - _laste > 300 &&
-                    Environment.TickCount - _lastwcombo > 300)
+                if (Environment.TickCount - Lastqc > 300 && Environment.TickCount - Laste > 300 &&
+                    Environment.TickCount - Lastwcombo > 300)
                 {
                     if (W.IsReady() && target.Distance(Player) <= Player.AttackRange && W1())
                     {
                         W.Cast(Player);
-                        _lastwcombo = Environment.TickCount;
+                        Lastwcombo = Environment.TickCount;
                     }
 
                     if (W.IsReady() && target.Distance(Player) <= Player.AttackRange && W2() && !HasPassive())
@@ -122,20 +122,20 @@ namespace Lee_Sin.ActiveModes
 
             if (useq)
             {
-                if (Environment.TickCount - _lastqc > 300 && Environment.TickCount - _laste > 300 &&
-                    Environment.TickCount - _lastwcombo > 300)
+                if (Environment.TickCount - Lastqc > 300 && Environment.TickCount - Laste > 300 &&
+                    Environment.TickCount - Lastwcombo > 300)
                 {
                     var qpred = Q.GetPrediction(target);
                     if (Q.IsReady() && Q1())
                     {
                         OnUpdate.CastSpell(Q, target);
-                        _lastqc = Environment.TickCount;
+                        Lastqc = Environment.TickCount;
                     }
 
                     if (Q2() && Q.IsReady() && GetBool("useq2", typeof (bool)))
                     {
                         Utility.DelayAction.Add(GetValue("secondqdelay"), () => Q.Cast());
-                        _lastqc = Environment.TickCount;
+                        Lastqc = Environment.TickCount;
                     }
                 }
             }
@@ -145,14 +145,14 @@ namespace Lee_Sin.ActiveModes
                     if (target.Distance(Player) <= E.Range && E1())
                     {
                         E.Cast();
-                        _laste = Environment.TickCount;
+                        Laste = Environment.TickCount;
                     }
                     if ((Player.Distance(target) >
                          Player.AttackRange + Player.BoundingRadius + target.BoundingRadius + 100 ||
-                         Environment.TickCount - _laste > 2300) && E2())
+                         Environment.TickCount - Laste > 2300) && E2())
                     {
                         E.Cast();
-                        _laste = Environment.TickCount;
+                        Laste = Environment.TickCount;
                     }
                 
             }

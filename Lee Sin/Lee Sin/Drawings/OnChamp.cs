@@ -14,7 +14,7 @@ namespace Lee_Sin.Drawings
 {
     class OnChamp : LeeSin
     {
-        public  static List<Geometry.Polygon.Rectangle> _toList;
+        public  static List<Geometry.Polygon.Rectangle> ToList;
 
         public static List<Geometry.Polygon.Rectangle> NewPoly { get; set; }
 
@@ -30,7 +30,7 @@ namespace Lee_Sin.Drawings
            // DrawRect();
           
 
-            if (_rCombo != null && GetBool("rpolygon", typeof(bool))) Render.Circle.DrawCircle((Vector3)_rCombo, 100, Color.Red, 5, true);
+            if (RCombo != null && GetBool("rpolygon", typeof(bool))) Render.Circle.DrawCircle((Vector3)RCombo, 100, Color.Red, 5, true);
 
             //if (GetBool("counthitr", typeof(bool)))
             //{
@@ -73,7 +73,7 @@ namespace Lee_Sin.Drawings
             if (target == null || Player.IsDead)
             {
                 UltPoly = null;
-                _ultPolyExpectedPos = null;
+                UltPolyExpectedPos = null;
                 return;
             }
 

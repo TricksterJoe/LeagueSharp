@@ -25,7 +25,7 @@ namespace Lee_Sin.WardManager
             {
                 if (objects == null)
                 {
-                    if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 200 && W1() && !use)
+                    if (W.IsReady() && ward != null && Environment.TickCount - Lastwcasted > 200 && W1() && !use)
                     {
                         Items.UseItem(ward.Id, position);
                     }
@@ -38,7 +38,7 @@ namespace Lee_Sin.WardManager
             }
             else
             {
-                if (W.IsReady() && ward != null && Environment.TickCount - _lastwcasted > 200 && W1() && !use)
+                if (W.IsReady() && ward != null && Environment.TickCount - Lastwcasted > 200 && W1() && !use)
                 {
                     // Player.Spellbook.CastSpell(ward.SpellSlot, position);
                     Items.UseItem(ward.Id, position);
@@ -56,7 +56,7 @@ namespace Lee_Sin.WardManager
             foreach (
                 var wards in
                     ObjectManager.Get<Obj_AI_Base>()
-                        .Where(wards => W.IsReady() && Environment.TickCount - wardlastcasted > 400 && W1() && !W2() && (objects != null)))
+                        .Where(wards => W.IsReady() && Environment.TickCount - Wardlastcasted > 400 && W1() && !W2() && (objects != null)))
             {
                 W.Cast(objects);
                 LeeSin.Lastcastedw = Environment.TickCount;

@@ -23,42 +23,42 @@ namespace Lee_Sin.ActiveModes
 
             if (useq)
             {
-                if (Environment.TickCount - _lastqh > 100 && Environment.TickCount - _lasteh > 300)
+                if (Environment.TickCount - Lastqh > 100 && Environment.TickCount - Lasteh > 300)
                 {
                     var qpred = Q.GetPrediction(target);
                     if (Q.IsReady() && Q1() &&
                         (qpred.Hitchance >= LeagueSharp.Common.HitChance.High))
                     {
                         Q.Cast(target);
-                        _lastqh = Environment.TickCount;
+                        Lastqh = Environment.TickCount;
                     }
 
                     if (!useQ2) return;
 
-                    if (Q2() && Q.IsReady() && Environment.TickCount - _lastqc > delay)
+                    if (Q2() && Q.IsReady() && Environment.TickCount - Lastqc > delay)
                     {
                         Q.Cast();
-                        _lastqh = Environment.TickCount;
+                        Lastqh = Environment.TickCount;
                     }
                 }
 
 
                 if (usee)
                 {
-                    if (Environment.TickCount - _lastqh > 300 && Environment.TickCount - _lasteh > 300)
+                    if (Environment.TickCount - Lastqh > 300 && Environment.TickCount - Lasteh > 300)
                     {
                         if (target.Distance(Player) <= E.Range && Q1())
                         {
                             E.Cast();
-                            _lasteh = Environment.TickCount;
+                            Lasteh = Environment.TickCount;
                         }
                         if ((Player.Distance(target) >
                              Player.AttackRange + Player.BoundingRadius + target.BoundingRadius + 100 ||
-                             Environment.TickCount - _laste > 2700) &&
+                             Environment.TickCount - Laste > 2700) &&
                             Q2())
                         {
                             E.Cast();
-                            _lasteh = Environment.TickCount;
+                            Lasteh = Environment.TickCount;
                         }
                     }
                 }

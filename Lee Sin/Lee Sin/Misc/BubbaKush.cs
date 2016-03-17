@@ -14,7 +14,7 @@ namespace Lee_Sin.Misc
     /// </summary>
     class BubbaKush : LeeSin
     {
-        public static int lastthingy;
+        public static int Lastthingy;
 
 
         public static void DrawRect()
@@ -47,7 +47,7 @@ namespace Lee_Sin.Misc
                             heros.FirstOrDefault() != null)
                         {
                             R.Cast(heros.FirstOrDefault());
-                            lastthingy = Environment.TickCount;
+                            Lastthingy = Environment.TickCount;
                         }
                     }
                     if (Player.Distance(getposition) < 30 && heros.FirstOrDefault() != null && R.IsReady())

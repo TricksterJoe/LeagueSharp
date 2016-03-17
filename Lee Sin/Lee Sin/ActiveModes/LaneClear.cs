@@ -44,10 +44,10 @@ namespace Lee_Sin.ActiveModes
             if (usee && minion.Count >= useeslider && E.IsReady() && Player.GetSpell(SpellSlot.E).Name == "BlindMonkEOne" && Player.GetSpell(SpellSlot.Q).Name != "blindmonkqtwo")
             {
                 E.Cast();
-                _lastelane = Environment.TickCount;
+                Lastelane = Environment.TickCount;
             }
 
-            if (minion.FirstOrDefault().Distance(Player) < Player.AttackRange + Player.BoundingRadius && (Player.GetSpell(SpellSlot.E).Name == "blindmonketwo" && Environment.TickCount - _lastelane > 2900))
+            if (minion.FirstOrDefault().Distance(Player) < Player.AttackRange + Player.BoundingRadius && (Player.GetSpell(SpellSlot.E).Name == "blindmonketwo" && Environment.TickCount - Lastelane > 2900))
             {
                 E.Cast();
             }

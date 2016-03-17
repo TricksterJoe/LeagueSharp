@@ -79,7 +79,7 @@ namespace Lee_Sin.ActiveModes
                     if (jungleminion.Distance(Player) <= E.Range && CanCast(SpellSlot.E) && E1())
                     {
                         E.Cast();
-                        _lastej = Environment.TickCount;
+                        Lastej = Environment.TickCount;
                     }
                     if (jungleminion.Distance(Player) <= Player.AttackRange + Player.BoundingRadius + jungleminion.BoundingRadius && CanCast(SpellSlot.E) && E2())
                     {

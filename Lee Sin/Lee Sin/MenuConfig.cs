@@ -101,7 +101,7 @@ namespace Lee_Sin
                 AddBool(jungleClear, "Smart Spell Usage", "usesjl");
             }
 
-            var Smite = new Menu("Smite Options", "Smite Options");
+            var smite = new Menu("Smite Options", "Smite Options");
             {
                 var smtiekill = new Menu("Smite Killable", "Smite Killable");
                 {
@@ -111,10 +111,10 @@ namespace Lee_Sin
                     }
                     AddBool(smtiekill, "Use Smite On Killable Jungle Mob", "smiteonkillable");
                 }
-                AddBool(Smite, "Calculate Q Damage On Smite", "qcalcsmite");
-                AddBool(Smite, "Smite COllision Enemies", "collsmite");
-                AddKeyBind(Smite, "Enable Smite", "smiteenable", 'M', KeyBindType.Toggle);
-                Smite.AddSubMenu(smtiekill);
+                AddBool(smite, "Calculate Q Damage On Smite", "qcalcsmite");
+                AddBool(smite, "Smite COllision Enemies", "collsmite");
+                AddKeyBind(smite, "Enable Smite", "smiteenable", 'M', KeyBindType.Toggle);
+                smite.AddSubMenu(smtiekill);
             }
             
             var drawings = new Menu("Drawings Menu", "Drawings Menu");
@@ -155,7 +155,7 @@ namespace Lee_Sin
             Config.AddSubMenu(laneclear);
             Config.AddSubMenu(jungleClear);
             Config.AddSubMenu(lasthit);
-            Config.AddSubMenu(Smite);
+            Config.AddSubMenu(smite);
             Config.AddSubMenu(drawings);
             Config.AddToMainMenu();
         }

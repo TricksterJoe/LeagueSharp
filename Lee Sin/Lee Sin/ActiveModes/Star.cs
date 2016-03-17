@@ -41,14 +41,14 @@ namespace Lee_Sin.ActiveModes
                 if (target.Distance(Player) > R.Range && target.Distance(Player) < R.Range + 580)
                 {
                     var pos = target.ServerPosition.Extend(Player.ServerPosition, 200);
-                    if (!_processw && Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
+                    if (!Processw && Player.GetSpell(SpellSlot.W).Name == "BlindMonkWOne")
                     {
                         Player.Spellbook.CastSpell(slot.SpellSlot, pos);
-                        _lastwarr = Environment.TickCount;
+                        Lastwarr = Environment.TickCount;
                     }
                     if (Player.GetSpell(SpellSlot.W).Name == "blindmonkwtwo")
                     {
-                        _lastwards = Environment.TickCount;
+                        Lastwards = Environment.TickCount;
                         //   _lastflashward = Environment.TickCount;
                     }
                 }

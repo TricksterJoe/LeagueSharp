@@ -22,7 +22,7 @@ namespace Lee_Sin.Misc
             if (target == null || Player.IsDead)
             {
                 UltPoly = null;
-                _ultPolyExpectedPos = null;
+                UltPolyExpectedPos = null;
                 return;
             }
 
