@@ -69,8 +69,9 @@ namespace Lee_Sin
             //    Game.PrintChat("dash");
             //}
           //  Console.WriteLine(Environment.TickCount - LeeSin.lasttotarget);
-            ProcessHandler.ProcessHandlers();
-            Misc.BubbaKush.DrawRect();
+           // ProcessHandler.ProcessHandlers();
+           // Misc.BubbaKush.DrawRect();
+          //  BubbaKushPos.ResolveBubbaPosition.GetPosition();
             //WardSorter.HasPoachers();
            // WardSorter.Wards();
           //  Game.PrintChat(WardSorter.HasPoachers().ToString());
