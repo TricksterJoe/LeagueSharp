@@ -70,8 +70,31 @@ namespace Jayce
           // Obj_AI_Base.OnProcessSpellCast += OnProcessCast;
             AntiGapcloser.OnEnemyGapcloser += OnGapClose;
             Interrupter2.OnInterruptableTarget += OnInterrupt;
-           // GameObject.OnCreate += OnCreate;
+            Obj_AI_Base.OnIssueOrder += OnOrder;
+            // GameObject.OnCreate += OnCreate;
 
+        }
+
+        private static void OnOrder(Obj_AI_Base sender, GameObjectIssueOrderEventArgs args)
+        {
+            if (!sender.IsMe) return;
+            var on = GetBool("disorb", typeof (bool));
+            if (!on) return;
+            var target = TargetSelector.GetTarget(1050, TargetSelector.DamageType.Physical);
+            if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+            {
+                var spellbook = Player.Spellbook.GetSpell(SpellSlot.W);
+                if (spellbook.State == SpellState.Surpressed && W.Level != 0)
+                {
+                    if (target.Distance(Player) <= Orbwalking.GetRealAutoAttackRange(target) - 10)
+                    {
+                        if (args.Order == GameObjectOrder.MoveTo)
+                        {
+                            args.Process = false;
+                        }
+                    }
+                }
+            }
         }
 
         private static void OnInterrupt(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
@@ -106,8 +129,8 @@ namespace Jayce
                 Em.Cast(gapcloser.Sender);
             }
         }
+        
 
-        //this is bad??
         private static void OnDash(Obj_AI_Base sender, Dash.DashItem args)
         {
             if (!GetBool("autoedash", typeof (bool))) return;
@@ -160,7 +183,7 @@ namespace Jayce
             if (!args.SData.IsAutoAttack()) return;
             if (args.Target.Type != GameObjectType.obj_AI_Hero) return;
             if (Ismelee()) return;
-
+            thisunit = (Obj_AI_Hero) args.Target;
             if (W.IsReady())
             {
                 if ((Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo && GetBool("usewcr", typeof (bool)))
@@ -168,6 +191,7 @@ namespace Jayce
                 {
                     W.Cast();
                     Orbwalker.ForceTarget((Obj_AI_Hero) args.Target);
+
                    // Orbwalking.ResetAutoAttackTimer();
                 }
             }
@@ -211,6 +235,7 @@ namespace Jayce
 
         private static void GeneralOnUpdate(EventArgs args)
         {
+
             if (GetBool("manualeq", typeof (KeyBind)))
             {
                 ManualEq();
@@ -675,6 +700,7 @@ namespace Jayce
 
         private static Geometry.Polygon.Circle minionscircle;
         private static Geometry.Polygon.Circle minionscirclemelee;
+        private static Obj_AI_Hero thisunit;
 
 
         public static float Cooldown
