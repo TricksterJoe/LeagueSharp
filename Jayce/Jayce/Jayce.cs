@@ -534,7 +534,7 @@ namespace Jayce
         }
         private static void Combo()
         {
-            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(Qe.Range, TargetSelector.DamageType.Physical);
             if (target == null) return;
             var prede =  Q.GetPrediction(target);
             var pred = Qe.GetPrediction(target);
