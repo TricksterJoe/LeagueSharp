@@ -538,7 +538,7 @@ namespace Jayce
             if (!Ismelee())
             {
                 if (Q.IsReady() && E.IsReady() && Player.Mana >
-                Player.Spellbook.GetSpell(SpellSlot.E).ManaCosst + Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost
+                Player.Spellbook.GetSpell(SpellSlot.E).ManaCost + Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost
                     && GetBool("useqhr", typeof(bool)))
                 {
                     Qe.Cast(qpred.From);
