@@ -531,14 +531,25 @@ namespace Jayce
         private static void Harass()
         {
           
-            var target = TargetSelector.GetTarget(1050, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(Qe.Range, TargetSelector.DamageType.Physical);
             if (target == null) return;
-            var pred = Q.GetPrediction(target);
+            qpred.From = Qe.GetPrediction(target).CastPosition;
+            qpred1.From = Q.GetPrediction(target).CastPosition;
             if (!Ismelee())
             {
-                if (Q.IsReady() && GetBool("useqhr", typeof(bool)))
+                if (Q.IsReady() && E.IsReady() && Player.Mana >
+                Player.Spellbook.GetSpell(SpellSlot.E).ManaCosst + Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost
+                    && GetBool("useqhr", typeof(bool)))
                 {
-                    Q.Cast(pred.CastPosition);
+                    Qe.Cast(qpred.From);
+                }
+
+                if (Q.IsReady() && target.IsValidTarget(Q.Range) && (!E.IsReady() || Player.Mana <
+                                    Player.Spellbook.GetSpell(SpellSlot.E).ManaCost +
+                                    Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost)
+                    && GetBool("useqhr", typeof (bool)))
+                {
+                    Q.Cast(qpred1.From);
                 }
             }
             else
