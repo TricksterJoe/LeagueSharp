@@ -20,7 +20,7 @@ namespace Jayce
 
             AddKeyBind(Config, "Manual E->Q", "manualeq", 'A', KeyBindType.Press);
             AddKeyBind(Config, "R Spam", "flee", 'T', KeyBindType.Toggle);
-            AddBool(Config, "Disable Orbwalker", "disorb");
+            AddBool(Config, "Disable Orbwalker", "disorb", false);
            // AddKeyBind(Config, "Insec", "insec", 'Z', KeyBindType.Press);
             var combo = new Menu("Combo Settings", "Combo Settings");
             {
