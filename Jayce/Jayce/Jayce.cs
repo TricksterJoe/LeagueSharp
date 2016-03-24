@@ -160,18 +160,17 @@ namespace Jayce
                 }
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo && GetBool("useecr", typeof(bool)))
                 {
-                    var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Physical);
+                    var target = TargetSelector.GetTarget(1470, TargetSelector.DamageType.Physical);
                     if (target == null) return;
-                    var pred = Q.GetPrediction(target).CastPosition;
-                    var castposition = Player.Position.Extend(pred, Player.BoundingRadius + 150);
+                    var castposition = Player.Position.Extend(target.Position, Player.BoundingRadius + 150);
                     E.Cast(castposition);
                 }
                 if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed && GetBool("useehr", typeof (bool)))
                 {
-                    var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Physical);
+                    var target = TargetSelector.GetTarget(1470, TargetSelector.DamageType.Physical);
                     if (target == null) return;
-                    var pred = Q.GetPrediction(target).CastPosition;
-                    var castposition = Player.Position.Extend(pred, Player.BoundingRadius + 150);
+
+                    var castposition = Player.Position.Extend(target.Position, Player.BoundingRadius + 150);
                     E.Cast(castposition);
                 }
             }
@@ -390,7 +389,7 @@ namespace Jayce
         private static void FormChangeManager()
         {
             if (!GetBool("usercf", typeof (bool))) return;
-            var target = TargetSelector.GetTarget(1000, TargetSelector.DamageType.Physical);
+            var target = TargetSelector.GetTarget(1470, TargetSelector.DamageType.Physical);
             if (!target.IsValidTarget()) return;
             if (!R.IsReady()) return;
 
@@ -575,7 +574,7 @@ namespace Jayce
             if ((Q.IsReady() && !E.IsReady()) || (Q.IsReady() && E.IsReady() && Player.Mana <
                 Player.Spellbook.GetSpell(SpellSlot.E).ManaCost + Player.Spellbook.GetSpell(SpellSlot.Q).ManaCost))
             {
-                if (Player.Distance(target) < 1050 && GetBool("useqcr", typeof (bool)))
+                if (Player.Distance(target) < Q.Range && GetBool("useqcr", typeof (bool)))
                 {
                     Q.Cast(qpred1.From);
                 }
