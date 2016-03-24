@@ -19,8 +19,8 @@ namespace Jayce
             Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
 
             AddKeyBind(Config, "Manual E->Q", "manualeq", 'A', KeyBindType.Press);
-            AddKeyBind(Config, "Flee Mode", "flee", 'G', KeyBindType.Press);
-            AddKeyBind(Config, "Insec", "insec", 'Z', KeyBindType.Press);
+            AddKeyBind(Config, "R Spam", "flee", 'T', KeyBindType.Toggle);
+           // AddKeyBind(Config, "Insec", "insec", 'Z', KeyBindType.Press);
             var combo = new Menu("Combo Settings", "Combo Settings");
             {
                 var melee = new Menu("Melee Settings", "Melee Settings");
@@ -28,6 +28,7 @@ namespace Jayce
                     AddBool(melee, "Use [Q]", "useqcm");
                     AddBool(melee, "Use [W]", "usewcm");
                     AddBool(melee, "Use [E]", "useecm");
+                    AddBool(melee, "Smart [E]", "useecme");
                 }
                 var range = new Menu("Ranged Settings", "Ranged Settings");
                 {
