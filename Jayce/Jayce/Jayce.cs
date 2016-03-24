@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using LeagueSharp;
 using LeagueSharp.Common;
-using Color = System.Drawing.Color;
-using SebbyLib;
-using Orbwalking = LeagueSharp.Common.Orbwalking;
+using PredictionInput = SebbyLib.Prediction.PredictionInput;
+using SkillshotType = SebbyLib.Prediction.SkillshotType;
 
 namespace Jayce
 {
     internal class Jayce : Helper
     {
         public static Spell Q, W, E, R, Qm, Wm, Em, Qe;
-        public static SebbyLib.Prediction.PredictionInput qpred;
-        public static SebbyLib.Prediction.PredictionInput qpred1;
+        public static PredictionInput qpred;
+        public static PredictionInput qpred1;
         public static void OnLoad(EventArgs args)
         {
                if (Player.ChampionName != "Jayce") return;
@@ -33,7 +30,7 @@ namespace Jayce
             Wm = new Spell(SpellSlot.W, int.MaxValue);
             Em = new Spell(SpellSlot.E, 240);
             R = new Spell(SpellSlot.R, int.MaxValue);
-            qpred = new SebbyLib.Prediction.PredictionInput
+            qpred = new PredictionInput
             {
                 Aoe = false,
                 Collision = false,
@@ -41,10 +38,10 @@ namespace Jayce
                 Delay = Qe.Delay,
                 Range = Qe.Range,
                 Radius = Qe.Width,
-                Type = SebbyLib.Prediction.SkillshotType.SkillshotLine
+                Type = SkillshotType.SkillshotLine
             };
 
-            qpred1 = new SebbyLib.Prediction.PredictionInput
+            qpred1 = new PredictionInput
             {
                 Aoe = false,
                 Collision = false,
@@ -52,7 +49,7 @@ namespace Jayce
                 Delay = Q.Delay,
                 Range = Q.Range,
                 Radius = Q.Width,
-                Type = SebbyLib.Prediction.SkillshotType.SkillshotLine
+                Type = SkillshotType.SkillshotLine
             };
 
             Q.SetSkillshot(0.3f, 70f, 1500, true, LeagueSharp.Common.SkillshotType.SkillshotLine);         
@@ -161,7 +158,7 @@ namespace Jayce
                     var pos = Player.Position.Extend(Game.CursorPos, Player.BoundingRadius + 150);
                     E.Cast(pos);
                 }
-                if (Orbwalker.ActiveMode == LeagueSharp.Common.Orbwalking.OrbwalkingMode.Combo && GetBool("useecr", typeof(bool)))
+                if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo && GetBool("useecr", typeof(bool)))
                 {
                     var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Physical);
                     if (target == null) return;
@@ -169,7 +166,7 @@ namespace Jayce
                     var castposition = Player.Position.Extend(pred, Player.BoundingRadius + 150);
                     E.Cast(castposition);
                 }
-                if (Orbwalker.ActiveMode == LeagueSharp.Common.Orbwalking.OrbwalkingMode.Mixed && GetBool("useehr", typeof (bool)))
+                if (Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed && GetBool("useehr", typeof (bool)))
                 {
                     var target = TargetSelector.GetTarget(1300, TargetSelector.DamageType.Physical);
                     if (target == null) return;
@@ -178,7 +175,7 @@ namespace Jayce
                     E.Cast(castposition);
                 }
             }
-            if (!LeagueSharp.Common.Orbwalking.IsAutoAttack(args.SData.Name)) return;
+            if (!Orbwalking.IsAutoAttack(args.SData.Name)) return;
             if (!sender.IsMe) return;
             if (!args.SData.IsAutoAttack()) return;
             if (args.Target.Type != GameObjectType.obj_AI_Hero) return;
@@ -243,7 +240,7 @@ namespace Jayce
 
             if (GetBool("flee", typeof(KeyBind)))
             {
-               Flee();
+         //      Flee();
             }
 
             //if (GetBool("insec", typeof (KeyBind)))
@@ -422,7 +419,7 @@ namespace Jayce
                 var spellbookq = Player.Spellbook.GetSpell(SpellSlot.Q);
                 if (target.IsValidTarget(Qm.Range + 80) && Player.Mana >= spellbookq.ManaCost)
                 {
-                    if (getpred.Hitchance == LeagueSharp.Common.HitChance.Collision || !Q.IsReady())
+                    if (getpred.Hitchance == HitChance.Collision || !Q.IsReady())
                     {
                         if (spellbook.State != SpellState.Surpressed &&
                             spellbook.Level != 0)
@@ -462,7 +459,7 @@ namespace Jayce
 
         public static double EMeleeDamage(Obj_AI_Base target)
         {
-           return (new double[] { 8, 10.4, 12.8, 15.2, 17.6, 20 }[Q.Level - 1] / 100) *target.MaxHealth
+           return (new[] { 8, 10.4, 12.8, 15.2, 17.6, 20 }[Q.Level - 1] / 100) *target.MaxHealth
                 + 1*Player.FlatPhysicalDamageMod;
         }
 
