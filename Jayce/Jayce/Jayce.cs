@@ -168,7 +168,7 @@ namespace Jayce
                 {
                     W.Cast();
                     Orbwalker.ForceTarget((Obj_AI_Hero) args.Target);
-                    Orbwalking.ResetAutoAttackTimer();
+                   // Orbwalking.ResetAutoAttackTimer();
                 }
             }
         }
