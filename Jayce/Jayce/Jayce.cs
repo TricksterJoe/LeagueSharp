@@ -209,7 +209,6 @@ namespace Jayce
             {
                 W.Cast();
                 Orbwalker.ForceTarget((Obj_AI_Base) args.Target);
-                Orbwalking.ResetAutoAttackTimer();
             }
             var minions =
                 MinionManager.GetMinions(Player.Position, 300);
@@ -221,8 +220,7 @@ namespace Jayce
                     if (W.IsReady())
                     {
                             W.Cast();
-                            Orbwalker.ForceTarget(min);                      
-                        Orbwalking.ResetAutoAttackTimer();
+                            Orbwalker.ForceTarget(min);      
                     }
                 }
             }
