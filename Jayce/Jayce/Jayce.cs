@@ -414,7 +414,7 @@ namespace Jayce
                 var getpred = Q.GetPrediction(target);
                 var spellbook = Player.Spellbook.GetSpell(SpellSlot.W);
                 var spellbookq = Player.Spellbook.GetSpell(SpellSlot.Q);
-                if (target.IsValidTarget(Qm.Range + 80) && Player.Mana >= spellbookq.ManaCost)
+                if (target.IsValidTarget(Qm.Range - 20) && Player.Mana >= spellbookq.ManaCost)
                 {
                     if (getpred.Hitchance == HitChance.Collision || !Q.IsReady())
                     {
@@ -502,7 +502,7 @@ namespace Jayce
                 {
                     var aarange = Orbwalking.GetRealAutoAttackRange(target);
                     if (SpellTimer["Qm"] < 2.2 &&
-                        (Player.Distance(target) < aarange + 150 || (SpellTimer["W"] < 1.2 && CD < 1.5)))
+                        (Player.Distance(target) < aarange + 100 || (SpellTimer["Q"] < 1.2 && CD < 1.5)))
                     {
                         Em.Cast(target);
                     }
