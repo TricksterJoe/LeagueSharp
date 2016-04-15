@@ -492,6 +492,9 @@ namespace Slutty_Veigar
             if (!GetBool(name, typeof(bool))) return;
             var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.Enemy,
     MinionOrderTypes.MaxHealth);
+            if (target.Distance(Player) < 500 && E.IsReady()
+                && ((GetBool("useecombo", typeof(bool)) && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo) 
+                || (GetBool("useeharass", typeof(bool)) && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed))) return;
 
             if (minion == null)
             {
@@ -601,6 +604,12 @@ namespace Slutty_Veigar
             if ((!Player.HasBuffOfType(BuffType.Stun) && !Player.HasBuffOfType(BuffType.Taunt) &&
                  !Player.HasBuffOfType(BuffType.Snare)) && Environment.TickCount - laste < 1500) return;
             var wpred = W.GetPrediction(target);
+
+            if (target.Distance(Player) < 500 && E.IsReady()
+                && ((GetBool("useecombo", typeof (bool)) && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Combo)
+                    || (GetBool("useeharass", typeof (bool)) && Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.Mixed)))
+                return;
+
             switch (GetStringValue(name))
                 {
                     case 0:
