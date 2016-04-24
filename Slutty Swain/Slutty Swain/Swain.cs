@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
@@ -11,22 +12,13 @@ namespace Slutty_Swain
 {
     class Swain : Helper
     {
-
+        public static bool RavenForm = false;
         public static Spell Q, W, E, R;
         public static void OnLoad(EventArgs args)
         {
-            Config = new Menu(Menuname, Menuname, true);
-            if (Player.ChampionName != "Swain") return;
-
-           
-            var targetSelectorMenu = new Menu("Target Selector", "Target Selector");
-            TargetSelector.AddToMenu(targetSelectorMenu);
-            Config.AddSubMenu(targetSelectorMenu);
-
-            Orbwalker = new Orbwalking.Orbwalker(Config.SubMenu("Orbwalking"));
-            Config.AddSubMenu(new Menu("Orbwalking", "Orbwalking"));
-
-            Config.AddToMainMenu();
+            if (Player.ChampionName != "Swain") return; 
+                  
+            MenuHelper.MenuOnLoad();
 
             Q = new Spell(SpellSlot.Q, 625);
             W = new Spell(SpellSlot.W, 900);
@@ -38,24 +30,46 @@ namespace Slutty_Swain
             Game.OnUpdate += OnUpdate;
             GameObject.OnCreate += OnCreateObject;
             GameObject.OnDelete += OnDeleteObject;
+            Drawing.OnDraw += OnDraw;
+        }
+
+        private static void OnDraw(EventArgs args)
+        {
+            var qdraw = GetBool("drawq", typeof (bool));
+            var wdraw = GetBool("draww", typeof(bool));
+            var edraw = GetBool("drawe", typeof(bool));
+
+            if (qdraw && Q.IsReady() && Q.Level >= 1)
+            {
+                Render.Circle.DrawCircle(Player.Position, Q.Range, Color.DarkBlue, 3);
+            }
+
+            if (wdraw && W.IsReady() && W.Level >= 1)
+            {
+                Render.Circle.DrawCircle(Player.Position, W.Range, Color.DarkRed, 3);
+            }
+
+            if (edraw && E.IsReady() && E.Level >= 1)
+            {
+                Render.Circle.DrawCircle(Player.Position, E.Range, Color.LimeGreen, 3);
+            }
         }
 
         private static void OnDeleteObject(GameObject sender, EventArgs args)
         {
-            if (!(sender.Name.Contains("swain_demonForm")))
+            if (!sender.Name.Contains("swain_demonForm"))
                 return;
             RavenForm = false;
         }
 
         private static void OnCreateObject(GameObject sender, EventArgs args)
         {
-            if (!(sender.Name.Contains("swain_demonForm")))
+            if (!sender.Name.Contains("swain_demonForm"))
                 return;
             RavenForm = true;
         }
 
-        public static bool RavenForm = false;
-
+        
         private static void OnUpdate(EventArgs args)
         {
             switch (Orbwalker.ActiveMode)
@@ -63,8 +77,10 @@ namespace Slutty_Swain
                 case Orbwalking.OrbwalkingMode.LastHit:
                     break;
                 case Orbwalking.OrbwalkingMode.Mixed:
+                    Mixed();
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
+                    LaneClear();
                     break;
                 case Orbwalking.OrbwalkingMode.Combo:
                     Combo();
@@ -78,19 +94,95 @@ namespace Slutty_Swain
             }
         }
 
+        private static void LaneClear()
+        {
+            var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAllyForEnemy,
+                MinionOrderTypes.MaxHealth);
+
+            var useq = GetBool("useql", typeof(bool));
+            var usee = GetBool("useel", typeof(bool));
+            var user = GetBool("userl", typeof(bool));
+
+            var userrminminions = GetValue("minminionsrl");
+            var userrminmana = GetValue("minmanarl");
+
+            if (R.IsReady() && minion.Count >= userrminminions && Player.MaxMana >= userrminmana && user)
+            {
+                if (RavenForm == false)
+                {
+                    R.Cast();
+                }
+            }
+
+            if (R.IsReady() && (minion.Count < userrminminions || Player.ManaPercent < userrminmana) && user)
+            {
+                if (RavenForm)
+                {
+                    R.Cast();
+                }
+            }
+
+
+            if (minion.FirstOrDefault() == null) return;
+
+            var min = minion.FirstOrDefault();
+
+            if (min == null) return;
+
+            if (Q.IsReady() && useq)
+            {
+                Q.Cast(min);
+            }
+
+            if (E.IsReady() && usee)
+            {
+                E.Cast(min);
+            }
+
+        }
+
+        private static void Mixed()
+        {
+            var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
+
+            if (!target.IsValidTarget()) return;
+
+            var useq = GetBool("useqm", typeof (bool));
+            var usee = GetBool("useem", typeof(bool));
+
+            if (Q.IsReady() && useq)
+            {
+                Q.Cast(target);
+            }
+
+            if (E.IsReady() && usee)
+            {
+                E.Cast(target);
+            }
+        }
+
         private static void Combo()
         {
             var target = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
+
             if (!target.IsValidTarget()) return;
+
+            var useq = GetBool("useq", typeof(bool));
+            var usew = GetBool("usew", typeof(bool));
+            var usee = GetBool("usee", typeof(bool));
+            var user = GetBool("user", typeof(bool));
+            var uservalue = GetValue("minmanarc");
+
+
 
             if (RavenForm == false)
             {
-                if (Q.IsReady() && target.IsValidTarget(Q.Range))
+                if (Q.IsReady() && target.IsValidTarget(Q.Range) && useq)
                 {
                     Q.Cast(target);
                 }
 
-                if (W.IsReady())
+                if (W.IsReady() && usew)
                 {
                     var wpred = W.GetPrediction(target);
                     if (wpred.Hitchance == HitChance.Immobile || wpred.Hitchance >= HitChance.High)
@@ -99,39 +191,39 @@ namespace Slutty_Swain
                     }
                 }
 
-                if (E.IsReady() && target.IsValidTarget(E.Range))
+                if (E.IsReady() && target.IsValidTarget(E.Range) && usee)
                 {
                     E.Cast(target);
                 }
             }
 
-            if (Player.Level >= 6 && R.IsReady())
+            if (Player.Level >= 6 && R.IsReady() && user)
             {
-                if (RavenForm == false && Player.ManaPercent > 30 && target.IsValidTarget(R.Range))
+                if (RavenForm == false && Player.ManaPercent > uservalue && target.IsValidTarget(R.Range))
                 {
                     R.Cast();
                 }
-                if (RavenForm == true && (Player.ManaPercent <= 30 || !target.IsValidTarget(R.Range)))
+                if (RavenForm == true && (Player.ManaPercent <= uservalue || !target.IsValidTarget(R.Range)))
                 {
                     R.Cast();
                 }
             }
 
-            if (RavenForm == true)
+            if (RavenForm)
             {
-                foreach (var heros in HeroManager.Enemies.Where(x => x.IsValidTarget(800)))
+                foreach (var heros in HeroManager.Enemies.Where(x => x.IsValidTarget(900)))
                 {
-                    if (W.IsReady() && heros.IsValidTarget(W.Range))
+                    if (W.IsReady() && heros.IsValidTarget(W.Range) && usew)
                     {
                         W.Cast(heros);
                     }
 
-                    if (E.IsReady())
+                    if (E.IsReady() && target.IsValidTarget(E.Range) && usee)
                     {
-                        E.Cast();
+                        E.Cast(target);
                     }
 
-                    if (Q.IsReady())
+                    if (Q.IsReady() && target.IsValidTarget(Q.Range) && useq)
                     {
                         Q.Cast(target);
                     }
