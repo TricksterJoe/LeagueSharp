@@ -10,6 +10,9 @@ using LeagueSharp.Common;
 
 namespace Slutty_Swain
 {
+    /// <summary>
+    /// Main Class
+    /// </summary>
     class Swain : Helper
     {
         public static bool RavenForm = false;
@@ -33,6 +36,10 @@ namespace Slutty_Swain
             Drawing.OnDraw += OnDraw;
         }
 
+        /// <summary>
+        /// Here goes all drawings
+        /// </summary>
+        /// <param name="args"></param>
         private static void OnDraw(EventArgs args)
         {
             var qdraw = GetBool("drawq", typeof (bool));
@@ -55,6 +62,11 @@ namespace Slutty_Swain
             }
         }
 
+        /// <summary>
+        /// Will be Changed to a better method.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private static void OnDeleteObject(GameObject sender, EventArgs args)
         {
             if (!sender.Name.Contains("swain_demonForm"))
@@ -62,6 +74,11 @@ namespace Slutty_Swain
             RavenForm = false;
         }
 
+        /// <summary>
+        /// Will be changed to a better method
+        /// </summary> 
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
         private static void OnCreateObject(GameObject sender, EventArgs args)
         {
             if (!sender.Name.Contains("swain_demonForm"))
@@ -70,6 +87,10 @@ namespace Slutty_Swain
         }
 
         
+        /// <summary>
+        /// On Update (Updates every tick)
+        /// </summary>
+        /// <param name="args"></param>
         private static void OnUpdate(EventArgs args)
         {
             switch (Orbwalker.ActiveMode)
@@ -94,6 +115,9 @@ namespace Slutty_Swain
             }
         }
 
+        /// <summary>
+        /// Lane Clear
+        /// </summary>
         private static void LaneClear()
         {
             var minion = MinionManager.GetMinions(Player.Position, Q.Range, MinionTypes.All, MinionTeam.NotAllyForEnemy,
@@ -141,6 +165,10 @@ namespace Slutty_Swain
 
         }
 
+
+        /// <summary>
+        /// Mixed/Harass mode
+        /// </summary>
         private static void Mixed()
         {
             var target = TargetSelector.GetTarget(Q.Range, TargetSelector.DamageType.Magical);
@@ -161,6 +189,9 @@ namespace Slutty_Swain
             }
         }
 
+        /// <summary>
+        /// Combo
+        /// </summary>
         private static void Combo()
         {
             var target = TargetSelector.GetTarget(W.Range, TargetSelector.DamageType.Magical);
