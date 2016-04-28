@@ -105,6 +105,7 @@ namespace Slutty_Swain
                     break;
                 case Orbwalking.OrbwalkingMode.Combo:
                     Combo();
+                    FormChange();
                     break;
                 case Orbwalking.OrbwalkingMode.Freeze:
                     break;
@@ -112,6 +113,55 @@ namespace Slutty_Swain
                     break;
                 case Orbwalking.OrbwalkingMode.None:
                     break;
+            }
+        }
+
+        private static void FormChange()
+        {
+            var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
+
+            if (!target.IsValidTarget()) return;
+            var useq = GetBool("useq", typeof(bool));
+            var usew = GetBool("usew", typeof(bool));
+            var usee = GetBool("usee", typeof(bool));
+            var user = GetBool("user", typeof(bool));
+            var uservalue = GetValue("minmanarc");
+
+
+            if (Player.Level >= 6 && R.IsReady() && user)
+            {
+                foreach (var heros in HeroManager.Enemies.Where(x => x.IsValidTarget(900)))
+                {
+                    if (RavenForm == false && Player.ManaPercent > uservalue && heros.IsValidTarget(R.Range))
+                    {
+                        R.Cast();
+                    }
+                    if (RavenForm == true && (Player.ManaPercent <= uservalue || !heros.IsValidTarget(R.Range)))
+                    {
+                        R.Cast();
+                    }
+                }
+            }
+
+            if (RavenForm)
+            {
+                foreach (var heros in HeroManager.Enemies.Where(x => x.IsValidTarget(900)))
+                {
+                    if (W.IsReady() && heros.IsValidTarget(W.Range) && usew)
+                    {
+                        W.Cast(heros);
+                    }
+
+                    if (E.IsReady() && target.IsValidTarget(E.Range) && usee)
+                    {
+                        E.Cast(target);
+                    }
+
+                    if (Q.IsReady() && target.IsValidTarget(Q.Range) && useq)
+                    {
+                        Q.Cast(target);
+                    }
+                }
             }
         }
 
@@ -225,39 +275,6 @@ namespace Slutty_Swain
                 if (E.IsReady() && target.IsValidTarget(E.Range) && usee)
                 {
                     E.Cast(target);
-                }
-            }
-
-            if (Player.Level >= 6 && R.IsReady() && user)
-            {
-                if (RavenForm == false && Player.ManaPercent > uservalue && target.IsValidTarget(R.Range))
-                {
-                    R.Cast();
-                }
-                if (RavenForm == true && (Player.ManaPercent <= uservalue || !target.IsValidTarget(R.Range)))
-                {
-                    R.Cast();
-                }
-            }
-
-            if (RavenForm)
-            {
-                foreach (var heros in HeroManager.Enemies.Where(x => x.IsValidTarget(900)))
-                {
-                    if (W.IsReady() && heros.IsValidTarget(W.Range) && usew)
-                    {
-                        W.Cast(heros);
-                    }
-
-                    if (E.IsReady() && target.IsValidTarget(E.Range) && usee)
-                    {
-                        E.Cast(target);
-                    }
-
-                    if (Q.IsReady() && target.IsValidTarget(Q.Range) && useq)
-                    {
-                        Q.Cast(target);
-                    }
                 }
             }
         }
