@@ -130,9 +130,9 @@ namespace Slutty_Swain
             var userrminminions = GetValue("minminionsrl");
             var userrminmana = GetValue("minmanarl");
 
-            if (R.IsReady() && minion.Count >= userrminminions && Player.MaxMana >= userrminmana && user)
+            if (R.IsReady() && minion.Count >= userrminminions && Player.ManaPercent >= userrminmana && user)
             {
-                if (RavenForm == false)
+                if (RavenForm == true)
                 {
                     R.Cast();
                 }
@@ -140,7 +140,7 @@ namespace Slutty_Swain
 
             if (R.IsReady() && (minion.Count < userrminminions || Player.ManaPercent < userrminmana) && user)
             {
-                if (RavenForm)
+                if (RavenForm == false)
                 {
                     R.Cast();
                 }

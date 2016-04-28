@@ -28,14 +28,14 @@ namespace Slutty_Swain
                 AddBool(combo, "Use [R]", "user");
                 AddValue(combo, "Min %Mana for [R]", "minmanarc", 30);
             }
-            combo.AddSubMenu(Config);
+            Config.AddSubMenu(combo);
 
             var mixed = new Menu("Mixed Settings", "Mixed Settings");
             {
                 AddBool(combo, "Use [Q]", "useqm");
                 AddBool(combo, "Use [E]", "useem");
             }
-            mixed.AddSubMenu(mixed);
+            Config.AddSubMenu(mixed);
 
             var laneclear = new Menu("Lane Clear Settings", "Lane Clear Settings");
             {
@@ -45,7 +45,7 @@ namespace Slutty_Swain
                 AddValue(laneclear, "Min Minions for [R]", "minminionsrl", 3, 1, 10);
                 AddValue(laneclear, "Min %Mana for [R]", "minmanarl", 30);
             }
-            laneclear.AddSubMenu(Config);
+            Config.AddSubMenu(laneclear);
 
             var drawings = new Menu("Drawing Settings", "Drawing Settings");
             {
@@ -53,6 +53,7 @@ namespace Slutty_Swain
                 AddBool(drawings, "Draw [W]", "draww", false);
                 AddBool(drawings, "Draw [E]", "drawe", false);
             }
+            Config.AddSubMenu(drawings);
 
             Config.AddToMainMenu();
         }
