@@ -552,21 +552,39 @@ namespace Slutty_ryze
 
                 if (GlobalManager.GetPassiveBuff == 2)
                 {
-
+                    CastR(target);
                     CastQn(target);
                     CastW(target);
+                    CastQn(target);
                     CastE(target);
-                    CastR(target);
-
+                    CastQn(target);
+                    CastW(target);
+                    CastQn(target);
+                    CastE(target);
                 }
 
 
-                if (GlobalManager.GetPassiveBuff == 3)
+                if (GlobalManager.GetPassiveBuff == 3 && Champion.R.IsReady())
                 {
+                    CastR(target);
+                    CastW(target);
+                    CastQn(target);
+                    CastE(target);
+                    CastQn(target);
+                    CastW(target);
+                    CastQn(target);
+                    CastE(target);
+                }
+
+                if (GlobalManager.GetPassiveBuff == 3 && !Champion.R.IsReady())
+                {
+                    CastQn(target);
+                    CastW(target);
                     CastQn(target);
                     CastE(target);
                     CastW(target);
-                    CastR(target);
+                    CastQn(target);
+                    CastE(target);
                 }
 
                 if (GlobalManager.GetPassiveBuff == 4)

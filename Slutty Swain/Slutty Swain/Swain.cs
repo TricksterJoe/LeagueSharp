@@ -121,6 +121,7 @@ namespace Slutty_Swain
             var target = TargetSelector.GetTarget(R.Range, TargetSelector.DamageType.Magical);
 
             if (!target.IsValidTarget()) return;
+
             var useq = GetBool("useq", typeof(bool));
             var usew = GetBool("usew", typeof(bool));
             var usee = GetBool("usee", typeof(bool));
