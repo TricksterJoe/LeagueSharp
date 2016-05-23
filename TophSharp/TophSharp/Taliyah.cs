@@ -199,8 +199,10 @@ MinionOrderTypes.MaxHealth);
                 }
             }
 
+
+
             var circularposition = _w.GetCircularFarmLocation(minions);
-            if (qlaneclear && circularposition.MinionsHit >= minminionsw && _q.IsReady())
+            if (qlaneclear && circularposition.MinionsHit >= minminionsw && _w.IsReady())
             {
                 _w.Cast(circularposition.Position);
             }

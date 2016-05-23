@@ -59,7 +59,7 @@ namespace TophSharp
 
             var lasthit = new Menu("Last Hit Settings", "Last Hit Settings");
             {
-                AddValue(laneclear, "Min Mana%", "minmanal", 30, 0, 100);
+                AddValue(lasthit, "Min Mana%", "minmanal", 30, 0, 100);
                 AddBools(lasthit, "Last Hit [Q]", "qlasthit", "Last Hit With Q");
                 AddBools(lasthit, "Last Hit [W]", "wlasthit", "Last Hit With W");
             }
