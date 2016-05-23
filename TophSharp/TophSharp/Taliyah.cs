@@ -68,10 +68,13 @@ namespace TophSharp
             switch (Helper.Orbwalker.ActiveMode)
             {
                 case Orbwalking.OrbwalkingMode.LastHit:
+                    LastHit();
                     break;
                 case Orbwalking.OrbwalkingMode.Mixed:
+                    Mixed();
                     break;
                 case Orbwalking.OrbwalkingMode.LaneClear:
+                    LaneClear();
                     break;
                 case Orbwalking.OrbwalkingMode.Combo:
                     Combo();
@@ -82,18 +85,86 @@ namespace TophSharp
                     break;
                 case Orbwalking.OrbwalkingMode.None:
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+            }
+
+            if (GetBool("onofftoggle", typeof (KeyBind)))
+            {
+                Mixed();
             }
         }
-        private static float IgniteDamage(Obj_AI_Hero target)
+
+        private static void LastHit()
+        {
+            var minions = MinionManager.GetMinions(Player.Position, _q.Range, MinionTypes.All, MinionTeam.Enemy,
+MinionOrderTypes.MaxHealth);
+
+            var mana = GetValue("minmanal");
+            var useqlasthit = GetBool("qlasthit", typeof(bool));
+            var usewlasthit = GetBool("wlasthit", typeof(bool));
+
+            if (Player.ManaPercent < mana)
+                return;
+
+            foreach (var minion in minions)
+            {
+                if (minion.Health <= _q.GetDamage(minion) && useqlasthit && _q.IsReady())
+                {
+                    _q.Cast(minion);
+                }
+                if (minion.Health <= _w.GetDamage(minion) && usewlasthit && _w.IsReady() && minion.Distance(Player) <= _w.Range)
+                {
+                    _w.Cast(minion);
+                }
+            }
+        }
+
+        private static void LaneClear()
+        {
+            var minions = MinionManager.GetMinions(Player.Position, _q.Range, MinionTypes.All, MinionTeam.Enemy,
+       MinionOrderTypes.MaxHealth);
+
+            var mana = GetValue("minmana");
+            var useqlasthit = GetBool("qlasthitlane", typeof (bool));
+            var usewlasthit = GetBool("wlasthitlane", typeof (bool));
+            var qlaneclear = GetBool("qlaneclear", typeof (bool));
+            var wlaneclear = GetBool("wlaneclear", typeof (bool));
+            var minminionsw = GetValue("wlaneclearmin");
+
+            if (Player.ManaPercent < mana)
+                return;
+
+            foreach (var minion in minions)
+            {
+                if (minion.Health <= _q.GetDamage(minion) && useqlasthit && _q.IsReady())
+                {
+                    _q.Cast(minion);
+                }
+                if (minion.Health <= _w.GetDamage(minion) && usewlasthit && _w.IsReady() && minion.Distance(Player) <= _w.Range)
+                {
+                    _w.Cast(minion);
+                }
+
+                if (wlaneclear && _w.IsReady())
+                {
+                    _w.Cast(minions.FirstOrDefault());
+                }
+            }
+
+            var circularposition = _w.GetCircularFarmLocation(minions);
+            if (qlaneclear && circularposition.MinionsHit >= minminionsw && _q.IsReady())
+            {
+                _w.Cast(circularposition.Position);
+            }
+        }
+
+        private static float IgniteDamage(Obj_AI_Base target)
         {
             if (Ignite == SpellSlot.Unknown || Player.Spellbook.CanUseSpell(Ignite) != SpellState.Ready)
                 return 0f;
             return (float)Player.GetSummonerSpellDamage(target, Damage.SummonerSpell.Ignite);
         }
 
-        private static bool CanUse(Spell spell, Obj_AI_Base target)
+        private static bool CanUse(Spell spell, AttackableUnit target)
         {
             return spell.IsReady() && Player.Mana >= spell.ManaCost && target.IsValidTarget(spell.Range);
         }
@@ -109,8 +180,36 @@ namespace TophSharp
             return cd;
         }
 
+        private static void Mixed()
+        {
+            var useq = GetBool("useqh", typeof(bool));
+            var usew = GetBool("usewh", typeof(bool));
+
+            var target = TargetSelector.GetTarget(Player, _q.Range, TargetSelector.DamageType.Magical);
+            if (!target.IsValidTarget())
+                return;
+
+            var wpred = _w.GetPrediction(target);
+
+            if (CanUse(_q, target) && useq)
+            {
+                _q.Cast(target);
+            }
+
+            if (CanUse(_w, target) && usew && wpred.Hitchance >= HitChance.High)
+            {
+                _w.Cast(wpred.CastPosition);
+            }
+
+        }
+
         private static void Combo()
         {
+            var useq = GetBool("useq", typeof (bool));
+            var usew = GetBool("usew", typeof(bool));
+            var usee = GetBool("usee", typeof(bool));
+
+
             var target = TargetSelector.GetTarget(Player, _q.Range, TargetSelector.DamageType.Magical);
             if (!target.IsValidTarget()) return;
 
@@ -129,29 +228,31 @@ namespace TophSharp
 
             var wpred = _w.GetPrediction(target);
 
-            if (CanUse(_q, target))
+            if (CanUse(_q, target) && useq)
             {
                 _q.Cast(target);
             }
 
-            if (CanUse(_e, target) && (CanUse(_w, target) || SpellUpSoon(SpellSlot.W) < 0.5f))
+            if (CanUse(_e, target) && (CanUse(_w, target) || SpellUpSoon(SpellSlot.W) < 0.5f) && usee)
             {
                 _e.Cast(target);
-                    EJustUsed = Environment.TickCount;
-                
+                EJustUsed = Environment.TickCount;
+    
             }
 
-            if (Environment.TickCount - EJustUsed < 2500 && Environment.TickCount - EJustUsed > 500 && CanUse(_w, target) && !CanUse(_e, target))
+            if (Environment.TickCount - EJustUsed < 2500 && Environment.TickCount - EJustUsed > 500 &&
+                CanUse(_w, target) && !CanUse(_e, target) && usew && wpred.Hitchance >= HitChance.High) 
             {
                 _w.Cast(wpred.CastPosition);
             }
 
-            if (!CanUse(_e, target) && CanUse(_w, target) && SpellUpSoon(SpellSlot.E) > 1f)
+            if (!CanUse(_e, target) && CanUse(_w, target) && SpellUpSoon(SpellSlot.E) > 1f && usew &&
+                wpred.Hitchance >= HitChance.High) 
             {
                 _w.Cast(wpred.CastPosition);
             }
 
-            if (SpellUpSoon(SpellSlot.W) < 0.9f && CanUse(_e, target))
+            if (SpellUpSoon(SpellSlot.W) < 0.9f && CanUse(_e, target) && usee)
             {
                 _e.Cast(target);
             }

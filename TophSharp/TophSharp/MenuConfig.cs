@@ -33,6 +33,7 @@ namespace TophSharp
             {
                 AddBools(harass, "Use [Q]", "useqh", "Use Q");
                 AddBools(harass, "Use [W]", "usewh", "Use W");
+                
             }
             Config.AddSubMenu(harass);
 
@@ -41,15 +42,16 @@ namespace TophSharp
                 AddKeyBind(autoharass, "Toggle", "onofftoggle", 'T', KeyBindType.Toggle);
                 AddBools(autoharass, "Use [Q]", "useqha", "Use Q");
                 AddBools(autoharass, "Use [W]", "usewha", "Use W");
+                
             }
             Config.AddSubMenu(autoharass);
 
             var laneclear = new Menu("Lane Clear Settings", "Lane Clear Settings");
             {
+                AddValue(laneclear, "Min Mana%", "minmana", 30, 0, 100);
                 AddBools(laneclear, "Last Hit [Q]", "qlasthitlane", "Last Hit With Q In Lane Clear");
                 AddBools(laneclear, "Last Hit [W]", "wlasthitlane", "Last Hit With W In Lane Clear");
                 AddBools(laneclear, "Use [Q]", "qlaneclear", "Use Q Always");
-                AddValue(laneclear, "Min Minions To [Q]", "qlaneclearmin", 3, 1, 20);
                 AddBools(laneclear, "Use [W]", "wlaneclear", "Use W Always");
                 AddValue(laneclear, "Min Minions To [W]", "wlaneclearmin", 3, 1, 20);
             }
