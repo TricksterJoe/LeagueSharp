@@ -18,17 +18,19 @@ namespace TophSharp
         private static Spell _e;
         private static Spell _r;
         public static SpellSlot Ignite;
+        private static bool casted;
 
         public static void OnLoad(EventArgs args)
         {
             MenuConfig.MenuLoaded();
             Ignite = Player.GetSpellSlot("SummonerDot");
             // thanks to Shine for spell values!
+
             _q = new Spell(SpellSlot.Q, 900f);
-            _q.SetSkillshot(0f, 60f, _q.Instance.SData.MissileSpeed, true, SkillshotType.SkillshotLine);
+            _q.SetSkillshot(0.5f, 60f, _q.Instance.SData.MissileSpeed, true, SkillshotType.SkillshotLine);
 
             _w = new Spell(SpellSlot.W, 800f);
-            _w.SetSkillshot(0.5f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
+            _w.SetSkillshot(0.8f, 50f, float.MaxValue, false, SkillshotType.SkillshotCircle);
 
             _e = new Spell(SpellSlot.E, 700f);
             _e.SetSkillshot(0.25f, 150f, 2000f, false, SkillshotType.SkillshotLine);
@@ -38,9 +40,29 @@ namespace TophSharp
             AntiGapcloser.OnEnemyGapcloser += OnGapClose;
             Interrupter2.OnInterruptableTarget += OnInterrupt;
             Drawing.OnDraw += OnDraw;
+            Spellbook.OnCastSpell += OnCastSpell;
         }
 
-        private static void OnDraw(EventArgs args)
+        private static void OnCastSpell(Spellbook sender, SpellbookCastSpellEventArgs args)
+        {
+            var usee = GetBool("usee", typeof(bool));
+            var target = TargetSelector.GetTarget(Player, _q.Range, TargetSelector.DamageType.Magical);
+            if (!target.IsValidTarget())
+                return;
+
+            if (CanUse(_e, target) && (CanUse(_w, target) || SpellUpSoon(SpellSlot.W) < 0.5f) && usee)
+            {
+
+                if (args.Slot == SpellSlot.E)
+                {
+                    EJustUsed = Environment.TickCount;
+                }
+
+            }
+        }
+
+        private static
+            void OnDraw(EventArgs args)
         {
             var drawq = GetBool("drawq", typeof(bool));
             var draww = GetBool("draww", typeof(bool));
@@ -67,10 +89,11 @@ namespace TophSharp
 
         private static void OnInterrupt(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
         {
-            if (sender.IsValid && CanUse(_w, sender))
-            {
-                _w.Cast(sender);
-            }
+                if (sender.IsValid && CanUse(_w, sender))
+                {
+
+                    _w.Cast(sender);
+                }
         }
 
         private static void OnGapClose(ActiveGapcloser gapcloser)
@@ -170,9 +193,9 @@ MinionOrderTypes.MaxHealth);
                     _w.Cast(minion);
                 }
 
-                if (wlaneclear && _w.IsReady())
+                if (qlaneclear && _q.IsReady())
                 {
-                    _w.Cast(minions.FirstOrDefault());
+                    _q.Cast(minion);
                 }
             }
 
@@ -253,32 +276,39 @@ MinionOrderTypes.MaxHealth);
             }
 
             var wpred = _w.GetPrediction(target);
+            var qpred = _q.GetPrediction(target);
 
-            if (CanUse(_q, target) && useq)
+            if (CanUse(_q, target) && useq && qpred.Hitchance > HitChance.High)
             {
-                _q.Cast(target);
+                _q.Cast(qpred.CastPosition);
             }
 
-            if (CanUse(_e, target) && (CanUse(_w, target) || SpellUpSoon(SpellSlot.W) < 0.5f) && usee)
-            {
-                _e.Cast(target);
-                EJustUsed = Environment.TickCount;
-    
+            if ((CanUse(_w, target) || SpellUpSoon(SpellSlot.W) < 0.5f) && usee && _e.IsReady() && target.IsValidTarget(_q.Range))
+            {         
+                      
+                _e.Cast(target);              
             }
 
             if (Environment.TickCount - EJustUsed < 2500 && Environment.TickCount - EJustUsed > 500 &&
-                CanUse(_w, target) && !CanUse(_e, target) && usew && wpred.Hitchance >= HitChance.High) 
+                CanUse(_w, target) && !CanUse(_e, target) && usew && wpred.Hitchance >= HitChance.VeryHigh) 
             {
                 _w.Cast(wpred.CastPosition);
             }
 
             if (!CanUse(_e, target) && CanUse(_w, target) && SpellUpSoon(SpellSlot.E) > 1f && usew &&
-                wpred.Hitchance >= HitChance.High) 
+                wpred.Hitchance >= HitChance.VeryHigh)
             {
+                if (CanUse(_e, target) && (CanUse(_w, target) || SpellUpSoon(SpellSlot.W) < 0.5f) && usee) return;
                 _w.Cast(wpred.CastPosition);
             }
 
             if (SpellUpSoon(SpellSlot.W) < 0.9f && CanUse(_e, target) && usee)
+            {
+                
+                _e.Cast(target);
+            }
+
+            if (SpellUpSoon(SpellSlot.W) > 2f && CanUse(_e, target) && usee)
             {
                 _e.Cast(target);
             }
