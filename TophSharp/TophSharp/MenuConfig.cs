@@ -59,6 +59,7 @@ namespace TophSharp
 
             var lasthit = new Menu("Last Hit Settings", "Last Hit Settings");
             {
+                AddValue(laneclear, "Min Mana%", "minmanal", 30, 0, 100);
                 AddBools(lasthit, "Last Hit [Q]", "qlasthit", "Last Hit With Q");
                 AddBools(lasthit, "Last Hit [W]", "wlasthit", "Last Hit With W");
             }
@@ -78,7 +79,6 @@ namespace TophSharp
                 AddBools(drawings, "Draw [Q] Range", "drawq", "Q Range", false);
                 AddBools(drawings, "Draw [W] Range", "draww", "W Range", false);
                 AddBools(drawings, "Draw [E] Range", "drawe", "E Range", false);
-               // AddBools(drawings, "Draw [R] Range", "drawr", "R Range", false);
             }
             Config.AddSubMenu(drawings);
             

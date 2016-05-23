@@ -37,6 +37,32 @@ namespace TophSharp
             CustomEvents.Unit.OnDash += OnDash;
             AntiGapcloser.OnEnemyGapcloser += OnGapClose;
             Interrupter2.OnInterruptableTarget += OnInterrupt;
+            Drawing.OnDraw += OnDraw;
+        }
+
+        private static void OnDraw(EventArgs args)
+        {
+            var drawq = GetBool("drawq", typeof(bool));
+            var draww = GetBool("draww", typeof(bool));
+            var drawe = GetBool("drawe", typeof(bool));
+
+            if (_q.Level > 0 && drawq)
+            {
+                var color = _q.IsReady() ? Color.CadetBlue : Color.Red;
+                Render.Circle.DrawCircle(Player.Position, _q.Range, color, 3);
+            }
+
+            if (_w.Level > 0 && draww)
+            {
+                var color = _w.IsReady() ? Color.Green : Color.Red;
+                Render.Circle.DrawCircle(Player.Position, _w.Range, color, 3);
+            }
+
+            if (_e.Level > 0 && drawe)
+            {
+                var color = _e.IsReady() ? Color.DarkOrchid : Color.Red;
+                Render.Circle.DrawCircle(Player.Position, _e.Range, color, 3);
+            }
         }
 
         private static void OnInterrupt(Obj_AI_Hero sender, Interrupter2.InterruptableTargetEventArgs args)
