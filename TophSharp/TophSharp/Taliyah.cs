@@ -128,11 +128,7 @@ namespace TophSharp
                 case Orbwalking.OrbwalkingMode.Combo:
                     Combo();
                     break;
-                case Orbwalking.OrbwalkingMode.Freeze:
-                    break;
-                case Orbwalking.OrbwalkingMode.CustomMode:
-                    break;
-                case Orbwalking.OrbwalkingMode.None:
+                default:
                     break;
             }
 
