@@ -170,7 +170,6 @@ namespace Slutty_ryze
                     .SetValue(new Slider(3, 1, 4));
                 passiveMenu.AddItem(new MenuItem("autoPassiveTimer", "Refresh Passive Every (s)"))
                     .SetValue(new Slider(5, 1, 10));
-                passiveMenu.AddItem(new MenuItem("stackMana", "Min. % Mana")).SetValue(new Slider(50));
             }
 
             var itemMenu = new Menu("Items", "itemsettings");
