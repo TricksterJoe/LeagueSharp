@@ -440,71 +440,6 @@ namespace Slutty_ryze
                             }
                         }
 
-                        //if (!Champion.R.IsReady())
-                        //{
-                        //    if (GlobalManager.GetPassiveBuff <= 1 &&
-                        //        !GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
-                        //    {
-                        //        if (rSpell)
-                        //            CastR(target, false);
-                        //        if (eSpell)
-                        //            CastE(target, false);
-                        //        if (qSpell)
-                        //            CastQ(target, false);
-                        //        if (wSpell)
-                        //            CastW(target, false);
-                        //    }
-
-                        //    if (GlobalManager.GetPassiveBuff == 2)
-                        //    {
-                        //        if (rSpell)
-                        //            CastR(target, false);
-                        //        if (eSpell)
-                        //            CastE(target, false);
-                        //        if (wSpell)
-                        //            CastW(target, false);
-                        //        if (qSpell)
-                        //            CastQn(target, false);
-                        //    }
-
-
-                        //    if (GlobalManager.GetPassiveBuff == 3)
-                        //    {
-                        //        if (wSpell)
-                        //            CastW(target, false);
-                        //        if (rSpell)
-                        //            CastR(target, false);
-                        //        if (qSpell)
-                        //            CastQn(target, false);
-                        //        if (eSpell)
-                        //            CastE(target, false);
-                        //    }
-
-                        //    if (GlobalManager.GetPassiveBuff == 4)
-                        //    {
-                        //        if (eSpell)
-                        //            CastE(target, false);
-                        //        if (rSpell)
-                        //            CastR(target, false);
-                        //        if (wSpell)
-                        //            CastW(target, false);
-                        //        if (qSpell)
-                        //            CastQn(target, false);
-                        //    }
-
-                        //    if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
-                        //    {
-                        //        if (rSpell)
-                        //            CastR(target, false);
-                        //        if (wSpell)
-                        //            CastW(target, false);
-                        //        if (qSpell)
-                        //            CastQn(target, false);
-                        //        if (eSpell)
-                        //            CastE(target, false);
-                        //    }
-                        //}
-
 
                         if (Champion.R.IsReady() &&
                             (GlobalManager.GetPassiveBuff == 4 ||
@@ -542,57 +477,115 @@ namespace Slutty_ryze
 
             if (target.IsValidTarget(Champion.Q.Range))
             {
-                if (GlobalManager.GetPassiveBuff <= 1 && !GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
+                if (Champion.R.IsReady())
                 {
-                    CastQ(target);
-                    CastE(target);
-                    CastW(target);
-                    CastR(target);
+                    if (GlobalManager.GetPassiveBuff < 1 && !GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
+                    {
+                        CastQn(target);
+                        CastE(target);
+                        CastW(target);
+                        CastR(target);
+                    }
+
+                    if (GlobalManager.GetPassiveBuff == 1)
+                    {
+                        CastR(target);
+                        CastE(target);
+                        CastQn(target);
+                        CastW(target);
+                        CastQn(target);
+                        CastE(target);
+                        CastQn(target);
+                        CastW(target);
+                    }
+
+                    if (GlobalManager.GetPassiveBuff == 2)
+                    {
+                        CastR(target);
+                        CastE(target);
+                        CastQn(target);
+                        CastW(target);
+                        CastQn(target);
+                        CastE(target);
+                        CastQn(target);
+                        CastW(target);
+                    }
+
+                    if (GlobalManager.GetPassiveBuff == 3)
+                    {
+                        if (Champion.Q.IsReady())
+                        {
+                            CastQn(target);
+                            CastW(target);
+                            CastQn(target);
+                            CastE(target);
+                            CastQn(target);
+                            CastW(target);
+                            CastQn(target);
+                            CastE(target);
+                        }
+                        else
+                        {
+                            CastR(target);
+                            CastW(target);
+                            CastQn(target);
+                            CastE(target);
+                            CastQn(target);
+                            CastW(target);
+                            CastQn(target);
+                            CastE(target);
+                        }
+                    }
+
+                    if (GlobalManager.GetPassiveBuff == 4)
+                    {
+                        CastW(target);
+                        CastQn(target);
+                        CastE(target);
+                        CastQn(target);
+                        CastW(target);
+                        CastQn(target);
+                        CastE(target);
+                    }
+
                 }
-
-                if (GlobalManager.GetPassiveBuff == 2)
+                else
                 {
-                    CastR(target);
-                    CastQn(target);
-                    CastW(target);
-                    CastQn(target);
-                    CastE(target);
-                    CastQn(target);
-                    CastW(target);
-                    CastQn(target);
-                    CastE(target);
-                }
+                    if (GlobalManager.GetPassiveBuff <= 2 && !GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
+                    {
+                        CastE(target);
+                        CastQn(target);
+                        CastW(target);
+                        CastQn(target);
+                        CastE(target);
+                        CastQn(target);
+                        CastW(target);
+                        CastQn(target);
+                        CastE(target);
+                    }
 
+                    if (GlobalManager.GetPassiveBuff == 3)
+                    {
+                        CastQn(target);
+                        CastW(target);
+                        CastQn(target);
+                        CastE(target);
+                        CastQ(target);
+                        CastW(target);
+                        CastQn(target);
+                        CastE(target);
+                    }
 
-                if (GlobalManager.GetPassiveBuff == 3 && Champion.R.IsReady())
-                {
-                    CastR(target);
-                    CastW(target);
-                    CastQn(target);
-                    CastE(target);
-                    CastQn(target);
-                    CastW(target);
-                    CastQn(target);
-                    CastE(target);
-                }
-
-                if (GlobalManager.GetPassiveBuff == 3 && !Champion.R.IsReady())
-                {
-                    CastQn(target);
-                    CastW(target);
-                    CastQn(target);
-                    CastE(target);
-                    CastW(target);
-                    CastQn(target);
-                    CastE(target);
-                }
-
-                if (GlobalManager.GetPassiveBuff == 4)
-                {
-                    CastW(target);
-                    CastQn(target);
-                    CastE(target);
-                    CastR(target);
+                    if (GlobalManager.GetPassiveBuff == 4)
+                    {
+                        CastW(target);
+                        CastQn(target);
+                        CastE(target);
+                        CastQn(target);
+                        CastW(target);
+                        CastQn(target);
+                        CastE(target);
+                    }
                 }
 
                 if (GlobalManager.GetHero.HasBuff("ryzepassivecharged"))
@@ -600,24 +593,9 @@ namespace Slutty_ryze
                     CastW(target);
                     CastQn(target);
                     CastE(target);
-                    CastR(target);
                 }
             }
-           else
-           {
-               if (wSpell 
-                   && Champion.W.IsReady()
-                 && target.IsValidTarget(Champion.W.Range))
-                  Champion.W.CastOnUnit(target);
 
-                if (qSpell
-                 && Champion.Qn.IsReady()
-                 && target.IsValidTarget(Champion.Qn.Range))
-                  Champion.Qn.Cast(target);
-
-              if (eSpell
-                  && Champion.E.IsReady()
-                    && target.IsValidTarget(Champion.E.Range))                  Champion.E.CastOnUnit(target);            }
             if (Champion.R.IsReady() && (GlobalManager.GetPassiveBuff == 4 || GlobalManager.GetHero.HasBuff("ryzepassivecharged")) && rSpell)
             {
                 if (!Champion.Q.IsReady() && !Champion.W.IsReady() && !Champion.E.IsReady())

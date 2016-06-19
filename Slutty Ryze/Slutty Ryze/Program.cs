@@ -44,7 +44,7 @@ namespace Slutty_ryze
             Console.WriteLine(@"Loading Your Slutty Menu...");
             GlobalManager.Config = MenuManager.GetMenu();
             GlobalManager.Config.AddToMainMenu();
-            Printmsg("Ryze Assembly Loaded! Make sure to test new combo!");
+            Printmsg("Ryze Assembly Loaded! Make sure to test new combo! (IMPROVED BIG TIME! GIVE IT A TRY!");
             Printmsg1("Current Version: " + typeof(Program).Assembly.GetName().Version);
             Printmsg2("Don't Forget To " + "<font color='#00ff00'>[Upvote]</font> <font color='#FFFFFF'>" + "The Assembly In The Databse" + "</font>");
             //Other damge inficators in MenuManager ????
