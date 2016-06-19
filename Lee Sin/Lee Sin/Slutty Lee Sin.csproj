@@ -45,7 +45,7 @@
     <Reference Include="SebbyLib">
       <HintPath>C:\LeagueSharp\System\SebbyLib.dll</HintPath>
     </Reference>
-    <Reference Include="SharpDX.Direct3D9">
+    <Reference Include="SharpDX">
       <HintPath>C:\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
     <Reference Include="System" />
