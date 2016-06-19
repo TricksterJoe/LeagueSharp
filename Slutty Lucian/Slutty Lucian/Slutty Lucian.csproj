@@ -45,6 +45,9 @@
     <Reference Include="SharpDX">
       <HintPath>C:\Leaguesharp621\LeagueSharp\System\SharpDX.dll</HintPath>
     </Reference>
+    <Reference Include="SharpDX.Direct3D9">
+      <HintPath>..\..\..\..\..\..\..\LeagueSharp3\System\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
