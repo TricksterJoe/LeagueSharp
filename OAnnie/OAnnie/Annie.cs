@@ -3,6 +3,7 @@ using System.Linq;
 using LeagueSharp;
 using LeagueSharp.Common;
 using SharpDX;
+using SharpDX.Direct3D;
 
 namespace OAnnie
 {
