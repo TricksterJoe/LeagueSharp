@@ -311,7 +311,8 @@ namespace Slutty_ryze
                 {
                         Champion.W.Cast(target);
                 }
-                else if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady())
+                else if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() &&
+                         (!Champion.W.IsReady() || !target.IsValidTarget(Champion.W.Range - 50))) ;
                 {
                         Champion.Q.Cast(target);
                   

@@ -122,18 +122,23 @@ namespace Slutty_ryze
                 if (GlobalManager.Config.Item("chase").GetValue<KeyBind>().Active)
                 {
                     GlobalManager.GetHero.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                    var targets = TargetSelector.GetTarget(Champion.W.Range + 200, TargetSelector.DamageType.Magical);
-                    if (targets == null)
+                    var targets = TargetSelector.GetTarget(3500, TargetSelector.DamageType.Magical);
+                    if (!targets.IsValidTarget())
                         return;
 
-                    if (GlobalManager.Config.Item("usewchase").GetValue<bool>())
+                    if (GlobalManager.Config.Item("usewchase").GetValue<bool>() && targets.IsValidTarget(Champion.E.Range))
                         LaneOptions.CastW(targets);
+
                     var target1 = TargetSelector.GetSelectedTarget();
+                    if (!target1.IsValidTarget(2500)) return;
                     if (GlobalManager.Config.Item("chaser").GetValue<bool>() &&
                         target1.Distance(GlobalManager.GetHero) > Champion.W.Range + 200 &&
-                        targets.Distance(GlobalManager.GetHero) < 1000)
-                        Champion.R.Cast(GlobalManager.GetHero.Position.Extend(target1.Position,
-                            target1.Distance(GlobalManager.GetHero.Position) + 260));
+                        targets.Distance(GlobalManager.GetHero) < 1200
+                        && Champion.R.IsReady())
+                    {
+                            Champion.R.Cast(GlobalManager.GetHero.Position.Extend(target1.Position,
+                                target1.Distance(GlobalManager.GetHero.Position) + 260));                      
+                    }
                 }
            
                 if (GlobalManager.GetHero.IsDead)
