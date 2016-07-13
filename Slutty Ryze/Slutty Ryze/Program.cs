@@ -12,6 +12,8 @@ namespace Slutty_ryze
         static readonly Random Seeder = new Random();
         private static bool _casted;
         private static int _lastw;
+
+        public static int rRange { get; private set; }
         #region onload
         private static void Main(string[] args)
         {
@@ -121,8 +123,17 @@ namespace Slutty_ryze
 
                 if (GlobalManager.Config.Item("chase").GetValue<KeyBind>().Active)
                 {
+                    switch (Champion.R.Level)
+                    {
+                        case 1:
+                            rRange = 1500;
+                            break;
+                        case 2:
+                            rRange = 3000;
+                            break;
+                    }
                     GlobalManager.GetHero.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                    var targets = TargetSelector.GetTarget(3500, TargetSelector.DamageType.Magical);
+                    var targets = TargetSelector.GetTarget(rRange, TargetSelector.DamageType.Magical);
                     if (!targets.IsValidTarget())
                         return;
 
@@ -130,10 +141,10 @@ namespace Slutty_ryze
                         LaneOptions.CastW(targets);
 
                     var target1 = TargetSelector.GetSelectedTarget();
-                    if (!target1.IsValidTarget(2500)) return;
+                    if (!target1.IsValidTarget(rRange)) return;
                     if (GlobalManager.Config.Item("chaser").GetValue<bool>() &&
                         target1.Distance(GlobalManager.GetHero) > Champion.W.Range + 200 &&
-                        targets.Distance(GlobalManager.GetHero) < 1200
+                        targets.Distance(GlobalManager.GetHero) < rRange
                         && Champion.R.IsReady())
                     {
                             Champion.R.Cast(GlobalManager.GetHero.Position.Extend(target1.Position,
