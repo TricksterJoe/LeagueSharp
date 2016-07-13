@@ -79,6 +79,9 @@ namespace Slutty_ryze
             var elchSpell = GlobalManager.Config.Item("useElc").GetValue<bool>();
             var wlchSpell = GlobalManager.Config.Item("useWlc").GetValue<bool>();
 
+            var qlcSpell = GlobalManager.Config.Item("useQ2L").GetValue<bool>();
+            var elcSpell = GlobalManager.Config.Item("useE2L").GetValue<bool>();
+            var wlcSpell = GlobalManager.Config.Item("useW2L").GetValue<bool>();
 
             var minMana = GlobalManager.Config.Item("useEPL").GetValue<Slider>().Value;
 
@@ -91,9 +94,21 @@ namespace Slutty_ryze
             {
                 if (!GlobalManager.CheckMinion(minion)) continue;
 
+                if (qlcSpell && Champion.Q.IsReady())
+                {
+                    Champion.Q.Cast(minion);
+                }
+
+                if (elcSpell && Champion.E.IsReady() && minion.IsValidTarget(Champion.E.Range))
+                {
+                    Champion.E.Cast(minion);
+                }
+
+                if (wlcSpell && Champion.W.IsReady() && minion.IsValidTarget(Champion.W.Range))
+                {
+                    Champion.W.Cast(minion);
+                }
                 var minionHp = minion.Health; // Reduce Calls and add in randomization buffer.
-                //if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
-                //    minionHp = minion.Health * (1 + (Seeder.Next(GlobalManager.Config.Item("minCreepHPOffset").GetValue<Slider>().Value, GlobalManager.Config.Item("maxCreepHPOffset").GetValue<Slider>().Value) / 100.0f));//Randomioze Minion Hp from min to max hp less than damage
                 if (minion.IsDead) return;
 
                 if (qlchSpell
@@ -112,7 +127,7 @@ namespace Slutty_ryze
                          && Champion.E.IsReady()
                          && minion.IsValidTarget(Champion.E.Range)
                          && minionHp <= Champion.E.GetDamage(minion) && GlobalManager.CheckMinion(minion))
-                    Champion.E.CastOnUnit(minion);
+                    Champion.E.Cast(minion);
 
 
             }

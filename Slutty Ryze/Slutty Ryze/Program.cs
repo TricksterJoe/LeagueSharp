@@ -208,10 +208,7 @@ namespace Slutty_ryze
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LaneClear)
                 {
                     LaneOptions.JungleClear();
-                    if (GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active)
-                    {
                         LaneOptions.LaneClear();
-                    }
                 }
 
                 if (MenuManager.Orbwalker.ActiveMode == Orbwalking.OrbwalkingMode.LastHit)
