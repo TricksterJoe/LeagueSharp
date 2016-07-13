@@ -296,6 +296,11 @@ namespace Slutty_ryze
             if (!target.IsValidTarget())
                 return;
 
+            if (Champion.Q.IsReady() && Champion.E.IsReady() && Champion.W.IsReady())
+            {
+                Champion.Q.Cast(target);
+            }
+
             if ((!target.HasBuff("RyzeE") && Champion.E.IsReady()) ||
                 (Champion.E.IsReady() && target.IsValidTarget(Champion.E.Range)) ||
                 (!Champion.Q.IsReady() && !Champion.W.IsReady()))
@@ -312,7 +317,7 @@ namespace Slutty_ryze
                         Champion.W.Cast(target);
                 }
                 else if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() &&
-                         (!Champion.W.IsReady() || !target.IsValidTarget(Champion.W.Range - 50))) ;
+                         (!Champion.W.IsReady() || !target.IsValidTarget(Champion.W.Range))) 
                 {
                         Champion.Q.Cast(target);
                   
