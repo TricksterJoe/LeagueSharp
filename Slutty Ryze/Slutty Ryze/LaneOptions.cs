@@ -313,10 +313,8 @@ namespace Slutty_ryze
                 }
                 else if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady())
                 {
-                    if (Champion.Q.MinHitChance == HitChance.High)
-                    {
                         Champion.Q.Cast(target);
-                    }
+                  
                 }
             }
         }

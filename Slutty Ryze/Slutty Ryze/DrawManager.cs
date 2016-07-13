@@ -62,8 +62,6 @@ namespace Slutty_ryze
                     Drawing.DrawText(pos.X, ++col * 25 + pos.Y, System.Drawing.Color.SteelBlue, "Stack Tear Key:{0}",
                         KeyToString(GlobalManager.Config.Item("tearS").GetValue<KeyBind>()));
 
-                    Drawing.DrawText(pos.X, ++col * 25 + pos.Y, System.Drawing.Color.SteelBlue, "Auto Passive Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>()));
 
                     Drawing.DrawText(pos.X, ++col * 25 + pos.Y, System.Drawing.Color.SteelBlue, "Disable Lane Clear Key:{0}",
                         KeyToString(GlobalManager.Config.Item("disablelane").GetValue<KeyBind>()));
@@ -81,9 +79,6 @@ namespace Slutty_ryze
                     Drawing.DrawText(pos.X, ++col1 * 25 + pos.Y, System.Drawing.Color.LightBlue, "Stack Tear Key:{0}",
                         KeyToString(GlobalManager.Config.Item("tearS").GetValue<KeyBind>()));
 
-                    Drawing.DrawText(pos.X, ++col1 * 25 + pos.Y, System.Drawing.Color.LightBlue, "Auto Passive Key:{0}",
-                        KeyToString(GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>()));
-
                     Drawing.DrawText(pos.X, ++col1 * 25 + pos.Y, System.Drawing.Color.LightBlue, "Disable Lane Clear Key:{0}",
                         KeyToString(GlobalManager.Config.Item("disablelane").GetValue<KeyBind>()));
 
@@ -93,43 +88,7 @@ namespace Slutty_ryze
             }
         }
 
-        /*
-         static Point[] getPoints(Vector2 c, int R)
-         {
-             int X = (int)c.X;
-             int Y = (int)c.Y;
 
-             int R2 = (int)(R / Math.PI);
-
-             Point[] pt = new Point[5];
-
-             pt[0].X = X;
-             pt[0].Y = Y;
-
-             pt[1].X = X;
-             pt[1].Y = Y + R * 2;
-
-             pt[2].X = X + R * 2;
-             pt[2].Y = Y;
-
-             pt[3].X = X - R * 2;
-             pt[3].Y = Y;
-
-             pt[4].X = X;
-             pt[4].Y = Y - R * 2;
-
-             return pt;
-         }
-
-         private static void drawCircleThing(int radius, SharpDX.Vector2 center, Color c)
-         {
-             var lineWalls = getPoints(center,radius);
-             Drawing.DrawLine(lineWalls[0], lineWalls[1], 2, c);
-             Drawing.DrawLine(lineWalls[0], lineWalls[2], 2, c);
-             Drawing.DrawLine(lineWalls[0], lineWalls[3], 2, c);
-             Drawing.DrawLine(lineWalls[0], lineWalls[4], 2, c);
-         }
-         */
         #endregion
         #region Public Functions
         public static void Drawing_OnDraw(EventArgs args)
@@ -155,7 +114,7 @@ namespace Slutty_ryze
             }
             // drawCircleThing((int)Champion.Q.Range/2, Drawing.WorldToScreen(GlobalManager.GetHero.Position), Color.Pink);
             var tears = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active;
-            var passive = GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active;
+
             var laneclear = GlobalManager.Config.Item("disablelane").GetValue<KeyBind>().Active;
 
             var heroPosition = Drawing.WorldToScreen(GlobalManager.GetHero.Position);
@@ -177,9 +136,6 @@ namespace Slutty_ryze
                         GetColor(tears),
                         "Tear Stack: " + BoolToString(tears));
 
-                    Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30, GetColor(passive),
-                        "Passive Stack: " + BoolToString(passive));
-
                     Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColor(laneclear),
                         "Lane Clear: " + BoolToString(laneclear));
                     break;
@@ -196,10 +152,6 @@ namespace Slutty_ryze
                     Drawing.DrawText(heroPosition.X - textDimension.Width, heroPosition.Y - textDimension.Height,
                         GetColorblind(tears),
                         "Tear Stack: " + BoolToStringblind(tears));
-
-                    Drawing.DrawText(heroPosition.X - 150, heroPosition.Y - 30, GetColorblind(passive),
-                        "Passive Stack: " + BoolToStringblind(passive));
-
                     Drawing.DrawText(heroPosition.X + 20, heroPosition.Y - 30, GetColorblind(laneclear),
                         "Lane Clear: " + BoolToStringblind(laneclear));
                     break;
