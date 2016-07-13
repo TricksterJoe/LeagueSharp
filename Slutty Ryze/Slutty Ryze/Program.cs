@@ -118,44 +118,6 @@ namespace Slutty_ryze
         {
             try // lazy
             {
-            //    var data = GetHero.Buffs.FirstOrDefault(b => b.DisplayName == "RyzePassiveStack");
-                //foreach (var buffs in GlobalManager.GetHero.Buffs)
-                //{
-                //    Game.PrintChat(buffs.Name);
-                //}
-              //  Game.PrintChat(GlobalManager.GetPassiveBuff.ToString());
-                        
-                       
-                if (GlobalManager.Config.Item("test").GetValue<KeyBind>().Active)
-                {
-                    GlobalManager.GetHero.IssueOrder(GameObjectOrder.MoveTo, Game.CursorPos);
-                    var targets = TargetSelector.GetTarget(Champion.W.Range, TargetSelector.DamageType.Magical);
-                    if (targets == null)
-                        return;
-                    if (Champion.W.IsReady())
-                    {
-                        LaneOptions.CastW(targets);
-                        {
-                            _lastw = Environment.TickCount;
-                        }
-                    }
-
-                    if (Environment.TickCount - _lastw >= 700 - Game.Ping)
-                    {
-                        if (Champion.Q.IsReady())
-                        {
-                            LaneOptions.CastQn(targets);
-                            _casted = true;
-                        }
-                    }
-
-                    if (_casted)
-                    {
-                        LaneOptions.CastE(targets);
-                        LaneOptions.CastQn(targets);
-                        _casted = false;
-                    }
-                }
 
                 if (GlobalManager.Config.Item("chase").GetValue<KeyBind>().Active)
                 {
@@ -166,10 +128,12 @@ namespace Slutty_ryze
 
                     if (GlobalManager.Config.Item("usewchase").GetValue<bool>())
                         LaneOptions.CastW(targets);
-
+                    var target1 = TargetSelector.GetSelectedTarget();
                     if (GlobalManager.Config.Item("chaser").GetValue<bool>() &&
-                        targets.Distance(GlobalManager.GetHero) > Champion.W.Range + 200)
-                        Champion.R.Cast();
+                        target1.Distance(GlobalManager.GetHero) > Champion.W.Range + 200 &&
+                        targets.Distance(GlobalManager.GetHero) < 1000)
+                        Champion.R.Cast(GlobalManager.GetHero.Position.Extend(target1.Position,
+                            target1.Distance(GlobalManager.GetHero.Position) + 260));
                 }
            
                 if (GlobalManager.GetHero.IsDead)
@@ -213,7 +177,7 @@ namespace Slutty_ryze
                     }
 
                     Champion.AABlock();
-                    LaneOptions.ImprovedCombo();
+                    LaneOptions.Combo();
 
                     MenuManager.Orbwalker.SetAttack(!(target.Distance(GlobalManager.GetHero) >=
                                                       GlobalManager.Config.Item("minaarange").GetValue<Slider>().Value));
@@ -242,9 +206,6 @@ namespace Slutty_ryze
                 {
                     if (GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active)
                         ItemManager.TearStack();
-
-                    if (GlobalManager.Config.Item("autoPassive").GetValue<KeyBind>().Active)
-                        Champion.AutoPassive();
 
                     ItemManager.Potion();
                     MenuManager.Orbwalker.SetAttack(true);

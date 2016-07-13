@@ -22,7 +22,6 @@ namespace Slutty_ryze
             _config.AddSubMenu(FarmMenu());
             _config.AddSubMenu(MiscMenu());
             _config.AddSubMenu(OrbWalkingMenu());
-            _config.AddItem(new MenuItem("test", "Level 3-5 Oriented Combo").SetValue(new KeyBind('Z', KeyBindType.Press)));
             Orbwalker = new Orbwalking.Orbwalker(_config.SubMenu("Orbwalking"));
             return _config;
         }
@@ -82,15 +81,6 @@ namespace Slutty_ryze
         {
             var combo1Menu = new Menu("Combo Settings", "combospells");
             {
-                combo1Menu
-                    .AddItem(
-                        new MenuItem("combooptions", "Combo Mode").SetValue(
-                            new StringList(new[] {"Improved Combo", "New Test Combo"})));
-                combo1Menu.AddItem(new MenuItem("useQ", "Use Q (Overload)").SetValue(true));
-                combo1Menu.AddItem(new MenuItem("useW", "Use W (Rune Prison)").SetValue(true));
-                combo1Menu.AddItem(new MenuItem("useE", "Use E (Spell Flux)").SetValue(true));
-                combo1Menu.AddItem(new MenuItem("useR", "Use R (Desperate Power)").SetValue(true));
-                combo1Menu.AddItem(new MenuItem("useRww", "Only Use R if Target is Rooted").SetValue(true));
                 combo1Menu.AddItem(new MenuItem("AAblock", "Block Auto Attack in Combo").SetValue(false));
                 combo1Menu.AddItem(
                     new MenuItem("minaarange", "Disable AA If Target Distance from target >").SetValue(new Slider(550,
@@ -122,15 +112,12 @@ namespace Slutty_ryze
                 laneMenu.AddItem(
                     new MenuItem("disablelane", "Lane Clear Toggle").SetValue(new KeyBind('T', KeyBindType.Toggle)));
                 laneMenu.AddItem(new MenuItem("useEPL", "Min. % Mana For Lane Clear").SetValue(new Slider(50)));
-                laneMenu.AddItem(new MenuItem("passiveproc", "Don't Use Spells if Passive Will Proc").SetValue(true));
                 laneMenu.AddItem(new MenuItem("useQlc", "Use Q to Last Hit").SetValue(true));
                 laneMenu.AddItem(new MenuItem("useWlc", "Use W to Last Hit").SetValue(false));
                 laneMenu.AddItem(new MenuItem("useElc", "Use E to Last Hit").SetValue(false));
                 laneMenu.AddItem(new MenuItem("useQ2L", "Use Q to Lane Clear").SetValue(true));
                 laneMenu.AddItem(new MenuItem("useW2L", "Use W to Lane Clear").SetValue(false));
                 laneMenu.AddItem(new MenuItem("useE2L", "Use E to Lane Clear").SetValue(false));
-                laneMenu.AddItem(new MenuItem("useRl", "Use R to Lane Clear").SetValue(false));
-                laneMenu.AddItem(new MenuItem("rMin", "Min. Minions to Use R").SetValue(new Slider(3, 1, 20)));
             }
 
             var jungleMenu = new Menu("Jungle Settings", "junglesettings");
@@ -139,7 +126,6 @@ namespace Slutty_ryze
                 jungleMenu.AddItem(new MenuItem("useQj", "Use Q").SetValue(true));
                 jungleMenu.AddItem(new MenuItem("useWj", "Use W").SetValue(true));
                 jungleMenu.AddItem(new MenuItem("useEj", "Use E").SetValue(true));
-                jungleMenu.AddItem(new MenuItem("useRj", "Use R").SetValue(true));
             }
 
 
@@ -159,18 +145,6 @@ namespace Slutty_ryze
         private static Menu MiscMenu()
         {
             var miscMenu = new Menu("Miscellaneous", "miscsettings");
-
-            var passiveMenu = new Menu("Auto Passive", "passivesettings");
-            {
-                passiveMenu.AddItem(new MenuItem("ManapSlider", "Min. % Mana"))
-                    .SetValue(new Slider(30));
-                passiveMenu.AddItem(
-                    new MenuItem("autoPassive", "Stack Passive").SetValue(new KeyBind('Z', KeyBindType.Toggle)));
-                passiveMenu.AddItem(new MenuItem("stackSlider", "Keep Passive Count At"))
-                    .SetValue(new Slider(3, 1, 4));
-                passiveMenu.AddItem(new MenuItem("autoPassiveTimer", "Refresh Passive Every (s)"))
-                    .SetValue(new Slider(5, 1, 10));
-            }
 
             var itemMenu = new Menu("Items", "itemsettings");
             {
@@ -215,10 +189,9 @@ namespace Slutty_ryze
             {
                 chase.AddItem(new MenuItem("chase", "Activate Chase")).SetValue(new KeyBind('A', KeyBindType.Press));
                 chase.AddItem(new MenuItem("usewchase", "Use W")).SetValue(true);
-                chase.AddItem(new MenuItem("chaser", "Use [R]")).SetValue(false);
+                chase.AddItem(new MenuItem("chaser", "Use [R] (Must select target)")).SetValue(false);
             }
-
-            miscMenu.AddSubMenu(passiveMenu);
+            
             miscMenu.AddSubMenu(itemMenu);
             miscMenu.AddSubMenu(hpMenu);
             miscMenu.AddSubMenu(eventMenu);
