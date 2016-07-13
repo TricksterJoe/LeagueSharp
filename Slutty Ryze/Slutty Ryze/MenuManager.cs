@@ -60,7 +60,6 @@ namespace Slutty_ryze
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("qDraw", "Draw Q").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("eDraw", "Draw E").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("wDraw", "Draw W").SetValue(true));
-            drawMenu.SubMenu("Drawings").AddItem(new MenuItem("stackDraw", "Stack Count").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("notdraw", "Draw Floating Text").SetValue(true));
             drawMenu.SubMenu("Drawings").AddItem(new MenuItem("keyBindDisplay", "Display Keybinds").SetValue(true));  
 
@@ -68,11 +67,7 @@ namespace Slutty_ryze
             var drawFill =
                 new MenuItem("RushDrawWDamageFill", "Draw Damage Fill").SetValue(new Circle(true, Color.SeaGreen));
             drawMenu.SubMenu("Drawings").AddItem(drawDamageMenu);
-            drawMenu.SubMenu("Drawings").AddItem(drawFill);
-
-            //GlobalManager.EnableDrawingDamage = drawDamageMenu.GetValue<bool>();
-            //GlobalManager.EnableFillDamage = drawFill.GetValue<Circle>().Active;
-            //GlobalManager.DamageFillColor = drawFill.GetValue<Circle>().Color;
+            drawMenu.SubMenu("Drawings").AddItem(drawFill);          
 
             return drawMenu;
         }
