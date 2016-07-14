@@ -104,6 +104,7 @@ namespace Slutty_ryze
             var farmMenu = new Menu("Farming Settings", "farmingsettings");
             var laneMenu = new Menu("Lane Clear", "lanesettings");
             {
+                laneMenu.AddItem(new MenuItem("disablelane", "Toggle Spell Usage in LaneClear").SetValue(new KeyBind('A', KeyBindType.Toggle)));
                 laneMenu.AddItem(new MenuItem("useEPL", "Min. % Mana For Lane Clear").SetValue(new Slider(50)));
                 laneMenu.AddItem(new MenuItem("useQlc", "Use Q to Last Hit").SetValue(true));
                 laneMenu.AddItem(new MenuItem("useWlc", "Use W to Last Hit").SetValue(false));

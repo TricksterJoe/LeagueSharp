@@ -74,6 +74,8 @@ namespace Slutty_ryze
 
         public static void LaneClear()
         {
+            if (!GlobalManager.Config.Item("disablelane").IsActive())
+                return;
 
             var qlchSpell = GlobalManager.Config.Item("useQlc").GetValue<bool>();
             var elchSpell = GlobalManager.Config.Item("useElc").GetValue<bool>();
@@ -92,7 +94,6 @@ namespace Slutty_ryze
 
             foreach (var minion in minionCount)
             {
-                if (!GlobalManager.CheckMinion(minion)) continue;
 
                 if (qlcSpell && Champion.Q.IsReady())
                 {
@@ -310,34 +311,51 @@ namespace Slutty_ryze
 
             if (!target.IsValidTarget())
                 return;
-
-            if (Champion.Q.IsReady() && Champion.E.IsReady() && Champion.W.IsReady())
+            if (Champion.E.IsReady() && Champion.W.IsReady() && !Champion.Q.IsReady())
+            {
+                Champion.W.Cast(target);
+            }
+            if (Champion.Q.IsReady())
             {
                 Champion.Q.Cast(target);
             }
+                
+            if (Champion.W.IsReady() && target.IsValidTarget(Champion.W.Range) &&
+                (!Champion.Q.IsReady() || Champion.Q.GetPrediction(target).CollisionObjects.Count != 0)) 
+            {
+                Champion.W.Cast(target);
+            }
 
-            if ((!target.HasBuff("RyzeE") && Champion.E.IsReady()) ||
-                (Champion.E.IsReady() && target.IsValidTarget(Champion.E.Range)) ||
-                (!Champion.Q.IsReady() && !Champion.W.IsReady()))
+            if (Champion.E.IsReady() && target.IsValidTarget(Champion.E.Range) &&
+                (!Champion.Q.IsReady() || Champion.Q.GetPrediction(target).CollisionObjects.Count != 0))
             {
-                if (target.IsValidTarget(Champion.E.Range) && Champion.E.IsReady())
-                {
-                    Champion.E.Cast(target);
-                }
+                if ((Champion.E.IsReady() && Champion.W.IsReady() && !Champion.Q.IsReady()))
+                    return;
+                Champion.E.Cast(target);
             }
-            else
-            {
-                if (target.IsValidTarget(Champion.W.Range) && Champion.W.IsReady())
-                {
-                        Champion.W.Cast(target);
-                }
-                else if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() &&
-                         (!Champion.W.IsReady() || !target.IsValidTarget(Champion.W.Range))) 
-                {
-                        Champion.Q.Cast(target);
+
+            //if ((!target.HasBuff("RyzeE") && Champion.E.IsReady()) ||
+            //    (Champion.E.IsReady() && target.IsValidTarget(Champion.E.Range)) ||
+            //    (!Champion.Q.IsReady() && !Champion.W.IsReady()))
+            //{
+            //    if (target.IsValidTarget(Champion.E.Range) && Champion.E.IsReady())
+            //    {
+            //        Champion.E.Cast(target);
+            //    }
+            //}
+            //else
+            //{
+            //    if (target.IsValidTarget(Champion.W.Range) && Champion.W.IsReady())
+            //    {
+            //            Champion.W.Cast(target);
+            //    }
+            //    else if (target.IsValidTarget(Champion.Q.Range) && Champion.Q.IsReady() &&
+            //             (!Champion.W.IsReady() || !target.IsValidTarget(Champion.W.Range))) 
+            //    {
+            //            Champion.Q.Cast(target);
                   
-                }
-            }
+            //    }
+            //}
         }
 
     }

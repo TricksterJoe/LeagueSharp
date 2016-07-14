@@ -120,6 +120,11 @@ namespace Slutty_ryze
         {
             try // lazy
             {
+                //var target2 = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
+                //if (target2.IsValidTarget())
+                //    Game.PrintChat(Champion.Q.GetPrediction(target2).CollisionObjects.Count.ToString());
+
+
 
                 if (GlobalManager.Config.Item("chase").GetValue<KeyBind>().Active)
                 {
@@ -163,6 +168,7 @@ namespace Slutty_ryze
                 }
 
                 var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
+
 
                 if (GlobalManager.Config.Item("doHuman").GetValue<bool>())
                 {

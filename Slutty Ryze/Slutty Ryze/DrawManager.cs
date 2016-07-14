@@ -37,7 +37,7 @@ namespace Slutty_ryze
 
         private static string BoolToStringblind(bool c)
         {
-            return c ? "ON" : "OFF";
+            return c ? "ON" : "OFF";    
         }
 
         private static string KeyToString(KeyBind key)
@@ -104,8 +104,8 @@ namespace Slutty_ryze
             if (GlobalManager.Config.Item("keyBindDisplay").GetValue<bool>())
                 DrawKeys(new Vector2(Drawing.Width - 250, (float)Drawing.Height / 2));
 
-            if (!GlobalManager.GetHero.Position.IsOnScreen())
-                return;
+           // if (!GlobalManager.GetHero.Position.IsOnScreen())
+             //   return;
 
             var tears = GlobalManager.Config.Item("tearS").GetValue<KeyBind>().Active;
 
