@@ -313,7 +313,7 @@ namespace Slutty_ryze
                 return;
             if (Champion.E.IsReady() && Champion.W.IsReady() && !Champion.Q.IsReady())
             {
-                Champion.W.Cast(target);
+                Champion.E.Cast(target);
             }
             if (Champion.Q.IsReady())
             {
@@ -323,14 +323,14 @@ namespace Slutty_ryze
             if (Champion.W.IsReady() && target.IsValidTarget(Champion.W.Range) &&
                 (!Champion.Q.IsReady() || Champion.Q.GetPrediction(target).CollisionObjects.Count != 0)) 
             {
+                if ((Champion.E.IsReady() && Champion.W.IsReady() && !Champion.Q.IsReady()))
+                    return;
                 Champion.W.Cast(target);
             }
 
             if (Champion.E.IsReady() && target.IsValidTarget(Champion.E.Range) &&
                 (!Champion.Q.IsReady() || Champion.Q.GetPrediction(target).CollisionObjects.Count != 0))
             {
-                if ((Champion.E.IsReady() && Champion.W.IsReady() && !Champion.Q.IsReady()))
-                    return;
                 Champion.E.Cast(target);
             }
 
