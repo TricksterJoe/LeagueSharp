@@ -307,7 +307,7 @@ namespace Slutty_ryze
 
         public static void Combo()
         {
-            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical, false);
+            var target = TargetSelector.GetTarget(Champion.Q.Range, TargetSelector.DamageType.Magical);
 
             if (!target.IsValidTarget())
                 return;
