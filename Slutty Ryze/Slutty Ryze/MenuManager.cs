@@ -76,6 +76,10 @@ namespace Slutty_ryze
         {
             var combo1Menu = new Menu("Combo Settings", "combospells");
             {
+                combo1Menu.AddItem(
+                    new MenuItem("combomode", "Combo Mode").SetValue(new StringList(new[] {"Burst", "AOE/Shield/Tank"})));
+                combo1Menu.AddItem(
+                    new MenuItem("forcehpshield", "Force Q Shield Proc at low hp").SetValue(new Slider(10, 0, 100)));
                 combo1Menu.AddItem(new MenuItem("AAblock", "Block Auto Attack in Combo").SetValue(false));
                 combo1Menu.AddItem(
                     new MenuItem("minaarange", "Disable AA If Target Distance from target >").SetValue(new Slider(550,
