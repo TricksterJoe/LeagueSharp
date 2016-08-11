@@ -173,8 +173,8 @@ namespace OAnnie
              */
 
             Orbwalker.SetAttack(true);
-            if (Player.IsRecalling())
-                return;
+            //if (Player.IsRecalling())
+            //    return;
 
             switch (Orbwalker.ActiveMode)
             {
